@@ -1,0 +1,21 @@
+\section{Motivation}
+
+Security vulnerabilities may incur severe lost to users.
+EXAMPLE!!!
+
+The goal of taint analysis is to find external inputs
+to a program that are used without sanitizing checks.
+Functions performing sanitizing checks are called
+\textit{sanitizer}. Developers declare sanitizers before
+analysis execution.
+A program input location that may return an unsafe
+value is called a \textit{source}.
+Taint analysis proceeds by first tagging values from sources
+as \textit{tainted} (e.g. return value from a system call).
+Once tagged, tainted inputs are tracked through
+\textit{taint propagation}: a value that results from an
+operation involving a tainted input as operand is also tainted.
+A tainted value becomes safe after it has been sanitized.
+\textit{Sinks} are program locations that may use tainted
+values (e.g. a function call). The analysis emits a warning
+when a tainted value is used at a sink.  
