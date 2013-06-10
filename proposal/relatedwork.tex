@@ -1,6 +1,19 @@
 \section{Related Work}
 
-\paragraph{\cite{Shankar:2001:DFS}} CQUAL
+\paragraph{\cite{Shankar:2001:DFS}} presents a tool to statically
+detect format string vulnerabilities in C programs. Their analysis
+is based on type qualifiers and type inference. Given a C program,
+an initial subset of the program is annotated with the type qualifiers
+\texttt{tainted} and \texttt{untainted}. The paper defines a set
+of inference rules, which has a rule for each construct of
+the C programming language. The inference rules are used, together
+with the initial program annotations to generate type qualifier
+constraints over the program. The analysis then warns the user
+about a format string vulnerability whenever the program does not
+type checks due to an unsatisfiable constraint. The presented tool
+is built on top of the type qualifier framework \textit{CQUAL} 
+\cite{Foster:pldi99}.
+EVALUATION!!!
 
 \paragraph{\cite{Jovanovic:2006:Pixy}} STAC
 

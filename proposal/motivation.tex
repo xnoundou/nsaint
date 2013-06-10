@@ -20,7 +20,7 @@ actual argument).
 Taint analysis proceeds by first tagging values from sources
 as tainted . Once tagged, Input data taint information is
 propagated through the program.
-\textit{Taint propagation} is the process of tainting values
-resulting from operations involving tainted data. In the
+\textit{Taint propagation} is the process of marking as tainted
+values resulting from operations involving tainted data. In the
 last step, taint analysis emits a warning whenever a tainted
 value is used at a sink location.
