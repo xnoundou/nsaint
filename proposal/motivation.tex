@@ -1,18 +1,27 @@
 \section{Motivation}
 
-Security vulnerabilities may incur severe lost to users.
-EXAMPLE!!!
+Software vulnerabilities are security threats
+that exist in an application when users may exercise
+unauthorized  control of the application through supplied input.
+Such unauthorized control are classified in different
+categories : \textit{buffer overflow}, \textit{SQL
+injection}, \textit{cross site scripting}, etc.
 
-Taint analysis aims at finding program external inputs
-that may be used without sanitizing checks.
+Both dynamic and static techniques exist to alleviate
+security vulnerabilities in software. 
+This project aims at using \textit{\textbf{static taint analysis}}
+to prevent software vulnerabilities.
+Taint analysis searches program external inputs
+usage that may allow users to gain unauthorized control
+over the program. 
+
 We now introduce key terms used in taint analysis.
 A \textit{source} is a program location that may produce
-an untrusted value, i.e, a value from an untrusted program
-input (e.g. return value from a system call, user input). 
-Values from sources are qualified as \textit{tainted}.
-A \textit{sanitizer} is a function that checks tainted
-values. A tainted value becomes safe (trusted, untainted)
-after it has been sanitized.
+an \textit{tainted value}, i.e, a value from an untrusted
+program input (e.g. return value from a system call, user input). 
+A \textit{sanitizer} is a function that validates tainted
+values and make them safe (trusted, untainted) for further
+program usage.
 \textit{Sinks} are program locations that may use tainted
 values (e.g. a function call may have a tainted value as
 actual argument).

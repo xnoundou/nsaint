@@ -13,10 +13,15 @@ about a format string vulnerability whenever the program does not
 type checks due to an unsatisfiable constraint. The presented tool
 is built on top of the type qualifier framework \textit{CQUAL} 
 \cite{Foster:pldi99}.
-EVALUATION!!!
 
-\paragraph{\cite{Jovanovic:2006:Pixy}} STAC
+\paragraph{\cite{Dimitru:2009:STAC}} STAC presents a static taint
+analysis for C, implemented as a type system. The paper defines a type
+domain consisting of the values \texttt{Tainted} and \texttt{Untainted}.
+A type environment is a mapping from variables to type domain values.
+STAC defines a set of inference rules that allows to compute
+type environments for C program statements and functions. The paper
+also proves the soundness of the presented taint analysis.
 
-Dynamic taint analysis
+%Dynamic taint analysis
 
-Taint Analysis for managed languages
+%Taint Analysis for managed languages

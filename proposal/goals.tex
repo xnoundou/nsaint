@@ -1,19 +1,86 @@
 \section{Our Approach}
 
-Our goal is to do develop a static taint analysis for
-the C programming language.
+We plan use \textit{dataflow analysis} as implementation
+framework for our analysis. 
+The analysis shall warn the verification specialist
+whenever it finds the usage of an unsanitized tainted value
+at a sensible function call. The tool shall enable users
+to define sensible program functions considered as program
+sinks. The tool will assume the following functions as
+program sources: 
 
-\subsection{Sources}\label{analysis:sources}
 
-\subsection{Sinks}\label{analysis:sinks}
+
 
 \subsection{Taint Propagation}\label{analysis:propagation}
 
+\begin{table}[h!]
+\begin{center}
+  \begin{tabular}{|l|c|c|}
+  \hline
+  Operations 				& 	Tainted Source Input	&	Target Tainted Input	\\ \hline
+  $rStr = tStr$				&	$tStr$					&	$rStr$					\\ \hline
+  $rStr = tStr + someStr$	& 	$tStr$					&	$rStr$					\\ \hline
+  \end{tabular}
+  \caption{Excerpt of Taint Propagation Rules}\label{analysis:propagation:t1}
+\end{center}
+\end{table}	
+
+Taint propagation can be \textit{dataflow} or \textit{control-flow} based.
+Dataflow based propagation are explicit and exist due to data
+dependencies in the program. Statement $s_u$ is data dependent
+on statement $s_d$ if there exists a \textit{def-use} relationship
+between $s_d$ and $s_u$. Figure~\ref{fig:dfpropagation} illustrates
+an example of dataflow taint propagation. 
+%The statement at line $3$
+%is data dependent on the statement at line $3$ because variable
+%\texttt{\$credit} is defined at line $2$ and used at line $3$.
+
+\begin{figure}[!h]
+\begin{center}
+\EmbedCode{c}{dfpropagation.c}{left}
+\end{center}
+\caption{Example code for dataflow taint propagation}
+\label{fig:dfpropagation}
+\end{figure}
+
+Control-flow based propagation are implicit and are due to
+control dependencies. A statement $s_t$ is control dependent on
+a statement $s_s$ if $s_s$ contains a predicate $p$ and the execution
+of $s_t$ may depend on $p$'s evaluation.
+%Figure~\ref{fig:cfpropagation} illustrates an example of
+%control-flow taint propagation: after invocation of the sanitizer function
+%\myvar{ctype\_digit}, if the control flows in the else-branch, then uses of
+%variable \myvar{amount} will not be tainted. On the other hand,
+%\myvar{amount} remains tainted in the if-branch.
+
+\begin{figure}[!h]
+\begin{center}
+\EmbedCode{c}{cfpropagation.c}{left}
+\end{center}
+\caption{Example code for control-flow taint propagation}
+\label{fig:cfpropagation}
+\end{figure}
+
+Given a tainted input \texttt{tStr}, table~\ref{analysis:propagation:t1}
+describes how program operations propagate taint information. The table
+will be extended as the project advances.
+We assume that statements involving arithmetic operators (e.g., $+, -$, etc.)
+are transformed in a three-address code. The same applies for string
+concatenations that use $+$.
+
 \subsection{Sanitizers}\label{analysis:sanitizers}
+
+Sanitizer functions, which change the state of tainted values
+to untainted, will be defined by users.
 
 \subsection{Pointer Analysis}\label{analysis:pointers}
 
 \section{Implementation}
 
 We are going to implement our analysis on top of the LLVM
-compiler framework.
+compiler framework \cite{Lattner:2004:LLVM}.
+We plan to use \cite{Lhotak:2011:PAE} as points-to analysis
+framework. \cite{Lhotak:2011:PAE} refines Andersen's
+flow-insensitive points-to analysis and adds flow-sensitivity
+to it whenever possible.
