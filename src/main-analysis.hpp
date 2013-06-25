@@ -1,9 +1,10 @@
 #ifndef CTAINT_HPP
 #define CTAINT_HPP
 
-#include "llvm/Pass.h"
-#include "llvm/Function.h"
-#include "llvm/Support/raw_ostream.h"
+#include <llvm/Support/DataTypes.h>
+#include <llvm/Support/raw_ostream.h>
+#include <llvm/Pass.h>
+#include <llvm/Function.h>
 
 using namespace llvm;
 

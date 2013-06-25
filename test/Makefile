@@ -1,9 +1,8 @@
 
-GCC=gcc
+MAIN=main
 
-all:
-	${GCC} -o main main.c
-	${GCC} -o envtest envtest.c
+ir:
+	clang -S -emit-llvm ${MAIN}.c
 
-indent:
-	astyle --indent=spaces=2 --brackets=linux $F
+clean:
+	rm -f ${MAIN}.s ${MAIN}.o

@@ -1,17 +1,22 @@
 #include "stdio.h"
+#include "stdlib.h"
+
+int compute(int);
+int odd(int);
+int even(int);
+int main();
 
 int compute(int x)
 {
   int sum, i;
   if (x == 2)
-    sum = sum * 4;
+    scanf("%d", &sum);
   else
     sum = 0;
   for(i = 0; i < x; ++ i)
     sum += i;
   return sum;
 }
-
 
 int odd(int x)
 {
@@ -21,7 +26,6 @@ int odd(int x)
     return even(x - 1);
   }
 
-
 int even(int x)
 {
   if (x == 0)
@@ -29,7 +33,6 @@ int even(int x)
   else
     return odd(x - 1);
 }
-
 
 int main()
 {
