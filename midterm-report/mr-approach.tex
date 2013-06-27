@@ -1,1 +1,28 @@
 \section{Analysis}\label{analysis}
+
+Our analysis essentially works in two steps. The
+first step consists in creating function summaries
+for each function. Each function summary represents
+a parametrized transfer function. 
+
+\subsection{Summary Generation}
+
+The summary
+generation is done in reverse topological order of
+the callgraph and is based on the rules given in
+Table~\ref{tab:rules}.
+
+Only one summary is generated for functions within
+a strongly connected component. Such a case would be
+a set of mutual recursive functions. Considering our
+motivating example, this means there is a single transfer
+function that summarizes functions \even{} and \odd{}.
+
+Figure~\ref{} illustrates the summary for function
+\main{} of Figure~\ref{fig:sample}
+
+\subsection{Context-Sensitivity} 
+
+We achieve context-sensitivity by analyzing callees
+with dataflow set information of their formal parameters
+at calling sites.
