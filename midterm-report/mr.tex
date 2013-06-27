@@ -1,0 +1,84 @@
+\documentclass[10pt]{article}
+\usepackage[pdftex]{graphicx}
+\usepackage{url}
+\usepackage{listings}
+\usepackage{pgf}
+\usepackage{hyperref}
+\usepackage{verbatim}
+\usepackage{paralist}
+\usepackage{color}
+
+%For plots
+\usepackage{pgfplots}
+
+
+\newcommand{\myvar}[1]{\texttt{\$#1}}
+
+\newcommand{\EmbedCode}[3]{
+	\lstset{language=#1}
+	\lstset{backgroundcolor=\color{white},rulecolor=}
+	\lstset{linewidth=\textwidth}
+	\lstset{commentstyle=\textit, stringstyle=\upshape,showspaces=false}
+	\lstset{frame=shadowbox,
+			showstringspaces=false,
+			numbers=#3,
+			numberblanklines=false}
+	\lstinputlisting[]{#2} 
+}
+
+\newcommand{\main}{\texttt{main}}
+\newcommand{\even}{\texttt{even}}
+\newcommand{\odd}{\texttt{odd}}
+\newcommand{\compute}{\texttt{compute}}
+
+\topmargin -0.1pt
+\advance \topmargin by -\headheight
+\advance \topmargin by -\headsep
+\textheight 9.2in
+\oddsidemargin -0.1pt
+\evensidemargin \oddsidemargin
+\marginparwidth 1in
+\textwidth 6.3in
+
+\parindent 0in
+\parskip 1.5ex
+
+\title{ECE 750 Midterm Report \\ Static Taint Analysis for C}
+\author{Xavier Noumbissi}
+\date{}
+
+\lstset{ %
+language=c,
+basicstyle=\scriptsize,commentstyle=\scriptsize\itshape,showstringspaces=false,breaklines=true}
+
+
+\begin{document}
+\maketitle
+
+\section{Introduction}
+
+We proposed to develop a static taint analysis in our
+project proposal.
+This paper presents the design of our taint analysis.
+We first present a motivating example in Section~\ref{example},
+then explain in Section~\ref{approach} how our analysis
+would perform on the example. We finally give a detailed
+description of our analysis in Section~\ref{analysis}.
+
+\input{mr-example}
+
+\input{mr-approach}
+
+\bibliographystyle{plain}
+\bibliography{mr}
+
+\end{document}
+
+
+
+
+
+
+
+
+
