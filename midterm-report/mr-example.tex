@@ -17,17 +17,28 @@ and stores it in variable \texttt{x}. \texttt{x}
 becomes \textit{tainted} since it holds a value from
 the environment which has not been validated and
 sanitized.
-\texttt{x} is later used in line $4$ as argument to \even{}
-and at line $6$ as argument to \odd{}.
+\texttt{x} is later as argument to \even{} and \odd{} at
+lines $4$ and $5$ respectively.
 
 In \compute{}, variable \texttt{sum} gets tainted at
-line $13$ through function \texttt{scanf}. Variable
+line $13$ through function \texttt{scanf}. Parameter
 \texttt{x} is tainted only if it was passed tainted
 at calling sites.
+This is for instance the case in \main{} at line $6$.
+Observe that tainted parameter \texttt{x} is used in
+the conditional expression at line $12$, which constitute
+a case of \textit{control-flow based taint propagation}.
+Our analysis will not handle control-flow based taint
+propagation\footnote{Detection of some of denial-of-service
+vulnerabilities requires handling of control-flow based
+taint propagation \cite{Chang:2009:ICS}}. 
 
-In functions \even{}, and \odd{}, variable \texttt{x}
-is tainted only when it has been passed as tainted
-at calling sites.
+Functions \even{} and \odd{} have one formal parameter
+\texttt{x}. Both do not taint \texttt{x} in their code.
+Thus \texttt{x} may be tainted in their body iff it was
+passed as tainted at calling sites. This is the case
+for \even{} at line $4$ in \main{}. Thus implying a tainted
+parameter for \odd{} at line $32$ in \even{}.
 
 \begin{comment}
 \begin{figure}

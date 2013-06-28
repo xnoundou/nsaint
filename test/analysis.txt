@@ -24,6 +24,18 @@ ASSIGN
 { (rv, Sv U {assign}), (lv, {assign} }
 
 
+###########################################################
+
+Goal: Find which globals and which formal parameters get
+tainted in a procedure.
+
+INPUT: Procedure f
+
+OUTPUT: Integ
+
+WORKLIST: List of Stmts
+
+
 
 File envtest.c
 --------------
