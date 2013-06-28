@@ -1,5 +1,4 @@
-#include "stdio.h"
-#include "stdlib.h"
+#include <stdio.h>
 
 int compute(int);
 int odd(int);
@@ -39,7 +38,7 @@ int main()
   int x, b1, b2, y;
   scanf("%d", &x);
   b1 = even(x);
-  b2 = odd(10);
+  b2 = odd(3);
   y = compute(x);
   return 0;
 }
