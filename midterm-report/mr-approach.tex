@@ -1,15 +1,72 @@
 \section{Analysis}\label{analysis}
 
+We will implement our analysis as a dataflow analysis.
+Figure~\ref{fig:rules} shows the transfer functions
+for program statements. 
+\begin{table}[h!]
+\begin{center}
+\begin{tabular}{c|l}
+Symbols & Description 	\\ \hline
+\(In_s \)			& Dataflow set before statement $s$		\\	\hline
+\(Out_s \)			& Dataflow set after statement $s$		\\  \hline
+\(S_v \)			& Set of statements that use tainted variable $v$		\\
+\end{tabular}
+\caption{Symbol Description}
+\end{center}
+\end{table}
+
 Our analysis essentially works in two steps. The
 first step consists in creating a summary for each
 function.
+
+
+\begin{comment}
+\begin{figure}[!h]
+\begin{align*}
+	s:& p &= q		& [\text{COPY}]		\\
+	s:& p &= *q		& [\text{LOAD}]		\\
+	s:& p &= \&a	& [\text{ADDROF}]	\\
+    s:& *p &= q		& [\text{STORE}]	\\
+    s:& call f&		& [\text{CALL}]		\\
+\end{align*}
+\caption{Transfer Functions}
+\label{tab:rules}
+\end{figure}
+\end{comment}
+
+\begin{figure}[!h]
+\[
+\infer[\COPY]
+  {\set{}}
+  {In_s \cup \set{(q, S_q)} & p = q}
+\qquad
+\infer[\LOAD]
+  {\set{}}
+  {\set{}   & p = *q}
+\]
+\[
+\infer[\ADDROF]
+  {\set{}}
+  {\set{} & p = \&a}
+\qquad  
+\infer[\STORE]
+  {\set{}}
+  {\set{} & *p = q}
+\qquad
+\infer[\CALL]
+  {\set{}}
+  {\set{} & call\ f}  
+\]
+\caption{Transfer Functions}
+\label{fig:rules}
+\end{figure}
 
 \subsection{Summary Generation}
 
 The summary
 generation is done in reverse topological order of
 the callgraph and is based on the rules given in
-Table~\ref{tab:rules}.
+Figure~\ref{fig:rules}.
 
 Only one summary is generated for functions within
 a strongly connected component. Such a case would be
