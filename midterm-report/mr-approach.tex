@@ -1,8 +1,21 @@
 \section{Analysis}\label{analysis}
 
-We will implement our analysis as a dataflow analysis.
-Figure~\ref{fig:rules} shows the transfer functions
-for program statements. 
+We will implement our analysis as a fixed-point iteration
+over the set of program statements. For each program function $f$,
+the analysis will generate a summary and use it whenever
+a call to $f$ is encountered.
+Section~\ref{sec:summaries} handles function summary generation.
+
+Figure~\ref{fig:rules} shows the analysis' transfer functions.
+For a pointer variable $q$, we define \(p[s](q)\) as the set
+of program locations to which q may point to (i.e $q$ \textit{points-to set})
+at the program statement labelled with $s$.
+$In_s$ and $Out_s$ represent the dataflow set \textit{before}
+and \textit{after} statement $s$ respectively. 
+For a tainted variable $t$, $S_t$ is the set of previous
+statements which use $t$ as tainted variable.
+
+\begin{comment}
 \begin{table}[h!]
 \begin{center}
 \begin{tabular}{c|l}
@@ -14,68 +27,65 @@ Symbols & Description 	\\ \hline
 \caption{Symbol Description}
 \end{center}
 \end{table}
+\end{comment}
 
 Our analysis essentially works in two steps. The
 first step consists in creating a summary for each
 function.
 
-
-\begin{comment}
-\begin{figure}[!h]
-\begin{align*}
-	s:& p &= q		& [\text{COPY}]		\\
-	s:& p &= *q		& [\text{LOAD}]		\\
-	s:& p &= \&a	& [\text{ADDROF}]	\\
-    s:& *p &= q		& [\text{STORE}]	\\
-    s:& call f&		& [\text{CALL}]		\\
-\end{align*}
-\caption{Transfer Functions}
-\label{tab:rules}
-\end{figure}
-\end{comment}
-
 \begin{figure}[!h]
 \[
 \infer[\COPY]
-  {\set{}}
-  {In_s \cup \set{(q, S_q)} & p = q}
+  {In_s \cup \set{(q, S_q)} \cup \set{(p, \set{s})}}
+  {In_s \cup \set{(q, S_q)} & s:p = q}
 \qquad
 \infer[\LOAD]
-  {\set{}}
-  {\set{}   & p = *q}
+  {In_s \cup \set{(pt[s](q), S_{pt[s](q)})} \cup \set{(p, \set{s})}}
+  {In_s \cup \set{(pt[s](q), S_{pt[s](q)})}   & s:p = *q}
 \]
 \[
 \infer[\ADDROF]
-  {\set{}}
-  {\set{} & p = \&a}
+  {In_s }
+  {In_s & s:p = \&a}
 \qquad  
 \infer[\STORE]
-  {\set{}}
-  {\set{} & *p = q}
+  {In_s \cup \set{(q, S_q)} \cup \set{(p[s](p), \set{s})} }
+  {In_s \cup \set{(q, S_q)} & s:*p = q}
 \qquad
 \infer[\CALL]
   {\set{}}
-  {\set{} & call\ f}  
+  {\set{} & s:call\ f}  
 \]
 \caption{Transfer Functions}
 \label{fig:rules}
 \end{figure}
 
-\subsection{Summary Generation}
+\subsection{Motivating Example Case Study}\label{sec:sampleSummary}
 
-The summary
-generation is done in reverse topological order of
-the callgraph and is based on the rules given in
-Figure~\ref{fig:rules}.
+\subsection{Summary Generation}\label{sec:summaries}
 
-Only one summary is generated for functions within
-a strongly connected component. Such a case would be
-a set of mutual recursive functions. Considering our
-motivating example, this means there is a single transfer
-function that summarizes functions \even{} and \odd{}.
+Function summaries will be generated in the reverse
+topological order of the callgraph. Each strongly connected
+component (SCC) of the callgraph will be handled as one
+node. That is, a single summary will be generated for
+mutual recursive functions. In our motivating example
+from Figure~\ref{fig:sample}, only one summary will
+be generated for functions \even{} and \odd{} because they
+are mutually recursive.
+Figure~\ref{fig:summary} shows the algorithm for function
+summary generation.
 
-Figure~\ref{} illustrates the summary for function
-\main{} of Figure~\ref{fig:sample}
+Given a function $f$, our analysis will generate and use
+a summary for $f$. Let $\set{i_0, i_1, ..., i_m}$ be the set
+of $f$ formal parameters. Let assume that all global variables
+are accessible in $f$ through a set of local variables 
+$G = \set{g_0, g_1, ..., g_n}$. $f$'s summary is a set of integers 
+$\mathcal{S}(f) = \set{i_0, i_1, ...,i_m, g_0, ...,g_n}$.
+We now describe f's summary 
+defined as follows: 
+
+Figure~\ref{} illustrates the function summary for \main{}
+of Figure~\ref{fig:sample}
 
 \subsection{Context-Sensitivity} 
 
