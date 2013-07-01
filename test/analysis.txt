@@ -29,11 +29,32 @@ ASSIGN
 Goal: Find which globals and which formal parameters get
 tainted in a procedure.
 
+tainted, untainted, input
+
 INPUT: Procedure f
 
 OUTPUT: Integ
 
 WORKLIST: List of Stmts
+
+SUMMARY: Set of integers
+
+WORKLIST := {first stmt}
+
+SUMMARY := {}
+
+while (WORKLIST != EMPTY) {
+  next = WORKLIST.removeNext()
+  switch (next) {
+    case TAINT: if (tainted local is formal f_i) then
+		  SUMMARY U= i
+		else if (tainted local is global g_j) then
+		  SUMMARY U= j
+		else
+    default: break
+  }
+  WORKLIST U= sucessors(next)
+}
 
 
 

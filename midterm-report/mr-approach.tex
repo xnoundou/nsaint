@@ -76,19 +76,27 @@ Figure~\ref{fig:summary} shows the algorithm for function
 summary generation.
 
 Given a function $f$, our analysis will generate and use
-a summary for $f$. Let $\set{i_0, i_1, ..., i_m}$ be the set
-of $f$ formal parameters. Let assume that all global variables
+a summary for $f$. Let $\set{i_0, i_1, ..., i_j}$ be the set
+of $f$'s formal parameters. Let assume that all global variables
 are accessible in $f$ through a set of local variables 
-$G = \set{g_0, g_1, ..., g_n}$. $f$'s summary is a set of integers 
-$\mathcal{S}(f) = \set{i_0, i_1, ...,i_m, g_0, ...,g_n}$.
+$G = \set{g_0, g_1, ..., g_k}$. $f$'s summary is a set of integers 
+$\mathcal{S}(f) = \set{0, 1, ...,m, n, ..., z}$.
 We now describe f's summary 
 defined as follows: 
 
 Figure~\ref{} illustrates the function summary for \main{}
 of Figure~\ref{fig:sample}
 
+\subsection{Handling of complex data structures}
+
 \subsection{Context-Sensitivity} 
 
 We achieve context-sensitivity by analyzing callees
 with dataflow set information of their formal parameters
 at calling sites.
+
+For instance in Figure~\ref{fig:sample}, the call to \even{} at
+line $4$ would take into the account the fact that \texttt{x}
+is tainted.
+On the other hand, \even{}'s call at line $25$ can not safely
+make this assumption.
