@@ -8,6 +8,10 @@
 \usepackage{paralist}
 \usepackage{color}
 
+%\usepackage{algpseudocode} %for using the algorithmicx package
+
+\usepackage[lined,boxed,ruled,resetcount]{algorithm2e}
+
 \usepackage{proof}
 \usepackage{amsmath,amsthm,amssymb}
 
@@ -36,6 +40,8 @@
 \newcommand{\CALL}{\text{\textbf{[CALL]}}}
 
 \newcommand{\set}[1]{\{#1\}}
+
+\newcommand{\pointsto}[2]{\mathcal{P}_{[#1]}(#2)}
 
 
 %For plots
