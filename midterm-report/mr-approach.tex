@@ -8,9 +8,49 @@ the each function control flow graph. Interprocedural edges,
 that arise at method calls, will be used from the call graph
 built by LLVM.  
 
-Figure~\ref{fig:analysis} shows the pseudo code of the
+Algorithm~\ref{fig:algoAnalyze} shows the pseudo code of the
 analysis algorithm we plan to use\footnote{Taken from
 lecture notes of Jonathan Aldrich}.
+
+\begin{algorithm}
+\caption{Analyze}\label{fig:algoAnalyze}
+\SetAlgoLined
+\LinesNumbered
+\DontPrintSemicolon
+\SetKwData{func}{f}
+\SetKwData{Input}{input}
+\SetKwData{Output}{output}
+\SetKwData{varJ}{j}
+\SetKwData{varI}{j}
+\SetKwData{worklist}{worklist}
+\SetKwFunction{Input}{input}
+\SetKwFunction{Ouput}{output}
+\SetKwFunction{Flow}{Flow}
+\SetKwFunction{Update}{Update}
+\SetKwFunction{InitDataFlow}{initDataFlow}
+\SetKwFunction{Next}{next}
+\SetKwFunction{Succs}{succs}
+\SetKwInOut{InData}{input}
+\SetKwInOut{OutData}{output}
+
+
+\InData{$\func: Proc, \Input: D, \InitDataFlow: Inst \rightarrow D$}
+\OutData{$\Output: D$}
+$ s_0 \leftarrow first(\func)$\;
+$\Input[s_0] \leftarrow \InitDataFlow(s_0)$\;
+$\worklist \leftarrow \set{s_0}$\;
+\While{ $\worklist\ !=\ \emptyset$ }{
+	$\varI \leftarrow \Next(\worklist)$\;
+	$\Output[i] = \Flow(\varI, \Input[\varI])$\;
+	\ForEach{ $\varJ \in \Succs(\varJ)$ }{
+		\If{ $\Output[\varI] \not\sqsubseteq \Input\varJ]$}{
+			$\Input[\varJ] = \Input[\varJ] \sqcup \Output[\varI]$\;
+			$\worklist = \worklist \cup\ \set{\varJ}$\;
+		}	
+	}
+}
+\end{algorithm}
+\DecMargin{1em}
 
 D: Analysis dataflow set\\
 Inst: Set of instructions in the program.\\
@@ -23,90 +63,33 @@ flow: Inst $\rightarrow$ D. Analysis Dataflow function.\\
 next: worklist $\rightarrow$ Inst. Function that returns the
 next instructions from the worklist.\\
 
-\begin{comment}
-\begin{figure}[!h]
-\begin{algorithmic}[1]
-\ForAll{$i \in Inst$}
-	\State $input[i] = \bot$
-\EndFor
+For each program function $f$,
+the analysis will generate a summary and use it whenever
+a call to $f$ is encountered.
+Section~\ref{sec:summaries} handles function summary generation.
 
-\State ANALYZE($initDataFlow$)
-\end{algorithmic}
-\caption{Interprocedural dataflow analysis algorithm}
-\label{fig:analysis}
-\end{figure}
+Algorithm~\ref{fig:algoFlow} shows the analysis' transfer functions.
+For a pointer variable $q$, we define \(p[s](q)\) as the set
+of program locations to which q may point to (i.e $q$'s \textit{points-to set})
+at the program statement labelled with $s$.
+$In_s$ and $Out_s$ represent the dataflow set \textit{before}
+and \textit{after} statement $s$ respectively. 
+For a tainted variable $t$, $S_t$ is the set of previous
+statements which use $t$ as tainted variable.
 
-\begin{figure}[!h]
-\begin{algorithmic}[1]
-\Function{Analyze}{$f: Procedure,\ initDataFlow: D$}
-	\State $input[first(f)] = initDataflow$
-	\State $worklist = \set{ first(f) }$
-	\While{ $worklist\ != \emptyset$ }
-    	\State $i = next(worklist)$
-	    \State $output[i] = FLOW(i, input[i])$
-    	\ForAll{$j \in succs(i)$} 
-			\If{ $output[i] \not\sqsubseteq input[j]$}
-				\State $input[j] = input[j] \sqcup output[i]$
-				\State $worklist = worklist \cup\ \set{j}$
-			\EndIf
-	    \EndFor
-	\EndWhile
-\EndFunction
-\end{algorithmic}
-\caption{Interprocedural dataflow analysis algorithm}
-\label{fig:algoAnalyze}
-\end{figure}
-\end{comment}
+
+Our analysis essentially works in two steps. The
+first step consists in creating a summary for each
+function.
 
 \IncMargin{1em}
-\begin{algorithm}[H]
-\caption{Analyze}
+\begin{algorithm}
+\caption{Flow}\label{fig:algoFlow}
 \SetAlgoLined
 \LinesNumbered
 \DontPrintSemicolon
-\SetKwData{func}{f}
-\SetKwData{InData}{in}
-\SetKwData{OutData}{out}
-\SetKwData{varJ}{j}
-\SetKwData{varI}{j}
-\SetKwData{worklist}{worklist}
-\SetKwFunction{Input}{input}
-\SetKwFunction{Ouput}{output}
-\SetKwFunction{Flow}{Flow}
-\SetKwFunction{Update}{Update}
-\SetKwFunction{InitDataFlow}{initDataFlow}
-\SetKwFunction{Next}{next}
-\SetKwFunction{Succs}{succs}
-\SetKwInOut{Input}{input}
-\SetKwInOut{Output}{output}
-
-
-\Input{$\func: Proc, \InData: D, \InitDataFlow: Inst \rightarrow D$}
-\Output{$\OutData: D$}
-$ s_0 \leftarrow first(\func)$\;
-$\InData[s_0] \leftarrow \InitDataFlow(s_0)$\;
-$\worklist \leftarrow \set{s_0}$\;
-\While{ $\worklist\ !=\ \emptyset$ }{
-	$\varI \leftarrow \Next(\worklist)$\;
-	$\OutData[i] = \Flow(\varI, \InData[\varI])$\;
-	\ForEach{ $\varJ \in \Succs(\varJ)$ }{
-		\If{ $\OutData[\varI] \not\sqsubseteq \InData[\varJ]$}{
-			$\InData[\varJ] = \InData[\varJ] \sqcup \OutData[\varI]$\;
-			$\worklist = \worklist \cup\ \set{\varJ}$\;
-		}	
-	}
-}
-\end{algorithm}
-\DecMargin{1em}
-
-\IncMargin{1em}
-\begin{algorithm}[H]
-\caption{Flow}
-\SetAlgoLined
-\LinesNumbered
-\DontPrintSemicolon
-\SetKwData{InData}{in}
-\SetKwData{OutData}{out}
+\SetKwData{Input}{input}
+\SetKwData{Output}{output}
 \SetKwData{stmt}{inst}
 \SetKwData{stmtV}{v}
 \SetKwFunction{Map}{map}
@@ -119,99 +102,38 @@ $\worklist \leftarrow \set{s_0}$\;
 \SetKwFunction{Update}{Update}
 \SetKwFunction{Analyze}{Analyze}
 %\SetKwFunction{FindCompress}{FindCompress}
-\SetKwInOut{Input}{input}
-\SetKwInOut{Output}{output}
+\SetKwInOut{InData}{input}
+\SetKwInOut{OutData}{output}
 
 
-\Input{$\stmt: Inst, \InData: D$}
-\Output{$\OutData: D$}
+\InData{$\stmt: Inst, \Input: D$}
+\OutData{$\Output: D$}
 \Switch{$\Type(\stmt)$}{
-	\Case{$\LCOPY\ [p = q]$}{
-		$\OutData \leftarrow \InData \cup \set{(p, \set{\stmt})}$\;
+	\uCase{$\LCOPY\ [p = q]$}{
+		$\Output \leftarrow \Input \cup \set{(p, \set{\stmt})}$\;
 	}
-	\Case{$\LLOAD\ [p = *q]$}{
+	\uCase{$\LLOAD\ [p = *q]$}{
 		\ForEach{$\stmtV \in \pointsto{\stmt}{q}$}{
-			$S_{v} \leftarrow \Map(\stmtV, \InData)$\;		
-			$\OutData \leftarrow \InData \cup \set{(\stmtV, S_v \cup \stmt)}$\;
+			$S_{v} \leftarrow \Map(\stmtV, \Input)$\;		
+			$\Output \leftarrow \Input \cup \set{(\stmtV, S_v \cup \stmt)}$\;
 		}
 	}
 %	\Case{$\mathbb{ADDROF}\ [p = \&a]$}{
 %	}
-	\Case{$\LSTORE\ [*p = q]$}{
+	\uCase{$\LSTORE\ [*p = q]$}{
 		\ForEach{$\stmtV \in \pointsto{\stmt}{p}$}{
-			$S_{v} \leftarrow \Map(\stmtV, \InData)$\;
-			$\OutData \leftarrow \InData \cup \{ (\stmtV, S_{v} \cup \stmt) \}$\;
+			$S_{v} \leftarrow \Map(\stmtV, \Input)$\;
+			$\Output \leftarrow \Input \cup \{ (\stmtV, S_{v} \cup \stmt) \}$\;
 		}
 	}	
-	\Case{$\LCALL\ [call\ f]$}{
-		$\OutData \leftarrow Analyze(f, \InData)$
+	\uCase{$\LCALL\ [call\ f]$}{
+		$\Output \leftarrow Analyze(f, \Input)$
 	}		
 	\Other{
 	}
 }
 \end{algorithm}
 \DecMargin{1em}
-
-
-
-For each program function $f$,
-the analysis will generate a summary and use it whenever
-a call to $f$ is encountered.
-Section~\ref{sec:summaries} handles function summary generation.
-
-Figure~\ref{fig:rules} shows the analysis' transfer functions.
-For a pointer variable $q$, we define \(p[s](q)\) as the set
-of program locations to which q may point to (i.e $q$'s \textit{points-to set})
-at the program statement labelled with $s$.
-$In_s$ and $Out_s$ represent the dataflow set \textit{before}
-and \textit{after} statement $s$ respectively. 
-For a tainted variable $t$, $S_t$ is the set of previous
-statements which use $t$ as tainted variable.
-
-\begin{comment}
-\begin{table}[h!]
-\begin{center}
-\begin{tabular}{c|l}
-Symbols & Description 	\\ \hline
-\(In_s \)			& Dataflow set before statement $s$		\\	\hline
-\(Out_s \)			& Dataflow set after statement $s$		\\  \hline
-\(S_v \)			& Set of statements that use tainted variable $v$		\\
-\end{tabular}
-\caption{Symbol Description}
-\end{center}
-\end{table}
-\end{comment}
-
-Our analysis essentially works in two steps. The
-first step consists in creating a summary for each
-function.
-
-\begin{figure}[!h]
-\[
-\infer[\COPY]
-  {In_s \cup \set{(q, S_q)} \cup \set{(p, \set{s})}}
-  {In_s \cup \set{(q, S_q)} & s:p = q}
-\qquad
-\infer[\LOAD]
-  {In_s \cup \set{(pt[s](q), S_{pt[s](q)})} \cup \set{(p, \set{s})}}
-  {In_s \cup \set{(pt[s](q), S_{pt[s](q)})}   & s:p = *q}
-\]
-\[
-\infer[\ADDROF]
-  {In_s }
-  {In_s & s:p = \&a}
-\qquad  
-\infer[\STORE]
-  {In_s \cup \set{(q, S_q)} \cup \set{(p[s](p), \set{s})} }
-  {In_s \cup \set{(q, S_q)} & s:*p = q}
-\qquad
-\infer[\CALL]
-  {In_s}
-  {In_s & s:call\ f}  
-\]
-\caption{Transfer Functions}
-\label{fig:rules}
-\end{figure}
 
 \subsection{Motivating Example Case Study}\label{sec:sampleSummary}
 

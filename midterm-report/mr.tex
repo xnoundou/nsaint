@@ -8,9 +8,12 @@
 \usepackage{paralist}
 \usepackage{color}
 
+%For plots
+\usepackage{pgfplots}
+
 %\usepackage{algpseudocode} %for using the algorithmicx package
 
-\usepackage[lined,boxed,ruled,resetcount]{algorithm2e}
+\usepackage[lined,boxed,resetcount,longend]{algorithm2e}
 
 \usepackage{proof}
 \usepackage{amsmath,amsthm,amssymb}
@@ -43,10 +46,11 @@
 
 \newcommand{\pointsto}[2]{\mathcal{P}_{[#1]}(#2)}
 
-
-%For plots
-\usepackage{pgfplots}
-
+%for algorithm2e -within figure
+\renewcommand\topfraction{0.85}
+\renewcommand\bottomfraction{0.85}
+\renewcommand\textfraction{0.1}
+\renewcommand\floatpagefraction{0.85}
 
 \newcommand{\myvar}[1]{\texttt{\$#1}}
 
