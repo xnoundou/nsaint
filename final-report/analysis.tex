@@ -31,6 +31,9 @@ $input$				&	$Inst\ \rightarrow\ D$ 							\\
 $output$			&	$Inst\ \rightarrow\ D$ 							\\
 					&	Function that returns the dataflow values		\\
 		    		&	at the program point after an instruction 		\\ 	\hline
+$taintUse$			&	$VarTaint\ \rightarrow\ 2_{Inst}$ 				\\
+					&	Function that returns program statements where	\\
+		    		&	a tainted variable has been used	 			\\ 	\hline		    		
 $worklist$			&	Set of remaining instructions to be processed 	\\ \hline
 $Flow$				&	$Inst\ \rightarrow\ D$ 							\\
 					&   Analysis flow function (Algorithm~\ref{fig:algoFlow}) 			\\ \hline
@@ -47,13 +50,14 @@ $\pointsto{s}{q}$	&	Set of program locations to which variable q	\\
 \caption{Algorithm Symbols}\label{symTable}
 \end{table}
 
-Algorithm~\ref{fig:algoAnalyze} shows the pseudo code of our
-analysis algorithm\footnote{Adapted from Jonathan Aldrich's
-lecture notes} \texttt{Analyze}, and table~\ref{symTable}
+Algorithm~\ref{fig:algoAnalyze} represents the pseudo code of
+our analysis algorithm\footnote{Adapted from Jonathan Aldrich's
+lecture notes} \texttt{Analyze}, and Table~\ref{symTable}
 describes the symbols we use.
 
-\begin{procedure}
-\caption{Analyze()}\label{fig:algoAnalyze}
+\IncMargin{1em}
+\begin{algorithm}
+\caption{Analyze}\label{fig:algoAnalyze}
 \SetAlgoLined
 \LinesNumbered
 \DontPrintSemicolon
@@ -68,28 +72,30 @@ describes the symbols we use.
 \SetKwFunction{InitDataFlow}{initDataFlow}
 \SetKwFunction{Next}{next}
 \SetKwFunction{Succs}{succs}
+\SetKwFunction{AnalyzeAlgo}{Analyze}
 \SetKwInOut{InData}{input}
 \SetKwInOut{OutData}{output}
 
 
 \InData{$\func: Proc, \newline
 		 \InitDataFlow: Inst \rightarrow (VarTaint \times Inst)$}
+%\OutData{$\&nbsp;$}
 %\Input: VarTaint \rightarrow Inst, \newline
 %\OutData{$\Output: VarTaint \rightarrow Inst$}
 $ s_0 \leftarrow first(\func)$\;
 $\Input[s_0] \leftarrow \InitDataFlow(s_0)$\;
 $\worklist \leftarrow \set{s_0}$\;
-\While{ $\worklist\ !=\ \emptyset$ }{
+\While{ $\worklist\ \neq\ \emptyset$ }{
 	$\varI \leftarrow \Next(\worklist)$\;
-	$\Output[i] = \Flow(\Analyze, \varI, \Input[\varI])$\;
+	$\Output[i] \leftarrow \Flow(\AnalyzeAlgo, \varI, \Input[\varI])$\;
 	\ForEach{ $\varJ \in \Succs(\varI)$ }{
 		\If{ $\Output[\varI] \not\sqsubseteq \Input[\varJ]$}{
-			$\Input[\varJ] = \Input[\varJ] \sqcup \Output[\varI]$\;
-			$\worklist = \worklist \cup\ \set{\varJ}$\;
+			$\Input[\varJ] \leftarrow \Input[\varJ] \sqcup \Output[\varI]$\;
+			$\worklist \leftarrow \worklist \cup\ \set{\varJ}$\;
 		}	
 	}
 }
-\end{procedure}
+\end{algorithm}
 \DecMargin{1em}
 
 %Before \texttt{Analyze} performs, an initial dataflow
@@ -114,8 +120,6 @@ set before the first program instruction $s_0$ and then
 adds $s_0$ to the statement work list (\texttt{worklist}).
 Then the program loops between line $4$ and $12$ until
 the statement work list becomes empty.
-
-
 
 For each loop, a statement $i$ is removed from
 \texttt{worklist} and passed to the \texttt{Flow} function
@@ -155,6 +159,7 @@ fixed point since no dataflow set changes again.
 \SetKwFunction{LSOURCE}{SOURCE}
 \SetKwFunction{LSINK}{SINK}
 \SetKwFunction{Type}{Type}
+\SetKwFunction{TaintUse}{taintUse}
 \SetKwFunction{Update}{Update}
 %\SetKwFunction{AnalyzeCallee}{AnalyzeCallee}
 \SetKwFunction{Taint}{taint}
@@ -169,20 +174,20 @@ fixed point since no dataflow set changes again.
 \OutData{$\Output: VarTaint \rightarrow Inst$}
 $\Output \leftarrow \Input$\;
 \Switch{$\Type(\stmt)$}{
-	\Case{$\LCOPY\ [p = q]$}{
+	\Case{$\LCOPY\ [p = q] $}{
 		$\Output \leftarrow \Input \cup \set{(p, \set{\stmt})}$\;
 	}
-	\Case{$\LLOAD\ [p = *q]$}{
+	\Case{$\LLOAD\ [p = *q] $}{
 		\ForEach{$\stmtV \in \pointsto{\stmt}{q}$}{
-			$S_{v} \leftarrow \Input[\stmtV]$\;		
+			$S_{v} \leftarrow \TaintUse[\stmtV]$\;		
 			$\Output \leftarrow \Input \cup \set{(\stmtV, S_v \cup \stmt)}$\;
 		}
 	}
 %	\Case{$\mathbb{ADDROF}\ [p = \&a]$}{
 %	}
-	\Case{$\LSTORE\ [*p = q]$}{
+	\Case{$\LSTORE\ [*p = q] $}{
 		\ForEach{$\stmtV \in \pointsto{\stmt}{p}$}{
-			$S_{v} \leftarrow \Input[\stmtV]$\;
+			$S_{v} \leftarrow \TaintUse[\stmtV]$\;
 			$\Output \leftarrow \Input \cup \{ (\stmtV, S_{v} \cup \stmt) \}$\;
 		}
 	}	
@@ -191,7 +196,7 @@ $\Output \leftarrow \Input$\;
 	\Case{$\LSOURCE\ [func(a_0, a_1, ..., a_n)]$}{
 		\ForEach{$i \in \set{0,1,...,n}$}{
 			\If{$i \in \Taint(func)$}{			
-				$S_{a_i} \leftarrow \Input[a_i]$\;
+				$S_{a_i} \leftarrow \TaintUse[a_i]$\;
 				$\Output \leftarrow \Input \cup \set{ (a_i, S_{a_i} \cup \stmt) }$\;
 			}			
 		}
@@ -207,8 +212,6 @@ $\Output \leftarrow \Input$\;
 
 Function \texttt{Flow} (Algorithm~\ref{fig:algoFlow})
 implements the analysis' transfer equations.
-For a tainted variable $t$, $S_t$ is the set of previous
-statements which use $t$ as tainted variable.
 
 \subsection{Recursive and Mutual Recursive Function Calls} 
 
@@ -217,7 +220,7 @@ before and after recursive calls are identical.
 
 We detect recursive mutual function calls by finding strongly
 connected components of the ahead-of-time call graph generated
-by LLVM.
+by LLVM. 
 
 \subsection{Context-Sensitivity} 
 
