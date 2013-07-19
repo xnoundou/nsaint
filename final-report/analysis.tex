@@ -22,7 +22,8 @@ has been used before the $p_n$.
 \begin{tabular}{|l|l|}
 \hline
 \textbf{Symbols}	&	\textbf{Description}							\\ \hline
-$D$					&	Analysis dataflow set 							\\ \hline
+$D$					&	$VarTaint \times Inst$							\\
+					&	Analysis dataflow set 							\\ \hline
 $Inst$				&	Set of instructions in the program 				\\ \hline
 $input$				&	$Inst\ \rightarrow\ D$ 							\\
 					&	Function that returns the dataflow values		\\
@@ -33,9 +34,15 @@ $output$			&	$Inst\ \rightarrow\ D$ 							\\
 $worklist$			&	Set of remaining instructions to be processed 	\\ \hline
 $Flow$				&	$Inst\ \rightarrow\ D$ 							\\
 					&   Analysis flow function (Algorithm~\ref{fig:algoFlow}) 			\\ \hline
+$first$				&	$Func \rightarrow\ Inst$ 						\\
+					& 	Function that returns the first instruction		\\
+					&	of a procedure									\\ \hline
 $next$				&	$worklist\ \rightarrow\ Inst$ 					\\
 					& 	Function that returns the next instructions		\\
-					&	from the worklist.								\\ \hline
+					&	from the worklist								\\ \hline
+$\pointsto{s}{q}$	&	Set of program locations to which variable q	\\
+					&	may point to at the program statement $s$		\\
+					& 	(i.e $q$'s \textit{points-to set} at statement $s$)	\\ \hline					
 \end{tabular}
 \caption{Algorithm Symbols}\label{symTable}
 \end{table}
@@ -45,19 +52,17 @@ analysis algorithm\footnote{Adapted from Jonathan Aldrich's
 lecture notes} \texttt{Analyze}, and table~\ref{symTable}
 describes the symbols we use.
 
-\begin{algorithm}
-\caption{Analyze}\label{fig:algoAnalyze}
+\begin{procedure}
+\caption{Analyze()}\label{fig:algoAnalyze}
 \SetAlgoLined
 \LinesNumbered
 \DontPrintSemicolon
 \SetKwData{func}{f}
-\SetKwData{Input}{input}
-\SetKwData{Output}{output}
 \SetKwData{varJ}{j}
 \SetKwData{varI}{i}
 \SetKwData{worklist}{worklist}
-\SetKwFunction{Input}{input}
-\SetKwFunction{Ouput}{output}
+\SetKwFunction{Input}{inFlow}
+\SetKwFunction{Output}{outFlow}
 \SetKwFunction{Flow}{Flow}
 \SetKwFunction{Update}{Update}
 \SetKwFunction{InitDataFlow}{initDataFlow}
@@ -67,14 +72,16 @@ describes the symbols we use.
 \SetKwInOut{OutData}{output}
 
 
-\InData{$\func: Proc, \Input: D, \InitDataFlow: Inst \rightarrow D$}
-\OutData{$\Output: D$}
+\InData{$\func: Proc, \newline
+		 \InitDataFlow: Inst \rightarrow (VarTaint \times Inst)$}
+%\Input: VarTaint \rightarrow Inst, \newline
+%\OutData{$\Output: VarTaint \rightarrow Inst$}
 $ s_0 \leftarrow first(\func)$\;
 $\Input[s_0] \leftarrow \InitDataFlow(s_0)$\;
 $\worklist \leftarrow \set{s_0}$\;
 \While{ $\worklist\ !=\ \emptyset$ }{
 	$\varI \leftarrow \Next(\worklist)$\;
-	$\Output[i] = \Flow(\varI, \Input[\varI])$\;
+	$\Output[i] = \Flow(\Analyze, \varI, \Input[\varI])$\;
 	\ForEach{ $\varJ \in \Succs(\varI)$ }{
 		\If{ $\Output[\varI] \not\sqsubseteq \Input[\varJ]$}{
 			$\Input[\varJ] = \Input[\varJ] \sqcup \Output[\varI]$\;
@@ -82,16 +89,33 @@ $\worklist \leftarrow \set{s_0}$\;
 		}	
 	}
 }
-\end{algorithm}
+\end{procedure}
 \DecMargin{1em}
+
+%Before \texttt{Analyze} performs, an initial dataflow
+%set of the program points is obtained through an
+%intraprocedural dataflow analysis of program functions.
+We define a set of C standard library functions that
+we considered as sources. These library functions are not
+further analyzed during \texttt{Analyze}'s run.
+Instead we provide for them annotations that specify
+which of their parameters becomes tainted after they
+have run. Appendix !!! lists the C standard library
+functions the analysis considers as sources.
+
+On the other hand, we also predefine a set of functions
+we consider as sinks. These functions are handled similarly
+to the previous described sources. Appendix !!! lists
+the C standard library functions the analysis considers
+as sinks.
 
 \texttt{Analyze} starts by storing the initial dataflow
 set before the first program instruction $s_0$ and then
 adds $s_0$ to the statement work list (\texttt{worklist}).
-The initial dataflow set of the program points is obtain
-through 
 Then the program loops between line $4$ and $12$ until
 the statement work list becomes empty.
+
+
 
 For each loop, a statement $i$ is removed from
 \texttt{worklist} and passed to the \texttt{Flow} function
@@ -117,8 +141,9 @@ fixed point since no dataflow set changes again.
 \SetAlgoLined
 \LinesNumbered
 \DontPrintSemicolon
-\SetKwData{Input}{input}
-\SetKwData{Output}{output}
+\SetKwData{Input}{inFlow}
+\SetKwData{Output}{outFlow}
+\SetKwData{Caller}{caller}
 \SetKwData{stmt}{inst}
 \SetKwData{stmtV}{v}
 \SetKwFunction{Map}{map}
@@ -127,21 +152,27 @@ fixed point since no dataflow set changes again.
 \SetKwFunction{LSTORE}{STORE}
 \SetKwFunction{LADDROF}{ADDROF}
 \SetKwFunction{LCALL}{CALL}
+\SetKwFunction{LSOURCE}{SOURCE}
+\SetKwFunction{LSINK}{SINK}
 \SetKwFunction{Type}{Type}
 \SetKwFunction{Update}{Update}
-\SetKwFunction{Analyze}{Analyze}
+%\SetKwFunction{AnalyzeCallee}{AnalyzeCallee}
+\SetKwFunction{Taint}{taint}
 %\SetKwFunction{FindCompress}{FindCompress}
 \SetKwInOut{InData}{input}
 \SetKwInOut{OutData}{output}
 
 
-\InData{$\stmt: Inst, \Input: D$}
-\OutData{$\Output: D$}
+\InData{$\Caller: Proc, \newline
+		 \stmt: Inst, \newline
+		 \Input: VarTaint \rightarrow Inst$}
+\OutData{$\Output: VarTaint \rightarrow Inst$}
+$\Output \leftarrow \Input$\;
 \Switch{$\Type(\stmt)$}{
-	\uCase{$\LCOPY\ [p = q]$}{
+	\Case{$\LCOPY\ [p = q]$}{
 		$\Output \leftarrow \Input \cup \set{(p, \set{\stmt})}$\;
 	}
-	\uCase{$\LLOAD\ [p = *q]$}{
+	\Case{$\LLOAD\ [p = *q]$}{
 		\ForEach{$\stmtV \in \pointsto{\stmt}{q}$}{
 			$S_{v} \leftarrow \Input[\stmtV]$\;		
 			$\Output \leftarrow \Input \cup \set{(\stmtV, S_v \cup \stmt)}$\;
@@ -149,35 +180,44 @@ fixed point since no dataflow set changes again.
 	}
 %	\Case{$\mathbb{ADDROF}\ [p = \&a]$}{
 %	}
-	\uCase{$\LSTORE\ [*p = q]$}{
+	\Case{$\LSTORE\ [*p = q]$}{
 		\ForEach{$\stmtV \in \pointsto{\stmt}{p}$}{
 			$S_{v} \leftarrow \Input[\stmtV]$\;
 			$\Output \leftarrow \Input \cup \{ (\stmtV, S_{v} \cup \stmt) \}$\;
 		}
 	}	
-	\uCase{$\LCALL\ [call\ f]$}{
-		$\Output \leftarrow Analyze(f, \Input)$
-	}		
-	\Other{
-		$\Output \leftarrow \Input$
+	\uCase{$\LSINK\ [func(a_0, a_1, ..., a_n)]$}{
 	}
+	\Case{$\LSOURCE\ [func(a_0, a_1, ..., a_n)]$}{
+		\ForEach{$i \in \set{0,1,...,n}$}{
+			\If{$i \in \Taint(func)$}{			
+				$S_{a_i} \leftarrow \Input[a_i]$\;
+				$\Output \leftarrow \Input \cup \set{ (a_i, S_{a_i} \cup \stmt) }$\;
+			}			
+		}
+	}	
+	\Case{$\LCALL\ [call\ func]$}{
+		\If{$\Caller \neq func$}{
+			$\Output \leftarrow \Flow(\Caller, func, \Input)$
+		}
+	}		
 }
 \end{algorithm}
 \DecMargin{1em}
 
 Function \texttt{Flow} (Algorithm~\ref{fig:algoFlow})
 implements the analysis' transfer equations.
-For a pointer variable $q$, we define $\pointsto{s}{q}$
-as the set of program locations to which q may point
-to at the program statement labelled with $s$
-(i.e $q$'s \textit{points-to set} at statement $s$).
-
-\texttt{input}$[s]$ and \texttt{output}$[s]$ represent
-the dataflow set \textit{before} and \textit{after}
-statement $s$ respectively. 
-
 For a tainted variable $t$, $S_t$ is the set of previous
 statements which use $t$ as tainted variable.
+
+\subsection{Recursive and Mutual Recursive Function Calls} 
+
+Our analysis ignore recursive functions calls: the dataflow set
+before and after recursive calls are identical. 
+
+We detect recursive mutual function calls by finding strongly
+connected components of the ahead-of-time call graph generated
+by LLVM.
 
 \subsection{Context-Sensitivity} 
 
