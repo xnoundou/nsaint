@@ -17,30 +17,30 @@ variable, and $S_v$ the set of statements where $v$
 has been used before the $p_n$.
  
 \subsection{Analysis algorithm} 
-
 \begin{table}
 \begin{tabular}{|l|l|}
 \hline
 \textbf{Symbols}	&	\textbf{Description}							\\ \hline
-$D$					&	$VarTaint \times Inst$							\\
+$\mathit{D}$		&	$\mathit{Var} \times \mathit{Inst}$		\\
 					&	Analysis dataflow set 							\\ \hline
-$Inst$				&	Set of instructions in the program 				\\ \hline
-$input$				&	$Inst\ \rightarrow\ D$ 							\\
+$\mathit{Proc}$		&	Set of all program functions and procedures 	\\ \hline
+$\mathit{Inst}$		&	Set of instructions in the program 				\\ \hline
+$\mathit{input}$	&	$\mathit{Inst}\ \rightarrow\ \mathit{D}$ 		\\
 					&	Function that returns the dataflow values		\\
 		    		&	at the program point before an instruction 		\\ 	\hline
-$output$			&	$Inst\ \rightarrow\ D$ 							\\
+$\mathit{output}$	&	$\mathit{Inst}\ \rightarrow\ \mathit{D}$ 		\\
 					&	Function that returns the dataflow values		\\
 		    		&	at the program point after an instruction 		\\ 	\hline
-$taintUse$			&	$VarTaint\ \rightarrow\ 2_{Inst}$ 				\\
+$\mathit{taintUse}$	&	$\mathit{Var}\ \rightarrow\ 2^{Inst}$ 				\\
 					&	Function that returns program statements where	\\
 		    		&	a tainted variable has been used	 			\\ 	\hline		    		
-$worklist$			&	Set of remaining instructions to be processed 	\\ \hline
-$Flow$				&	$Inst\ \rightarrow\ D$ 							\\
+$\mathit{worklist}$	&	Set of remaining instructions to be processed 	\\ \hline
+$\mathit{Flow}$		&	$\mathit{Inst}\ \rightarrow\ \mathit{D}$ 		\\
 					&   Analysis flow function (Algorithm~\ref{fig:algoFlow}) 			\\ \hline
-$first$				&	$Func \rightarrow\ Inst$ 						\\
+$\mathit{first}$	&	$\mathit{Func} \rightarrow\ \mathit{Inst}$ 		\\
 					& 	Function that returns the first instruction		\\
 					&	of a procedure									\\ \hline
-$next$				&	$worklist\ \rightarrow\ Inst$ 					\\
+$\mathit{next}$		&	$\mathit{worklist}\ \rightarrow\ \mathit{Inst}$ \\
 					& 	Function that returns the next instructions		\\
 					&	from the worklist								\\ \hline
 $\pointsto{s}{q}$	&	Set of program locations to which variable q	\\
@@ -73,13 +73,14 @@ describes the symbols we use.
 \SetKwFunction{Next}{next}
 \SetKwFunction{Succs}{succs}
 \SetKwFunction{AnalyzeAlgo}{Analyze}
+\SetKwFunction{Func}{func}
 \SetKwInOut{InData}{input}
 \SetKwInOut{OutData}{output}
 
 
-\InData{$\func: Proc, \newline
-		 \InitDataFlow: Inst \rightarrow (VarTaint \times Inst)$}
-%\OutData{$\&nbsp;$}
+\InData{$\Func: \mathit{Proc}, \newline
+		 \InitDataFlow: \mathit{Inst} \rightarrow (\mathit{Var} \times \mathit{Inst})$}
+\OutData{}
 %\Input: VarTaint \rightarrow Inst, \newline
 %\OutData{$\Output: VarTaint \rightarrow Inst$}
 $ s_0 \leftarrow first(\func)$\;
@@ -98,9 +99,6 @@ $\worklist \leftarrow \set{s_0}$\;
 \end{algorithm}
 \DecMargin{1em}
 
-%Before \texttt{Analyze} performs, an initial dataflow
-%set of the program points is obtained through an
-%intraprocedural dataflow analysis of program functions.
 We define a set of C standard library functions that
 we considered as sources. These library functions are not
 further analyzed during \texttt{Analyze}'s run.
@@ -115,32 +113,8 @@ to the previous described sources. Appendix !!! lists
 the C standard library functions the analysis considers
 as sinks.
 
-\texttt{Analyze} starts by storing the initial dataflow
-set before the first program instruction $s_0$ and then
-adds $s_0$ to the statement work list (\texttt{worklist}).
-Then the program loops between line $4$ and $12$ until
-the statement work list becomes empty.
-
-For each loop, a statement $i$ is removed from
-\texttt{worklist} and passed to the \texttt{Flow} function
-with the dataflow set at the program point before $i$ (\texttt{input[i]}).
-The function \texttt{Flow} returns the dataflow set for
-the program point after statement $i$ (\texttt{output[i]}).
-
-For each successor statement $j$ of $i$, if the new
-dataflow set at $j$'s entry $j$ (\texttt{output}$[i]$)
-is not smaller than the previous calculated set
-(\texttt{output}$[i]\ \not\sqsubseteq\ $ \texttt{input}$[j]$),
-\texttt{input}$[j]$ is updated and $j$ added to \texttt{worklist}.
-On the other hand, if $j$ is not added to the work list, then
-a fixed point has been reached at the program point before $j$.
-
-This process is repeated until the statement work list
-becomes empty, which means the analysis reached a
-fixed point since no dataflow set changes again.
-
 \IncMargin{1em}
-\begin{algorithm}
+\begin{algorithm*}
 \caption{Flow}\label{fig:algoFlow}
 \SetAlgoLined
 \LinesNumbered
@@ -161,17 +135,16 @@ fixed point since no dataflow set changes again.
 \SetKwFunction{Type}{Type}
 \SetKwFunction{TaintUse}{taintUse}
 \SetKwFunction{Update}{Update}
-%\SetKwFunction{AnalyzeCallee}{AnalyzeCallee}
 \SetKwFunction{Taint}{taint}
-%\SetKwFunction{FindCompress}{FindCompress}
+\SetKwFunction{Func}{func}
 \SetKwInOut{InData}{input}
 \SetKwInOut{OutData}{output}
 
 
-\InData{$\Caller: Proc, \newline
-		 \stmt: Inst, \newline
-		 \Input: VarTaint \rightarrow Inst$}
-\OutData{$\Output: VarTaint \rightarrow Inst$}
+\InData{$\Caller: \mathit{Proc}, \newline
+		 \stmt: \mathit{Inst}, \newline
+		 \Input: \mathit{Var} \rightarrow \mathit{Inst}$}
+\OutData{$\Output: \mathit{Var} \rightarrow \mathit{Inst}$}
 $\Output \leftarrow \Input$\;
 \Switch{$\Type(\stmt)$}{
 	\Case{$\LCOPY\ [p = q] $}{
@@ -179,7 +152,7 @@ $\Output \leftarrow \Input$\;
 	}
 	\Case{$\LLOAD\ [p = *q] $}{
 		\ForEach{$\stmtV \in \pointsto{\stmt}{q}$}{
-			$S_{v} \leftarrow \TaintUse[\stmtV]$\;		
+			$S_{v} \leftarrow \TaintUse[\stmtV]$;		
 			$\Output \leftarrow \Input \cup \set{(\stmtV, S_v \cup \stmt)}$\;
 		}
 	}
@@ -187,27 +160,27 @@ $\Output \leftarrow \Input$\;
 %	}
 	\Case{$\LSTORE\ [*p = q] $}{
 		\ForEach{$\stmtV \in \pointsto{\stmt}{p}$}{
-			$S_{v} \leftarrow \TaintUse[\stmtV]$\;
+			$S_{v} \leftarrow \TaintUse[\stmtV]$;
 			$\Output \leftarrow \Input \cup \{ (\stmtV, S_{v} \cup \stmt) \}$\;
 		}
 	}	
-	\uCase{$\LSINK\ [func(a_0, a_1, ..., a_n)]$}{
+	\uCase{$\LSINK\ [\Func(a_0, a_1, ..., a_n)]$}{
 	}
-	\Case{$\LSOURCE\ [func(a_0, a_1, ..., a_n)]$}{
+	\Case{$\LSOURCE\ [\Func(a_0, a_1, ..., a_n)]$}{
 		\ForEach{$i \in \set{0,1,...,n}$}{
 			\If{$i \in \Taint(func)$}{			
-				$S_{a_i} \leftarrow \TaintUse[a_i]$\;
+				$S_{a_i} \leftarrow \TaintUse[a_i]$;
 				$\Output \leftarrow \Input \cup \set{ (a_i, S_{a_i} \cup \stmt) }$\;
 			}			
 		}
 	}	
-	\Case{$\LCALL\ [call\ func]$}{
-		\If{$\Caller \neq func$}{
-			$\Output \leftarrow \Flow(\Caller, func, \Input)$
+	\Case{$\LCALL\ [call\ \Func]$}{
+		\If{$\Caller \neq \Func$}{
+			$\Output \leftarrow \Flow(\Caller, \Func, \Input)$
 		}
 	}		
 }
-\end{algorithm}
+\end{algorithm*}
 \DecMargin{1em}
 
 Function \texttt{Flow} (Algorithm~\ref{fig:algoFlow})
