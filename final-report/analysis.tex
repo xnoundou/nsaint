@@ -1,16 +1,49 @@
-\section{Analysis}\label{analysis}
+\section{Interprocedural Analysis}\label{analysis}
 
-We will implement our analysis as a fixed-point iteration
-over the set of program statements. The analysis will be
-performed on the interprocedural control flow graph (ICFG) of
-the program. Intraprocedural flow edges will be used from
-the each function control flow graph. Interprocedural edges,
-that arise at method calls, will be used from the call graph
-built by LLVM.  
+We implemented our analysis as a fixed-point iteration
+over the set of program statements. Our analysis performs
+on the interprocedural control flow graph (ICFG) of the program.
+Intraprocedural flow edges are gathered from each function
+control flow graph, while interprocedural flow edges are
+gathered from the program call graph built by LLVM. 
 
-Algorithm~\ref{fig:algoAnalyze} shows the pseudo code of the
-analysis algorithm we plan to use\footnote{Taken from
-lecture notes of Jonathan Aldrich}.
+Our analysis dataflow set is $VarTaint \times Inst$,
+where $VarTaint \subset Var$ is the set of tainted program
+variables and $Inst$ the set of program statements. 
+$Var$ represents the set of all program variables.
+At a program point $p_n$, a dataflow set is composed
+of a set of pairs $(v, S_v)$, where $v$ is a tainted
+variable, and $S_v$ the set of statements where $v$
+has been used before the $p_n$.
+ 
+\subsection{Analysis algorithm} 
+
+\begin{table}
+\begin{tabular}{|l|l|}
+\hline
+\textbf{Symbols}	&	\textbf{Description}							\\ \hline
+$D$					&	Analysis dataflow set 							\\ \hline
+$Inst$				&	Set of instructions in the program 				\\ \hline
+$input$				&	$Inst\ \rightarrow\ D$ 							\\
+					&	Function that returns the dataflow values		\\
+		    		&	at the program point before an instruction 		\\ 	\hline
+$output$			&	$Inst\ \rightarrow\ D$ 							\\
+					&	Function that returns the dataflow values		\\
+		    		&	at the program point after an instruction 		\\ 	\hline
+$worklist$			&	Set of remaining instructions to be processed 	\\ \hline
+$Flow$				&	$Inst\ \rightarrow\ D$ 							\\
+					&   Analysis flow function (Algorithm~\ref{fig:algoFlow}) 			\\ \hline
+$next$				&	$worklist\ \rightarrow\ Inst$ 					\\
+					& 	Function that returns the next instructions		\\
+					&	from the worklist.								\\ \hline
+\end{tabular}
+\caption{Algorithm Symbols}\label{symTable}
+\end{table}
+
+Algorithm~\ref{fig:algoAnalyze} shows the pseudo code of our
+analysis algorithm\footnote{Adapted from Jonathan Aldrich's
+lecture notes} \texttt{Analyze}, and table~\ref{symTable}
+describes the symbols we use.
 
 \begin{algorithm}
 \caption{Analyze}\label{fig:algoAnalyze}
@@ -21,7 +54,7 @@ lecture notes of Jonathan Aldrich}.
 \SetKwData{Input}{input}
 \SetKwData{Output}{output}
 \SetKwData{varJ}{j}
-\SetKwData{varI}{j}
+\SetKwData{varI}{i}
 \SetKwData{worklist}{worklist}
 \SetKwFunction{Input}{input}
 \SetKwFunction{Ouput}{output}
@@ -42,8 +75,8 @@ $\worklist \leftarrow \set{s_0}$\;
 \While{ $\worklist\ !=\ \emptyset$ }{
 	$\varI \leftarrow \Next(\worklist)$\;
 	$\Output[i] = \Flow(\varI, \Input[\varI])$\;
-	\ForEach{ $\varJ \in \Succs(\varJ)$ }{
-		\If{ $\Output[\varI] \not\sqsubseteq \Input\varJ]$}{
+	\ForEach{ $\varJ \in \Succs(\varI)$ }{
+		\If{ $\Output[\varI] \not\sqsubseteq \Input[\varJ]$}{
 			$\Input[\varJ] = \Input[\varJ] \sqcup \Output[\varI]$\;
 			$\worklist = \worklist \cup\ \set{\varJ}$\;
 		}	
@@ -52,35 +85,31 @@ $\worklist \leftarrow \set{s_0}$\;
 \end{algorithm}
 \DecMargin{1em}
 
-D: Analysis dataflow set\\
-Inst: Set of instructions in the program.\\
-input: Inst $\rightarrow$ D. Dataflow values at the
-program point before an instruction.\\
-output: Inst $\rightarrow$ D. Dataflow values at the
-program point after an instruction.\\
-worklist: Set of instructions to be processed.\\
-flow: Inst $\rightarrow$ D. Analysis Dataflow function.\\
-next: worklist $\rightarrow$ Inst. Function that returns the
-next instructions from the worklist.\\
+\texttt{Analyze} starts by storing the initial dataflow
+set before the first program instruction $s_0$ and then
+adds $s_0$ to the statement work list (\texttt{worklist}).
+The initial dataflow set of the program points is obtain
+through 
+Then the program loops between line $4$ and $12$ until
+the statement work list becomes empty.
 
-For each program function $f$,
-the analysis will generate a summary and use it whenever
-a call to $f$ is encountered.
-Section~\ref{sec:summaries} handles function summary generation.
+For each loop, a statement $i$ is removed from
+\texttt{worklist} and passed to the \texttt{Flow} function
+with the dataflow set at the program point before $i$ (\texttt{input[i]}).
+The function \texttt{Flow} returns the dataflow set for
+the program point after statement $i$ (\texttt{output[i]}).
 
-Algorithm~\ref{fig:algoFlow} shows the analysis' transfer functions.
-For a pointer variable $q$, we define \(p[s](q)\) as the set
-of program locations to which q may point to (i.e $q$'s \textit{points-to set})
-at the program statement labelled with $s$.
-$In_s$ and $Out_s$ represent the dataflow set \textit{before}
-and \textit{after} statement $s$ respectively. 
-For a tainted variable $t$, $S_t$ is the set of previous
-statements which use $t$ as tainted variable.
+For each successor statement $j$ of $i$, if the new
+dataflow set at $j$'s entry $j$ (\texttt{output}$[i]$)
+is not smaller than the previous calculated set
+(\texttt{output}$[i]\ \not\sqsubseteq\ $ \texttt{input}$[j]$),
+\texttt{input}$[j]$ is updated and $j$ added to \texttt{worklist}.
+On the other hand, if $j$ is not added to the work list, then
+a fixed point has been reached at the program point before $j$.
 
-
-Our analysis essentially works in two steps. The
-first step consists in creating a summary for each
-function.
+This process is repeated until the statement work list
+becomes empty, which means the analysis reached a
+fixed point since no dataflow set changes again.
 
 \IncMargin{1em}
 \begin{algorithm}
@@ -114,7 +143,7 @@ function.
 	}
 	\uCase{$\LLOAD\ [p = *q]$}{
 		\ForEach{$\stmtV \in \pointsto{\stmt}{q}$}{
-			$S_{v} \leftarrow \Map(\stmtV, \Input)$\;		
+			$S_{v} \leftarrow \Input[\stmtV]$\;		
 			$\Output \leftarrow \Input \cup \set{(\stmtV, S_v \cup \stmt)}$\;
 		}
 	}
@@ -122,7 +151,7 @@ function.
 %	}
 	\uCase{$\LSTORE\ [*p = q]$}{
 		\ForEach{$\stmtV \in \pointsto{\stmt}{p}$}{
-			$S_{v} \leftarrow \Map(\stmtV, \Input)$\;
+			$S_{v} \leftarrow \Input[\stmtV]$\;
 			$\Output \leftarrow \Input \cup \{ (\stmtV, S_{v} \cup \stmt) \}$\;
 		}
 	}	
@@ -130,39 +159,25 @@ function.
 		$\Output \leftarrow Analyze(f, \Input)$
 	}		
 	\Other{
+		$\Output \leftarrow \Input$
 	}
 }
 \end{algorithm}
 \DecMargin{1em}
 
-\subsection{Motivating Example Case Study}\label{sec:sampleSummary}
+Function \texttt{Flow} (Algorithm~\ref{fig:algoFlow})
+implements the analysis' transfer equations.
+For a pointer variable $q$, we define $\pointsto{s}{q}$
+as the set of program locations to which q may point
+to at the program statement labelled with $s$
+(i.e $q$'s \textit{points-to set} at statement $s$).
 
-\subsection{Summary Generation}\label{sec:summaries}
+\texttt{input}$[s]$ and \texttt{output}$[s]$ represent
+the dataflow set \textit{before} and \textit{after}
+statement $s$ respectively. 
 
-Function summaries will be generated in the reverse
-topological order of the callgraph. Each strongly connected
-component (SCC) of the callgraph will be handled as one
-node. That is, a single summary will be generated for
-mutual recursive functions. In our motivating example
-from Figure~\ref{fig:sample}, only one summary will
-be generated for functions \even{} and \odd{} because they
-are mutually recursive.
-Figure~\ref{fig:summary} shows the algorithm for function
-summary generation.
-
-Given a function $f$, our analysis will generate and use
-a summary for $f$. Let $\set{i_0, i_1, ..., i_j}$ be the set
-of $f$'s formal parameters. Let assume that all global variables
-are accessible in $f$ through a set of local variables 
-$G = \set{g_0, g_1, ..., g_k}$. $f$'s summary is a set of integers 
-$\mathcal{S}(f) = \set{0, 1, ...,m, n, ..., z}$.
-We now describe f's summary 
-defined as follows: 
-
-Figure~\ref{} illustrates the function summary for \main{}
-of Figure~\ref{fig:sample}
-
-\subsection{Handling of complex data structures}
+For a tainted variable $t$, $S_t$ is the set of previous
+statements which use $t$ as tainted variable.
 
 \subsection{Context-Sensitivity} 
 
@@ -175,3 +190,7 @@ line $4$ would take into the account the fact that \texttt{x}
 is tainted.
 On the other hand, \even{}'s call at line $25$ can not safely
 make this assumption.
+
+\subsection{Motivating Example Case Study}\label{sec:sampleSummary}
+
+\subsection{Handling of complex data structures}
