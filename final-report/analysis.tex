@@ -7,9 +7,9 @@ Intraprocedural flow edges are gathered from each function
 control flow graph, while interprocedural flow edges are
 gathered from the program call graph built by LLVM. 
 
-Our analysis dataflow set is $\mathit{Var} \times \mathit{Inst}$,
-where $\mathit{Var}$ is the set of tainted program
-variables and $\mathit{Inst}$ the set of program statements. 
+Our analysis dataflow set is $VarTaint \times Inst$,
+where $VarTaint \subset Var$ is the set of tainted program
+variables and $Inst$ the set of program statements. 
 $Var$ represents the set of all program variables.
 At a program point $p_n$, a dataflow set is composed
 of a set of pairs $(v, S_v)$, where $v$ is a tainted
@@ -69,7 +69,6 @@ describes the symbols we use.
 \SetKwFunction{Output}{outFlow}
 \SetKwFunction{Flow}{Flow}
 \SetKwFunction{Update}{Update}
-\SetKwFunction{Void}{void}
 \SetKwFunction{InitDataFlow}{initDataFlow}
 \SetKwFunction{Next}{next}
 \SetKwFunction{Succs}{succs}
@@ -79,8 +78,11 @@ describes the symbols we use.
 \SetKwInOut{OutData}{output}
 
 
-\InData{$\Func: \mathit{Proc}, \InitDataFlow: \mathit{Inst} \rightarrow \mathit{Var}$}
-\OutData{$\Void$}
+\InData{$\Func: \mathit{Proc}, \newline
+		 \InitDataFlow: \mathit{Inst} \rightarrow (\mathit{Var} \times \mathit{Inst})$}
+\OutData{}
+%\Input: VarTaint \rightarrow Inst, \newline
+%\OutData{$\Output: VarTaint \rightarrow Inst$}
 $ s_0 \leftarrow first(\func)$\;
 $\Input[s_0] \leftarrow \InitDataFlow(s_0)$\;
 $\worklist \leftarrow \set{s_0}$\;
@@ -90,7 +92,7 @@ $\worklist \leftarrow \set{s_0}$\;
 	\ForEach{ $\varJ \in \Succs(\varI)$ }{
 		\If{ $\Output[\varI] \not\sqsubseteq \Input[\varJ]$}{
 			$\Input[\varJ] \leftarrow \Input[\varJ] \sqcup \Output[\varI]$\;
-			$\worklist \leftarrow \worklist \cup \set{\varJ}$\;
+			$\worklist \leftarrow \worklist \cup\ \set{\varJ}$\;
 		}	
 	}
 }
@@ -139,23 +141,27 @@ as sinks.
 \SetKwInOut{OutData}{output}
 
 
-\InData{$\Caller: \mathit{Proc}, \stmt: \mathit{Inst}, \Input: \mathit{Var}$}
-\OutData{$\Output: \mathit{Var}$}
+\InData{$\Caller: \mathit{Proc}, \newline
+		 \stmt: \mathit{Inst}, \newline
+		 \Input: \mathit{Var} \rightarrow \mathit{Inst}$}
+\OutData{$\Output: \mathit{Var} \rightarrow \mathit{Inst}$}
 $\Output \leftarrow \Input$\;
 \Switch{$\Type(\stmt)$}{
 	\Case{$\LCOPY\ [p = q] $}{
-		$\Output \leftarrow \Input \cup \set{p}$\;
+		$\Output \leftarrow \Input \cup \set{(p, \set{\stmt})}$\;
 	}
 	\Case{$\LLOAD\ [p = *q] $}{
-		\ForEach{$\stmtV \in \pointsto{\stmt}{q}$}{	
-			$\Output \leftarrow \Input \cup \set{\stmtV}$\;
+		\ForEach{$\stmtV \in \pointsto{\stmt}{q}$}{
+			$S_{v} \leftarrow \TaintUse[\stmtV]$;		
+			$\Output \leftarrow \Input \cup \set{(\stmtV, S_v \cup \stmt)}$\;
 		}
 	}
 %	\Case{$\mathbb{ADDROF}\ [p = \&a]$}{
 %	}
 	\Case{$\LSTORE\ [*p = q] $}{
 		\ForEach{$\stmtV \in \pointsto{\stmt}{p}$}{
-			$\Output \leftarrow \Input \cup \set{\stmtV}$\;
+			$S_{v} \leftarrow \TaintUse[\stmtV]$;
+			$\Output \leftarrow \Input \cup \{ (\stmtV, S_{v} \cup \stmt) \}$\;
 		}
 	}	
 	\uCase{$\LSINK\ [\Func(a_0, a_1, ..., a_n)]$}{
@@ -163,7 +169,8 @@ $\Output \leftarrow \Input$\;
 	\Case{$\LSOURCE\ [\Func(a_0, a_1, ..., a_n)]$}{
 		\ForEach{$i \in \set{0,1,...,n}$}{
 			\If{$i \in \Taint(func)$}{			
-				$\Output \leftarrow \Input \cup \set{a_i}$\;
+				$S_{a_i} \leftarrow \TaintUse[a_i]$;
+				$\Output \leftarrow \Input \cup \set{ (a_i, S_{a_i} \cup \stmt) }$\;
 			}			
 		}
 	}	
