@@ -25,10 +25,10 @@ $\mathit{D}$		&	$\mathit{Var} \times \mathit{Inst}$		\\
 					&	Analysis dataflow set 							\\ \hline
 $\mathit{Proc}$		&	Set of all program functions and procedures 	\\ \hline
 $\mathit{Inst}$		&	Set of instructions in the program 				\\ \hline
-$\mathit{input}$	&	$\mathit{Inst}\ \rightarrow\ \mathit{D}$ 		\\
+$\mathit{inFlow}$	&	$\mathit{Inst}\ \rightarrow\ \mathit{D}$ 		\\
 					&	Function that returns the dataflow values		\\
 		    		&	at the program point before an instruction 		\\ 	\hline
-$\mathit{output}$	&	$\mathit{Inst}\ \rightarrow\ \mathit{D}$ 		\\
+$\mathit{outFlow}$	&	$\mathit{Inst}\ \rightarrow\ \mathit{D}$ 		\\
 					&	Function that returns the dataflow values		\\
 		    		&	at the program point after an instruction 		\\ 	\hline
 $\mathit{taintUse}$	&	$\mathit{Var}\ \rightarrow\ 2^{Inst}$ 				\\
@@ -156,8 +156,8 @@ $\Output \leftarrow \Input$\;
 			$\Output \leftarrow \Input \cup \set{(\stmtV, S_v \cup \stmt)}$\;
 		}
 	}
-%	\Case{$\mathbb{ADDROF}\ [p = \&a]$}{
-%	}
+	\Case{$\LADDROF\ [p = \&a]$}{
+	}
 	\Case{$\LSTORE\ [*p = q] $}{
 		\ForEach{$\stmtV \in \pointsto{\stmt}{p}$}{
 			$S_{v} \leftarrow \TaintUse[\stmtV]$;
