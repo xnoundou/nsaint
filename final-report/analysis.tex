@@ -58,6 +58,7 @@ describes the symbols we use.
 \IncMargin{1em}
 \begin{algorithm}
 \caption{Analyze}\label{fig:algoAnalyze}
+%\SetAlgoNoLine
 \SetAlgoLined
 \LinesNumbered
 \DontPrintSemicolon
@@ -118,6 +119,7 @@ as sinks.
 \IncMargin{1em}
 \begin{algorithm*}
 \caption{Flow}\label{fig:algoFlow}
+%\SetAlgoNoLine
 \SetAlgoLined
 \LinesNumbered
 \DontPrintSemicolon
@@ -125,9 +127,11 @@ as sinks.
 \SetKwData{stmt}{s}
 \SetKwData{stmtV}{v}
 \SetKwData{stmtA}{a}
+\SetKwData{stmtK}{k}
 \SetKwData{stmtB}{b}
 \SetKwData{stmtQ}{q}
 \SetKwData{stmtP}{p}
+\SetKwData{fZero}{$f_0$}
 \SetKwData{Input}{inFlow$_s$}
 \SetKwData{Output}{outFlow$_s$}
 \SetKwFunction{Map}{map}
@@ -143,19 +147,18 @@ as sinks.
 \SetKwFunction{Update}{Update}
 \SetKwFunction{Taint}{taint}
 \SetKwFunction{Func}{func}
+\SetKwFunction{First}{first}
 \SetKwInOut{InData}{input}
 \SetKwInOut{OutData}{output}
 
 
 \InData{$\Caller: \mathit{Proc}, \newline
 		 \stmt: \mathit{Inst}$}
-%\OutData{$\Output: \mathit{Var} \rightarrow \mathit{Inst}$}
 \OutData{}
-%$\Output \leftarrow \Input$\;
 \Switch{$\Type(\stmt)$}{
 	\Case{$\LCOPY\ [\stmtP = \stmtQ] $}{
 		\If{$\Input[\stmtQ] \neq \emptyset$}{
-			$\Output[\stmtQ] \leftarrow \Input[\stmtQ] \cup \set{\stmt}$;
+			$\Output[\stmtP] \leftarrow \Input[\stmtQ] \cup \set{\stmt}$;
 		}
 	}
 	\Case{$\LLOAD\ [p = *q] $}{
@@ -165,23 +168,29 @@ as sinks.
 			}
 		}
 	}	
-	\uCase{$\LSINK\ [\Func(a_0, a_1, ..., a_n)]$}{
-	}
 	\Case{$\LSOURCE\ [\Func(a_0, a_1, ..., a_n)]$}{
-		\ForEach{$\stmtA_k, k \in \set{0, 1, ..., n}$}{
-			\If{$\Input[\stmtA_k] \in \mathcal{A}$}{			
+		\ForEach{$\stmtK \in \set{0, 1, ..., n}$}{
+			\If{$\Taint(\stmtK)$}{			
 				$\Output[\stmtA_k] \leftarrow \Input[\stmtA_k] \cup \set{\stmt}$\;
-			}
-			\ElseIf{$\Input[\stmtA_k] \in \mathcal{P}$}{
-				\ForEach{$\stmtB \in \pointsto{\overline{\stmt}}{\stmtA_k}$}{
-					$\Output[\stmtB] \leftarrow \Input[\stmtB] \cup \set{\stmt}$\;						
-				}			
 			}			
 		}
 	}	
-	\Case{$\LCALL\ [call\ \Func]$}{
+	\Case{$\LCALL\ [call\ \Func(a_0, a_1, ..., a_n)]$}{
 		\If{$\Caller \neq \Func$}{
-			$\Output \leftarrow \Flow(\Caller, \Func, \Input)$
+			$\fZero \leftarrow \First(\Func)$\;
+			\ForEach{$\stmtA_k, k \in \set{0, 1, ..., n}$}{
+				\ForEach{$\stmtA_k, k \in \set{0, 1, ..., n}$}{
+				\If{$\stmtA_k \in \mathcal{A}$}{			
+					$\Input[\stmtA_k] \leftarrow \Input[\stmtA_k] \cup \set{\stmt}$\;
+				}
+				\ElseIf{$\stmtA_k \in \mathcal{P}$}{
+					\ForEach{$\stmtB \in \pointsto{\overline{\stmt}}{\stmtA_k}$}{
+						$\Output[\stmtB] \leftarrow \Input[\stmtB] \cup \set{\stmt}$\;						
+					}			
+				}					
+			}
+			}
+			$\Flow(\Caller, \Func)$
 		}
 	}		
 	\uCase{$\LADDROF\ [p = \&a]$}{
