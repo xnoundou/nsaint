@@ -21,7 +21,7 @@ has been used before the $p_n$.
 \begin{tabular}{|l|l|}
 \hline
 \textbf{Symbols}	&	\textbf{Description}							\\ \hline
-$\mathit{D}$		&	$\mathit{Var} \times \mathit{Inst}$		\\
+$\mathit{D}$		&	$\mathit{Var} \rightarrow 2^\mathit{Inst}$		\\
 					&	Analysis dataflow set 							\\ \hline
 $\mathit{Proc}$		&	Set of all program functions and procedures 	\\ \hline
 $\mathit{Inst}$		&	Set of instructions in the program 				\\ \hline
@@ -65,8 +65,10 @@ describes the symbols we use.
 \SetKwData{varJ}{j}
 \SetKwData{varI}{i}
 \SetKwData{worklist}{worklist}
-\SetKwFunction{Input}{inFlow}
-\SetKwFunction{Output}{outFlow}
+\SetKwFunction{Input}{input}
+\SetKwFunction{Output}{output}
+\SetKwFunction{InFlow}{inFlow}
+\SetKwFunction{OutFlow}{outFlow}
 \SetKwFunction{Flow}{Flow}
 \SetKwFunction{Update}{Update}
 \SetKwFunction{InitDataFlow}{initDataFlow}
@@ -79,7 +81,7 @@ describes the symbols we use.
 
 
 \InData{$\Func: \mathit{Proc}, \newline
-		 \InitDataFlow: \mathit{Inst} \rightarrow (\mathit{Var} \times \mathit{Inst})$}
+		 \InitDataFlow: \mathit{Inst} \rightarrow (\mathit{Var} \rightarrow 2^\mathit{Inst})$}
 \OutData{}
 %\Input: VarTaint \rightarrow Inst, \newline
 %\OutData{$\Output: VarTaint \rightarrow Inst$}
@@ -88,7 +90,7 @@ $\Input[s_0] \leftarrow \InitDataFlow(s_0)$\;
 $\worklist \leftarrow \set{s_0}$\;
 \While{ $\worklist\ \neq\ \emptyset$ }{
 	$\varI \leftarrow \Next(\worklist)$\;
-	$\Output[i] \leftarrow \Flow(\AnalyzeAlgo, \varI, \Input[\varI])$\;
+	$\Output[i] \leftarrow \Flow(\AnalyzeAlgo, \varI)$\;
 	\ForEach{ $\varJ \in \Succs(\varI)$ }{
 		\If{ $\Output[\varI] \not\sqsubseteq \Input[\varJ]$}{
 			$\Input[\varJ] \leftarrow \Input[\varJ] \sqcup \Output[\varI]$\;
@@ -119,11 +121,15 @@ as sinks.
 \SetAlgoLined
 \LinesNumbered
 \DontPrintSemicolon
-\SetKwData{Input}{inFlow}
-\SetKwData{Output}{outFlow}
 \SetKwData{Caller}{caller}
-\SetKwData{stmt}{inst}
+\SetKwData{stmt}{s}
 \SetKwData{stmtV}{v}
+\SetKwData{stmtA}{a}
+\SetKwData{stmtB}{b}
+\SetKwData{stmtQ}{q}
+\SetKwData{stmtP}{p}
+\SetKwData{Input}{inFlow$_s$}
+\SetKwData{Output}{outFlow$_s$}
 \SetKwFunction{Map}{map}
 \SetKwFunction{LCOPY}{COPY}
 \SetKwFunction{LLOAD}{LOAD}
@@ -132,7 +138,7 @@ as sinks.
 \SetKwFunction{LCALL}{CALL}
 \SetKwFunction{LSOURCE}{SOURCE}
 \SetKwFunction{LSINK}{SINK}
-\SetKwFunction{Type}{Type}
+\SetKwFunction{Type}{TypeOf}
 \SetKwFunction{TaintUse}{taintUse}
 \SetKwFunction{Update}{Update}
 \SetKwFunction{Taint}{taint}
@@ -142,35 +148,34 @@ as sinks.
 
 
 \InData{$\Caller: \mathit{Proc}, \newline
-		 \stmt: \mathit{Inst}, \newline
-		 \Input: \mathit{Var} \rightarrow \mathit{Inst}$}
-\OutData{$\Output: \mathit{Var} \rightarrow \mathit{Inst}$}
-$\Output \leftarrow \Input$\;
+		 \stmt: \mathit{Inst}$}
+%\OutData{$\Output: \mathit{Var} \rightarrow \mathit{Inst}$}
+\OutData{}
+%$\Output \leftarrow \Input$\;
 \Switch{$\Type(\stmt)$}{
-	\Case{$\LCOPY\ [p = q] $}{
-		$\Output \leftarrow \Input \cup \set{(p, \set{\stmt})}$\;
-	}
-	\Case{$\LLOAD\ [p = *q] $}{
-		\ForEach{$\stmtV \in \pointsto{\stmt}{q}$}{
-			$S_{v} \leftarrow \TaintUse[\stmtV]$;		
-			$\Output \leftarrow \Input \cup \set{(\stmtV, S_v \cup \stmt)}$\;
+	\Case{$\LCOPY\ [\stmtP = \stmtQ] $}{
+		\If{$\Input[\stmtQ] \neq \emptyset$}{
+			$\Output[\stmtQ] \leftarrow \Input[\stmtQ] \cup \set{\stmt}$;
 		}
 	}
-	\Case{$\LADDROF\ [p = \&a]$}{
-	}
-	\Case{$\LSTORE\ [*p = q] $}{
-		\ForEach{$\stmtV \in \pointsto{\stmt}{p}$}{
-			$S_{v} \leftarrow \TaintUse[\stmtV]$;
-			$\Output \leftarrow \Input \cup \{ (\stmtV, S_{v} \cup \stmt) \}$\;
+	\Case{$\LLOAD\ [p = *q] $}{
+		\ForEach{$\stmtA \in \pointsto{\overline{\stmt}}{q}$}{
+			\If{$\Input[\stmtA] \neq \emptyset$}{	
+				$\Output[\stmtP] \leftarrow \Input[\stmtP] \cup \set{\stmt}$\;			
+			}
 		}
 	}	
 	\uCase{$\LSINK\ [\Func(a_0, a_1, ..., a_n)]$}{
 	}
 	\Case{$\LSOURCE\ [\Func(a_0, a_1, ..., a_n)]$}{
-		\ForEach{$i \in \set{0,1,...,n}$}{
-			\If{$i \in \Taint(func)$}{			
-				$S_{a_i} \leftarrow \TaintUse[a_i]$;
-				$\Output \leftarrow \Input \cup \set{ (a_i, S_{a_i} \cup \stmt) }$\;
+		\ForEach{$\stmtA_k, k \in \set{0, 1, ..., n}$}{
+			\If{$\Input[\stmtA_k] \in \mathcal{A}$}{			
+				$\Output[\stmtA_k] \leftarrow \Input[\stmtA_k] \cup \set{\stmt}$\;
+			}
+			\ElseIf{$\Input[\stmtA_k] \in \mathcal{P}$}{
+				\ForEach{$\stmtB \in \pointsto{\overline{\stmt}}{\stmtA_k}$}{
+					$\Output[\stmtB] \leftarrow \Input[\stmtB] \cup \set{\stmt}$\;						
+				}			
 			}			
 		}
 	}	
@@ -179,6 +184,15 @@ $\Output \leftarrow \Input$\;
 			$\Output \leftarrow \Flow(\Caller, \Func, \Input)$
 		}
 	}		
+	\uCase{$\LADDROF\ [p = \&a]$}{
+	}
+	\Case{$\LSTORE\ [*p = q] $}{
+		%\If{$\Input[q] \neq \emptyset$}{
+		%	\ForEach{$\stmtA \in \pointsto{\overline{\stmt}}{p}$}{
+		%		$\Output[\stmtA] \leftarrow \Input[\stmtA] \cup \set{\stmt}$\;						
+		%	}
+		%}
+	}	
 }
 \end{algorithm*}
 \DecMargin{1em}
