@@ -20,32 +20,41 @@ has been used before the $p_n$.
 \begin{table}
 \begin{tabular}{|l|l|}
 \hline
-\textbf{Symbols}	&	\textbf{Description}							\\ \hline
-$\mathit{D}$		&	$\mathit{Var} \rightarrow 2^\mathit{Inst}$		\\
-					&	Analysis dataflow set 							\\ \hline
-$\mathit{Proc}$		&	Set of all program functions and procedures 	\\ \hline
-$\mathit{Inst}$		&	Set of instructions in the program 				\\ \hline
-$\mathit{inFlow}$	&	$\mathit{Inst}\ \rightarrow\ \mathit{D}$ 		\\
-					&	Function that returns the dataflow values		\\
-		    		&	at the program point before an instruction 		\\ 	\hline
-$\mathit{outFlow}$	&	$\mathit{Inst}\ \rightarrow\ \mathit{D}$ 		\\
-					&	Function that returns the dataflow values		\\
-		    		&	at the program point after an instruction 		\\ 	\hline
-$\mathit{taintUse}$	&	$\mathit{Var}\ \rightarrow\ 2^{Inst}$ 				\\
-					&	Function that returns program statements where	\\
-		    		&	a tainted variable has been used	 			\\ 	\hline		    		
-$\mathit{worklist}$	&	Set of remaining instructions to be processed 	\\ \hline
-$\mathit{Flow}$		&	$\mathit{Inst}\ \rightarrow\ \mathit{D}$ 		\\
-					&   Analysis flow function (Algorithm~\ref{fig:algoFlow}) 			\\ \hline
-$\mathit{first}$	&	$\mathit{Func} \rightarrow\ \mathit{Inst}$ 		\\
-					& 	Function that returns the first instruction		\\
-					&	of a procedure									\\ \hline
-$\mathit{next}$		&	$\mathit{worklist}\ \rightarrow\ \mathit{Inst}$ \\
-					& 	Function that returns the next instructions		\\
-					&	from the worklist								\\ \hline
-$\pointsto{s}{q}$	&	Set of program locations to which variable q	\\
-					&	may point to at the program statement $s$		\\
-					& 	(i.e $q$'s \textit{points-to set} at statement $s$)	\\ \hline					
+\textbf{Symbols}				&	\textbf{Description}								\\ \hline
+$\mathit{D}$					&	$\mathit{Var} \rightarrow 2^\mathit{Inst}$			\\
+								&	Analysis dataflow set 								\\ \hline
+$\mathit{Proc}$					&	Set of all program functions and procedures 		\\ \hline
+$\mathit{Inst}$					&	Set of instructions in the program 					\\ \hline
+$\mathit{inFlow}$				&	$\mathit{Inst}\ \rightarrow\ \mathit{D}$ 			\\
+								&	Function that returns the dataflow values			\\
+		    					&	at the program point before an instruction 			\\ 	\hline
+$\mathit{outFlow}$				&	$\mathit{Inst}\ \rightarrow\ \mathit{D}$ 			\\
+								&	Function that returns the dataflow values			\\
+		    					&	at the program point after an instruction 			\\ 	\hline
+$\mathit{taintUse}$				&	$\mathit{Var}\ \rightarrow\ 2^{Inst}$ 				\\
+								&	Function that returns program statements where		\\
+		    					&	a tainted variable has been used	 				\\ 	\hline		    		
+$\mathit{worklist}$				&	Set of remaining instructions to be processed 		\\ \hline
+$\mathit{Flow}$					&	$\mathit{Inst}\ \rightarrow\ \mathit{D}$ 			\\
+								&   Analysis flow function (Algorithm~\ref{fig:algoFlow}) 			\\ \hline
+$\mathit{first}$				&	$\mathit{Func} \rightarrow\ \mathit{Inst}$ 			\\
+								& 	Function that returns the first instruction			\\
+								&	of a procedure										\\ \hline
+$\mathit{next}$					&	$\mathit{worklist}\ \rightarrow\ \mathit{Inst}$ 	\\
+								& 	Function that returns the next instructions			\\
+								&	from the worklist									\\ \hline
+$\mathit{formal}$				&	$\mathit{Proc}\ \times \mathit{Var} \rightarrow\ \mathit{Var}$ 	\\
+								& 	Function that returns the formal parameter $f_k$	\\
+								&	of a procedure or function for its actual $a_k$		\\ \hline	
+$\mathit{toplevel}$				&	$\mathcal{A}\ \rightarrow\ \mathcal{P}$ 			\\
+								& 	Function that returns top-level variables for		\\
+								&	an address taken variable							\\ \hline															
+$\pointsto{\overline{s}}{q}$	&	Set of program locations to which variable q		\\
+								&	may point to before program statement $s$			\\
+								& 	(i.e $q$'s \textit{points-to set} at statement $s$)	\\ \hline					
+$\pointsto{\underline{s}}{q}$	&	Set of program locations to which variable q		\\
+								&	may point to after program statement $s$			\\
+								& 	(i.e $q$'s \textit{points-to set} at statement $s$)	\\ \hline
 \end{tabular}
 \caption{Algorithm Symbols}\label{symTable}
 \end{table}
@@ -71,6 +80,7 @@ describes the symbols we use.
 \SetKwFunction{InFlow}{inFlow}
 \SetKwFunction{OutFlow}{outFlow}
 \SetKwFunction{Flow}{Flow}
+\SetKwFunction{First}{first}
 \SetKwFunction{Update}{Update}
 \SetKwFunction{InitDataFlow}{initDataFlow}
 \SetKwFunction{Next}{next}
@@ -84,9 +94,7 @@ describes the symbols we use.
 \InData{$\Func: \mathit{Proc}, \newline
 		 \InitDataFlow: \mathit{Inst} \rightarrow (\mathit{Var} \rightarrow 2^\mathit{Inst})$}
 \OutData{}
-%\Input: VarTaint \rightarrow Inst, \newline
-%\OutData{$\Output: VarTaint \rightarrow Inst$}
-$ s_0 \leftarrow first(\func)$\;
+$ s_0 \leftarrow \First(\func)$\;
 $\Input[s_0] \leftarrow \InitDataFlow(s_0)$\;
 $\worklist \leftarrow \set{s_0}$\;
 \While{ $\worklist\ \neq\ \emptyset$ }{
@@ -127,7 +135,9 @@ as sinks.
 \SetKwData{stmt}{s}
 \SetKwData{stmtV}{v}
 \SetKwData{stmtA}{a}
+\SetKwData{stmtF}{f}
 \SetKwData{stmtK}{k}
+\SetKwData{stmtT}{t}
 \SetKwData{stmtB}{b}
 \SetKwData{stmtQ}{q}
 \SetKwData{stmtP}{p}
@@ -148,12 +158,13 @@ as sinks.
 \SetKwFunction{Taint}{taint}
 \SetKwFunction{Func}{func}
 \SetKwFunction{First}{first}
+\SetKwFunction{Formal}{formal}
+\SetKwFunction{Toplevel}{toplevel}
 \SetKwInOut{InData}{input}
 \SetKwInOut{OutData}{output}
 
 
-\InData{$\Caller: \mathit{Proc}, \newline
-		 \stmt: \mathit{Inst}$}
+\InData{$\Caller: \mathit{Proc}, \stmt: \mathit{Inst}$}
 \OutData{}
 \Switch{$\Type(\stmt)$}{
 	\Case{$\LCOPY\ [\stmtP = \stmtQ] $}{
@@ -168,40 +179,38 @@ as sinks.
 			}
 		}
 	}	
-	\Case{$\LSOURCE\ [\Func(a_0, a_1, ..., a_n)]$}{
+	\Case{$\LSOURCE\ [\mathit{call}\ \Func(a_0, a_1, ..., a_n)]$}{
 		\ForEach{$\stmtK \in \set{0, 1, ..., n}$}{
 			\If{$\Taint(\stmtK)$}{			
 				$\Output[\stmtA_k] \leftarrow \Input[\stmtA_k] \cup \set{\stmt}$\;
 			}			
 		}
 	}	
-	\Case{$\LCALL\ [call\ \Func(a_0, a_1, ..., a_n)]$}{
+	\Case{$\LCALL\ [\mathit{call}\ \Func(a_0, a_1, ..., a_n)]$}{
 		\If{$\Caller \neq \Func$}{
-			$\fZero \leftarrow \First(\Func)$\;
 			\ForEach{$\stmtA_k, k \in \set{0, 1, ..., n}$}{
-				\ForEach{$\stmtA_k, k \in \set{0, 1, ..., n}$}{
-				\If{$\stmtA_k \in \mathcal{A}$}{			
-					$\Input[\stmtA_k] \leftarrow \Input[\stmtA_k] \cup \set{\stmt}$\;
-				}
-				\ElseIf{$\stmtA_k \in \mathcal{P}$}{
+				$\stmtF_k \leftarrow \Formal(\Func, \stmtA_k)$\;			
+				\If{$\stmtA_k \in \mathcal{P}$}{
 					\ForEach{$\stmtB \in \pointsto{\overline{\stmt}}{\stmtA_k}$}{
-						$\Output[\stmtB] \leftarrow \Input[\stmtB] \cup \set{\stmt}$\;						
+						$\Input[\stmtF_k] \leftarrow \Input[\stmtF_k] \cup  \Input[\stmtB]$\;						
 					}			
-				}					
-			}
+				}
+				\ElseIf{$\stmtA_k \in \mathcal{A}$}{
+					$\stmtT_k \leftarrow \Toplevel(\stmtA_k)$\;	
+					\ForEach{$\stmtB \in \pointsto{\overline{\stmt}}{\stmtT_k}$}{
+						$\Input[\stmtF_k] \leftarrow \Input[\stmtF_k] \cup  \Input[\stmtB]$\;						
+					}							
+				}									
 			}
 			$\Flow(\Caller, \Func)$
 		}
 	}		
 	\uCase{$\LADDROF\ [p = \&a]$}{
 	}
-	\Case{$\LSTORE\ [*p = q] $}{
-		%\If{$\Input[q] \neq \emptyset$}{
-		%	\ForEach{$\stmtA \in \pointsto{\overline{\stmt}}{p}$}{
-		%		$\Output[\stmtA] \leftarrow \Input[\stmtA] \cup \set{\stmt}$\;						
-		%	}
-		%}
+	\uCase{$\LSTORE\ [*p = q] $}{
 	}	
+	\Case{$\LSINK [\mathit{call}\ \Func]$}{
+	}		
 }
 \end{algorithm*}
 \DecMargin{1em}
