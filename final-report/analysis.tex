@@ -141,9 +141,12 @@ as sinks.
 \SetKwData{stmtB}{b}
 \SetKwData{stmtQ}{q}
 \SetKwData{stmtP}{p}
+\SetKwData{tainted}{tainted}
 \SetKwData{fZero}{$f_0$}
+\SetKwData{False}{False}
 \SetKwData{Input}{inFlow$_s$}
 \SetKwData{Output}{outFlow$_s$}
+\SetKwData{TmpFlow}{tmpFlow}
 \SetKwFunction{Map}{map}
 \SetKwFunction{LCOPY}{COPY}
 \SetKwFunction{LLOAD}{LOAD}
@@ -173,11 +176,21 @@ as sinks.
 		}
 	}
 	\Case{$\LLOAD\ [p = *q] $}{
-		\ForEach{$\stmtA \in \pointsto{\overline{\stmt}}{q}$}{
-			\If{$\Input[\stmtA] \neq \emptyset$}{	
-				$\Output[\stmtP] \leftarrow \Input[\stmtP] \cup \set{\stmt}$\;			
-			}
+		\ForEach{$\stmtA_k \in \pointsto{\overline{\stmt}}{q}$}{
+			$\stmtT_k \leftarrow \Toplevel(\stmtA_k)$;		
+			$\TmpFlow \leftarrow \TmpFlow \cup \Input[\stmtT_k]$\;				
 		}
+		\If{$\TmpFlow \neq \emptyset$}{
+			$\Output[\stmtP] \leftarrow \Output[\stmtP] \cup \TmpFlow \cup \set{\stmt}$\;
+		}
+	}	
+	\uCase{$\LSTORE\ [*p = q] $}{
+		\ForEach{$\stmtA_k \in \pointsto{\overline{\stmt}}{p}$}{
+			$\stmtT_k \leftarrow \Toplevel(\stmtA_k)$\;		
+			\If{$\Input[\stmtQ] \neq \emptyset$}{			
+				$\Output[\stmtT_k] \leftarrow \Output[\stmtT_k] \cup \Input[\stmtQ] \cup \set{\stmt}$\;				
+			}
+		}	
 	}	
 	\Case{$\LSOURCE\ [\mathit{call}\ \Func(a_0, a_1, ..., a_n)]$}{
 		\ForEach{$\stmtK \in \set{0, 1, ..., n}$}{
@@ -190,24 +203,22 @@ as sinks.
 		\If{$\Caller \neq \Func$}{
 			\ForEach{$\stmtA_k, k \in \set{0, 1, ..., n}$}{
 				$\stmtF_k \leftarrow \Formal(\Func, \stmtA_k)$\;			
-				\If{$\stmtA_k \in \mathcal{P}$}{
+%				\uIf{$\stmtA_k \in \mathcal{P}$}{
 					\ForEach{$\stmtB \in \pointsto{\overline{\stmt}}{\stmtA_k}$}{
 						$\Input[\stmtF_k] \leftarrow \Input[\stmtF_k] \cup  \Input[\stmtB]$\;						
 					}			
-				}
-				\ElseIf{$\stmtA_k \in \mathcal{A}$}{
-					$\stmtT_k \leftarrow \Toplevel(\stmtA_k)$\;	
-					\ForEach{$\stmtB \in \pointsto{\overline{\stmt}}{\stmtT_k}$}{
-						$\Input[\stmtF_k] \leftarrow \Input[\stmtF_k] \cup  \Input[\stmtB]$\;						
-					}							
-				}									
+%				}
+%				\ElseIf{$\stmtA_k \in \mathcal{A}$}{
+%					$\stmtT_k \leftarrow \Toplevel(\stmtA_k)$\;	
+%					\ForEach{$\stmtB \in \pointsto{\overline{\stmt}}{\stmtT_k}$}{
+%						$\Input[\stmtF_k] \leftarrow \Input[\stmtF_k] \cup  \Input[\stmtB]$\;						
+%					}							
+%				}									
 			}
 			$\Flow(\Caller, \Func)$
 		}
 	}		
 	\uCase{$\LADDROF\ [p = \&a]$}{
-	}
-	\uCase{$\LSTORE\ [*p = q] $}{
 	}	
 	\Case{$\LSINK [\mathit{call}\ \Func]$}{
 	}		
