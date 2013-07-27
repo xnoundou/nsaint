@@ -1,29 +1,131 @@
-\section{Interprocedural Analysis}\label{analysis}
+\section{Staged Analysis}\label{stagedAnalysis}
 
 \newcommand{\varset}{\mathit{Var}}
 \newcommand{\instset}{\mathit{Inst}}
 \newcommand{\myinflow}{\mathit{inFlow}}
+\newcommand{\ifff}{\mathit{iff}}
+\newcommand{\aand}{\mathit{and}}
 
-Developers can choose to run either a context-insensitive
-or a context-sensitive version of our analysis.
-The context-insensitive analysis always runs first and
-produces results that are reused by the context-sensitive
-analysis. This makes the context-sensitive analysis
-faster, because it reuses summary information produced
-by the context-insensitive analysis.
+\paragraph{Intraprocedural Analysis}
+
+Our analysis is composed of an intraprocedural and an interprocedural
+part. When the intraprocedural analysis detects a tainted value, it
+writes this information to a summary table. This information is 
+used in later stages by the interprocedural analysis, thus improving
+the analysis runtime. 
+For instance, the intraprocedural analysis detects that variable
+\texttt{sum} of procedure \compute{} in Figure~\ref{fig:sample} is tainted.
+Algorithm~\ref{fig:intraFlow} shows the analysis' intraprocedural
+transfer function. 
 
 Our analysis dataflow set is $\varset \times \instset$,
 where $\varset$ is the set of all program variables and
 $\instset$ the set of all program statements. 
 At a statement labelled $s$, the incoming dataflow set $\myinflow_s$
-is a mapping from each program variable $v$ to all
+is a mapping from each program variable $v$ to
 statements where $v$ might be tainted. If $v$ might not
-be tainted at before statment $s$, then $\myinflow_s[v] = \emptyset$.
-Otherwise, $\myinflow_s[v]$ contains all statements where $v$
+be tainted before statment $s$, then $\myinflow_s[v] = \emptyset$.
+Otherwise, $\myinflow_s[v]$ contains statements where $v$
 might get tainted.
 
+\IncMargin{1em}
+\begin{algorithm*}
+\caption{IntraFlow: Intraprocedural Analysis Transfer Equations}\label{fig:intraFlow}
+%\SetAlgoNoLine
+\SetAlgoLined
+\LinesNumbered
+\DontPrintSemicolon
+\SetKwData{Caller}{caller}
+\SetKwData{stmt}{s}
+\SetKwData{stmtV}{v}
+\SetKwData{stmtA}{a}
+\SetKwData{stmtF}{f}
+\SetKwData{stmtK}{k}
+\SetKwData{stmtR}{r}
+\SetKwData{stmtT}{t}
+\SetKwData{stmtB}{b}
+\SetKwData{stmtQ}{q}
+\SetKwData{stmtP}{p}
+\SetKwData{summaryTable}{summaryTable}
+\SetKwData{tainted}{tainted}
+\SetKwData{fZero}{$f_0$}
+\SetKwData{False}{False}
+\SetKwData{Input}{inFlow$_s$}
+\SetKwData{Output}{outFlow$_s$}
+\SetKwData{TmpFlow}{tmpFlow}
+\SetKwFunction{Map}{map}
+\SetKwFunction{LCOPY}{COPY}
+\SetKwFunction{LLOAD}{LOAD}
+\SetKwFunction{LSTORE}{STORE}
+\SetKwFunction{LADDROF}{ADDROF}
+\SetKwFunction{LCALL}{CALL}
+\SetKwFunction{LSOURCE}{SOURCE}
+\SetKwFunction{LSINK}{SINK}
+\SetKwFunction{Type}{TypeOf}
+\SetKwFunction{TaintUse}{taintUse}
+\SetKwFunction{Update}{Update}
+\SetKwFunction{Taint}{taint}
+\SetKwFunction{Func}{func}
+\SetKwFunction{First}{first}
+\SetKwFunction{Formal}{formal}
+\SetKwFunction{Formals}{formals}
+\SetKwFunction{Toplevel}{toplevel}
+\SetKwInOut{InData}{input}
+\SetKwInOut{OutData}{output}
+
+
+\InData{$\Caller: \mathit{Proc}, \stmt: \mathit{Inst}$}
+\OutData{}
+\Switch{$\Type(\stmt)$}{
+	\Case{$\LCOPY\ [\stmtP = \stmtQ] $}{
+		\If{$\Input[\stmtQ] \neq \emptyset$}{
+			$\Output[\stmtP] \leftarrow \Input[\stmtQ] \cup \set{\stmt}$;
+		}
+	}
+	\Case{$\LLOAD\ [p = *q] $}{
+		\ForEach{$\stmtA_k \in \pointsto{\overline{\stmt}}{q}$}{
+			$\stmtT_k \leftarrow \Toplevel(\stmtA_k)$;		
+			$\TmpFlow \leftarrow \TmpFlow \cup \Input[\stmtT_k]$\;				
+		}
+		\If{$\TmpFlow \neq \emptyset$}{
+			$\Output[\stmtP] \leftarrow \Output[\stmtP] \cup \TmpFlow \cup \set{\stmt}$\;
+		}
+	}	
+	\uCase{$\LSTORE\ [*p = q] $}{
+		\ForEach{$\stmtA_k \in \pointsto{\overline{\stmt}}{p}$}{
+			$\stmtT_k \leftarrow \Toplevel(\stmtA_k)$\;		
+			\If{$\Input[\stmtQ] \neq \emptyset$}{			
+				$\Output[\stmtT_k] \leftarrow \Output[\stmtT_k] \cup \Input[\stmtQ] \cup \set{\stmt}$\;				
+			}
+		}	
+	}	
+	\Case{$\LSOURCE\ [\stmtR = \mathit{call}\ \Func(a_0, a_1, ..., a_n)]$}{
+		\ForEach{$k \in \set{0, 1, ..., n}$}{
+			\If{$\Taint(k)$}{			
+				$\Output[\stmtA_k] \leftarrow \Input[\stmtA_k] \cup \set{\stmt}$\;
+			}			
+		}
+	}	
+	\uCase{$\LCALL\ [\stmtR = \mathit{call}\ \Func]$}{
+	}		
+	\uCase{$\LADDROF\ [p = \&a]$}{
+	}	
+	\Case{$\LSINK [\stmtR = \mathit{call}\ \Func]$}{
+	}		
+}
+\ForEach{$\stmtF_k \in \Formals(\mathit{Proc})$}{
+	\If{$\Output[\stmtF_k] \neq \Input[\stmtF_k]$}{
+		$\summaryTable[\Func][k] = 1$\;
+	}
+}
+\end{algorithm*}
+\DecMargin{1em}
+Developers can choose between a context-insensitive
+and a context-sensitive analysis. However, the intraprocedural
+analysis is always run first. 
+
 \paragraph{Context-Insensitive Analysis}
-Our context-insensitive version of the analysis is performed
+Our context-insensitive analysis is performed
 in the reverse topological order of the call graph.
 This phase performs an intraprocedural analysis of each
 procedure and stores its result in a summary table.
@@ -87,7 +189,6 @@ $\pointsto{\underline{s}}{q}$	&	Set of program locations to which variable q		\\
 \end{tabular}
 \caption{Algorithm Symbols}\label{symTable}
 \end{table}
-
 Algorithm~\ref{fig:algoAnalyze} represents the pseudo code of
 our analysis algorithm\footnote{Adapted from Jonathan Aldrich's
 lecture notes} \texttt{Analyze}, and Table~\ref{symTable}
@@ -138,7 +239,6 @@ $\worklist \leftarrow \set{s_0}$\;
 }
 \end{algorithm}
 \DecMargin{1em}
-
 We define a set of C standard library functions that
 we considered as sources. These library functions are not
 further analyzed during \texttt{Analyze}'s run.
@@ -155,7 +255,7 @@ as sinks.
 
 \IncMargin{1em}
 \begin{algorithm*}
-\caption{Context-Insentive Flow Function}\label{fig:algoFlow}
+\caption{InterFlow: Context-Insentive Flow Function}\label{fig:interFlow}
 %\SetAlgoNoLine
 \SetAlgoLined
 \LinesNumbered
@@ -201,47 +301,30 @@ as sinks.
 \InData{$\Caller: \mathit{Proc}, \stmt: \mathit{Inst}$}
 \OutData{}
 \Switch{$\Type(\stmt)$}{
-	\Case{$\LCOPY\ [\stmtP = \stmtQ] $}{
-		\If{$\Input[\stmtQ] \neq \emptyset$}{
-			$\Output[\stmtP] \leftarrow \Input[\stmtQ] \cup \set{\stmt}$;
-		}
+	\Case(//Same as IntraProc){$\LCOPY\ [\stmtP = \stmtQ] $}{
 	}
-	\Case{$\LLOAD\ [p = *q] $}{
-		\ForEach{$\stmtA_k \in \pointsto{\overline{\stmt}}{q}$}{
-			$\stmtT_k \leftarrow \Toplevel(\stmtA_k)$;		
-			$\TmpFlow \leftarrow \TmpFlow \cup \Input[\stmtT_k]$\;				
-		}
-		\If{$\TmpFlow \neq \emptyset$}{
-			$\Output[\stmtP] \leftarrow \Output[\stmtP] \cup \TmpFlow \cup \set{\stmt}$\;
-		}
+	\Case(//Same as IntraProc){$\LLOAD\ [p = *q] $}{
 	}	
-	\uCase{$\LSTORE\ [*p = q] $}{
-		\ForEach{$\stmtA_k \in \pointsto{\overline{\stmt}}{p}$}{
-			$\stmtT_k \leftarrow \Toplevel(\stmtA_k)$\;		
-			\If{$\Input[\stmtQ] \neq \emptyset$}{			
-				$\Output[\stmtT_k] \leftarrow \Output[\stmtT_k] \cup \Input[\stmtQ] \cup \set{\stmt}$\;				
-			}
-		}	
+	\Case(//Same as IntraProc){$\LSTORE\ [*p = q] $}{
 	}	
-	\Case{$\LSOURCE\ [\mathit{call}\ \Func(a_0, a_1, ..., a_n)]$}{
-		\ForEach{$k \in \set{0, 1, ..., n}$}{
-			\If{$\Taint(k)$}{			
-				$\Output[\stmtA_k] \leftarrow \Input[\stmtA_k] \cup \set{\stmt}$\;
-			}			
-		}
+	\Case(//Same as IntraProc){$\LSOURCE\ [\stmtR = \mathit{call}\ \Func(a_0, a_1, ..., a_n)]$}{
 	}
 %Context-insensitive	
 	\Case{$\LCALL\ [\stmtR = \mathit{call}\ \Func(a_0, a_1, ..., a_n)]$}{
 		\If{$\summaryTable[\Func]\ \mathit{exists}$}{
 			\If{$\summaryTable[\Func][n+1] = 1$}{
-					$\Output[\stmtR] \leftarrow \Input[\stmtR] \cup \set{\stmt}$\;						
-			}											
+					$\Output[\stmtR] \leftarrow \set{\stmt}$\;						
+			}			
+			\ForEach{$\stmtA_k, k \in \set{0, 1, ..., n}$}{
+				\If{$\summaryTable[\Func][k] = 1$}{
+					$\Output[\stmtA_k] \leftarrow \Output[\stmtA_k] \cup  \set{\stmt}$\;																
+				}							
+			}
 		}
-		$\InterFlow(\Caller, \Func)$
 	}		
 	\uCase{$\LADDROF\ [p = \&a]$}{
 	}	
-	\Case{$\LSINK [\mathit{call}\ \Func]$}{
+	\Case{$\LSINK [\stmtR = \mathit{call}\ \Func]$}{
 	}		
 }
 \end{algorithm*}
@@ -249,7 +332,7 @@ as sinks.
 
 \IncMargin{1em}
 \begin{algorithm*}
-\caption{Context-Sentive Flow Function}\label{fig:contextFlow}
+\caption{csInterFlow: Context-Sentive Flow Function}\label{fig:csInterFlow}
 %\SetAlgoNoLine
 \SetAlgoLined
 \LinesNumbered
@@ -260,6 +343,7 @@ as sinks.
 \SetKwData{stmtA}{a}
 \SetKwData{stmtF}{f}
 \SetKwData{stmtK}{k}
+\SetKwData{stmtR}{r}
 \SetKwData{stmtT}{t}
 \SetKwData{stmtB}{b}
 \SetKwData{stmtQ}{q}
@@ -270,6 +354,7 @@ as sinks.
 \SetKwData{Input}{inFlow$_s$}
 \SetKwData{Output}{outFlow$_s$}
 \SetKwData{TmpFlow}{tmpFlow}
+\SetKwData{summaryTable}{summaryTable}
 \SetKwFunction{Map}{map}
 \SetKwFunction{LCOPY}{COPY}
 \SetKwFunction{LLOAD}{LOAD}
@@ -281,10 +366,12 @@ as sinks.
 \SetKwFunction{Type}{TypeOf}
 \SetKwFunction{TaintUse}{taintUse}
 \SetKwFunction{Update}{Update}
+\SetKwFunction{InterFlow}{csInterFlow}
 \SetKwFunction{Taint}{taint}
 \SetKwFunction{Func}{func}
 \SetKwFunction{First}{first}
 \SetKwFunction{Formal}{formal}
+\SetKwFunction{Formals}{formals}
 \SetKwFunction{Toplevel}{toplevel}
 \SetKwInOut{InData}{input}
 \SetKwInOut{OutData}{output}
@@ -307,7 +394,7 @@ as sinks.
 			$\Output[\stmtP] \leftarrow \Output[\stmtP] \cup \TmpFlow \cup \set{\stmt}$\;
 		}
 	}	
-	\uCase{$\LSTORE\ [*p = q] $}{
+	\Case{$\LSTORE\ [*p = q] $}{
 		\ForEach{$\stmtA_k \in \pointsto{\overline{\stmt}}{p}$}{
 			$\stmtT_k \leftarrow \Toplevel(\stmtA_k)$\;		
 			\If{$\Input[\stmtQ] \neq \emptyset$}{			
@@ -315,33 +402,44 @@ as sinks.
 			}
 		}	
 	}	
-	\Case{$\LSOURCE\ [\mathit{call}\ \Func(a_0, a_1, ..., a_n)]$}{
+	\Case{$\LSOURCE\ [\stmtR = \mathit{call}\ \Func(a_0, a_1, ..., a_n)]$}{
 		\ForEach{$k \in \set{0, 1, ..., n}$}{
 			\If{$\Taint(k)$}{			
 				$\Output[\stmtA_k] \leftarrow \Input[\stmtA_k] \cup \set{\stmt}$\;
 			}			
 		}
 	}
-Context-sensitive		
-	\Case{$\LCALL\ [\mathit{call}\ \Func(a_0, a_1, ..., a_n)]$}{
+%Context-sensitive		
+	\Case{$\LCALL\ [\stmtR = \mathit{call}\ \Func(a_0, a_1, ..., a_n)]$}{
 		\If{$\Caller \neq \Func$}{
-			\ForEach{$\stmtA_k, k \in \set{0, 1, ..., n}$}{
-				$\stmtF_k \leftarrow \Formal(\Func, \stmtA_k)$\;			
-				\ForEach{$\stmtB \in \pointsto{\overline{\stmt}}{\stmtA_k}$}{
-					$\Input[\stmtF_k] \leftarrow \Input[\stmtF_k] \cup  \Input[\stmtB]$\;						
+			\If{$0 \in \summaryTable[\Func]$}{
+				\ForEach{$\stmtF_k \in \Formals(\Func)$}{
+					\If{$\summaryTable[\Func][k] = 0$}{
+						\ForEach{$\stmtB \in \pointsto{\overline{\stmt}}{\stmtA_k}$}{
+							$\Input[\stmtF_k] \leftarrow \Input[\stmtF_k] \cup  \Input[\stmtB]$\;						
+						}
+					}
 				}											
+				$\InterFlow(\Caller, \Func)$\;			
+				\ForEach{$\stmtF_k \in \Formals(\Func)$}{
+					\If{$\summaryTable[\Func][k] = 0\ \aand\ \Output[\stmtF_k] \neq \Input[\stmtF_k]$}{
+						$\Output[\stmtA_k] \leftarrow \Output[\stmtF_k] \cup \set{\stmt}$;			
+						$\summaryTable[\Func][k] = 1$\;
+						\ForEach{$\stmtB \in \pointsto{\overline{\stmt}}{\stmtA_k}$}{
+							$\Output[\stmtB] \leftarrow \Output[\stmtB] \cup \Output[\stmtA_k]$\;						
+						}
+					}
+				}					
 			}
-			$\InterFlow(\Caller, \Func)$
 		}
 	}		
 	\uCase{$\LADDROF\ [p = \&a]$}{
 	}	
-	\Case{$\LSINK [\mathit{call}\ \Func]$}{
+	\Case{$\LSINK [\stmtR = \mathit{call}\ \Func]$}{
 	}		
 }
 \end{algorithm*}
 \DecMargin{1em}
-
 Function \texttt{InterFlow} (Algorithm~\ref{fig:algoFlow})
 implements the analysis' transfer equations.
 
