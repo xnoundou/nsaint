@@ -1,4 +1,4 @@
-\section{Staged Analysis}\label{stagedAnalysis}
+\section{Analysis}\label{stagedAnalysis}
 
 \newcommand{\varset}{\mathit{Var}}
 \newcommand{\instset}{\mathit{Inst}}
@@ -6,28 +6,70 @@
 \newcommand{\ifff}{\mathit{iff}}
 \newcommand{\aand}{\mathit{and}}
 
-\paragraph{Intraprocedural Analysis}
+Our taint analysis is interprocedural and can be run
+either context-insensitively or context-sensitively.
+Our analysis builds and uses a summary table that contains
+taint information about program procedure formal parameters
+and return value.
+The initial values of the summary table are written by
+an intraprocedural analysis that runs prior to any variant
+of the interprocedural analysis. The use of the
+summary table enables us to reuse information that has
+already been computed by any previous analysis. For
+instance, the intraprocedural analysis would detect that
+variable \texttt{sum} of procedure \compute{} in
+Figure~\ref{fig:sample} may be tainted due to the call
+to \texttt{scanf} at line $13$. This information is then
+reused by the subsequent interprocedural analyses.
 
-Our analysis is composed of an intraprocedural and an interprocedural
-part. When the intraprocedural analysis detects a tainted value, it
-writes this information to a summary table. This information is 
-used in later stages by the interprocedural analysis, thus improving
-the analysis runtime. 
-For instance, the intraprocedural analysis detects that variable
-\texttt{sum} of procedure \compute{} in Figure~\ref{fig:sample} is tainted.
-Algorithm~\ref{fig:intraFlow} shows the analysis' intraprocedural
-transfer function. 
-
-Our analysis dataflow set is $\varset \times \instset$,
+Our analysis dataflow set is $\varset \times 2^\instset$,
 where $\varset$ is the set of all program variables and
 $\instset$ the set of all program statements. 
 At a statement labelled $s$, the incoming dataflow set $\myinflow_s$
-is a mapping from each program variable $v$ to
-statements where $v$ might be tainted. If $v$ might not
-be tainted before statment $s$, then $\myinflow_s[v] = \emptyset$.
-Otherwise, $\myinflow_s[v]$ contains statements where $v$
-might get tainted.
+is a mapping from each program variable $v$ to a set of
+previous program statements where $v$ might be tainted.
+If $v$ might not be tainted before statment $s$, then
+$\myinflow_s[v] = \emptyset$. Otherwise, $\myinflow_s[v]$
+contains statements where $v$ might get tainted.
 
+\paragraph{Pointer Analysis}
+Our analysis is designed to work by using the results of
+a prior computed pointer analysis. This may enable us to
+do various experimentations with different types of pointer
+analyses. For this project, we choose to use \lothak{}'s
+hybrid pointer analysis \cite{Lhotak:2011:PAE}. \cite{Lhotak:2011:PAE}
+is a pointer analysis that attempts to benefit from the
+advantages of both flow-insensitive and flow-sensitive 
+pointer analyses. It is implemented as an extension of
+Andersen's interprocedural flow-insensitive analysis that
+also produces flow-sensitive information. The analysis'
+algorithm relies on the observation that strong updates
+are only possible whenever an abstract pointer location is
+a singleton set. Therefore the analysis works as a
+flow-insensitive analysis, but applies flow-sensitive
+rules whenever an abstract pointer location is a singleton set.
+The evaluation results of the paper show that the performance
+of the strong update analysis is comparable to that of a
+flow-insensitive analysis. The results also show that the hybrid
+analysis provides the same benefits as a fully flow-sensitive
+analysis at $98\%$ of stores and loads in the program.
+
+\paragraph{Intraprocedural Analysis}
+Program functions are analyzed in the reverse topological
+order of the call graph.
+The intraprocedural analysis works on each function body and
+do not take into account interprocedural control flow.
+Once it detects that a tainted value is written to a variable,
+it writes this information to the summary table. The
+information from the summary table is used in later stages
+by the interprocedural analyses.
+For instance, all tainted variables due to source functions
+are found by the intraprocedural analysis.
+For instance, the intraprocedural analysis detects that variable
+\texttt{sum} of procedure \compute{} of our running example
+(Figure~\ref{fig:sample}) may be tainted due to the call
+to \texttt{scanf} at line $13$. Algorithm~\ref{fig:intraFlow}
+shows the analysis' intraprocedural transfer functions. 
 \IncMargin{1em}
 \begin{algorithm*}
 \caption{IntraFlow: Intraprocedural Analysis Transfer Equations}\label{fig:intraFlow}
@@ -126,29 +168,118 @@ analysis is always run first.
 
 \paragraph{Context-Insensitive Analysis}
 Our context-insensitive analysis is performed
-in the reverse topological order of the call graph.
-This phase performs an intraprocedural analysis of each
-procedure and stores its result in a summary table.
-The summary table tells us whether the return value or
-a parameter of the procedure might be tainted at runtime.
-The data from the summary table are then used by subsequent
-analyses of procedures in the call graph. 
+in the reverse topological order of the call graph,
+and uses results from the intraprocedural analysis
+stored in the summary table whenever available.
+Taint assumptions about callee actual paramneters
+at call sites are done based on the values present
+in the summary table. The analysis itself does not
+attempt to propagate flow set values from the caller
+to the callee.
+For instance, the intraprocedural analysis of function
+\main{} marks variable \texttt{x} as tainted in the
+summary table. This is information is then used by
+the context-insensitive analysis when it reaches the
+call site at line $6$ of \main{}.
+Algorithm~\ref{fig:interFlow} illustrates our context-insensitive
+algorithm.
+%For instance, the intraprocedural analysis of function
+%\compute{} is able to detect that its return value
+%(\texttt{sum}) might be tainted at line $13$. This
+%result, stored in the summary table, is then used during
+%the analysis of procedure \main{}, which calls
+%\compute{} at line $6$.
 
-For instance, an intraprocedural analysis of function \compute
-is able to detect that its return value (\texttt{sum})
-might be tainted at line $13$. This result, stored in the
-summary table, is then used during the analysis of procedure
-\main, which calls \compute at line $6$.
+%During the subsequent analysis of \main, the fact that variable
+%\texttt{y} gets tainted at line $6$ is known directly from the
+%summary table information written by \compute. This can then
+%be used for further taint propagation.
 
-During the subsequent analysis of \main, the fact that variable
-\texttt{y} gets tainted at line $6$ is known directly from the
-summary table information written by \compute. This can then
-be used for further taint propagation.
+\IncMargin{1em}
+\begin{algorithm*}
+\caption{InterFlow: Context-Insentive Flow Function}\label{fig:interFlow}
+%\SetAlgoNoLine
+\SetAlgoLined
+\LinesNumbered
+\DontPrintSemicolon
+\SetKwData{Caller}{caller}
+\SetKwData{stmt}{s}
+\SetKwData{stmtV}{v}
+\SetKwData{stmtA}{a}
+\SetKwData{stmtF}{f}
+\SetKwData{stmtK}{k}
+\SetKwData{stmtR}{r}
+\SetKwData{stmtT}{t}
+\SetKwData{stmtB}{b}
+\SetKwData{stmtQ}{q}
+\SetKwData{stmtP}{p}
+\SetKwData{summaryTable}{summaryTable}
+\SetKwData{tainted}{tainted}
+\SetKwData{fZero}{$f_0$}
+\SetKwData{False}{False}
+\SetKwData{Input}{inFlow$_s$}
+\SetKwData{Output}{outFlow$_s$}
+\SetKwData{TmpFlow}{tmpFlow}
+\SetKwFunction{Map}{map}
+\SetKwFunction{LCOPY}{COPY}
+\SetKwFunction{LLOAD}{LOAD}
+\SetKwFunction{LSTORE}{STORE}
+\SetKwFunction{LADDROF}{ADDROF}
+\SetKwFunction{LCALL}{CALL}
+\SetKwFunction{LSOURCE}{SOURCE}
+\SetKwFunction{LSINK}{SINK}
+\SetKwFunction{Type}{TypeOf}
+\SetKwFunction{TaintUse}{taintUse}
+\SetKwFunction{Update}{Update}
+\SetKwFunction{Taint}{taint}
+\SetKwFunction{Func}{func}
+\SetKwFunction{First}{first}
+\SetKwFunction{Formal}{formal}
+\SetKwFunction{Toplevel}{toplevel}
+\SetKwInOut{InData}{input}
+\SetKwInOut{OutData}{output}
+
+
+\InData{$\Caller: \mathit{Proc}, \stmt: \mathit{Inst}$}
+\OutData{}
+\Switch{$\Type(\stmt)$}{
+	\Case(//Same as IntraProc){$\LCOPY\ [\stmtP = \stmtQ] $}{
+	}
+	\Case(//Same as IntraProc){$\LLOAD\ [p = *q] $}{
+	}	
+	\Case(//Same as IntraProc){$\LSTORE\ [*p = q] $}{
+	}	
+%Context-insensitive	
+	\Case{$\LCALL\ [\stmtR = \mathit{call}\ \Func(a_0, a_1, ..., a_n)]$}{
+		\If{$\summaryTable[\Func]\ \mathit{exists}$}{
+			\If{$\summaryTable[\Func][n+1] = 1$}{
+					$\Output[\stmtR] \leftarrow \set{\stmt}$\;						
+			}			
+			\ForEach{$\stmtA_k, k \in \set{0, 1, ..., n}$}{
+				\If{$\summaryTable[\Func][k] = 1$}{
+					$\Output[\stmtA_k] \leftarrow \Output[\stmtA_k] \cup  \set{\stmt}$\;																
+				}							
+			}
+		}
+	}		
+	\uCase{$\LSOURCE\ [\stmtR = \mathit{call}\ \Func]$}{
+	}	
+	\uCase{$\LADDROF\ [p = \&a]$}{
+	}	
+	\Case{$\LSINK [\stmtR = \mathit{call}\ \Func]$}{
+	}		
+}
+\end{algorithm*}
+\DecMargin{1em}
 
 \paragraph{Context-Sensitive Analysis}
 The context-sensitive analysis works in the topological order
 of the call graph, and used information from the summary table
-that were produced by the context-insensitive analysis.
+that were produced by the intraprocedural analysis. The table
+has even more precise information if the context-insensitive
+analysis was performed.
+Algorithm~\ref{fig:csInterFlow} presents the transfer equations
+for the context-sensitive analysis.
  
 \subsection{Analysis algorithm} 
 \begin{table}
@@ -255,83 +386,6 @@ as sinks.
 
 \IncMargin{1em}
 \begin{algorithm*}
-\caption{InterFlow: Context-Insentive Flow Function}\label{fig:interFlow}
-%\SetAlgoNoLine
-\SetAlgoLined
-\LinesNumbered
-\DontPrintSemicolon
-\SetKwData{Caller}{caller}
-\SetKwData{stmt}{s}
-\SetKwData{stmtV}{v}
-\SetKwData{stmtA}{a}
-\SetKwData{stmtF}{f}
-\SetKwData{stmtK}{k}
-\SetKwData{stmtR}{r}
-\SetKwData{stmtT}{t}
-\SetKwData{stmtB}{b}
-\SetKwData{stmtQ}{q}
-\SetKwData{stmtP}{p}
-\SetKwData{summaryTable}{summaryTable}
-\SetKwData{tainted}{tainted}
-\SetKwData{fZero}{$f_0$}
-\SetKwData{False}{False}
-\SetKwData{Input}{inFlow$_s$}
-\SetKwData{Output}{outFlow$_s$}
-\SetKwData{TmpFlow}{tmpFlow}
-\SetKwFunction{Map}{map}
-\SetKwFunction{LCOPY}{COPY}
-\SetKwFunction{LLOAD}{LOAD}
-\SetKwFunction{LSTORE}{STORE}
-\SetKwFunction{LADDROF}{ADDROF}
-\SetKwFunction{LCALL}{CALL}
-\SetKwFunction{LSOURCE}{SOURCE}
-\SetKwFunction{LSINK}{SINK}
-\SetKwFunction{Type}{TypeOf}
-\SetKwFunction{TaintUse}{taintUse}
-\SetKwFunction{Update}{Update}
-\SetKwFunction{Taint}{taint}
-\SetKwFunction{Func}{func}
-\SetKwFunction{First}{first}
-\SetKwFunction{Formal}{formal}
-\SetKwFunction{Toplevel}{toplevel}
-\SetKwInOut{InData}{input}
-\SetKwInOut{OutData}{output}
-
-
-\InData{$\Caller: \mathit{Proc}, \stmt: \mathit{Inst}$}
-\OutData{}
-\Switch{$\Type(\stmt)$}{
-	\Case(//Same as IntraProc){$\LCOPY\ [\stmtP = \stmtQ] $}{
-	}
-	\Case(//Same as IntraProc){$\LLOAD\ [p = *q] $}{
-	}	
-	\Case(//Same as IntraProc){$\LSTORE\ [*p = q] $}{
-	}	
-	\Case(//Same as IntraProc){$\LSOURCE\ [\stmtR = \mathit{call}\ \Func(a_0, a_1, ..., a_n)]$}{
-	}
-%Context-insensitive	
-	\Case{$\LCALL\ [\stmtR = \mathit{call}\ \Func(a_0, a_1, ..., a_n)]$}{
-		\If{$\summaryTable[\Func]\ \mathit{exists}$}{
-			\If{$\summaryTable[\Func][n+1] = 1$}{
-					$\Output[\stmtR] \leftarrow \set{\stmt}$\;						
-			}			
-			\ForEach{$\stmtA_k, k \in \set{0, 1, ..., n}$}{
-				\If{$\summaryTable[\Func][k] = 1$}{
-					$\Output[\stmtA_k] \leftarrow \Output[\stmtA_k] \cup  \set{\stmt}$\;																
-				}							
-			}
-		}
-	}		
-	\uCase{$\LADDROF\ [p = \&a]$}{
-	}	
-	\Case{$\LSINK [\stmtR = \mathit{call}\ \Func]$}{
-	}		
-}
-\end{algorithm*}
-\DecMargin{1em}
-
-\IncMargin{1em}
-\begin{algorithm*}
 \caption{csInterFlow: Context-Sentive Flow Function}\label{fig:csInterFlow}
 %\SetAlgoNoLine
 \SetAlgoLined
@@ -402,13 +456,6 @@ as sinks.
 			}
 		}	
 	}	
-	\Case{$\LSOURCE\ [\stmtR = \mathit{call}\ \Func(a_0, a_1, ..., a_n)]$}{
-		\ForEach{$k \in \set{0, 1, ..., n}$}{
-			\If{$\Taint(k)$}{			
-				$\Output[\stmtA_k] \leftarrow \Input[\stmtA_k] \cup \set{\stmt}$\;
-			}			
-		}
-	}
 %Context-sensitive		
 	\Case{$\LCALL\ [\stmtR = \mathit{call}\ \Func(a_0, a_1, ..., a_n)]$}{
 		\If{$\Caller \neq \Func$}{
@@ -442,6 +489,18 @@ as sinks.
 \DecMargin{1em}
 Function \texttt{InterFlow} (Algorithm~\ref{fig:algoFlow})
 implements the analysis' transfer equations.
+
+\begin{figure}
+\[
+	\mathit{GEN}(s)	=
+	\begin{cases}
+		\set{s},	&\text{COPY\ [$p = q$]}	\\
+		\bigcup_{}^{} \myinflow{}[t_k]\ \text{where} t_k = [\mathit{toplevel(a_k)}],	&\text{LOAD\ [$p = *q$]}	\\		
+		\set{s},	&\text{STORE\ [$*p = q$]}				
+	\end{cases}
+\]
+\caption{Kill and Gen Sets}
+\end{figure}
 
 \subsection{Recursive and Mutual Recursive Function Calls} 
 
