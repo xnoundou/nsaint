@@ -38,6 +38,8 @@
 \usepackage{color}
 \usepackage[lined,boxed,resetcount]{algorithm2e}
 \usepackage{proof}
+\usepackage{relsize}
+\usepackage{appendix}
 
 \newcommand{\COPY}{\text{\textbf{[COPY]}}}
 \newcommand{\LOAD}{\text{\textbf{[LOAD]}}}
@@ -47,17 +49,12 @@
 
 \newcommand{\set}[1]{\{#1\}}
 
-\newcommand{\pointsto}[2]{{pt}_{[#1]}(#2)}
-
 \newcommand{\EmbedCode}[3]{
-	\lstset{language=#1}
-	\lstset{frame=none}
-	\lstset{backgroundcolor=\color{white},rulecolor=}
+	\lstset{language=#1, frame=none, backgroundcolor=\color{white},
+			rulecolor=, xleftmargin=5.0ex}
 	%\lstset{linewidth=\columnwidth}
 	\lstset{commentstyle=\textit, stringstyle=\upshape,showspaces=false}
-	\lstset{frame=shadowbox,
-			showstringspaces=false,
-			numbers=#3,
+	\lstset{frame=none, showstringspaces=false, numbers=#3,
 			numberblanklines=false}
 	\lstinputlisting[]{#2} 
 }
@@ -110,10 +107,8 @@ static analysis, taint analysis
 
 \input{related}
 
-%\appendix
-%\section{Appendix Title}
-
-%This is the text of the appendix, if you need one.
+\appendix
+\input{appendix}
 
 %\acks
 

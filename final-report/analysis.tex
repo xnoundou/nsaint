@@ -1,10 +1,29 @@
 \section{Analysis}\label{stagedAnalysis}
 
+\newcommand{\Aset}{\mathcal{A}}
+\newcommand{\Pset}{\mathcal{P}}
 \newcommand{\varset}{\mathit{Var}}
 \newcommand{\instset}{\mathit{Inst}}
+\newcommand{\procset}{\mathit{Proc}}
+\newcommand{\formalsset}{\mathit{formals}}
+\newcommand{\firstfunc}{\mathit{first}}
+\newcommand{\toplevelfunc}{\mathit{toplevel}}
+\newcommand{\pointsto}[2]{{pt}_{[#1]}(#2)}
+\newcommand{\pointstobefore}[2]{{pt}_{[\overline{#1}]	}(#2)}
+\newcommand{\pointstoafter}[2]{{pt}_{[\underline{#1}]}(#2)}
+
 \newcommand{\myinflow}{\mathit{IN}}
 \newcommand{\ifff}{\mathit{iff}}
 \newcommand{\aand}{\mathit{and}}
+\newcommand{\mybigcup}[2]{\mathlarger{\bigcup_{#1}^{#2}}}
+
+\newcommand{\copydef}{$\text{COPY}\ [p = q]$}
+\newcommand{\loaddef}{$\text{LOAD}\ [p = *q]$}
+\newcommand{\addrofdef}{$\text{ADDROF}\ [p = \&a]$}
+\newcommand{\storedef}{$\text{STORE}\ [*p = q]$}
+\newcommand{\sourcedef}{$\text{SOURCE}\ [r = \text{call}\ \text{func}(a_0, a_1, ..., a_n)]$}
+\newcommand{\calldef}{$\text{SINK} [r = \text{call}\ \text{func}]$}
+\newcommand{\sinkdef}{\calldef}
 
 Our taint analysis is interprocedural and can be run
 either context-insensitively or context-sensitively.
@@ -13,11 +32,10 @@ taint information about program procedure formal parameters
 and return value.
 The initial values of the summary table are written by
 an intraprocedural analysis that runs prior to any variant
-of the interprocedural analysis. The use of the
-summary table enables us to reuse information that has
-already been computed by any previous analysis. For
-instance, the intraprocedural analysis would detect that
-variable \texttt{sum} of procedure \compute{} in
+of the interprocedural analysis. The use of a summary table
+enables the reuse of information by successive analyses.
+For instance, the intraprocedural analysis would
+detect that variable \texttt{sum} of procedure \compute{} in
 Figure~\ref{fig:sample} may be tainted due to the call
 to \texttt{scanf} at line $13$. This information is then
 reused by the subsequent interprocedural analyses.
@@ -32,17 +50,55 @@ If $v$ might not be tainted before statment $s$, then
 $\myinflow_s[v] = \emptyset$. Otherwise, $\myinflow_s[v]$
 contains statements where $v$ might get tainted.
 
+We further use the following elements to describe our analysis:
+$\procset$ is the set of all program functions and procedures,
+$\instset$ is the set of all program statements,
+$\firstfunc{}: \procset \rightarrow \instset$ returns the first
+statement of a function or procedure,
+$\formalsset{}: \procset \rightarrow 2^{\varset}$ returns the
+set of formal parameters of a function or procedure, 
+$\toplevelfunc{}: \Aset \rightarrow \Pset$ returns the top level
+variable of an address-taken variable,
+$\pointstobefore{s}{}: \varset \rightarrow 2^\Aset$ returns the
+points-to set of a variable before a corresponding statement s,
+and $\pointstoafter{s}{}: \varset \rightarrow 2^\Aset$ returns the
+points-to set of a variable after a corresponding statement s.
+
+\begin{figure*}
+\[
+	\mathit{GEN}(s)	=	
+	\begin{cases}
+		\emptyset,	&\text{if $s$ is a \addrofdef}	\\
+		
+		\emptyset,	&\text{if $s$ is a \sinkdef}	\\
+			
+		\set{s},	&\text{if $s$ is a \copydef}	\\
+				
+		\mybigcup{a_k \in\ \pointsto{s}{q}}{} \myinflow{}_s[t_k]\ \text{where}\ t_k =\ \mathit{toplevel(a_k)},
+			&\text{if $s$ is a \loaddef}	\\		
+			
+		\mybigcup{a_k \in\ \pointsto{s}{p}}{} \myinflow{}_s[t_k] \cup \myinflow{}_s[q]\ \text{where}\ t_k =\ \mathit{toplevel(a_k)},	
+			&\text{if $s$ is a \storedef}	\\
+			
+		\mybigcup{f_k \in\ \text{formals}(s)}{} \myinflow{}_s[f_k] \cup \set{s}\ \text{where}\ \text{taint}(f_k) \equiv\ \text{true},	
+			&\text{if $s$ is a \sourcedef}	
+							
+	\end{cases}
+\]
+\caption{Gen Sets}
+\end{figure*}
+
 \paragraph{Pointer Analysis}
 Our analysis is designed to work by using the results of
 a prior computed pointer analysis. This may enable us to
 do various experimentations with different types of pointer
 analyses. For this project, we choose to use a hybrid
-pointer analysis \cite{Lhotak:2011:PAE}. \lothak{} at al.
+pointer analysis \cite{Lhotak:2011:PAE}. \lothak{} at al.'s
 pointer analysis attempts to benefit from the
 advantages of both flow-insensitive and flow-sensitive 
 pointer analyses. It is implemented as an extension of
-Andersen's interprocedural flow-insensitive analysis that
-also produces flow-sensitive information. The analysis'
+Andersen's interprocedural flow-insensitive analysis, but
+produces additional flow-sensitive information. The analysis'
 algorithm relies on the observation that strong updates
 are only possible whenever an abstract pointer location is
 a singleton set. Therefore the analysis works as a
@@ -68,103 +124,10 @@ are found by the intraprocedural analysis.
 For instance, the intraprocedural analysis detects that variable
 \texttt{sum} of procedure \compute{} of our running example
 (Figure~\ref{fig:sample}) may be tainted due to the call
-to \texttt{scanf} at line $13$. Algorithm~\ref{fig:intraFlow}
-shows the analysis' intraprocedural transfer functions. 
-\IncMargin{1em}
-\begin{algorithm*}
-\caption{IntraFlow: Intraprocedural Analysis Transfer Equations}\label{fig:intraFlow}
-%\SetAlgoNoLine
-\SetAlgoLined
-\LinesNumbered
-\DontPrintSemicolon
-\SetKwData{Caller}{caller}
-\SetKwData{stmt}{s}
-\SetKwData{stmtV}{v}
-\SetKwData{stmtA}{a}
-\SetKwData{stmtF}{f}
-\SetKwData{stmtK}{k}
-\SetKwData{stmtR}{r}
-\SetKwData{stmtT}{t}
-\SetKwData{stmtB}{b}
-\SetKwData{stmtQ}{q}
-\SetKwData{stmtP}{p}
-\SetKwData{summaryTable}{summaryTable}
-\SetKwData{tainted}{tainted}
-\SetKwData{fZero}{$f_0$}
-\SetKwData{False}{False}
-\SetKwData{Input}{IN$_s$}
-\SetKwData{Output}{OUT$_s$}
-\SetKwData{TmpFlow}{tmpFlow}
-\SetKwFunction{Map}{map}
-\SetKwFunction{LCOPY}{COPY}
-\SetKwFunction{LLOAD}{LOAD}
-\SetKwFunction{LSTORE}{STORE}
-\SetKwFunction{LADDROF}{ADDROF}
-\SetKwFunction{LCALL}{CALL}
-\SetKwFunction{LSOURCE}{SOURCE}
-\SetKwFunction{LSINK}{SINK}
-\SetKwFunction{Type}{TypeOf}
-\SetKwFunction{TaintUse}{taintUse}
-\SetKwFunction{Update}{Update}
-\SetKwFunction{Taint}{taint}
-\SetKwFunction{Func}{func}
-\SetKwFunction{First}{first}
-\SetKwFunction{Formal}{formal}
-\SetKwFunction{Formals}{formals}
-\SetKwFunction{Toplevel}{toplevel}
-\SetKwInOut{InData}{input}
-\SetKwInOut{OutData}{output}
-
-
-\InData{$\Caller: \mathit{Proc}, \stmt: \mathit{Inst}$}
-\OutData{}
-\Switch{$\Type(\stmt)$}{
-	\Case{$\LCOPY\ [\stmtP = \stmtQ] $}{
-		\If{$\Input[\stmtQ] \neq \emptyset$}{
-			$\Output[\stmtP] \leftarrow \Input[\stmtQ] \cup \set{\stmt}$;
-		}
-	}
-	\Case{$\LLOAD\ [p = *q] $}{
-		\ForEach{$\stmtA_k \in \pointsto{\overline{\stmt}}{q}$}{
-			$\stmtT_k \leftarrow \Toplevel(\stmtA_k)$;		
-			$\TmpFlow \leftarrow \TmpFlow \cup \Input[\stmtT_k]$\;				
-		}
-		\If{$\TmpFlow \neq \emptyset$}{
-			$\Output[\stmtP] \leftarrow \Input[\stmtP] \cup \TmpFlow \cup \set{\stmt}$\;
-		}
-	}	
-	\uCase{$\LSTORE\ [*p = q] $}{
-		\ForEach{$\stmtA_k \in \pointsto{\overline{\stmt}}{p}$}{
-			$\stmtT_k \leftarrow \Toplevel(\stmtA_k)$\;		
-			\If{$\Input[\stmtQ] \neq \emptyset$}{			
-				$\Output[\stmtT_k] \leftarrow \Input[\stmtT_k] \cup \Input[\stmtQ] \cup \set{\stmt}$\;				
-			}
-		}	
-	}	
-	\Case{$\LSOURCE\ [\stmtR = \mathit{call}\ \Func(a_0, a_1, ..., a_n)]$}{
-		\ForEach{$k \in \set{0, 1, ..., n}$}{
-			\If{$\Taint(k)$}{			
-				$\Output[\stmtA_k] \leftarrow \Input[\stmtA_k] \cup \set{\stmt}$\;
-			}			
-		}
-	}	
-	\uCase{$\LCALL\ [\stmtR = \mathit{call}\ \Func]$}{
-	}		
-	\uCase{$\LADDROF\ [p = \&a]$}{
-	}	
-	\Case{$\LSINK [\stmtR = \mathit{call}\ \Func]$}{
-	}		
-}
-\ForEach{$\stmtF_k \in \Formals(\mathit{Proc})$}{
-	\If{$\Output[\stmtF_k] \neq \Input[\stmtF_k]$}{
-		$\summaryTable[\Func][k] = 1$\;
-	}
-}
-\end{algorithm*}
-\DecMargin{1em}
-Developers can choose between a context-insensitive
-and a context-sensitive analysis. However, the intraprocedural
-analysis is always run first. 
+to \texttt{scanf} at line $13$.
+Developers can choose between an interprocedural context-insensitive
+or context-sensitive analysis. However, the intraprocedural
+analysis always run first. 
 
 \paragraph{Context-Insensitive Analysis}
 Our context-insensitive analysis is performed
@@ -195,83 +158,6 @@ algorithm.
 %summary table information written by \compute. This can then
 %be used for further taint propagation.
 
-\IncMargin{1em}
-\begin{algorithm*}
-\caption{InterFlow: Context-Insentive Flow Function}\label{fig:interFlow}
-%\SetAlgoNoLine
-\SetAlgoLined
-\LinesNumbered
-\DontPrintSemicolon
-\SetKwData{Caller}{caller}
-\SetKwData{stmt}{s}
-\SetKwData{stmtV}{v}
-\SetKwData{stmtA}{a}
-\SetKwData{stmtF}{f}
-\SetKwData{stmtK}{k}
-\SetKwData{stmtR}{r}
-\SetKwData{stmtT}{t}
-\SetKwData{stmtB}{b}
-\SetKwData{stmtQ}{q}
-\SetKwData{stmtP}{p}
-\SetKwData{summaryTable}{summaryTable}
-\SetKwData{tainted}{tainted}
-\SetKwData{fZero}{$f_0$}
-\SetKwData{False}{False}
-\SetKwData{Input}{IN$_s$}
-\SetKwData{Output}{OUT$_s$}
-\SetKwData{TmpFlow}{tmpFlow}
-\SetKwFunction{Map}{map}
-\SetKwFunction{LCOPY}{COPY}
-\SetKwFunction{LLOAD}{LOAD}
-\SetKwFunction{LSTORE}{STORE}
-\SetKwFunction{LADDROF}{ADDROF}
-\SetKwFunction{LCALL}{CALL}
-\SetKwFunction{LSOURCE}{SOURCE}
-\SetKwFunction{LSINK}{SINK}
-\SetKwFunction{Type}{TypeOf}
-\SetKwFunction{TaintUse}{taintUse}
-\SetKwFunction{Update}{Update}
-\SetKwFunction{Taint}{taint}
-\SetKwFunction{Func}{func}
-\SetKwFunction{First}{first}
-\SetKwFunction{Formal}{formal}
-\SetKwFunction{Toplevel}{toplevel}
-\SetKwInOut{InData}{input}
-\SetKwInOut{OutData}{output}
-
-
-\InData{$\Caller: \mathit{Proc}, \stmt: \mathit{Inst}$}
-\OutData{}
-\Switch{$\Type(\stmt)$}{
-	\Case(//Same as IntraProc){$\LCOPY\ [\stmtP = \stmtQ] $}{
-	}
-	\Case(//Same as IntraProc){$\LLOAD\ [p = *q] $}{
-	}	
-	\Case(//Same as IntraProc){$\LSTORE\ [*p = q] $}{
-	}	
-%Context-insensitive	
-	\Case{$\LCALL\ [\stmtR = \mathit{call}\ \Func(a_0, a_1, ..., a_n)]$}{
-		\If{$\summaryTable[\Func]\ \mathit{exists}$}{
-			\If{$\summaryTable[\Func][n+1] = 1$}{
-					$\Output[\stmtR] \leftarrow \Input[\stmtR] \cup \set{\stmt}$\;						
-			}			
-			\ForEach{$\stmtA_k, k \in \set{0, 1, ..., n}$}{
-				\If{$\summaryTable[\Func][k] = 1$}{
-					$\Output[\stmtA_k] \leftarrow \Input[\stmtA_k] \cup  \set{\stmt}$\;																
-				}							
-			}
-		}
-	}		
-	\uCase{$\LSOURCE\ [\stmtR = \mathit{call}\ \Func]$}{
-	}	
-	\uCase{$\LADDROF\ [p = \&a]$}{
-	}	
-	\Case{$\LSINK [\stmtR = \mathit{call}\ \Func]$}{
-	}		
-}
-\end{algorithm*}
-\DecMargin{1em}
-
 \paragraph{Context-Sensitive Analysis}
 The context-sensitive analysis works in the topological order
 of the call graph, and used information from the summary table
@@ -281,93 +167,11 @@ analysis was performed.
 Algorithm~\ref{fig:csInterFlow} presents the transfer equations
 for the context-sensitive analysis.
  
-\subsection{Analysis algorithm} 
-\begin{table}
-\begin{tabular}{|l|l|}
-\hline
-\textbf{Symbols}				&	\textbf{Description}								\\ \hline
-$\mathit{D}$					&	$\mathit{Var} \rightarrow 2^\mathit{Inst}$			\\
-								&	Analysis dataflow set 								\\ \hline
-$\mathit{Proc}$					&	Set of all program functions and procedures 		\\ \hline
-$\mathit{Inst}$					&	Set of instructions in the program 					\\ \hline
-$\mathit{IN}$				&	$\mathit{Inst}\ \rightarrow\ \mathit{D}$ 			\\
-								&	Function that returns the dataflow values			\\
-		    					&	at the program point before an instruction 			\\ 	\hline
-$\mathit{OUT}$				&	$\mathit{Inst}\ \rightarrow\ \mathit{D}$ 			\\
-								&	Function that returns the dataflow values			\\
-		    					&	at the program point after an instruction 			\\ 	\hline	    		
-$\mathit{worklist}$				&	Set of remaining instructions to be processed 		\\ \hline
-$\mathit{InterFlow}$					&	$\mathit{Inst}\ \rightarrow\ \mathit{D}$ 			\\
-								&   Analysis flow function (Algorithm~\ref{fig:algoFlow}) 			\\ \hline
-$\mathit{first}$				&	$\mathit{Func} \rightarrow\ \mathit{Inst}$ 			\\
-								& 	Function that returns the first instruction			\\
-								&	of a procedure										\\ \hline
-$\mathit{next}$					&	$\mathit{worklist}\ \rightarrow\ \mathit{Inst}$ 	\\
-								& 	Function that returns the next instructions			\\
-								&	from the worklist									\\ \hline
-$\mathit{formal}$				&	$\mathit{Proc}\ \times \mathit{Var} \rightarrow\ \mathit{Var}$ 	\\
-								& 	Function that returns the formal parameter $f_k$	\\
-								&	of a procedure or function for its actual $a_k$		\\ \hline	
-$\mathit{toplevel}$				&	$\mathcal{A}\ \rightarrow\ \mathcal{P}$ 			\\
-								& 	Function that returns top-level variables for		\\
-								&	an address taken variable							\\ \hline															
-$\pointsto{\overline{s}}{q}$	&	Set of program locations to which variable q		\\
-								&	may point to before program statement $s$			\\
-								& 	(i.e $q$'s \textit{points-to set} at statement $s$)	\\ \hline					
-$\pointsto{\underline{s}}{q}$	&	Set of program locations to which variable q		\\
-								&	may point to after program statement $s$			\\
-								& 	(i.e $q$'s \textit{points-to set} at statement $s$)	\\ \hline
-\end{tabular}
-\caption{Algorithm Symbols}\label{symTable}
-\end{table}
 Algorithm~\ref{fig:algoAnalyze} represents the pseudo code of
 our analysis algorithm\footnote{Adapted from Jonathan Aldrich's
 lecture notes} \texttt{Analyze}, and Table~\ref{symTable}
 describes the symbols we use.
 
-\IncMargin{1em}
-\begin{algorithm}
-\caption{Analyze}\label{fig:algoAnalyze}
-%\SetAlgoNoLine
-\SetAlgoLined
-\LinesNumbered
-\DontPrintSemicolon
-\SetKwData{func}{f}
-\SetKwData{varJ}{j}
-\SetKwData{varI}{i}
-\SetKwData{worklist}{worklist}
-\SetKwFunction{Input}{input}
-\SetKwFunction{Output}{output}
-\SetKwFunction{InterFlow}{InterFlow}
-\SetKwFunction{First}{first}
-\SetKwFunction{Update}{Update}
-\SetKwFunction{InitDataFlow}{initDataFlow}
-\SetKwFunction{Next}{next}
-\SetKwFunction{Succs}{succs}
-\SetKwFunction{AnalyzeAlgo}{Analyze}
-\SetKwFunction{Func}{func}
-\SetKwInOut{InData}{input}
-\SetKwInOut{OutData}{output}
-
-
-\InData{$\Func: \mathit{Proc}, \newline
-		 \InitDataFlow: \mathit{Inst} \rightarrow (\mathit{Var} \rightarrow 2^\mathit{Inst})$}
-\OutData{}
-$ s_0 \leftarrow \First(\func)$\;
-$\Input[s_0] \leftarrow \InitDataFlow(s_0)$\;
-$\worklist \leftarrow \set{s_0}$\;
-\While{ $\worklist\ \neq\ \emptyset$ }{
-	$\varI \leftarrow \Next(\worklist)$\;
-	$\Output[i] \leftarrow \InterFlow(\AnalyzeAlgo, \varI)$\;
-	\ForEach{ $\varJ \in \Succs(\varI)$ }{
-		\If{ $\Output[\varI] \not\sqsubseteq \Input[\varJ]$}{
-			$\Input[\varJ] \leftarrow \Input[\varJ] \sqcup \Output[\varI]$\;
-			$\worklist \leftarrow \worklist \cup\ \set{\varJ}$\;
-		}	
-	}
-}
-\end{algorithm}
-\DecMargin{1em}
 We define a set of C standard library functions that
 we considered as sources. These library functions are not
 further analyzed during \texttt{Analyze}'s run.
@@ -382,144 +186,18 @@ to the previous described sources. Appendix !!! lists
 the C standard library functions the analysis considers
 as sinks.
 
-\IncMargin{1em}
-\begin{algorithm*}
-\caption{csInterFlow: Context-Sentive Flow Function}\label{fig:csInterFlow}
-%\SetAlgoNoLine
-\SetAlgoLined
-\LinesNumbered
-\DontPrintSemicolon
-\SetKwData{Caller}{caller}
-\SetKwData{stmt}{s}
-\SetKwData{stmtV}{v}
-\SetKwData{stmtA}{a}
-\SetKwData{stmtF}{f}
-\SetKwData{stmtK}{k}
-\SetKwData{stmtR}{r}
-\SetKwData{stmtT}{t}
-\SetKwData{stmtB}{b}
-\SetKwData{stmtQ}{q}
-\SetKwData{stmtP}{p}
-\SetKwData{tainted}{tainted}
-\SetKwData{fZero}{$f_0$}
-\SetKwData{False}{False}
-\SetKwData{Input}{IN$_s$}
-\SetKwData{Output}{OUT$_s$}
-\SetKwData{TmpFlow}{tmpFlow}
-\SetKwData{summaryTable}{summaryTable}
-\SetKwFunction{Map}{map}
-\SetKwFunction{LCOPY}{COPY}
-\SetKwFunction{LLOAD}{LOAD}
-\SetKwFunction{LSTORE}{STORE}
-\SetKwFunction{LADDROF}{ADDROF}
-\SetKwFunction{LCALL}{CALL}
-\SetKwFunction{LSOURCE}{SOURCE}
-\SetKwFunction{LSINK}{SINK}
-\SetKwFunction{Type}{TypeOf}
-\SetKwFunction{TaintUse}{taintUse}
-\SetKwFunction{Update}{Update}
-\SetKwFunction{InterFlow}{csInterFlow}
-\SetKwFunction{Taint}{taint}
-\SetKwFunction{Func}{func}
-\SetKwFunction{First}{first}
-\SetKwFunction{Formal}{formal}
-\SetKwFunction{Formals}{formals}
-\SetKwFunction{Toplevel}{toplevel}
-\SetKwInOut{InData}{input}
-\SetKwInOut{OutData}{output}
-
-
-\InData{$\Caller: \mathit{Proc}, \stmt: \mathit{Inst}$}
-\OutData{}
-\Switch{$\Type(\stmt)$}{
-	\Case{$\LCOPY\ [\stmtP = \stmtQ] $}{
-		\If{$\Input[\stmtQ] \neq \emptyset$}{
-			$\Output[\stmtP] \leftarrow \Input[\stmtQ] \cup \set{\stmt}$;
-		}
-	}
-	\Case{$\LLOAD\ [p = *q] $}{
-		\ForEach{$\stmtA_k \in \pointsto{\overline{\stmt}}{q}$}{
-			$\stmtT_k \leftarrow \Toplevel(\stmtA_k)$;		
-			$\TmpFlow \leftarrow \TmpFlow \cup \Input[\stmtT_k]$\;				
-		}
-		\If{$\TmpFlow \neq \emptyset$}{
-			$\Output[\stmtP] \leftarrow \Input[\stmtP] \cup \TmpFlow \cup \set{\stmt}$\;
-		}
-	}	
-	\Case{$\LSTORE\ [*p = q] $}{
-		\ForEach{$\stmtA_k \in \pointsto{\overline{\stmt}}{p}$}{
-			$\stmtT_k \leftarrow \Toplevel(\stmtA_k)$\;		
-			\If{$\Input[\stmtQ] \neq \emptyset$}{			
-				$\Output[\stmtT_k] \leftarrow \Input[\stmtT_k] \cup \Input[\stmtQ] \cup \set{\stmt}$\;				
-			}
-		}	
-	}	
-%Context-sensitive		
-	\Case{$\LCALL\ [\stmtR = \mathit{call}\ \Func(a_0, a_1, ..., a_n)]$}{
-		\If{$\Caller \neq \Func$}{
-			\If{$0 \in \summaryTable[\Func]$}{
-				\ForEach{$\stmtF_k \in \Formals(\Func)$}{
-					\If{$\summaryTable[\Func][k] = 0$}{
-						\ForEach{$\stmtB \in \pointsto{\overline{\stmt}}{\stmtA_k}$}{
-							$\Input[\stmtF_k] \leftarrow \Input[\stmtF_k] \cup  \Input[\stmtB]$\;						
-						}
-					}
-				}											
-				$\InterFlow(\Caller, \Func)$\;			
-				\ForEach{$\stmtF_k \in \Formals(\Func)$}{
-					\If{$\summaryTable[\Func][k] = 0\ \aand\ \Output[\stmtF_k] \neq \Input[\stmtF_k]$}{
-						$\Output[\stmtA_k] \leftarrow \Output[\stmtF_k] \cup \set{\stmt}$;			
-						$\summaryTable[\Func][k] = 1$\;
-						\ForEach{$\stmtB \in \pointsto{\overline{\stmt}}{\stmtA_k}$}{
-							$\Output[\stmtB] \leftarrow \Output[\stmtB] \cup \Output[\stmtA_k]$\;						
-						}
-					}
-				}					
-			}
-		}
-	}		
-	\uCase{$\LADDROF\ [p = \&a]$}{
-	}	
-	\Case{$\LSINK [\stmtR = \mathit{call}\ \Func]$}{
-	}		
-}
-\end{algorithm*}
-\DecMargin{1em}
 Function \texttt{InterFlow} (Algorithm~\ref{fig:algoFlow})
 implements the analysis' transfer equations.
 
-\begin{figure*}
-\[
-	\mathit{GEN}(s)	=
-	\begin{cases}
-		\set{s},	&\text{COPY\ [$p = q$]}	\\
-		\bigcup_{a_k \in \pointsto{s}{q}}^{} \myinflow{}_s[t_k]\ \text{where}\ t_k =\ \mathit{toplevel(a_k)},	&\text{LOAD\ [$p = *q$]}	\\		
-		\bigcup_{a_k \in \pointsto{s}{p}}^{} \myinflow{}_s[t_k] \cup \myinflow{}_s[q]\ \text{where}\ t_k =\ \mathit{toplevel(a_k)},	&\text{STORE\ [$*p = q$]}				
-	\end{cases}
-\]
-\caption{Gen Sets}
-\end{figure*}
+\paragraph{Recursive and Mutual Recursive Function Calls} 
 
-\subsection{Recursive and Mutual Recursive Function Calls} 
-
-Our analysis ignore recursive functions calls: the dataflow set
+Our analysis ignore recursive function calls: the dataflow set
 before and after recursive calls are identical. 
 
 We detect recursive mutual function calls by finding strongly
-connected components of the ahead-of-time call graph generated
-by LLVM. 
+connected components of the call graph generated by LLVM.
+Mutual recursive functions are replaced with one single ...
 
-\subsection{Context-Sensitivity} 
-
-We achieve context-sensitivity by analyzing callees
-with dataflow set information of their formal parameters
-at calling sites.
-
-For instance in Figure~\ref{fig:sample}, the call to \even{} at
-line $4$ would take into the account the fact that \texttt{x}
-is tainted.
-On the other hand, \even{}'s call at line $25$ can not safely
-make this assumption.
 
 \subsection{Motivating Example Case Study}\label{sec:sampleSummary}
 
