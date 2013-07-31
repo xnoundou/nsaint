@@ -2,7 +2,7 @@
 
 \newcommand{\varset}{\mathit{Var}}
 \newcommand{\instset}{\mathit{Inst}}
-\newcommand{\myinflow}{\mathit{inFlow}}
+\newcommand{\myinflow}{\mathit{IN}}
 \newcommand{\ifff}{\mathit{iff}}
 \newcommand{\aand}{\mathit{and}}
 
@@ -36,9 +36,9 @@ contains statements where $v$ might get tainted.
 Our analysis is designed to work by using the results of
 a prior computed pointer analysis. This may enable us to
 do various experimentations with different types of pointer
-analyses. For this project, we choose to use \lothak{}'s
-hybrid pointer analysis \cite{Lhotak:2011:PAE}. \cite{Lhotak:2011:PAE}
-is a pointer analysis that attempts to benefit from the
+analyses. For this project, we choose to use a hybrid
+pointer analysis \cite{Lhotak:2011:PAE}. \lothak{} at al.
+pointer analysis attempts to benefit from the
 advantages of both flow-insensitive and flow-sensitive 
 pointer analyses. It is implemented as an extension of
 Andersen's interprocedural flow-insensitive analysis that
@@ -92,8 +92,8 @@ shows the analysis' intraprocedural transfer functions.
 \SetKwData{tainted}{tainted}
 \SetKwData{fZero}{$f_0$}
 \SetKwData{False}{False}
-\SetKwData{Input}{inFlow$_s$}
-\SetKwData{Output}{outFlow$_s$}
+\SetKwData{Input}{IN$_s$}
+\SetKwData{Output}{OUT$_s$}
 \SetKwData{TmpFlow}{tmpFlow}
 \SetKwFunction{Map}{map}
 \SetKwFunction{LCOPY}{COPY}
@@ -130,14 +130,14 @@ shows the analysis' intraprocedural transfer functions.
 			$\TmpFlow \leftarrow \TmpFlow \cup \Input[\stmtT_k]$\;				
 		}
 		\If{$\TmpFlow \neq \emptyset$}{
-			$\Output[\stmtP] \leftarrow \Output[\stmtP] \cup \TmpFlow \cup \set{\stmt}$\;
+			$\Output[\stmtP] \leftarrow \Input[\stmtP] \cup \TmpFlow \cup \set{\stmt}$\;
 		}
 	}	
 	\uCase{$\LSTORE\ [*p = q] $}{
 		\ForEach{$\stmtA_k \in \pointsto{\overline{\stmt}}{p}$}{
 			$\stmtT_k \leftarrow \Toplevel(\stmtA_k)$\;		
 			\If{$\Input[\stmtQ] \neq \emptyset$}{			
-				$\Output[\stmtT_k] \leftarrow \Output[\stmtT_k] \cup \Input[\stmtQ] \cup \set{\stmt}$\;				
+				$\Output[\stmtT_k] \leftarrow \Input[\stmtT_k] \cup \Input[\stmtQ] \cup \set{\stmt}$\;				
 			}
 		}	
 	}	
@@ -217,8 +217,8 @@ algorithm.
 \SetKwData{tainted}{tainted}
 \SetKwData{fZero}{$f_0$}
 \SetKwData{False}{False}
-\SetKwData{Input}{inFlow$_s$}
-\SetKwData{Output}{outFlow$_s$}
+\SetKwData{Input}{IN$_s$}
+\SetKwData{Output}{OUT$_s$}
 \SetKwData{TmpFlow}{tmpFlow}
 \SetKwFunction{Map}{map}
 \SetKwFunction{LCOPY}{COPY}
@@ -253,11 +253,11 @@ algorithm.
 	\Case{$\LCALL\ [\stmtR = \mathit{call}\ \Func(a_0, a_1, ..., a_n)]$}{
 		\If{$\summaryTable[\Func]\ \mathit{exists}$}{
 			\If{$\summaryTable[\Func][n+1] = 1$}{
-					$\Output[\stmtR] \leftarrow \set{\stmt}$\;						
+					$\Output[\stmtR] \leftarrow \Input[\stmtR] \cup \set{\stmt}$\;						
 			}			
 			\ForEach{$\stmtA_k, k \in \set{0, 1, ..., n}$}{
 				\If{$\summaryTable[\Func][k] = 1$}{
-					$\Output[\stmtA_k] \leftarrow \Output[\stmtA_k] \cup  \set{\stmt}$\;																
+					$\Output[\stmtA_k] \leftarrow \Input[\stmtA_k] \cup  \set{\stmt}$\;																
 				}							
 			}
 		}
@@ -290,10 +290,10 @@ $\mathit{D}$					&	$\mathit{Var} \rightarrow 2^\mathit{Inst}$			\\
 								&	Analysis dataflow set 								\\ \hline
 $\mathit{Proc}$					&	Set of all program functions and procedures 		\\ \hline
 $\mathit{Inst}$					&	Set of instructions in the program 					\\ \hline
-$\mathit{inFlow}$				&	$\mathit{Inst}\ \rightarrow\ \mathit{D}$ 			\\
+$\mathit{IN}$				&	$\mathit{Inst}\ \rightarrow\ \mathit{D}$ 			\\
 								&	Function that returns the dataflow values			\\
 		    					&	at the program point before an instruction 			\\ 	\hline
-$\mathit{outFlow}$				&	$\mathit{Inst}\ \rightarrow\ \mathit{D}$ 			\\
+$\mathit{OUT}$				&	$\mathit{Inst}\ \rightarrow\ \mathit{D}$ 			\\
 								&	Function that returns the dataflow values			\\
 		    					&	at the program point after an instruction 			\\ 	\hline	    		
 $\mathit{worklist}$				&	Set of remaining instructions to be processed 		\\ \hline
@@ -338,8 +338,6 @@ describes the symbols we use.
 \SetKwData{worklist}{worklist}
 \SetKwFunction{Input}{input}
 \SetKwFunction{Output}{output}
-\SetKwFunction{InFlow}{inFlow}
-\SetKwFunction{OutFlow}{outFlow}
 \SetKwFunction{InterFlow}{InterFlow}
 \SetKwFunction{First}{first}
 \SetKwFunction{Update}{Update}
@@ -405,8 +403,8 @@ as sinks.
 \SetKwData{tainted}{tainted}
 \SetKwData{fZero}{$f_0$}
 \SetKwData{False}{False}
-\SetKwData{Input}{inFlow$_s$}
-\SetKwData{Output}{outFlow$_s$}
+\SetKwData{Input}{IN$_s$}
+\SetKwData{Output}{OUT$_s$}
 \SetKwData{TmpFlow}{tmpFlow}
 \SetKwData{summaryTable}{summaryTable}
 \SetKwFunction{Map}{map}
@@ -445,14 +443,14 @@ as sinks.
 			$\TmpFlow \leftarrow \TmpFlow \cup \Input[\stmtT_k]$\;				
 		}
 		\If{$\TmpFlow \neq \emptyset$}{
-			$\Output[\stmtP] \leftarrow \Output[\stmtP] \cup \TmpFlow \cup \set{\stmt}$\;
+			$\Output[\stmtP] \leftarrow \Input[\stmtP] \cup \TmpFlow \cup \set{\stmt}$\;
 		}
 	}	
 	\Case{$\LSTORE\ [*p = q] $}{
 		\ForEach{$\stmtA_k \in \pointsto{\overline{\stmt}}{p}$}{
 			$\stmtT_k \leftarrow \Toplevel(\stmtA_k)$\;		
 			\If{$\Input[\stmtQ] \neq \emptyset$}{			
-				$\Output[\stmtT_k] \leftarrow \Output[\stmtT_k] \cup \Input[\stmtQ] \cup \set{\stmt}$\;				
+				$\Output[\stmtT_k] \leftarrow \Input[\stmtT_k] \cup \Input[\stmtQ] \cup \set{\stmt}$\;				
 			}
 		}	
 	}	
@@ -490,17 +488,17 @@ as sinks.
 Function \texttt{InterFlow} (Algorithm~\ref{fig:algoFlow})
 implements the analysis' transfer equations.
 
-\begin{figure}
+\begin{figure*}
 \[
 	\mathit{GEN}(s)	=
 	\begin{cases}
 		\set{s},	&\text{COPY\ [$p = q$]}	\\
-		\bigcup_{}^{} \myinflow{}[t_k]\ \text{where} t_k = [\mathit{toplevel(a_k)}],	&\text{LOAD\ [$p = *q$]}	\\		
-		\set{s},	&\text{STORE\ [$*p = q$]}				
+		\bigcup_{a_k \in \pointsto{s}{q}}^{} \myinflow{}_s[t_k]\ \text{where}\ t_k =\ \mathit{toplevel(a_k)},	&\text{LOAD\ [$p = *q$]}	\\		
+		\bigcup_{a_k \in \pointsto{s}{p}}^{} \myinflow{}_s[t_k] \cup \myinflow{}_s[q]\ \text{where}\ t_k =\ \mathit{toplevel(a_k)},	&\text{STORE\ [$*p = q$]}				
 	\end{cases}
 \]
-\caption{Kill and Gen Sets}
-\end{figure}
+\caption{Gen Sets}
+\end{figure*}
 
 \subsection{Recursive and Mutual Recursive Function Calls} 
 
