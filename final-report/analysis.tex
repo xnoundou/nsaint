@@ -22,8 +22,8 @@
 \newcommand{\addrofdef}{$\text{ADDROF}\ [p = \&a]$}
 \newcommand{\storedef}{$\text{STORE}\ [*p = q]$}
 \newcommand{\sourcedef}{$\text{SOURCE}\ [r = \text{call}\ \text{func}(a_0, a_1, ..., a_n)]$}
-\newcommand{\calldef}{$\text{SINK} [r = \text{call}\ \text{func}]$}
-\newcommand{\sinkdef}{\calldef}
+\newcommand{\calldef}{$\text{CALL} [r = \text{call}\ \text{func}(a_0, a_1, ..., a_n)]$}
+\newcommand{\sinkdef}{$\text{SINK} [r = \text{call}\ \text{func}]$}
 
 Our taint analysis is interprocedural and can be run
 either context-insensitively or context-sensitively.
@@ -82,7 +82,15 @@ points-to set of a variable after a corresponding statement s.
 			
 		\mybigcup{f_k \in\ \text{formals}(s)}{} \myinflow{}_s[f_k] \cup \set{s}\ \text{where}\ \text{taint}(f_k) \equiv\ \text{true},	
 			&\text{if $s$ is a \sourcedef}	
-							
+	\end{cases}
+\]
+\[	
+	\mathit{GEN}(s) =
+	\begin{cases}			
+		\mybigcup{f_k \in\ \text{formals}(s)}{} \myinflow{}_s[f_k] \cup \myinflow{}_s[r] \cup \set{s}\ \text{where}\ \text{summaryTable}[\text{func}][f_k] \equiv\ 1,	
+			&\text{if $s$ is a \calldef}	\\							
+		\mybigcup{f_k \in\ \text{formals}(s)}{} \myinflow{}_s[f_k] \cup \myinflow{}_s[r] \cup \set{s}\ \text{where}\ \text{summaryTable}[\text{func}][f_k] \equiv\ 1,	
+			&\text{if $s$ is a \calldef}								
 	\end{cases}
 \]
 \caption{Gen Sets}
