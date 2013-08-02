@@ -1,4 +1,4 @@
-\section{Analysis Algorithms}
+\section{Analysis Algorithms}\label{app:algo}
 
 \begin{comment}
 \begin{table}[!h]
@@ -143,15 +143,13 @@ $\worklist \leftarrow \set{s_0}$\;
 	}	
 %Context-insensitive	
 	\Case{$\LCALL\ [\stmtR = \mathit{call}\ \Func(a_0, a_1, ..., a_n)]$}{
-		\If{$\summaryTable[\Func]\ \mathit{exists}$}{
-			\If{$\summaryTable[\Func][n+1] = 1$}{
-					$\Output[\stmtR] \leftarrow \Input[\stmtR] \cup \set{\stmt}$\;						
-			}			
-			\ForEach{$\stmtA_k, k \in \set{0, 1, ..., n}$}{
-				\If{$\summaryTable[\Func][k] = 1$}{
-					$\Output[\stmtA_k] \leftarrow \Input[\stmtA_k] \cup  \set{\stmt}$\;																
-				}							
-			}
+		\If{$\summaryTable[\Func][n+1] = 1$}{
+			$\Output[\stmtR] \leftarrow \Input[\stmtR] \cup \set{\stmt}$\;						
+		}			
+		\ForEach{$\stmtA_k, k \in \set{0, 1, ..., n}$}{
+			\If{$\summaryTable[\Func][k] = 1$}{
+				$\Output[\stmtA_k] \leftarrow \Input[\stmtA_k] \cup  \set{\stmt}$\;																
+			}							
 		}
 	}		
 	\uCase{$\LSOURCE\ [\stmtR = \mathit{call}\ \Func]$}{
