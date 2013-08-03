@@ -5,7 +5,7 @@ detect format string vulnerabilities in C programs. Their analysis
 is based on type qualifiers and type inference. Given a C program,
 an initial subset of the program is annotated with the type qualifiers
 \texttt{tainted} and \texttt{untainted}. The paper defines a set
-of inference rules, which has a rule for each construct of
+of inference rules, that has a rule for each construct of
 the C programming language. The inference rules are used, together
 with the initial program annotations to generate type qualifier
 constraints over the program. The analysis then warns the user
@@ -22,6 +22,36 @@ STAC defines a set of inference rules that allows to compute
 type environments for C program statements and functions. The paper
 also proves the soundness of the presented taint analysis.
 
+\paragraph{\cite{Jovanovic:2006:Pixy}} presents \texttt{Pixy}: a tool
+that statically scans for cross site scripting vulnerabilities in PHP
+scripts. Pixy and and our project have similar goals. The main
+difference is that Pixy performs a static analysis whereas we plan
+to develop a dynamic analysis. Pixy implements a flow-sensitive,
+interprocedural and context-sensitive dataflow analysis, which
+is based on an alias and literal analysis. After evaluating
+their tool on three PHP applications, they authors observed 
+a false positives rate of around $50\%$.
+
 %Dynamic taint analysis
+\paragraph{\cite{Clause:2007:Dytan}} presents \texttt{Dytan}: a generic
+framework for implementing dynamic taint analyses. Dytan generates
+dynamic analyses that perform on x86 binaries. The source code of the
+analyzed application does not need to be available.
+Developers specify a dynamic taint analysis with Dytan by giving
+(1) taint sources, (2) taint sinks, (3) and a propagation policy.
+Taint sources can be variable names, function-return values, and
+data read from I/O stream such as a file or a network connection.
+Taint sinks are specified by memory/code location or based on the
+usage scenario. Memory and code location specifications may include 
+a variable's name and scope, a procedure name and the index of a formal parameter, 
+a position in the source code, an offset from the base address of the program,
+and the entry or exit points of a procedure.
+A usage scenario specification takes into account whether the developer
+wants check a taint information before the execution instructions of a given type
+(e.g., a jump instruction). For that, the developer needs to
+specify an instruction type and its corresponding checking operation.
+Dytan provides dataflow and control-flow based propagation policies.
+Dataflow propagation policies are based on (explicit) data dependencies.
+Control-flow dependencies relies on (implicit) control dependencies. 
 
 %Taint Analysis for managed languages

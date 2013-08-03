@@ -8,12 +8,11 @@
 \end{figure*}
 
 Figure~\ref{fig:sample} shows $4$ C functions:
-\main, \even, \odd, and \compute.
-
+\main{}, \even{}, \odd{}, and \compute{}.
 In \main{}, function \texttt{scanf} from the standard input/ouput
 library gets an integer input from user at line $3$
 and stores it in variable \texttt{x}. \texttt{x} 
-becomes \textit{tainted} since it holds a value from
+becomes tainted since it holds a value from
 the environment which has not been validated and
 sanitized.
 \texttt{x} is later as argument to \even{} and \odd{} at
@@ -25,8 +24,8 @@ line $13$ through function \texttt{scanf}. Parameter
 at calling sites.
 This is for instance the case in \main{} at line $6$.
 Observe that tainted parameter \texttt{x} is used in
-the conditional expression at line $12$, which constitute
-a case of \textit{control-flow based taint propagation}.
+the conditional expression at line $12$, which is
+a case of control-flow based taint propagation.
 Our analysis will not handle control-flow based taint
 propagation\footnote{Detection of some of denial-of-service
 vulnerabilities requires handling of control-flow based
@@ -34,7 +33,7 @@ taint propagation \cite{Chang:2009:ICS}}.
 
 Functions \even{} and \odd{} have one formal parameter
 \texttt{x}. Both do not taint \texttt{x} in their code.
-Thus \texttt{x} may be tainted in their body iff it was
+Thus \texttt{x} may be tainted within their body iff it was
 passed as tainted at calling sites. This is the case
 for \even{} at line $4$ in \main{}. Thus implying a tainted
 parameter for \odd{} at line $32$ in \even{}.
