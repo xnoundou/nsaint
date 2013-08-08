@@ -8,7 +8,9 @@ int gcd ( int a , int b ) {
     c = a % b;
     a = b;
     b = c;
+
     /* INV: (a > c) && (b > c) */
+
     printf("a: %d, b: %d\n", a, b);
     inv1 = (a >= c) && (b >= c);
     assert( inv1 );

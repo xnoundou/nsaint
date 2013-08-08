@@ -10,21 +10,26 @@ before array accesses is useful at it may help developers detect
 incorrect array accesses that may lead to program termination
 at runtime.
 
-EXAMPLE
-
 Our analysis is implemented in the
 Clang framework\footnote{http://clang-analyzer.llvm.org/},
 which is a static source code analysis tool to find bugs in
 C, C++, and objective C.
 
 \subsection*{Intraprocedural Analysis}
-%\bibliographystyle{plain}
-%\bibliography{ctaint-proposal}
 
 The Clang analyzer performs a symbolic execution on the CFG
 of the program under analysis. The analysis is path- and
 context-sensitive. To comply to the clang framework, we need
 to implement our analysis as a \textit{checker}. 
+
+We need to create a \texttt{struct} that will map the status
+of array variables to their status.
+The state of each array will contain:
+\begin{itemize}
+\item the index variable associated with it (we will not handle aliasing)
+\item a boolean variable that will be set to true once the
+index variable has been checked in a conditional statement.
+\end{itemize}
 
 \subsection*{Clang Infrastructure Integration}
 
