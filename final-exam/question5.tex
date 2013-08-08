@@ -1,0 +1,35 @@
+\section*{Question 5}
+
+\subsection*{Introduction}
+This paper presents an intraprocedural analysis that detects
+array accesses for which index variable checking was not done
+on some paths leading to the access.
+
+Statically verifying that programs check array index variables
+before array accesses is useful at it may help developers detect
+incorrect array accesses that may lead to program termination
+at runtime.
+
+EXAMPLE
+
+Our analysis is implemented in the
+Clang framework\footnote{http://clang-analyzer.llvm.org/},
+which is a static source code analysis tool to find bugs in
+C, C++, and objective C.
+
+\subsection*{Intraprocedural Analysis}
+%\bibliographystyle{plain}
+%\bibliography{ctaint-proposal}
+
+The Clang analyzer performs a symbolic execution on the CFG
+of the program under analysis. The analysis is path- and
+context-sensitive. To comply to the clang framework, we need
+to implement our analysis as a \textit{checker}. 
+
+
+
+
+
+
+
+

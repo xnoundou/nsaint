@@ -1,4 +1,4 @@
-#include "FunctionPassCTaint.hpp"
+#include "FunctionPassCTaint.h"
 
 char CTaintFunctionPass::ID = 0;
 

@@ -1,4 +1,4 @@
-#include "ModulePassCTaint.hpp"
+#include "ModulePassCTaint.h"
 
 char CTaintModulePass::ID = 0;
 

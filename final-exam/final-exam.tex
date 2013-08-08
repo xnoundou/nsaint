@@ -1,0 +1,56 @@
+\documentclass[11pt,onecolumn,letterpaper]{article}
+\usepackage{amsmath,amssymb,graphicx,algorithmic,xspace,url,latexsym}
+
+\usepackage[parfill]{parskip}
+\usepackage{paralist}
+\usepackage{times}
+\usepackage{textcomp}
+\usepackage{hyperref}
+
+\setlength{\evensidemargin}{-0.1in} \setlength{\oddsidemargin}{-0.1in}
+\setlength{\textwidth}{6.5in} \setlength{\textheight}{9.0in}
+\setlength{\topmargin}{-0.5in}
+%\setlength{\headheight}{0in}
+
+\newcounter{qNum}
+\setcounter{qNum}{1}
+\newcommand{\q}[1]{\vspace*{0.15in} \noindent
+\arabic{qNum}.(#1 points)~\stepcounter{qNum}}
+
+\newcommand{\main}{\(Main\)}
+\newcommand{\lib}{\(Lib\)}
+\newcommand{\set}[1]{\{#1\}}
+
+\newcommand{\js}{JavaScript}
+\newcommand{\dl}{\texttt{DOLOTO}}
+
+\newtheorem{theorem}{Theorem}
+
+\sloppypar
+\begin{document}
+\pagestyle{empty}
+
+\author{Xavier NOUMBISSI}
+
+\begin{center}
+\begin{large}
+XAVIER NOUMBISSI\\
+xnoumbis@uwaterloo.ca\\
+\vspace{0.5cm}
+ECE 750: Static Analysis for Software Engineering\\
+\vspace{0.5cm}
+Final Exam
+\end{large}
+
+\end{center}
+
+\input{question3}
+
+\input{question5}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\bibliographystyle{plain}
+\bibliography{doloto.summary}
+
+\end{document}
