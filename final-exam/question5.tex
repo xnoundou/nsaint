@@ -26,7 +26,25 @@ of the program under analysis. The analysis is path- and
 context-sensitive. To comply to the clang framework, we need
 to implement our analysis as a \textit{checker}. 
 
+\subsection*{Clang Infrastructure Integration}
 
+We implemented our analysis using LLVM 3.3.
+\texttt{LLVMSRC} denotes the root folder of the LLVM source tree.
+
+We added our source code file \texttt{Q5ArrayChaker.cpp} in the
+clang folder \texttt{LLVMSRC/tools/clang/lib/StaticAnalyzer/Checkers},
+and a description of our checker in the file
+\texttt{LLVMSRC/tools/clang/lib/StaticAnalyzer/Checkers/Checkers.td}
+within the section \textit{Security Checkers}. 
+We added our checker in the \textit{alpha package} since it is a new checker.
+
+Verification that the new checker was successfully added occurs with the
+command
+\begin{verbatim}
+clang -cc1 -analyzer-checker-help
+\end{verbatim}
+
+Issuing the above command shows our checker as: \textit{alpha.security.Q5ArracyChecker}.
 
 
 

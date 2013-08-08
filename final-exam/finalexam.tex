@@ -6,6 +6,11 @@
 \usepackage{times}
 \usepackage{textcomp}
 \usepackage{hyperref}
+\usepackage{listings}
+\usepackage{color}
+
+\usepackage{makeidx}
+\makeindex
 
 \setlength{\evensidemargin}{-0.1in} \setlength{\oddsidemargin}{-0.1in}
 \setlength{\textwidth}{6.5in} \setlength{\textheight}{9.0in}
@@ -26,6 +31,16 @@
 
 \newtheorem{theorem}{Theorem}
 
+\newcommand{\EmbedCode}[3]{
+	\lstset{language=#1, frame=none, backgroundcolor=\color{white},
+			rulecolor=, xleftmargin=5.0ex}
+	%\lstset{linewidth=\columnwidth}
+	\lstset{commentstyle=\textit, stringstyle=\upshape,showspaces=false}
+	\lstset{frame=none, showstringspaces=false, numbers=#3,
+			numberblanklines=false}
+	\lstinputlisting[]{#2} 
+}
+
 \sloppypar
 \begin{document}
 \pagestyle{empty}
@@ -45,10 +60,16 @@ Final Exam
 \end{center}
 
 \input{question2}
+\newpage
 
 \input{question3}
+\newpage
+
+\input{question4}
+\newpage
 
 \input{question5}
+\newpage
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

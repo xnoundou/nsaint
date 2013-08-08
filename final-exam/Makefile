@@ -1,12 +1,12 @@
-default: finxalexam.pdf
+default: finalexam.pdf
 
-finxalexam.pdf: clean finxalexam.tex finxalexam.bib
-	pdflatex finxalexam
-	bibtex finxalexam
-	pdflatex finxalexam
-	pdflatex finxalexam
-	evince finxalexam.pdf
+finalexam.pdf: clean finalexam.tex finalexam.bib
+	pdflatex finalexam
+	bibtex finalexam
+	pdflatex finalexam
+	pdflatex finalexam
+	evince finalexam.pdf
 
 clean:
 	rm -f *~ *.glo *.aux *.bbl *.brf *.idx *.bak *.ilg *.ind *.lof *.log \
-	   *.lot *.out *.thm *.toc *.blg finxalexam.pdf finxalexam.synctex.gz
+	   *.lot *.out *.thm *.toc *.blg finalexam.pdf finalexam.synctex.gz
