@@ -1,0 +1,19 @@
+\section*{Question 2: Application of Techniques from \cite{Pradel:2013:ATS}}
+
+\newcommand{\myA}{\texttt{A}}
+\newcommand{\myB}{\texttt{B}}
+
+Given class \myA{} and its subclass \myB{} from the exam
+sheet, we are going to show that class \myB{} is a
+\textit{crashing substitute} of its super class \myA{}.
+
+\paragraph*{Constructor Mapping}
+Given the fact that the subclass (\myB{}) and the super
+class (\myA{}) do not have the exact same types of arguments,
+we define the following constructor mapping that show the
+equivalence between constructor calls of \myB{} and \myB{}.
+
+$\mathit{B}(int) \rightarrow \mathit{A}()$
+
+\paragraph*{Test Generation}
+According to 
