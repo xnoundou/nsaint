@@ -1,7 +1,5 @@
 \section{Staged Analysis}\label{sec:analysis}
 
-\newcommand{\Aset}{\mathcal{A}}
-\newcommand{\Pset}{\mathcal{P}}
 \newcommand{\varset}{\mathit{Var}}
 \newcommand{\instset}{\mathit{Inst}}
 \newcommand{\procset}{\mathit{Proc}}
@@ -18,27 +16,18 @@
 \newcommand{\aand}{\mathit{and}}
 \newcommand{\mybigcup}[2]{\mathlarger{\bigcup_{#1}^{#2}}}
 
-\newcommand{\copydef}{$\text{COPY}\ [p = q]$}
-\newcommand{\loaddef}{$\text{LOAD}\ [p = *q]$}
-\newcommand{\addrofdef}{$\text{ADDROF}\ [p = \&a]$}
-\newcommand{\storedef}{$\text{STORE}\ [*p = q]$}
-\newcommand{\sourcedef}{\text{SOURCE}\ [r = \text{call}\ \text{func}(a_0, a_1, ..., a_n)]}
-\newcommand{\calldef}{\text{CALL} [r = \text{call}\ \text{func}(a_0, a_1, ..., a_n)]}
-\newcommand{\callinsdef}{\text{CALL-INS} [r = \text{call}\ \text{func}(a_0, a_1, ..., a_n)]}
-\newcommand{\sinkdef}{\text{SINK} [r = \text{call}\ \text{func}]}
-
 Our taint analysis is interprocedural and can be run
 either context-insensitively or context-sensitively.
 Either of the interprocedural analyses is always preceded
 by an intraprocedural analysis. The intraprocedural analysis
 computes initial data flow sets that are reused by the
 interprocedural analyses.
-The analysis builds and maintains a summary table that contains
-taint information about program procedure formal parameters
-and return value.
+The analysis constructs a summary table which contains
+taint information about program procedure's formal
+parameters and return value.
 The initial values of the summary table are written by
 the intraprocedural analysis. The use of a summary table
-allows a fast access to key information about procedures.
+allows fast access to key information about procedures.
 This is especially useful during the subsequent interprocedural
 phases.
 For instance, the intraprocedural analysis would
@@ -54,8 +43,8 @@ where $\varset$ is the set of all program variables and
 $\instset$ the set of all program statements. 
 At a statement labelled $s$, the incoming dataflow set $\myinflow_s$
 is a mapping from each program variable $v$ to a set of
-previous program statements where $v$ might be tainted.
-If $v$ might not be tainted before statment $s$, then
+previous program tainting statements.
+If $v$ is definitely tainted before statement $s$, then
 $\myinflow_s[v] = \emptyset$. Otherwise, $\myinflow_s[v]$
 contains statements where $v$ might get tainted.
 
@@ -114,57 +103,59 @@ points-to set of a variable after a corresponding statement s.
 \end{comment}
 \paragraph{Pointer Analysis}
 Our analysis is designed to work by using the results of
-a prior computed pointer analysis. This may enable us to
-do various experimentations with different types of pointer
+a previously computed pointer analysis. This enables us to
+do experiments with different types of pointer
 analyses. For this project, we choose to use a hybrid
 pointer analysis \cite{Lhotak:2011:PAE}. \lothak{} at al.'s
 pointer analysis attempts to benefit from the
 advantages of both flow-insensitive and flow-sensitive 
 pointer analyses. It is implemented as an extension of
 Andersen's interprocedural flow-insensitive analysis, but
-produces additional flow-sensitive information. The analysis'
+produces additional flow-sensitive information. The analysis
 algorithm relies on the observation that strong updates
 are only possible whenever an abstract pointer location is
 a singleton set. Therefore the analysis works as a
 flow-insensitive analysis, but applies flow-sensitive
 rules whenever an abstract pointer location is a singleton set.
-The evaluation results of the paper show that the performance
-of the strong update analysis is comparable to that of a
-flow-insensitive analysis. The results also show that the hybrid
+\lothak{} et al.'s results show that the strong update
+analysis runs about as quickly as a flow-insensitive analysis.
+The results also show that the hybrid
 analysis provides the same benefits as a fully flow-sensitive
 analysis at $98\%$ of stores and loads in the program.
 
 \paragraph{Intraprocedural Analysis}
-Program functions are analyzed in the reverse topological
-order of the call graph.
-The intraprocedural analysis works on each function body and
-do not take into account interprocedural control flow.
-The computed data flow sets are reused later on by the
-subsequent interprocedural analyses. In particular, taint
-information about procedure formal parameters and return value
-is kept in a global summary table.
-All tainted variables due to source functions are found by
-the intraprocedural analysis. 
-For instance, the intraprocedural analysis detects that variable
-\texttt{sum} of procedure \compute{} of our running example
-(Figure~\ref{fig:sample}) may be tainted due to the call
-to \texttt{scanf} at line $13$.
-the intraprocedural analysis always run first, before the
-interprocedural context-insensitive or context-sensitive
-analyses.
+Program functions are analyzed in the reverse
+topological order of the call graph (i.e starting
+from the leaves of the callgraph).
+The intraprocedural analysis works on each function
+body and do not take into account interprocedural
+control flow. The computed data flow sets are reused
+later on by the subsequent interprocedural analyses.
+In particular, taint information about procedure
+formal parameters and return value is kept in a
+global summary table.
+All tainted variables due to source functions are
+found by the intraprocedural analysis. 
+For instance, the intraprocedural analysis detects
+that variable \texttt{sum} of procedure \compute{}
+of our running example (Figure~\ref{fig:sample})
+may be tainted due to the call to \texttt{scanf} at
+line $13$. The intraprocedural analysis always runs
+first, before the interprocedural context-insensitive
+or context-sensitive analyses.
 
 \paragraph{Context-Insensitive Analysis}
 Our context-insensitive analysis is performed
 in the topological order of the call graph, and uses
 results from the intraprocedural analysis whenever
 available. Taint assumptions about callee actual
-parameters at call sites are done based on the value
-present in the summary table. The analysis itself does not
-attempt to propagate flow set values from the caller
-to the callee.
+parameters at call sites depend on the summary table.
+The analysis itself does not attempt to propagate flow
+set values from the caller to the callee.
+
 For instance, the intraprocedural analysis of function
-\main{} marks variable \texttt{x} as tainted in the
-summary table. This is information is then reused by
+\main{} previously marked variable \texttt{x} as tainted
+in the summary table. This is information is then reused by
 the context-insensitive analysis when it reaches the
 call site at line $6$ of \main{}.
 During the subsequent analysis of \main{}, the fact that
@@ -172,6 +163,9 @@ variable \texttt{y} gets tainted at line $6$ is known
 directly from the summary table information written
 by \compute{}. This can then be reused for further
 taint propagation.
+
+Algorithm~\ref{fig:interFlow} in Appendix~\ref{app:algo}
+illustrates the context-insensitive algorithm.
 
 \paragraph{Context-Sensitive Analysis}
 The context-sensitive analysis works in the topological order
@@ -198,10 +192,14 @@ calls during the context-insensitive analysis. Only the
 procedure information from the summary table is used.
 
 On the other hand, functions on the call graph that builds a
-SCC are analyzed together suring the context-sensitive analysis.
+SCC are analyzed together during the context-sensitive analysis.
 That is, when a call to one function of a SCC happens,
 the analysis starts from that function and propagates taint
 information at call sites of all other functions in the SCC set,
 but each function is analyzed once.
 
 \paragraph{Complex Data Structures}
+
+We are not handling complex data structures in this project.
+However, we plan to report the usage of tainted C structures
+(\texttt{struct}) and arrays in future work.

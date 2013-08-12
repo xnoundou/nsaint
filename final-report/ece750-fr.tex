@@ -41,12 +41,6 @@
 \usepackage{relsize}
 \usepackage{appendix}
 
-\newcommand{\COPY}{\text{\textbf{[COPY]}}}
-\newcommand{\LOAD}{\text{\textbf{[LOAD]}}}
-\newcommand{\ADDROF}{\text{\textbf{[ADDROF]}}}
-\newcommand{\STORE}{\text{\textbf{[STORE]}}}
-\newcommand{\CALL}{\text{\textbf{[CALL]}}}
-
 \newcommand{\set}[1]{\{#1\}}
 
 \newcommand{\EmbedCode}[3]{
@@ -66,6 +60,25 @@
 
 \newcommand{\lothak}{Lhot\'{a}k}
 
+
+\newcommand{\Aset}{\mathcal{A}}
+\newcommand{\Pset}{\mathcal{P}}
+
+\newcommand{\copydef}{$\text{COPY}\ [p = q]$}
+\newcommand{\loaddef}{$\text{LOAD}\ [p = *q]$}
+\newcommand{\addrofdef}{$\text{ADDROF}\ [p = \&a]$}
+\newcommand{\storedef}{$\text{STORE}\ [*p = q]$}
+\newcommand{\sourcedef}{\text{SOURCE}\ [r = \text{call}\ \text{func}(a_0, a_1, ..., a_n)]}
+\newcommand{\calldef}{\text{CALL} [r = \text{call}\ \text{func}(a_0, a_1, ..., a_n)]}
+\newcommand{\callinsdef}{\text{CALL-INS} [r = \text{call}\ \text{func}(a_0, a_1, ..., a_n)]}
+\newcommand{\sinkdef}{\text{SINK} [r = \text{call}\ \text{func}]}
+
+\newcommand{\COPY}{\text{\textbf{[COPY]}}}
+\newcommand{\LOAD}{\text{\textbf{[LOAD]}}}
+\newcommand{\ADDROF}{\text{\textbf{[ADDROF]}}}
+\newcommand{\STORE}{\text{\textbf{[STORE]}}}
+\newcommand{\CALL}{\text{\textbf{[CALL]}}}
+
 \begin{document}
 
 %\conferenceinfo{WXYZ '05}{date, City.} 
@@ -75,7 +88,9 @@
 %\titlebanner{banner above paper title}        % These are ignored unless
 %\preprintfooter{short description of paper}   % 'preprint' option specified.
 
-\title{Staged Static Taint Analysis for C with LLVM}
+\title{Staged Static Taint Analysis for C with LLVM\\
+	   ECE 750-T5: Static Analysis for Software Engineering\\
+	   Project Report}
 %\subtitle{Subtitle Text, if any}
 
 \date{}

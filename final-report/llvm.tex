@@ -1,1 +1,48 @@
-\section{LLVM}\label{sec:llvm}
+\section{LLVM's Intermediate Representation}\label{sec:llvm}
+
+This section describes the intermediate representation (IR)
+we use to describe our analysis and algorithms.
+Our implementation is done in LLVM \cite{Lattner:2004:LLVM}
+(Low Level Virtual Machine). Thus we are going to present
+LLVM's intermediate representation and the corresponding
+notation we will use in this paper.
+
+LLVM's IR assumes the existence of two types of variables
+in C code: \textit{top-level} and \textit{address-taken}
+variables.
+Top-level variables are variables that can not be accessed
+in the code through a pointer to their address. That is,
+their memory address was not copied to another variable
+(i.e. the do not have any application of the address-of
+operator in the code under analysis). In this paper, we
+denote the set of top-level variables with $\Pset$.
+For instance, $b1$, and $b2$ in our sample code of
+Figure~\ref{fig:sample} are top-level
+variables ($b1, b2 \in \Pset$).
+
+Address-taken variables are the ones accessible not
+only through their first declared name, but also through
+other variables that may point to their memory addresses.
+In fact, address-taken variables are variables on which the
+address-of operator (\texttt{\&}) has been applied. We
+will use $\Aset$ to denote the set of all address-taken
+variables in this paper.
+Variable \texttt{x} in Figure~\ref{fig:sample} is an example
+of an address-taken variable ($x \in \Aset$).
+
+Address-taken variables are store in memory only via
+STORE and LOAD instructions.
+
+%LLVM's IR maps all exit points of a function to one
+%unique location.
+We capture program elements using the following abstract
+instructions:
+\begin{itemize}
+\item $\copydef{}$: copy instruction.
+\item $\loaddef{}$: load instruction. $q \in \Aset$.
+\item $\addrofdef{}$: address-of operator. $a \in \Pset$
+\item $\storedef{}$: store instruction. $p \in \Aset$
+\item $\sourcedef{}$: call to a taint source function.
+\item $\calldef{}$: call to a function.
+\item $\sinkdef{}$: call to sink function.
+\end{itemize}
