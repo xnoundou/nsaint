@@ -1,0 +1,8 @@
+
+HOME=/home/noundou/tools/llvm-3.3.src/build
+
+bc:
+	clang -O3 -emit-llvm test.c -c -o test.bc
+
+opt:
+	opt -load $(HOME)/Release+Asserts/lib/CTaint.so -$(PASSARG) < test.bc > /dev/null

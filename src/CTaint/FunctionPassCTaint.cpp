@@ -9,6 +9,6 @@ bool CTaintFunctionPass::runOnFunction(Function &F) {
 }
 
 static RegisterPass<CTaintFunctionPass>
-X("ctaint", "CTaint World Pass",
+X("ctaintproc", "CTaint Function Pass",
    true /* Only looks at CFG */, 
    false /* Analysis Pass */ );
