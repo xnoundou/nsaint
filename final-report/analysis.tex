@@ -150,25 +150,23 @@ The pseudo code for the intraprocedural analysis
 is showed in Alorithm~\ref{fig:intraFlow}.
 
 \paragraph{Context-Insensitive Analysis}
-Our context-insensitive analysis is performed
-in the topological order of the call graph, and uses
-results from the intraprocedural analysis whenever
-available. Taint assumptions about callee actual
-parameters at call sites depend on the summary table.
-The analysis itself does not attempt to propagate flow
-set values from the caller to the callee.
-
+The context-insensitive analysis starts from the
+\textit{main function} (entry point of the program) and
+performs in the topological order of the call graph.
+It uses function return value taint assumptions from the
+intraprocedural analysis and applies them whenever available.
+The context-insensitive analysis does not attempt
+to propagate flow set values from the caller to the callee.
+It only updates flow set values of function returns
+(computed during the intraprocedural run) and further
+propagates taint information.
 For instance, the intraprocedural analysis of function
-\main{} previously marked variable \texttt{x} as tainted
-in the summary table. This is information is then reused by
-the context-insensitive analysis when it reaches the
-call site at line $6$ of \main{}.
-During the subsequent analysis of \main{}, the fact that
-variable \texttt{y} gets tainted at line $6$ is known
-directly from the summary table information written
-by \compute{}. This can then be reused for further
-taint propagation.
-
+\main{} marks the return value of \compute
+(stored in variable \texttt{sum}) as tainted in the summary
+table. At line $6$ of \main, the context-insensitive analysis 
+would take into account that the return value of \compute
+is stored into variable \texttt{y}. Thus, \texttt{y}
+becomes a tainted variable.
 Algorithm~\ref{fig:interFlow} in Appendix~\ref{app:algo}
 illustrates the context-insensitive algorithm.
 
