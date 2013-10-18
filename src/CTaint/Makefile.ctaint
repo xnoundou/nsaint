@@ -5,11 +5,13 @@ CTAINT=${LLVM_HOME}/lib/Transforms/CTaint
 
 CTAINT_BUILD=${LLVM_BUILD}/lib/Transforms/CTaint/Release+Asserts
 
-SRC=${CTAINT}/FunctionPassCTaint.cpp \
-    ${CTAINT}/ModulePassCTaint.cpp
+SRC=${CTAINT}/CTaintAnalysis.cpp
+#SRC=${CTAINT}/FunctionPassCTaint.cpp \
+#    ${CTAINT}/ModulePassCTaint.cpp
 
-OBJ=${CTAINT_BUILD}/FunctionPassCTaint.o \
-    ${CTAINT_BUILD}/ModulePassCTaint.o
+OBJ=${CTAINT_BUILD}/CTaintAnalysis.o
+#OBJ=${CTAINT_BUILD}/FunctionPassCTaint.o \
+#    ${CTAINT_BUILD}/ModulePassCTaint.o
 
 all: compile
 
@@ -19,8 +21,8 @@ compile: ${OBJ}
 	make -C ${LLVM_BUILD} -I ${LLVM_BUILD} > /dev/null
 
 bc:
-	clang -O3 -emit-llvm test.c -c -o test.bc
+	clang -O3 -emit-llvm tests/test.c -c -o tests/test.bc
 
 opt: compile
-	opt -load $(LLVM_LIB)/CTaint.so $(PASSARG) < test.bc > /dev/null
+	opt -load $(LLVM_LIB)/CTaint.so $(PASSARG) < tests/test.bc > /dev/null
 

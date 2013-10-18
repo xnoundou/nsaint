@@ -3,7 +3,7 @@
 # pattern old*.X to new*.X
 # Usage: ./thisScript <-n NEW> <-o OLD> <list of files>
 
-USAGE="Usage: $(basename $0) <-m|-f> <-i inputfile.bc>"
+USAGE="Usage: $(basename $0) <-i inputfile.bc>"
 
 if [ $# -lt 1 ]; then
   echo "$USAGE"
@@ -11,15 +11,12 @@ if [ $# -lt 1 ]; then
 fi
 
 moduleflag=
-functionflag=
 fileflag=
 
 while getopts 'mfi:' OPTION
 do
   case $OPTION in
     m)	moduleflag=1
-	;;
-    f)	functionflag=1
 	;;
     i)	fileflag=1
       	INPUTFILE="$OPTARG"
@@ -43,11 +40,7 @@ if [ ! "$fileflag" ]; then
   exit 2
 fi
 
-if [ "$moduleflag" ]; then
-  PASSARG="-ctaintmod"
-elif [ "$functionflag" ]; then
-  PASSARG="-ctaintproc"
-fi
+PASSARG="-ctaintmod"
 
 COMPILE="make -f Makefile.ctaint compile > /dev/null"
 CMD="opt -load $LLVM_LIB/CTaint.so "$PASSARG" < "$INPUTFILE" > /dev/null"
