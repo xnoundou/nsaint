@@ -12,9 +12,29 @@
 using std::vector;
 using std::string;
 
+#include <map>
+using std::map;
+
+using std::pair;
+
 using namespace llvm;
 
 namespace {
+
+	typedef vector< pair<bool, string> > FunctionParam;
+	map<string, FunctionParam> _summaryTable;
+
+	typedef string Var;
+	typedef map<Instruction, pair<Var, vector<Instruction> > >  FlowSet;
+
+	FlowSet *initialFlowSet;
+
+	map<string, Function*> _signatureToFunc;
+
+    CallGraphNode *_cgRootNode = 0;
+
+    Function *_pointerMain = 0;
+
     class CTaintUtil {
     public:
         inline static void log(const string &msg) {
@@ -70,13 +90,11 @@ namespace {
     private:        
         static const string _passId;
 
-        CallGraphNode *_cgRootNode;
-
-        Function *_pointerMain;
-
         inline static void log(const string &msg) {
             CTaintUtil::log( _passId + msg );
         }
+
+        void analyze(FlowSet &initDataFlow);
     };
 
     const string CTaintModulePass::_passId("[Module] ");
@@ -96,12 +114,23 @@ namespace {
         log("module identifier is " + M.getModuleIdentifier());
         
         for (Module::iterator b = M.begin(), be = M.end(); b != be; ++b) {
-            Function *ff = dyn_cast<Function > (b);
-            errs() << "testff0: " << ff->getName() << '\n';
-            //funcname[funcname_index++] = ff->getName();
+
+            Function *f = dyn_cast<Function > (b);
+            string fName = f->getName().str();
+            log("discovered function " + fName);
+
+            //TODO: use function signature as key instead
+            _signatureToFunc[fName] = f;
+
+            if ( !_pointerMain && 0 == fName.compare("main") )
+            	_pointerMain = f;
         }
 
         return false;
+    }
+
+    void CTaintModulePass::analyze(FlowSet &initDataFlow) {
+
     }
 
     static RegisterPass<CTaintModulePass>
