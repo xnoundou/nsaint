@@ -32,7 +32,7 @@ This is especially useful during the subsequent interprocedural
 phases.
 For instance, the intraprocedural analysis would
 detect that variable \texttt{sum} of procedure \compute{} in
-Figure~\ref{fig:sample}, which also contains the return
+Figure~\ref{fig:sample}, which also holds the return
 value of \compute{}, may be tainted due to the call
 to \texttt{scanf} at line $13$.
 Appendix~\ref{app:algo} presents pseudo code for all
@@ -44,24 +44,27 @@ $\instset$ the set of all program statements.
 At a statement labelled $s$, the incoming dataflow set $\myinflow_s$
 is a mapping from each program variable $v$ to a set of
 previous program tainting statements.
-If $v$ is definitely tainted before statement $s$, then
+If $v$ is definitely not tainted before statement $s$, then
 $\myinflow_s[v] = \emptyset$. Otherwise, $\myinflow_s[v]$
 contains statements where $v$ might get tainted.
 
 \paragraph{Formalisms}
 We use the following elements to describe our analysis:
-$\procset$ is the set of all program functions and procedures,
+$\varset$ is the set of all program variables,
+$\procset$ is the set of all program functions and procedures\footnote{We
+will use the terms function and procedure interchangeably in
+the remainder of this paper.},
 $\instset$ is the set of all program statements,
 $\firstfunc{}: \procset \rightarrow \instset$ returns the first
-statement of a function or procedure,
+statement of a function,
 $\formalsset{}: \procset \rightarrow 2^{\varset}$ returns the
-set of formal parameters of a function or procedure, 
+set of formal parameters of a function, 
 $\toplevelfunc{}: \Aset \rightarrow \Pset$ returns the top level
 variable of an address-taken variable,
 $\pointstobefore{s}{}: \varset \rightarrow 2^\Aset$ returns the
-points-to set of a variable before a corresponding statement s,
+points-to set of a variable before the statement labelled s,
 and $\pointstoafter{s}{}: \varset \rightarrow 2^\Aset$ returns the
-points-to set of a variable after a corresponding statement s.
+points-to set of a variable after the statement labelled s.
 \begin{comment}
 \begin{figure*}
 \[
@@ -102,23 +105,23 @@ points-to set of a variable after a corresponding statement s.
 \end{figure*}
 \end{comment}
 \paragraph{Pointer Analysis}
-Our analysis is designed to work by using the results of
-a previously computed pointer analysis. This enables us to
+Our analysis is designed to work using the results of
+a previously computed pointer analysis. This would enable us to
 do experiments with different types of pointer
 analyses. For this project, we choose to use a hybrid
-pointer analysis \cite{Lhotak:2011:PAE}. \lothak{} at al.'s
+pointer analysis \cite{Lhotak:2011:PAE}. The hybrid
 pointer analysis attempts to benefit from the
 advantages of both flow-insensitive and flow-sensitive 
 pointer analyses. It is implemented as an extension of
 Andersen's interprocedural flow-insensitive analysis, but
-produces additional flow-sensitive information. The analysis
+additionally produces flow-sensitive information. The analysis
 algorithm relies on the observation that strong updates
 are only possible whenever an abstract pointer location is
 a singleton set. Therefore the analysis works as a
 flow-insensitive analysis, but applies flow-sensitive
 rules whenever an abstract pointer location is a singleton set.
-\lothak{} et al.'s results show that the strong update
-analysis runs about as quickly as a flow-insensitive analysis.
+The evaluation of the hybrid pointer analysis shows that its
+strong update analysis runs about as fast as a flow-insensitive analysis.
 The results also show that the hybrid
 analysis provides the same benefits as a fully flow-sensitive
 analysis at $98\%$ of stores and loads in the program.
@@ -131,18 +134,20 @@ The intraprocedural analysis works on each function
 body and do not take into account interprocedural
 control flow. The computed data flow sets are reused
 later on by the subsequent interprocedural analyses.
-In particular, taint information about procedure
+In particular, taint information about function
 formal parameters and return value is kept in a
 global summary table.
 All tainted variables due to source functions are
 found by the intraprocedural analysis. 
 For instance, the intraprocedural analysis detects
-that variable \texttt{sum} of procedure \compute{}
-of our running example (Figure~\ref{fig:sample})
-may be tainted due to the call to \texttt{scanf} at
-line $13$. The intraprocedural analysis always runs
+that variable \texttt{sum} of function \compute{}
+in Figure~\ref{fig:sample} may be tainted due to the
+call to \texttt{scanf} at line $13$.
+The intraprocedural analysis always runs
 first, before the interprocedural context-insensitive
 or context-sensitive analyses.
+The pseudo code for the intraprocedural analysis
+is showed in Alorithm~\ref{fig:intraFlow}.
 
 \paragraph{Context-Insensitive Analysis}
 Our context-insensitive analysis is performed

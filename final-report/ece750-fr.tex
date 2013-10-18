@@ -29,6 +29,12 @@
 \usepackage{verbatim}
 \usepackage[pdftex]{graphicx}
 \usepackage{hyperref}
+\usepackage{xcolor}
+\hypersetup{
+  filebordercolor=white,
+  urlbordercolor=white %Remove boxes around link for url
+  }
+  
 \usepackage{paralist}
 \usepackage{amsmath}
 \usepackage{amssymb}
@@ -61,23 +67,25 @@
 \newcommand{\lothak}{Lhot\'{a}k}
 
 
-\newcommand{\Aset}{\mathcal{A}}
-\newcommand{\Pset}{\mathcal{P}}
+\newcommand{\Aset}{\mathcal{A}\xspace}
+\newcommand{\Pset}{\mathcal{P}\xspace}
 
-\newcommand{\copydef}{$\text{COPY}\ [p = q]$}
-\newcommand{\loaddef}{$\text{LOAD}\ [p = *q]$}
-\newcommand{\addrofdef}{$\text{ADDROF}\ [p = \&a]$}
-\newcommand{\storedef}{$\text{STORE}\ [*p = q]$}
-\newcommand{\sourcedef}{\text{SOURCE}\ [r = \text{call}\ \text{func}(a_0, a_1, ..., a_n)]}
-\newcommand{\calldef}{\text{CALL} [r = \text{call}\ \text{func}(a_0, a_1, ..., a_n)]}
-\newcommand{\callinsdef}{\text{CALL-INS} [r = \text{call}\ \text{func}(a_0, a_1, ..., a_n)]}
-\newcommand{\sinkdef}{\text{SINK} [r = \text{call}\ \text{func}]}
+\newcommand{\mathbold}[1]{\text{\textbf{#1}}}
 
-\newcommand{\COPY}{\text{\textbf{[COPY]}}}
-\newcommand{\LOAD}{\text{\textbf{[LOAD]}}}
-\newcommand{\ADDROF}{\text{\textbf{[ADDROF]}}}
-\newcommand{\STORE}{\text{\textbf{[STORE]}}}
-\newcommand{\CALL}{\text{\textbf{[CALL]}}}
+\newcommand{\copydef}{$\mathbold{COPY}\ [p = q]$\xspace}
+\newcommand{\loaddef}{$\mathbold{LOAD}\ [p = *q]$\xspace}
+\newcommand{\addrofdef}{$\mathbold{ADDROF}\ [p = \&a]$\xspace}
+\newcommand{\storedef}{$\mathbold{STORE}\ [*p = q]$\xspace}
+\newcommand{\sourcedef}{\mathbold{SOURCE}\ [r = \text{call}\ \text{func}(a_0, a_1, ..., a_n)]}
+\newcommand{\calldef}{\mathbold{CALL}\ [r = \text{call}\ \text{func}(a_0, a_1, ..., a_n)]}
+\newcommand{\callinsdef}{\mathbold{CALL-INS}\ [r = \text{call}\ \text{func}(a_0, a_1, ..., a_n)]}
+\newcommand{\sinkdef}{\mathbold{SINK}\ [r = \text{call}\ \text{func}]}
+
+\newcommand{\COPY}{\text{\textbf{[COPY]}}\xspace}
+\newcommand{\LOAD}{\text{\textbf{[LOAD]}}\xspace}
+\newcommand{\ADDROF}{\text{\textbf{[ADDROF]}}\xspace}
+\newcommand{\STORE}{\text{\textbf{[STORE]}}\xspace}
+\newcommand{\CALL}{\text{\textbf{[CALL]}}\xspace}
 
 \begin{document}
 
@@ -109,10 +117,10 @@
 \category{CR-number}{subcategory}{third-level}
 
 \terms
-Static Analysis
+Software Vulnerabilities, Static Analysis
 
 \keywords
-static analysis, taint analysis
+taint analysis, static analysis
 
 \input{introduction}
 

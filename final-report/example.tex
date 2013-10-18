@@ -10,26 +10,27 @@
 We are going to use a running example inspired from
 the one in \cite{Dimitru:2009:STAC}.
 Figure~\ref{fig:sample} shows $4$ C functions:
-\main{}, \even{}, \odd{}, and \compute{}.
+\main{}, \compute{}, \odd{}, and \even{}.
 In \main{}, function \texttt{scanf} from the standard input/ouput
 library gets an integer input from user at line $3$
 and stores it in variable \texttt{x}. \texttt{x} 
 becomes tainted since it holds a value from
 the environment which has not been validated and
 sanitized.
-\texttt{x} is later as argument to \even{} and \odd{} at
-lines $4$ and $5$ respectively.
+\texttt{x} is later used as argument to \even{} and \odd{}
+at lines $4$ and $5$ respectively.
 
 In \compute{}, variable \texttt{sum} gets tainted at
 line $13$ through function \texttt{scanf}. Parameter
 \texttt{x} is tainted only if it was passed tainted
 at calling sites.
 This is for instance the case in \main{} at line $6$.
-Observe that tainted parameter \texttt{x} is used in
-the conditional expression at line $12$, which is
-a case of control-flow based taint propagation.
+Observe that a tainted parameter \texttt{x} used in
+the conditional expression at line $12$, leads to
+a case of control-flow based taint propagation for
+variables in following branches.
 Our analysis will not handle control-flow based taint
-propagation\footnote{Detection of some of denial-of-service
+propagation\footnote{Detection of some denial-of-service
 vulnerabilities requires handling of control-flow based
 taint propagation \cite{Chang:2009:ICS}}. 
 
