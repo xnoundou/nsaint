@@ -4,6 +4,7 @@
 #include <llvm/IR/Module.h>
 #include <llvm/Analysis/CallGraph.h>
 #include <llvm/Analysis/LoopInfo.h>
+#include "llvm/Support/InstIterator.h"
 
 #include <fstream>
 
@@ -11,6 +12,9 @@
 #include <string>
 using std::vector;
 using std::string;
+
+#include <set>
+using std::set;
 
 #include <map>
 using std::map;
@@ -21,19 +25,30 @@ using namespace llvm;
 
 namespace {
 
+	/**
+     * Global data structures for the analysis algorithms
+     */
+
+#define ENTRY_POINT "main"
+
 	typedef vector< pair<bool, string> > FunctionParam;
+
+	//Summary table where we store function parameters and
+	//return value taunt information
 	map<string, FunctionParam> _summaryTable;
 
 	typedef string Var;
-	typedef map<Instruction, pair<Var, vector<Instruction> > >  FlowSet;
+	//Data structure representing the analysis flowset data type
+	typedef map<Instruction *, set<Var> >  FlowSet;
 
-	FlowSet *initialFlowSet;
+	FlowSet IN;
+	FlowSet OUT;
 
+	//Map from program funtion signatures as string to Function pointers
 	map<string, Function*> _signatureToFunc;
 
     CallGraphNode *_cgRootNode = 0;
 
-    Function *_pointerMain = 0;
 
     class CTaintUtil {
     public:
@@ -90,11 +105,19 @@ namespace {
     private:        
         static const string _passId;
 
+        //Pointer to the 'main' function
+        Function *_pointerMain;
+
+        //Pointer the 'main' function's first instruction
+        Instruction *_firstInstMain;
+
         inline static void log(const string &msg) {
             CTaintUtil::log( _passId + msg );
         }
 
-        void analyze(FlowSet &initDataFlow);
+        void initDataFlowSet(Function &f);
+        void analyze();
+        void interFlow(Function *caller, Instruction &inst);
     };
 
     const string CTaintModulePass::_passId("[Module] ");
@@ -102,12 +125,40 @@ namespace {
     char CTaintModulePass::ID = 0;
 
     CTaintModulePass::CTaintModulePass() : ModulePass(ID) {        
+    	_pointerMain = 0;
+    	_firstInstMain = 0;
     }
 
     void CTaintModulePass::getAnalysisUsage(AnalysisUsage &AU) const {
-        AU.setPreservesAll();
-        AU.addRequired<LoopInfo > ();
-        AU.addRequired<CallGraph > ();
+    	AU.setPreservesAll();
+    	AU.addRequired<LoopInfo > ();
+    	AU.addRequired<CallGraph > ();
+    }
+
+    void CTaintModulePass::interFlow(Function *caller, Instruction &inst) {
+
+    }
+
+    void CTaintModulePass::analyze() {
+
+    	if ( !_firstInstMain ) {
+    		log("[analyze] The first instruction of the main method is not set! Aborting ...");
+    		return ;
+    	}
+
+    	vector<Instruction *> workList;
+    	workList.push_back(_firstInstMain);
+
+    	Instruction *nextInst = 0;
+    	while(!workList.empty()) {
+    		nextInst = workList.front();
+    		interFlow(0, *nextInst);
+    		for() {
+    			bool outputIncreased = includes()
+    			if (OUT[i])
+    		}
+    	}
+
     }
 
     bool CTaintModulePass::runOnModule(Module &M) {
@@ -122,15 +173,25 @@ namespace {
             //TODO: use function signature as key instead
             _signatureToFunc[fName] = f;
 
-            if ( !_pointerMain && 0 == fName.compare("main") )
+            if ( !_pointerMain && 0 == fName.compare(ENTRY_POINT) ) {
             	_pointerMain = f;
+            	_firstInstMain = &*inst_begin(_pointerMain);
+
+            	//errs() << " fName: " << fName << "\n";
+            	//errs() << " first inst of main: " << *_firstInstMain << "\n";
+            }
         }
+
+        analyze();
 
         return false;
     }
 
-    void CTaintModulePass::analyze(FlowSet &initDataFlow) {
-
+    void CTaintModulePass::initDataFlowSet(Function &f){
+    	//map<Instruction, pair<Var, vector<Instruction> > >
+    	for (inst_iterator inst = inst_begin(f), end = inst_end(f); inst != end; ++inst) {
+    		//IN[*inst] =
+    	}
     }
 
     static RegisterPass<CTaintModulePass>

@@ -35,10 +35,10 @@ and context-sensitive analysis respectively.
 
 
 \InData{$\Func: \mathit{Proc}, \newline
-		 \InitDataFlow: \mathit{Inst} \rightarrow (\mathit{Var} \rightarrow 2^\mathit{Inst})$}
+		 \Input: \mathit{Inst} \rightarrow (\mathit{Var} \rightarrow 2^\mathit{Inst}), \newline
+		 \Output: \mathit{Inst} \rightarrow (\mathit{Var} \rightarrow 2^\mathit{Inst})$}
 \OutData{}
 $ s_0 \leftarrow \First(\Func)$\;
-$\Input[s_0] \leftarrow \InitDataFlow(s_0)$\;
 $\worklist \leftarrow \set{s_0}$\;
 \While{ $\worklist\ \neq\ \emptyset$ }{
 	$\varI \leftarrow \Next(\worklist)$\;
