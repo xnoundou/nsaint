@@ -3,7 +3,10 @@
 #include <llvm/Analysis/LoopInfo.h>
 #include <llvm/Support/InstIterator.h>
 
+#include <llvm/InstVisitor.h>
+
 #include "CTaintUtil.h"
+#include "Intraprocedural.h"
 
 #include <fstream>
 
@@ -24,28 +27,76 @@ using namespace llvm;
 
 namespace {
 
-struct CTaintAnalysis : public ModulePass {
+#define ENTRY_POINT "main"
+
+//Data structure representing the analysis flowset data type
+//TODO: use StringMap from llvm
+typedef string Var;
+typedef map<Instruction *, set<Var> >  FlowSet;
+
+typedef vector< pair<bool, string> > FunctionParam;
+
+struct CTaintAnalysis : public ModulePass,
+						public InstVisitor<CTaintAnalysis> {
 	static char ID;
 
 	CTaintAnalysis();
 	void getAnalysisUsage(AnalysisUsage & AU) const;
+
 	virtual bool runOnModule(Module & F);
+
+	void visitLoadInst(LoadInst &I);
+	void visitStoreInst(StoreInst &I);
+	void visitGetElementPtrInst(GetElementPtrInst &I);
+
+	/**
+	 * Only executed during interprodural analysis
+	 */
+	void visitCallInst(CallInst &I);
 
 private:
 	static const string _passId;
 
-	//Pointer to the 'main' function
+	/** Has the intraprocedural analysis been run */
+	bool _intraFlag;
+
+	/** Has the interprocedural Context-Insenstive analysis been run */
+	bool _interFlag;
+
+	/** Has the interprocedural Context-Senstive analysis been run */
+	bool _interContextSensitiveFlag;
+
+	/** Pointer to the 'main' function */
 	Function *_pointerMain;
 
-	//Pointer the 'main' function's first instruction
+	/** Pointer the 'main' function's first instruction */
 	Instruction *_firstInstMain;
+
+	CallGraphNode *_cgRootNode;
+
+	/**
+	 * Map from program funtion signatures as string to
+	 * Function pointers
+	 */
+	map<string, Function*> _signatureToFunc;
+
+	/**
+	 * Summary table where we store function parameters and
+	 * return value taunt information
+	 */
+	map<string, FunctionParam> _summaryTable;
+
+	FlowSet _IN;
+	FlowSet _OUT;
+
 
 	inline static void log(const string &msg) {
 		CTaintUtil::log( _passId + msg );
 	}
 
 	void initDataFlowSet(Function &f);
-	void analyze();
+
+	void intraFlow();
 	void interFlow(Function *caller, Instruction &inst);
 };
 
@@ -57,6 +108,10 @@ char CTaintAnalysis::ID = 0;
 CTaintAnalysis::CTaintAnalysis() : ModulePass(ID) {
 	_pointerMain = 0;
 	_firstInstMain = 0;
+	_intraFlag = false;
+	_interFlag = false;
+	_interContextSensitiveFlag = false;
+
 }
 
 void CTaintAnalysis::getAnalysisUsage(AnalysisUsage &AU) const {
@@ -65,40 +120,30 @@ void CTaintAnalysis::getAnalysisUsage(AnalysisUsage &AU) const {
 	AU.addRequired<CallGraph > ();
 }
 
+void CTaintAnalysis:: intraFlow() {
+	if ( _intraFlag )
+		return;
+
+
+
+	_intraFlag = true;
+}
+
 void CTaintAnalysis::interFlow(Function *caller, Instruction &inst) {
 
 }
 
-void CTaintAnalysis::analyze() {
+bool CTaintAnalysis::runOnModule(Module &m) {
+	log("module identifier is " + m.getModuleIdentifier());
 
-	if ( !_firstInstMain ) {
-		log("[analyze] The first instruction of the main method is not set! Aborting ...");
-		return ;
-	}
-
-	vector<Instruction *> workList;
-	workList.push_back(_firstInstMain);
-
-	Instruction *nextInst = 0;
-	while(!workList.empty()) {
-		nextInst = workList.front();
-		interFlow(0, *nextInst);
-		//for() {
-		//Instruction *i = 0;
-		//bool outputIncreased = std::includes(OUT[i].begin(), OUT[i].end(),
-		//								IN[i].begin(), IN[i].end());
-		//if (OUT[i])
-		//}
-	}
-
-}
-
-bool CTaintAnalysis::runOnModule(Module &M) {
-	log("module identifier is " + M.getModuleIdentifier());
-
-	for (Module::iterator b = M.begin(), be = M.end(); b != be; ++b) {
+	for (Module::iterator b = m.begin(), be = m.end(); b != be; ++b) {
 
 		Function *f = dyn_cast<Function > (b);
+
+		//We only handle function defined in the code
+		if (f->isDeclaration())
+			continue;
+
 		string fName = f->getName().str();
 		log("discovered function " + fName);
 
@@ -108,13 +153,11 @@ bool CTaintAnalysis::runOnModule(Module &M) {
 		if ( !_pointerMain && 0 == fName.compare(ENTRY_POINT) ) {
 			_pointerMain = f;
 			_firstInstMain = &*inst_begin(_pointerMain);
-
-			//errs() << " fName: " << fName << "\n";
-			//errs() << " first inst of main: " << *_firstInstMain << "\n";
 		}
-	}
 
-	analyze();
+		//Performs intraprocedural analysis at this point
+		visit(f);
+	}
 
 	return false;
 }
@@ -124,6 +167,31 @@ void CTaintAnalysis::initDataFlowSet(Function &f){
 	for (inst_iterator inst = inst_begin(f), end = inst_end(f); inst != end; ++inst) {
 		//IN[*inst] =
 	}
+}
+
+void CTaintAnalysis::visitLoadInst(LoadInst &inst)
+{
+	errs() << "a load inst" << "\n";
+	inst.print(errs());
+	errs() << "\n";
+}
+
+void CTaintAnalysis::visitStoreInst(StoreInst &I)
+{
+
+}
+
+void CTaintAnalysis::visitGetElementPtrInst(GetElementPtrInst &I)
+{
+
+}
+
+/*
+ * Interprocedural analysis
+ */
+void CTaintAnalysis::visitCallInst(CallInst &I)
+{
+
 }
 
 static RegisterPass<CTaintAnalysis>
