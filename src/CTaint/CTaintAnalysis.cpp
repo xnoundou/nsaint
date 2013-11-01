@@ -3,11 +3,9 @@
 #include <llvm/Analysis/LoopInfo.h>
 #include <llvm/Support/InstIterator.h>
 #include <llvm/IR/Instruction.h>
-
+#include <llvm/Analysis/CallGraph.h>
 #include <llvm/InstVisitor.h>
-
-#include "CTaintUtil.h"
-#include "Intraprocedural.h"
+#include <llvm/Target/Mangler.h>
 
 #include <fstream>
 
@@ -29,6 +27,12 @@ using namespace llvm;
 namespace {
 
 #define ENTRY_POINT "main"
+
+//Data structure representing the analysis flowset data type
+//TODO: use StringMap from llvm
+typedef map<Instruction *, set<Value*> >  FlowSet;
+typedef map<Instruction *, set<Value*> >::iterator ItFlowSet;
+typedef map<Instruction *, set<Value *> >::value_type ValTypeFlowSet;
 
 typedef vector< pair<bool, string> > FunctionParam;
 
@@ -53,6 +57,9 @@ struct CTaintAnalysis : public ModulePass,
 private:
 	const static string _taintId;
 	const static string _taintSourceFile;
+	static vector<string> _taintSources;
+
+	void readTaintSourceConfig();
 
 	/** Has the intraprocedural analysis been run */
 	bool _intraFlag;
@@ -85,28 +92,24 @@ private:
 	map<string, FunctionParam> _summaryTable;
 	typedef map<string, FunctionParam>::iterator itSummaryTable;
 
-	//Data structure representing the analysis flowset data type
-	//TODO: use StringMap from llvm
-	typedef string Var;
-	typedef map<Instruction *, set<Var> >  FlowSet;
-	typedef map<Instruction *, set<Var> >::iterator ItFlowset;
-
 	FlowSet _IN;
 	FlowSet _OUT;
 
 	/**
 	 * To access _IN values
 	 */
-	set<Var> & getInFlow(Instruction *);
+	set<Value*> * getInFlow(Instruction *);
 
 	/**
 	 * To access _OUT values
 	 */
-	set<Var> & getOutFlow(Instruction *);
+	set<Value*> * getOutFlow(Instruction *);
 
-	void addInFlow(Instruction *, Var aValue);
+	void addInFlowSet(FlowSet &aFlowSet, Instruction *aInst, Value *aValue);
 
-	void addOutFlow(Instruction *, Var aValue);
+	void addInFlow(Instruction *, Value *aValue);
+
+	void addOutFlow(Instruction *, Value *aValue);
 
 	inline static void log(const string &msg) {
 		errs() << _taintId << msg << '\n';
@@ -118,9 +121,29 @@ private:
 	void interFlow(Function *caller, Instruction &inst);
 };
 
-const string CTaintUtil::_taintId("[STTAL]");
+const string CTaintAnalysis::_taintId("[STTAL]");
 
-const string CTaintUtil::_taintSourceFile("cfg/sources.cfg");
+const string CTaintAnalysis::_taintSourceFile("cfg/sources.cfg");
+
+vector<string> CTaintAnalysis::_taintSources;
+
+void CTaintAnalysis::readTaintSourceConfig() {
+	//Open the file with taint source functions listed
+	std::ifstream srcFile(_taintSourceFile.c_str());
+	string aSource;
+
+	//TODO: use the mangler here Mangler aMangler
+
+	while (!srcFile.eof()) {
+		std::getline(srcFile, aSource);
+		if (!aSource.empty()) {
+			_taintSources.push_back("__isoc99_"+aSource);
+			log("read taint source: " + aSource);
+		}
+	}
+
+	srcFile.close();
+}
 
 char CTaintAnalysis::ID = 0;
 
@@ -131,7 +154,7 @@ CTaintAnalysis::CTaintAnalysis() : ModulePass(ID) {
 	_intraFlag = false;
 	_interFlag = false;
 	_interContextSensitiveFlag = false;
-
+	readTaintSourceConfig();
 }
 
 void CTaintAnalysis::getAnalysisUsage(AnalysisUsage &AU) const {
@@ -140,33 +163,46 @@ void CTaintAnalysis::getAnalysisUsage(AnalysisUsage &AU) const {
 	AU.addRequired<CallGraph > ();
 }
 
-set<Var> & CTaintAnalysis::getInFlow(Instruction *aInst) {
+set<Value*> * CTaintAnalysis::getInFlow(Instruction *aInst) {
 
 	ItFlowSet itIN = _IN.find(aInst);
 
 	if (itIN != _IN.end())
-		return itIN->second;
+		return &itIN->second;
 
 	return 0;
 }
 
-set<Var> & CTaintAnalysis::getOutFlow(Instruction *aInst) {
+set<Value*> * CTaintAnalysis::getOutFlow(Instruction *aInst) {
 
 	ItFlowSet itIN = _OUT.find(aInst);
 
 	if (itIN != _OUT.end())
-		return itIN->second;
+		return &itIN->second;
 
 	return 0;
 }
 
+void CTaintAnalysis::addInFlowSet(FlowSet &aFlowSet, Instruction *aInst, Value *aValue) {
+	ItFlowSet curValues = aFlowSet.find(aInst);
 
-void CTaintAnalysis::addInFlow(Instruction *, Var aValue) {
-
+	if (curValues != aFlowSet.end()) {
+		set<Value *> taintedValues = curValues->second;
+		taintedValues.insert(aValue);
+	}
+	else {
+		set<Value *> taintedValues;
+		taintedValues.insert(aValue);
+		aFlowSet.insert( ValTypeFlowSet(aInst, taintedValues) );
+	}
 }
 
-void CTaintAnalysis::addOutFlow(Instruction *, Var aValue) {
+void CTaintAnalysis::addInFlow(Instruction *aInst, Value *aValue) {
+	addInFlowSet(_IN, aInst, aValue);
+}
 
+void CTaintAnalysis::addOutFlow(Instruction *aInst, Value *aValue) {
+	addInFlowSet(_OUT, aInst, aValue);
 }
 
 void CTaintAnalysis:: intraFlow() {
@@ -175,7 +211,7 @@ void CTaintAnalysis:: intraFlow() {
 
 	Function *cur = 0;
 	for(ItFunction f = _signatureToFunc.begin(); f != _signatureToFunc.end(); ++f) {
-		cur = *f;
+		cur = f->second;
 		visit(cur);
 	}
 	_intraFlag = true;
@@ -210,14 +246,16 @@ bool CTaintAnalysis::runOnModule(Module &m) {
 		}
 
 		//Performs intraprocedural analysis at this point
-		visit(f);
+		//visit(f);
 	}
+
+	intraFlow();
 
 	return false;
 }
 
 void CTaintAnalysis::initDataFlowSet(Function &f){
-	//map<Instruction, pair<Var, vector<Instruction> > >
+	//map<Instruction, pair<Value, vector<Instruction> > >
 	for (inst_iterator inst = inst_begin(f), end = inst_end(f); inst != end; ++inst) {
 		//IN[*inst] =
 	}
@@ -232,11 +270,15 @@ void CTaintAnalysis::visitLoadInst(LoadInst &inst)
 
 void CTaintAnalysis::visitStoreInst(StoreInst &inst)
 {
-	const Value *val = inst.getValueOperand();
+	Value *val = inst.getValueOperand();
+
 	if (val->getType()->isPointerTy()) {
 		//COPY [p=q]
-		set<Var> & inQ = getInFlow(&inst);
-		//if (!inQ.empty())
+		set<Value*> * inQ = getInFlow(&inst);
+		if (inQ && !inQ->empty()) {
+			addOutFlow(&inst, val);
+			errs() << "Adding an outflow" << "\n";
+		}
 	}
 	else {
 		//STORE [*p=q]
@@ -254,9 +296,22 @@ void CTaintAnalysis::visitGetElementPtrInst(GetElementPtrInst &I)
 /*
  * Interprocedural analysis
  */
-void CTaintAnalysis::visitCallInst(CallInst &I)
+void CTaintAnalysis::visitCallInst(CallInst & aCallInst)
 {
+	if (_intraFlag) {
 
+	}
+	else {
+		//Intraprocedural analysis case: recognizing sources
+		Function *callee = aCallInst.getCalledFunction();
+		string calleeName = callee->getName().str();
+		vector<string>::iterator result = std::find(_taintSources.begin(), _taintSources.end(), calleeName);
+		if (result != _taintSources.end()) {
+
+			log("found a taint source: " + calleeName);
+		}
+
+	}
 }
 
 static RegisterPass<CTaintAnalysis>
