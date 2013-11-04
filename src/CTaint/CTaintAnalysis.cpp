@@ -118,11 +118,9 @@ private:
 	 * To access _OUT values
 	 */
 	set<Value*> * getOutFlow(Instruction *);
-
-	void addInFlowSet(FlowSet &aFlowSet, Instruction *aInst, Value *aValue);
-
+	set<Value*> * getFromFlowSet(FlowSet &aFlowSet, Instruction *I);
+	void addToFlowSet(FlowSet &aFlowSet, Instruction *aInst, Value *aValue);
 	void addInFlow(Instruction *, Value *aValue);
-
 	void addOutFlow(Instruction *, Value *aValue);
 
 	inline static void log(const string &msg) {
@@ -131,6 +129,7 @@ private:
 
 	void initDataFlowSet(Function &f);
 
+	void collectAliasInfo();
 	void intraFlow();
 	void interFlow(Function *caller, Instruction &inst);
 };
@@ -180,27 +179,24 @@ void CTaintAnalysis::getAnalysisUsage(AnalysisUsage &AU) const {
 	AU.addRequired<AliasAnalysis> ();
 }
 
-set<Value*> * CTaintAnalysis::getInFlow(Instruction *aInst) {
+set<Value*> * CTaintAnalysis::getFromFlowSet(FlowSet &aFlowSet, Instruction *I) {
+	ItFlowSet itIN = aFlowSet.find(I);
 
-	ItFlowSet itIN = _IN.find(aInst);
-
-	if (itIN != _IN.end())
+	if (itIN != aFlowSet.end())
 		return &itIN->second;
 
 	return 0;
 }
 
-set<Value*> * CTaintAnalysis::getOutFlow(Instruction *aInst) {
-
-	ItFlowSet itIN = _OUT.find(aInst);
-
-	if (itIN != _OUT.end())
-		return &itIN->second;
-
-	return 0;
+set<Value*> * CTaintAnalysis::getInFlow(Instruction *I) {
+	return getFromFlowSet(_IN, I);
 }
 
-void CTaintAnalysis::addInFlowSet(FlowSet &aFlowSet, Instruction *aInst, Value *aValue) {
+set<Value*> * CTaintAnalysis::getOutFlow(Instruction *I) {
+	return getFromFlowSet(_OUT, I);
+}
+
+void CTaintAnalysis::addToFlowSet(FlowSet &aFlowSet, Instruction *aInst, Value *aValue) {
 	ItFlowSet curValues = aFlowSet.find(aInst);
 
 	if (curValues != aFlowSet.end()) {
@@ -215,14 +211,32 @@ void CTaintAnalysis::addInFlowSet(FlowSet &aFlowSet, Instruction *aInst, Value *
 }
 
 void CTaintAnalysis::addInFlow(Instruction *aInst, Value *aValue) {
-	addInFlowSet(_IN, aInst, aValue);
+	addToFlowSet(_IN, aInst, aValue);
 }
 
 void CTaintAnalysis::addOutFlow(Instruction *aInst, Value *aValue) {
-	addInFlowSet(_OUT, aInst, aValue);
+	addToFlowSet(_OUT, aInst, aValue);
 }
 
-void CTaintAnalysis:: intraFlow() {
+void CTaintAnalysis::collectAliasInfo() {
+	if ( _aliasFlag )
+		return;
+
+	Function *F = 0;
+	for(ItFunction itF = _signatureToFunc.begin(); itF != _signatureToFunc.end(); ++itF) {
+		F = itF->second;
+		AliasSetTracker *functionAST = new AliasSetTracker(*_aa);
+		_functionToAliasSetMap[F] = functionAST;
+		for (inst_iterator I = inst_begin(*F), E = inst_end(*F); I != E; ++I) {
+			functionAST->add(&*I);
+		}
+		_curAST->add(*functionAST);
+	}
+
+	_aliasFlag = true;
+}
+
+void CTaintAnalysis::intraFlow() {
 	if ( _intraFlag )
 		return;
 
@@ -249,10 +263,10 @@ bool CTaintAnalysis::runOnModule(Module &m) {
 
 	for (Module::iterator b = m.begin(), be = m.end(); b != be; ++b) {
 
-		Function *f = dyn_cast<Function > (b);
+		Function *f = dyn_cast<Function> (b);
 
 		//We only handle function defined in the code
-		if (f->isDeclaration())
+		if (f && f->isDeclaration())
 			continue;
 
 		string fName = f->getName().str();
@@ -266,27 +280,13 @@ bool CTaintAnalysis::runOnModule(Module &m) {
 			_firstInstMain = &*inst_begin(_pointerMain);
 		}
 
-		AliasSetTracker *functionAST = new AliasSetTracker(*_aa);
-		_functionToAliasSetMap[f] = functionAST;
-
-		//Adds function instructions relevant for the alias analysis pass
-		visit(f);
-
-		_curAST->add(*functionAST);
-
-		delete functionAST;
-		_functionToAliasSetMap.erase(f);
 	}
 
-	//We are done with the collection of statements needed
-	//to provide alias information. This was done during 'visit'
-	//call for each function.
-	_aliasFlag = true;
+	//Adds function instructions relevant for the alias analysis pass
+	collectAliasInfo();
 
 	//Performing intraprocedural analysis at this point
 	intraFlow();
-
-	delete _aa;
 
 	return false;
 }
@@ -300,13 +300,6 @@ void CTaintAnalysis::initDataFlowSet(Function &f){
 
 void CTaintAnalysis::visitLoadInst(LoadInst &I)
 {
-	if (!_aliasFlag) {
-		Function *f = getFunction(I);
-		AliasSetTracker *functionAST = _functionToAliasSetMap[f];
-		functionAST->add(&I);
-		return;
-	}
-
 	errs() << "a load inst" << "\n";
 	I.print(errs());
 	errs() << "\n";
@@ -314,13 +307,6 @@ void CTaintAnalysis::visitLoadInst(LoadInst &I)
 
 void CTaintAnalysis::visitStoreInst(StoreInst &I)
 {
-	if (!_aliasFlag) {
-		Function *f = getFunction(I);
-		AliasSetTracker *functionAST = _functionToAliasSetMap[f];
-		functionAST->add(&I);
-		return;
-	}
-
 	Value *val = I.getValueOperand();
 
 	if (val->getType()->isPointerTy()) {
@@ -341,7 +327,6 @@ void CTaintAnalysis::visitStoreInst(StoreInst &I)
 
 void CTaintAnalysis::visitGetElementPtrInst(GetElementPtrInst &I)
 {
-
 }
 
 /*
@@ -367,12 +352,6 @@ void CTaintAnalysis::visitCallInst(CallInst & aCallInst)
 
 void CTaintAnalysis::visitVAArgInst(VAArgInst & I)
 {
-	if (!_aliasFlag) {
-		Function *f = getFunction(I);
-		AliasSetTracker *functionAST = _functionToAliasSetMap[f];
-		functionAST->add(&I);
-		return;
-	}
 }
 
 static RegisterPass<CTaintAnalysis>
