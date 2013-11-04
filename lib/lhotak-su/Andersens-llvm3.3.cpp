@@ -921,7 +921,7 @@ static RegisterAnalysisGroup<AliasAnalysis> Y(X);
 // Initialize Timestamp Counter (static).
 volatile llvm::sys::cas_flag Andersens::Node::Counter = 0;
 
-namespace llvm{
+namespace llvm {
   ModulePass *createAndersensPass() { return new Andersens(); }
 }
 
@@ -1375,7 +1375,7 @@ void Andersens::CollectConstraints(Module &M) {
     if (!t->isSized()) {
       DEBUG(std::cerr << "GlobalVariable " << I->getName().str() << ", ??? bits" << std::endl);
       Object->Singleton = false;
-    } else if (targetData.getTypeSizeInBits(t) > (int)targetData.getPointerSizeInBits()) {
+    } else if (targetData.getTypeSizeInBits(t) > targetData.getPointerSizeInBits()) {
       DEBUG(std::cerr << "GlobalVariable " << I->getName().str() << ", " << targetData.getTypeSizeInBits(t) << " bits" << std::endl);
       Object->Singleton = false;
     }
@@ -1546,7 +1546,7 @@ void Andersens::visitAllocaInst(AllocaInst &AI) {
   
   // If allocated type size exceeds target platform pointer size or variable is declared in recursive function, identify it as a non-singleton
   if (!AI.getAllocatedType()->isSized()
-  || targetData.getTypeSizeInBits(AI.getAllocatedType()) < (int)targetData.getPointerSizeInBits()
+  || targetData.getTypeSizeInBits(AI.getAllocatedType()) < targetData.getPointerSizeInBits()
   || recursiveFunctions.find(f) != recursiveFunctions.end()) {
         
     if(!AI.getAllocatedType()->isSized())
