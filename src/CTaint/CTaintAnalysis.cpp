@@ -4,6 +4,8 @@
 #include <llvm/Support/InstIterator.h>
 #include <llvm/IR/Instruction.h>
 #include <llvm/Analysis/CallGraph.h>
+#include <llvm/Analysis/AliasAnalysis.h>
+#include <llvm/Analysis/AliasSetTracker.h>
 #include <llvm/InstVisitor.h>
 #include <llvm/Target/Mangler.h>
 
@@ -48,6 +50,7 @@ struct CTaintAnalysis : public ModulePass,
 	void visitLoadInst(LoadInst &I);
 	void visitStoreInst(StoreInst &I);
 	void visitGetElementPtrInst(GetElementPtrInst &I);
+	void visitVAArgInst(VAArgInst & I);
 
 	/**
 	 * Only executed during interprodural analysis
@@ -61,11 +64,18 @@ private:
 
 	void readTaintSourceConfig();
 
+	inline Function * getFunction(Instruction &I){
+		return I.getParent()->getParent();
+	}
+
 	/** Has the intraprocedural analysis been run */
 	bool _intraFlag;
 
 	/** Has the interprocedural Context-Insenstive analysis been run */
 	bool _interFlag;
+
+	/** Was the AliasSetTracker already initialized */
+	bool _aliasFlag;
 
 	/** Has the interprocedural Context-Senstive analysis been run */
 	bool _interContextSensitiveFlag;
@@ -76,7 +86,11 @@ private:
 	/** Pointer the 'main' function's first instruction */
 	Instruction *_firstInstMain;
 
-	CallGraphNode *_cgRootNode;
+	AliasAnalysis *_aa;
+
+	AliasSetTracker *_curAST;
+
+	DenseMap<Function*, AliasSetTracker*> _functionToAliasSetMap;
 
 	/**
 	 * Map from program funtion signatures as string to
@@ -153,14 +167,17 @@ CTaintAnalysis::CTaintAnalysis() : ModulePass(ID) {
 	_firstInstMain = 0;
 	_intraFlag = false;
 	_interFlag = false;
+	_aliasFlag = false;
 	_interContextSensitiveFlag = false;
+
 	readTaintSourceConfig();
 }
 
 void CTaintAnalysis::getAnalysisUsage(AnalysisUsage &AU) const {
 	AU.setPreservesAll();
-	AU.addRequired<LoopInfo > ();
-	AU.addRequired<CallGraph > ();
+	AU.addRequired<LoopInfo> ();
+	AU.addRequired<CallGraph> ();
+	AU.addRequired<AliasAnalysis> ();
 }
 
 set<Value*> * CTaintAnalysis::getInFlow(Instruction *aInst) {
@@ -226,6 +243,10 @@ void CTaintAnalysis::interFlow(Function *caller, Instruction &inst) {
 bool CTaintAnalysis::runOnModule(Module &m) {
 	log("module identifier is " + m.getModuleIdentifier());
 
+	_aa = &getAnalysis<AliasAnalysis>();
+
+	_curAST = new AliasSetTracker(*_aa);
+
 	for (Module::iterator b = m.begin(), be = m.end(); b != be; ++b) {
 
 		Function *f = dyn_cast<Function > (b);
@@ -245,11 +266,27 @@ bool CTaintAnalysis::runOnModule(Module &m) {
 			_firstInstMain = &*inst_begin(_pointerMain);
 		}
 
-		//Performs intraprocedural analysis at this point
-		//visit(f);
+		AliasSetTracker *functionAST = new AliasSetTracker(*_aa);
+		_functionToAliasSetMap[f] = functionAST;
+
+		//Adds function instructions relevant for the alias analysis pass
+		visit(f);
+
+		_curAST->add(*functionAST);
+
+		delete functionAST;
+		_functionToAliasSetMap.erase(f);
 	}
 
+	//We are done with the collection of statements needed
+	//to provide alias information. This was done during 'visit'
+	//call for each function.
+	_aliasFlag = true;
+
+	//Performing intraprocedural analysis at this point
 	intraFlow();
+
+	delete _aa;
 
 	return false;
 }
@@ -261,22 +298,36 @@ void CTaintAnalysis::initDataFlowSet(Function &f){
 	}
 }
 
-void CTaintAnalysis::visitLoadInst(LoadInst &inst)
+void CTaintAnalysis::visitLoadInst(LoadInst &I)
 {
+	if (!_aliasFlag) {
+		Function *f = getFunction(I);
+		AliasSetTracker *functionAST = _functionToAliasSetMap[f];
+		functionAST->add(&I);
+		return;
+	}
+
 	errs() << "a load inst" << "\n";
-	inst.print(errs());
+	I.print(errs());
 	errs() << "\n";
 }
 
-void CTaintAnalysis::visitStoreInst(StoreInst &inst)
+void CTaintAnalysis::visitStoreInst(StoreInst &I)
 {
-	Value *val = inst.getValueOperand();
+	if (!_aliasFlag) {
+		Function *f = getFunction(I);
+		AliasSetTracker *functionAST = _functionToAliasSetMap[f];
+		functionAST->add(&I);
+		return;
+	}
+
+	Value *val = I.getValueOperand();
 
 	if (val->getType()->isPointerTy()) {
 		//COPY [p=q]
-		set<Value*> * inQ = getInFlow(&inst);
+		set<Value*> * inQ = getInFlow(&I);
 		if (inQ && !inQ->empty()) {
-			addOutFlow(&inst, val);
+			addOutFlow(&I, val);
 			errs() << "Adding an outflow" << "\n";
 		}
 	}
@@ -311,6 +362,16 @@ void CTaintAnalysis::visitCallInst(CallInst & aCallInst)
 			log("found a taint source: " + calleeName);
 		}
 
+	}
+}
+
+void CTaintAnalysis::visitVAArgInst(VAArgInst & I)
+{
+	if (!_aliasFlag) {
+		Function *f = getFunction(I);
+		AliasSetTracker *functionAST = _functionToAliasSetMap[f];
+		functionAST->add(&I);
+		return;
 	}
 }
 
