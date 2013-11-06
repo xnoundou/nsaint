@@ -259,6 +259,8 @@ bool CTaintAnalysis::runOnModule(Module &m) {
 
 	_aa = &getAnalysis<AliasAnalysis>();
 
+	//assert (_aa && "_aa is null");
+
 	_curAST = new AliasSetTracker(*_aa);
 
 	for (Module::iterator b = m.begin(), be = m.end(); b != be; ++b) {
@@ -284,6 +286,8 @@ bool CTaintAnalysis::runOnModule(Module &m) {
 
 	//Adds function instructions relevant for the alias analysis pass
 	collectAliasInfo();
+
+	_curAST->print(errs());
 
 	//Performing intraprocedural analysis at this point
 	intraFlow();
@@ -319,6 +323,28 @@ void CTaintAnalysis::visitStoreInst(StoreInst &I)
 	}
 	else {
 		//STORE [*p=q]
+		//Value * q = I.getValueOperand();
+		Value * p = I.getPointerOperand();
+		//AliasSet *qAliasSet = _curAST->getAliasSetForPointerIfExists(q, 0, 0);
+		//AliasSet *pAliasSet = _curAST->getAliasSetForPointerIfExists(p,0,0);
+		const ilist< AliasSet > &aliasSets = _curAST->getAliasSets();
+		set<Value *> *INsQ = getInFlow(&I);
+		if ( INsQ && !INsQ->empty() ) {
+			for(ilist<const AliasSet>::iterator itSet = aliasSets.begin();
+					itSet != aliasSets.end();
+					++itSet)
+			{
+				if (itSet->aliasesPointer(p, 0, 0, *_aa)) {
+					for(AliasSet::iterator it = itSet->begin(); it != itSet->end(); ++it) {
+						Value *curPointer = it->getValue();
+						addOutFlow(&I, curPointer);
+						p->print(errs() << "gets tainted");
+					}
+					break;
+				}
+			}
+		}
+
 	}
 	//errs() << "Type of " << val->getName().str()
 	//		<< " is ";

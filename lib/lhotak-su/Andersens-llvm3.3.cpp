@@ -119,7 +119,7 @@ static const unsigned CallReturnPos = 1;
 // Position of the function call node relative to the function node.
 static const unsigned CallFirstArgPos = 2;
 
-namespace {
+namespace llvm {
   typedef std::pair<unsigned, unsigned> supair;
 
   struct BitmapKeyInfo {
@@ -709,8 +709,8 @@ namespace {
                       const Value *V2, unsigned V2Size);
     virtual ModRefResult getModRefInfo(CallSite CS, Value *P, unsigned Size);
     virtual ModRefResult getModRefInfo(CallSite CS1, CallSite CS2);
-    void getMustAliases(Value *P, std::vector<Value*> &RetVals);
-    bool pointsToConstantMemory(const Value *P);
+    virtual void getMustAliases(Value *P, std::vector<Value*> &RetVals);
+    virtual bool pointsToConstantMemory(const Value *P);
 
     virtual void deleteValue(Value *V) {
       ValueNodes.erase(V);
@@ -921,9 +921,7 @@ static RegisterAnalysisGroup<AliasAnalysis> Y(X);
 // Initialize Timestamp Counter (static).
 volatile llvm::sys::cas_flag Andersens::Node::Counter = 0;
 
-namespace llvm {
-  ModulePass *createAndersensPass() { return new Andersens(); }
-}
+ModulePass *createAndersensPass() { return new Andersens(); }
 
 //===----------------------------------------------------------------------===//
 //                  AliasAnalysis Interface Implementation

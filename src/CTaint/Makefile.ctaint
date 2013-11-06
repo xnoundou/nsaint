@@ -6,9 +6,9 @@ LLVM_INC=-I. -I${LLVM_HOME}/include
 MACROS=-D __STDC_LIMIT_MACROS \
        -D__STDC_CONSTANT_MACROS
 
-CTAINT=${LLVM_HOME}/lib/Transforms/CTaint
+CTAINT=${LLVM_HOME}/lib/Analysis/CTaint
 
-CTAINT_BUILD=${LLVM_BUILD}/lib/Transforms/CTaint/Release+Asserts
+CTAINT_BUILD=${LLVM_BUILD}/lib/Analysis/CTaint/Release+Asserts
 
 SRC=${CTAINT}/CTaintAnalysis.cpp
 
@@ -20,6 +20,9 @@ all: compile
 
 compile: ${OBJ}
 	make -C ${LLVM_BUILD} -I ${LLVM_BUILD} > /dev/null
+
+clean:
+	make -C ${LLVM_BUILD} clean
 
 bc:
 	clang -O3 -emit-llvm tests/test.c -c -o tests/test.bc

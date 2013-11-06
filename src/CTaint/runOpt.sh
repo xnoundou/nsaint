@@ -43,7 +43,8 @@ fi
 PASSARG="-ctaintmod"
 
 COMPILE="make -f Makefile.ctaint compile > /dev/null"
-CMD="opt -load $LLVM_LIB/LLVMipa.so -load $LLVM_LIB/CTaint.so -anders-aa "$PASSARG" < "$INPUTFILE" > /dev/null"
+#CMD="opt -load $LLVM_LIB/LLVMipa.so -load $LLVM_LIB/CTaint.so -anders-aa "$PASSARG" < "$INPUTFILE" > /dev/null"
+CMD="opt -load $LLVM_LIB/CTaint.so "$PASSARG" < "$INPUTFILE" > /dev/null"
 
 run_cmd "$COMPILE"
 run_cmd "$CMD"

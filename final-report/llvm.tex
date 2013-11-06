@@ -1,17 +1,14 @@
 \section{LLVM's Intermediate Representation}\label{sec:llvm}
 
-This section describes the intermediate representation (IR)
-we use to describe our analysis and algorithms.
-Our implementation is done in LLVM \cite{Lattner:2004:LLVM}
-(Low Level Virtual Machine). Therefore we are going to present
-LLVM's intermediate representation (IR) and the corresponding
-notation we will use in this paper.
+This section gives an overview of LLVM's intermediate
+representation (IR), which we use as basis for the
+description of our analysis.
 
 LLVM's IR assumes the existence of two types of variables
 in C code: \textit{top-level} and \textit{address-taken}
 variables.
-Top-level variables are variables that can not be accessed
-in the code via a pointer to their address. That is,
+Top-level variables are variables that can not be
+accessed via a pointer to their address. That is,
 their memory address was not copied to another variable
 (i.e. the do not have any application of the address-of
 operator in the code under analysis). In this paper, we
@@ -40,7 +37,7 @@ instructions.
 We capture program elements using the following abstract
 instructions:
 \begin{itemize}
-\item $\copydef$: copy instruction. $p, q \in \Pset$.
+\item $\copydef$: copy instruction. $p, q \in \Aset$.
 \item $\loaddef$: load instruction. $q \in \Aset$.
 \item $\addrofdef$: address-of operator. $p \in \Aset, a \in \Pset$.
 \item $\storedef$: store instruction. $p \in \Aset, q \in \Pset$.

@@ -119,9 +119,9 @@ $\worklist \leftarrow \set{s_0}$\;
 		}
 	}	
 	\uCase{$\LSTORE\ [*p = q] $}{
-		\ForEach{$\stmtA_k \in \pointsto{\overline{\stmt}}{p}$}{
-			$\stmtT_k \leftarrow \Toplevel(\stmtA_k)$\;		
-			\If{$\Input[\stmtQ] \neq \emptyset$}{			
+		\If{$\Input[\stmtQ] \neq \emptyset$}{	
+			\ForEach{$\stmtA_k \in \pointsto{\overline{\stmt}}{p}$}{
+				$\stmtT_k \leftarrow \Toplevel(\stmtA_k)$\;					
 				$\Output[\stmtT_k] \leftarrow \Input[\stmtT_k] \cup \Input[\stmtQ] \cup \set{\stmt}$\;				
 			}
 		}	
@@ -293,9 +293,9 @@ $\worklist \leftarrow \set{s_0}$\;
 		}
 	}	
 	\Case{$\LSTORE\ [*p = q] $}{
-		\ForEach{$\stmtA_k \in \pointsto{\overline{\stmt}}{p}$}{
-			$\stmtT_k \leftarrow \Toplevel(\stmtA_k)$\;		
-			\If{$\Input[\stmtQ] \neq \emptyset$}{			
+		\If{$\Input[\stmtQ] \neq \emptyset$}{	
+			\ForEach{$\stmtA_k \in \pointsto{\overline{\stmt}}{p}$}{
+				$\stmtT_k \leftarrow \Toplevel(\stmtA_k)$\;					
 				$\Output[\stmtT_k] \leftarrow \Input[\stmtT_k] \cup \Input[\stmtQ] \cup \set{\stmt}$\;				
 			}
 		}	

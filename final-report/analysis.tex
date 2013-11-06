@@ -1,4 +1,4 @@
-\section{Staged Analysis}\label{sec:analysis}
+\section{Staged Taint Analysis}\label{sec:analysis}
 
 \newcommand{\varset}{\mathit{Var}}
 \newcommand{\instset}{\mathit{Inst}}
@@ -38,6 +38,11 @@ to \texttt{scanf} at line $13$.
 Appendix~\ref{app:algo} presents pseudo code for all
 our analysis algorithms.
 
+\paragraph{Taint Sources and Sinks}
+
+\paragraph{Taint Propagation}
+
+\paragraph{Formalisms}
 Our analysis dataflow set is $\varset \times 2^\instset$,
 where $\varset$ is the set of all program variables and
 $\instset$ the set of all program statements. 
@@ -48,7 +53,6 @@ If $v$ is definitely not tainted before statement $s$, then
 $\myinflow_s[v] = \emptyset$. Otherwise, $\myinflow_s[v]$
 contains statements where $v$ might get tainted.
 
-\paragraph{Formalisms}
 We use the following elements to describe our analysis:
 $\varset$ is the set of all program variables,
 $\procset$ is the set of all program functions and procedures\footnote{We
@@ -126,6 +130,8 @@ The results also show that the hybrid
 analysis provides the same benefits as a fully flow-sensitive
 analysis at $98\%$ of stores and loads in the program.
 
+\paragraph{Taint Propagation}
+
 \paragraph{Intraprocedural Analysis}
 Program functions are analyzed in the reverse
 topological order of the call graph (i.e starting
@@ -147,7 +153,7 @@ The intraprocedural analysis always runs
 first, before the interprocedural context-insensitive
 or context-sensitive analyses.
 The pseudo code for the intraprocedural analysis
-is showed in Alorithm~\ref{fig:intraFlow}.
+is showed in Algorithm~\ref{fig:intraFlow}.
 
 \paragraph{Context-Insensitive Analysis}
 The context-insensitive analysis starts from the
