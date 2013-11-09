@@ -147,7 +147,10 @@ private:
 
 	void printIn(Instruction &I);
 	void printOut(Instruction &I);
-	void copyOutFlowToInFlow(Instruction &I);
+	void mergeCopyPredOutFlowToInFlow(Instruction &I);
+	inline void insertToOutFlow(Instruction *I, Value *v);
+	inline bool isValueTainted(Instruction *I, Value *v);
+	void addPointsToSet(Instruction *I, Value *pointerVal);
 
 	static void log(const string &msg);
 
@@ -158,10 +161,11 @@ private:
 	void getAllBeforeNextTerminator(Instruction *I, vector<Instruction *> &succs);
 	void getSuccessors(Instruction *I, vector<Instruction *> &succs);
 
-	void intraFlow();
+	void intraFlow(vector<Instruction *> &workList);
 	void interFlow(Function *caller, Instruction &inst);
 	Instruction * next(vector<Instruction *> &workList);
-	void merge(Instruction *I);
+	inline void insert(vector<Instruction *> &workList, Instruction *I);
+	inline void merge(Instruction *I);
 };
 
 char CTaintAnalysis::ID = 0;
@@ -238,21 +242,8 @@ void CTaintAnalysis::getAnalysisUsage(AnalysisUsage &AU) const {
 
 void CTaintAnalysis::interFlow(Function *caller, Instruction &inst) {
 	if (!_intraFlag) {
-		intraFlow();
+		//intraFlow(workList);
 	}
-}
-
-void CTaintAnalysis::intraFlow() {
-	if ( _intraFlag )
-		return;
-
-	Function *cur = 0;
-	for(ItFunction f = _signatureToFunc.begin(), fEnd = _signatureToFunc.end(); f != fEnd; ++f) {
-		cur = f->second;
-		visit(cur);
-	}
-
-	_intraFlag = true;
 }
 
 void CTaintAnalysis::collectAliasInfo() {
@@ -279,6 +270,10 @@ Instruction * CTaintAnalysis::next(vector<Instruction *> &workList) {
 	Instruction *result = workList.back();
 	workList.pop_back();
 	return result;
+}
+
+inline void CTaintAnalysis::insert(vector<Instruction *> &workList, Instruction *I) {
+	workList.insert(workList.begin(), I);
 }
 
 void CTaintAnalysis::getAllBeforeNextTerminator(Instruction *I, vector<Instruction *> &succs) {
@@ -335,7 +330,10 @@ void CTaintAnalysis::initWorkList(vector<Instruction *> &workList){
 	Function *F = 0;
 	Instruction *I = 0;
 
-	for(ItFunction itF = _signatureToFunc.begin(), itEnd = _signatureToFunc.end(); itF != itEnd; ++itF) {
+	for(ItFunction itF = _signatureToFunc.begin(), itEnd = _signatureToFunc.end();
+			itF != itEnd;
+			++itF)
+	{
 		F = itF->second;
 
 		for (inst_iterator it = inst_begin(*F), E = inst_end(*F); it != E; ++it) {
@@ -344,8 +342,7 @@ void CTaintAnalysis::initWorkList(vector<Instruction *> &workList){
 			//Initializing IN and OUT flow sets
 			_OUT[I];
 			_IN[I];
-
-			workList.insert(workList.begin(), I);
+			insert(workList, I);
 		}
 	}
 
@@ -353,12 +350,43 @@ void CTaintAnalysis::initWorkList(vector<Instruction *> &workList){
 	errs() << " _IN size: " << _IN.size() << "\n";
 }
 
+void CTaintAnalysis::intraFlow(vector<Instruction *> &workList) {
+	if ( _intraFlag )
+		return;
+
+	errs() << "worklist size at begin: " << workList.size() << "\n";
+
+	Instruction *curI = 0;
+	Instruction *nextI = 0;
+
+	while(!workList.empty()) {
+		curI = next(workList);
+		visit(*curI);
+
+		//Has any _OUT value been modified ?
+		if (_lastFlowInfo.hasBeenModified()) {
+			vector<Instruction *> succs;
+			getSuccessors(curI, succs);
+			for(vector<Instruction *>::iterator its = succs.begin(), itEnd = succs.end();
+					its != itEnd;
+					++its )
+			{
+				nextI = *its;
+				merge(nextI);
+				insert(workList, nextI);
+			}
+		}
+	}
+
+	_intraFlag = true;
+}
+
 bool CTaintAnalysis::runOnModule(Module &m) {
 	log("module identifier is " + m.getModuleIdentifier());
 
 	_aa = &getAnalysis<AliasAnalysis>();
 
-	//assert (_aa && "_aa is null");
+	assert (_aa && "Alias analysis was not instantiated (_aa is null)!");
 
 	_curAST = new AliasSetTracker(*_aa);
 
@@ -392,33 +420,12 @@ bool CTaintAnalysis::runOnModule(Module &m) {
 
 	_curAST->print(errs());
 
-	Instruction *I = 0;
-	Instruction *nextSucc = 0;
-
-	/*while(!workList.empty()) {
-
-		I = next(workList);
-
-		visit(*I);
-
-		if (_lastFlowInfo.hasBeenModified()) {
-
-			vector<Instruction *> succs;
-			getSuccessors(I, succs);
-
-			for(vector<Instruction *>::iterator its = succs.begin(), itEnd = succs.end();
-					its != itEnd;
-					++its )
-			{
-				//nextSucc = *its;
-				//merge(nextSucc);
-				//workList.insert(workList.begin(), nextSucc);
-			}
-		}
-	}*/
+	intraFlow(workList);
 
 	return false;
 }
+
+
 
 unsigned CTaintAnalysis::isTaintSource(string &funcName) {
 	map<string, int>::iterator res;
@@ -429,15 +436,14 @@ unsigned CTaintAnalysis::isTaintSource(string &funcName) {
 	return -1;
 }
 
-void CTaintAnalysis::merge(Instruction *I) {
+inline void CTaintAnalysis::merge(Instruction *I) {
 	_IN[I].insert(_lastFlowInfo.begin(), _lastFlowInfo.end());
 }
 
-void CTaintAnalysis::copyOutFlowToInFlow(Instruction &I) {
+void CTaintAnalysis::mergeCopyPredOutFlowToInFlow(Instruction &I) {
 	BasicBlock *BB = I.getParent();
 	BasicBlock *aPred = 0;
 	Instruction *pi;
-
 	for (pred_iterator PI = pred_begin(BB), E = pred_end(BB); PI != E; ++PI) {
 	  aPred = *PI;
 	  pi = &aPred->back();
@@ -448,95 +454,80 @@ void CTaintAnalysis::copyOutFlowToInFlow(Instruction &I) {
 	_lastFlowInfo.reset();
 }
 
+inline void CTaintAnalysis::insertToOutFlow(Instruction *I, Value *v) {
+	_OUT[I].insert(v);
+	_lastFlowInfo.addValue(v);
+}
+
+inline bool CTaintAnalysis::isValueTainted(Instruction *I, Value *v) {
+	return (!_IN[I].empty() && 0 == _IN[I].count(v));
+}
+
+void CTaintAnalysis::addPointsToSet(Instruction *I, Value *pointerVal) {
+	AliasSet * as = _curAST->getAliasSetForPointerIfExists(pointerVal, 0, 0);
+	if (as && as->isMayAlias()) {
+		for(AliasSet::iterator it = as->begin(), itE = as->end(); it != itE; ++it) {
+			insertToOutFlow(I, it->getValue());
+			pointerVal->print(errs() << " gets tainted \n");
+		}
+	}
+}
+
 void CTaintAnalysis::visitLoadInst(LoadInst &I)
 {
-	copyOutFlowToInFlow(I);
-	//errs() << "a load inst" << "\n";
-	//I.print(errs());
-	//errs() << "\n";
+	mergeCopyPredOutFlowToInFlow(I);
 }
 
 void CTaintAnalysis::visitStoreInst(StoreInst &I)
 {
-	copyOutFlowToInFlow(I);
+	mergeCopyPredOutFlowToInFlow(I);
 
 	Value *q = I.getValueOperand();
 
-//	errs() << "STORE " << " valueOperand: \n";
-	q->getType()->print(errs());
-	errs() << "\n";
+	if (!isValueTainted(&I, q))
+		return;
 
 	if (q->getType()->isPointerTy()) {
 		//COPY [p=q]
-		errs() << "is pointer type" << "\n";
+		errs() << "COPY [p=q]\n";
 
 		Value * p = I.getPointerOperand();
-
-		set<Value*> &inQ = _IN[&I];
-		if (!inQ.empty()) {
-			/*AliasSet * as = _curAST->getAliasSetForPointerIfExists(q, 0, 0);
-			if(as) {
-				errs() << "found alias set\n";
-				as->print(errs());
-			}*/
-			_OUT[&I].insert(q);
-			_lastFlowInfo.addValue(q);
-
-			AliasSet * as = _curAST->getAliasSetForPointerIfExists(q, 0, 0);
-			if (as && as->isMayAlias()) {
-				for(AliasSet::iterator it = as->begin(), itE = as->end(); it != itE; ++it) {
-					_OUT[&I].insert( it->getValue() );
-					_lastFlowInfo.addValue(it->getValue());
-				}
-			}
-
-//			/errs() << "Adding an outflow" << "\n";
-		}
+		insertToOutFlow(&I, q);
+		p->print(errs() << "\n gets tainted\n");
+		addPointsToSet(&I, q);
 	}
 	else {
 		//STORE [*p=q]
+		errs() << "STORE [*p=q]\n";
 
-		errs() << "STORE [*p=q]" << "\n";
-
+		//TODO: FIx this code to get top levels variables
 		const ilist< AliasSet > &aliasSets = _curAST->getAliasSets();
-		set<Value *> &INsQ = _IN[&I];
+
 		Value * p = I.getPointerOperand();
-
-		errs() << "p is " << p << "\n";
-
 		Value *curPointer = 0;
+		for(ilist<const AliasSet>::iterator itSet = aliasSets.begin(), itEnd = aliasSets.end();
+				itSet != itEnd;
+				++itSet)
+		{
+			if (itSet->aliasesPointer(p, 0, 0, *_aa)) {
 
-		if (!INsQ.empty()) {
-			errs() << "NOTHING\n";
-			for(ilist<const AliasSet>::iterator itSet = aliasSets.begin(), itEnd = aliasSets.end();
-					itSet != itEnd;
-					++itSet)
-			{
-				/*if (itSet->aliasesPointer(p, 0, 0, *_aa)) {
-
-					for(AliasSet::iterator it = itSet->begin(), itEnd = itSet->end(); it != itEnd; ++it) {
-						curPointer = it->getValue();
-						if (!curPointer) continue;
-
-						_OUT[curPointer].insert(_OUT[curPointer].begin(), I);
-						p->print(errs() << "gets tainted");
-					}
-					break;
+				for(AliasSet::iterator it = itSet->begin(), itEnd = itSet->end(); it != itEnd; ++it) {
+					curPointer = it->getValue();
+					assert(curPointer && "A null pointer in the alias set!");
+					insertToOutFlow(&I, curPointer);
+					p->print(errs() << "\n gets tainted\n");
 				}
-				else
-					errs() << "No alias matching for " << p->getName() << "\n";*/
+				break;
 			}
+			else
+				errs() << "No alias matching for " << p->getName() << "\n";
 		}
-
 	}
-	//errs() << "Type of " << val->getName().str()
-	//		<< " is ";
-	//val->getType()->print(errs());
 }
 
 void CTaintAnalysis::visitGetElementPtrInst(GetElementPtrInst &I)
 {
-	copyOutFlowToInFlow(I);
+	mergeCopyPredOutFlowToInFlow(I);
 }
 
 /*
@@ -544,7 +535,7 @@ void CTaintAnalysis::visitGetElementPtrInst(GetElementPtrInst &I)
  */
 void CTaintAnalysis::visitCallInst(CallInst & aCallInst)
 {
-	copyOutFlowToInFlow(aCallInst);
+	mergeCopyPredOutFlowToInFlow(aCallInst);
 
 	if (_intraFlag) {
 
@@ -561,18 +552,11 @@ void CTaintAnalysis::visitCallInst(CallInst & aCallInst)
 			Value *taintedArg = aCallInst.getArgOperand(arg);
 
 			//errs() << "Tainted arg: " << taintedArg->getName() << "\n";
-
-			_OUT[&aCallInst].insert(taintedArg);
-			_lastFlowInfo.addValue(taintedArg);
+			insertToOutFlow(&aCallInst, taintedArg);
 
 			errs() << "Found a source " << calleeName << "\n";
 		}
 	}
-
-	//errs() << "##aCallInst \n";
-
-	//printOut(aCallInst);
-
 }
 
 void CTaintAnalysis::visitVAArgInst(VAArgInst & I)
