@@ -86,7 +86,7 @@ void CTaintIntraProcedural::handleFormals() {
 				//TODO: Check this is valid in the case I is not the return instruction
 				//if (_analysis->isValueTainted(retInst, aUse)) {
 				if (_analysis->isValueTainted(&I, aUse)) {
-					errs() << "\tx is tainted from: "; aUse->print(errs()); errs() << "\n";
+					errs() << "\tis tainted from: "; aUse->print(errs()); errs() << "\n";
 				}
 			}
 		}

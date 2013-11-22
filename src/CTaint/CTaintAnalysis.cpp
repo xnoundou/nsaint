@@ -242,7 +242,7 @@ void CTaintAnalysis::insertToOutFlow(Instruction *I, Value *v) {
 
 	if (0 == n) {
 		_OUT[I].insert(v);
-		//v->print(errs()); errs() << " gets tainted => \n";
+		//v->print(errs()); errs() << " gets tainted \n";
 
 		//For each pointer p aliasing v, also add 'p' in OUT[I] to indicate
 		//that instruction I taints value 'p'.
@@ -251,7 +251,7 @@ void CTaintAnalysis::insertToOutFlow(Instruction *I, Value *v) {
 			for(AliasSet::iterator it = as->begin(), itE = as->end(); it != itE; ++it) {
 				Value *p = it->getValue();
 				_OUT[I].insert(p);
-				//p->print(errs() << " \n <= also gets tainted");
+				//p->print(errs() << " \n\t also gets tainted");
 				//v->print(errs()); errs() << "\n";
 			}
 		}
@@ -346,13 +346,22 @@ void CTaintAnalysis::visitReturnInst(ReturnInst &I) {
 	errs() << "Analyzing return instruction for " << F->getName() << "\n";
 	Value *retVal = I.getReturnValue();
 
+	//TODO: check if this could happen
+	if (!retVal) return;
+
+	Instruction *defI = 0;
 	//Check definitions statements that may taint this return value
 	for (User::op_iterator i = I.op_begin(), e = I.op_end(); i != e; ++i) {
-		Value *v = *i;
-		if (isValueTainted(&I, v)) {
-			errs() << "\treturn value"; retVal->print(errs()); errs() << " of " << F->getName() << " is tainted\n";
-			setProcArgTaint(F, F->getNumOperands()+1, true);
-			return;
+		//Value *v = *i;
+		defI = dyn_cast<Instruction>(*i);
+		if (defI) {
+			if (isValueTainted(&I, defI)) {
+				errs() << "\treturn value"; retVal->print(errs()); errs() 
+			       	<< " of " << F->getName() << " is tainted from\n";
+				errs() << "\t "; defI->print(errs()); errs() << "\n";
+				setProcArgTaint(F, F->getNumOperands()+1, true);
+				return;
+			}
 		}
 	}
 }
