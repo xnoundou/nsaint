@@ -251,7 +251,7 @@ void CTaintAnalysis::insertToOutFlow(Instruction *I, Value *v) {
 			for(AliasSet::iterator it = as->begin(), itE = as->end(); it != itE; ++it) {
 				Value *p = it->getValue();
 				_OUT[I].insert(p);
-				//p->print(errs() << " \n\t also gets tainted");
+				//p->print(errs() << " \n\t also gets tainted\n");
 				//v->print(errs()); errs() << "\n";
 			}
 		}
