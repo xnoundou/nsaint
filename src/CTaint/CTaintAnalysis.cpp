@@ -2,6 +2,8 @@
 #include "CTaintAnalysis.h"
 #include "CTaintIntraProcedural.h"
 
+#include <llvm/Support/CFG.h>
+
 char CTaintAnalysis::ID = 0;
 
 const string CTaintAnalysis::_taintId("[STTAL]");
@@ -56,15 +58,38 @@ inline Function * CTaintAnalysis::getFunction(Instruction &I) {
 	return I.getParent()->getParent();
 }
 
-CTaintAnalysis::CTaintAnalysis() : ModulePass(ID) {
-	_pointerMain = 0;
-	_firstInstMain = 0;
-	_intraFlag = false;
-	_interFlag = false;
-	_aliasFlag = false;
-	_interContextSensitiveFlag = false;
-
+CTaintAnalysis::CTaintAnalysis() : ModulePass(ID),
+									_intraFlag(false),
+									_interFlag(false),
+									_aliasFlag(false),
+									_interContextSensitiveFlag(false),
+									_pointerMain(0),
+									_firstInstMain(0) {
 	readTaintSourceConfig();
+}
+
+CTaintAnalysis::~CTaintAnalysis() {
+
+	{ //Delete all alias set tracker
+		Function *F = 0;
+		AliasSetTracker *functionAST = 0;
+		for(unsigned k = 0; k < _allProcs.size(); ++k) {
+			F = _allProcs[k];
+			functionAST = _functionToAliasSetMap[F];
+			delete functionAST;
+		}
+		delete _curAST;
+	}
+
+	{//Delete _summaryTable info
+		Function *F = 0;
+		for(unsigned k = 0; k < _allProcs.size(); ++k) {
+			F = _allProcs[k];
+			vector<bool> * argVec = _summaryTable[F];
+			delete argVec;
+		}
+	}
+
 }
 
 void CTaintAnalysis::getAnalysisUsage(AnalysisUsage &AU) const {
@@ -81,10 +106,11 @@ void CTaintAnalysis::collectAliasInfo() {
 	Function *F = 0;
 	AliasSetTracker *functionAST = 0;
 
-	for(ItFunction itF = _signatureToFunc.begin(), itEnd = _signatureToFunc.end(); itF != itEnd; ++itF) {
-		F = itF->second;
+	for(unsigned k = 0; k < _allProcs.size(); ++k) {
+		F = _allProcs[k];
 		functionAST = new AliasSetTracker(*_aa);
 		_functionToAliasSetMap[F] = functionAST;
+
 		for (inst_iterator I = inst_begin(*F), E = inst_end(*F); I != E; ++I) {
 			functionAST->add(&*I);
 		}
@@ -94,92 +120,26 @@ void CTaintAnalysis::collectAliasInfo() {
 	_aliasFlag = true;
 }
 
-bool CTaintAnalysis::outFlowHasBeenModified() {
-	return _lastFlowInfo.hasBeenModified();
-}
-
-Instruction * CTaintAnalysis::next(vector<Instruction *> &workList) {
-	Instruction *result = workList.back();
-	workList.pop_back();
-	return result;
-}
-
-inline void CTaintAnalysis::insert(vector<Instruction *> &workList, Instruction *I) {
-	workList.insert(workList.begin(), I);
-}
-
-void CTaintAnalysis::getAllBeforeNextTerminator(Instruction *I, vector<Instruction *> &succs) {
-	Instruction *n = I->getNextNode();
-	while( !n->isTerminator() ){
-		succs.insert(succs.begin(), n);
-		n = n->getNextNode();
-	}
-	//errs() << "size at end of getAllBeforeNextTerminator: " << succs.size() << "\n";
-}
-
-void CTaintAnalysis::getSuccessors(Instruction *I, vector<Instruction *> &succs) {
-	if (I->isTerminator()) {
-		TerminatorInst *T = cast<TerminatorInst> (I);
-		unsigned succNr = T->getNumSuccessors();
-		for(unsigned k = 0; k < succNr; ++k) {
-			BasicBlock *succBB = T->getSuccessor(k);
-			Instruction &succFirst = succBB->front();
-			succs.insert(succs.begin(), &succFirst);
-			getAllBeforeNextTerminator(&succFirst, succs);
-		}
-	}
-	else {
-		getAllBeforeNextTerminator(I, succs);
-	}
-	//errs() << "size at end of getSuccessors: " << succs.size() << "\n";
-}
-
 void CTaintAnalysis::printOut(Instruction &I) {
 	set<Value *> &out = _OUT[&I];
-
+	errs() << "printOut for: "; I.print(errs()); errs() << "\n";
 	for( set<Value *>::iterator it = out.begin(), itEnd = out.end();
 			it != itEnd;
-			++it)
-	{
+			++it) {
 		(*it)->print(errs());
 		errs() << "\n";
 	}
+	errs() << "printOut for: "; I.print(errs()); errs() << " END\n";
 }
 
 void CTaintAnalysis::printIn(Instruction &I) {
 	set<Value *> &in = _IN[&I];
-
 	for( set<Value *>::iterator it = in.begin(), itEnd = in.end();
 			it != itEnd;
-			++it)
-	{
+			++it) {
 		(*it)->print(errs());
 		errs() << "\n";
 	}
-}
-
-void CTaintAnalysis::initWorkList(vector<Instruction *> &workList){
-	Function *F = 0;
-	Instruction *I = 0;
-
-	for(ItFunction itF = _signatureToFunc.begin(), itEnd = _signatureToFunc.end();
-			itF != itEnd;
-			++itF)
-	{
-		F = itF->second;
-
-		for (inst_iterator it = inst_begin(*F), E = inst_end(*F); it != E; ++it) {
-			I = &*it;
-
-			//Initializing IN and OUT flow sets
-			_OUT[I];
-			_IN[I];
-			insert(workList, I);
-		}
-	}
-
-	errs() << " _OUT size: " << _OUT.size() << "\n";
-	errs() << " _IN size: " << _IN.size() << "\n";
 }
 
 bool CTaintAnalysis::runOnModule(Module &m) {
@@ -205,6 +165,22 @@ bool CTaintAnalysis::runOnModule(Module &m) {
 		//TODO: use function signature as key instead
 		_signatureToFunc[fName] = f;
 
+		_allProcs.push_back(f);
+
+
+		{//Initialize _summaryTable info.
+			vector<bool> *argVec = new vector<bool>;
+			for(Function::arg_iterator A = f->arg_begin(), E=f->arg_end(); A != E; ++A) {
+				argVec->push_back(false);
+			}
+
+			//Add an element if the function has a non-void type
+			if (!f->getReturnType()->isVoidTy())
+				argVec->push_back(false);
+
+			_summaryTable[f] = argVec;
+		}
+
 		if ( !_pointerMain && 0 == fName.compare(ENTRY_POINT) ) {
 			_pointerMain = f;
 			_firstInstMain = &*inst_begin(_pointerMain);
@@ -214,13 +190,13 @@ bool CTaintAnalysis::runOnModule(Module &m) {
 	//Adds function instructions relevant for the alias analysis pass
 	collectAliasInfo();
 
-	CTaintIntraProcedural intraFlow(this);
-
-	_curAST->print(errs());
+	//_curAST->print(errs());
 
 	log("Now performs the intraprocedural analysis");
 
-	intraFlow.analyze();
+	CTaintIntraProcedural intraFlow(this);
+
+	_intraFlag = true;
 
 	return false;
 }
@@ -239,42 +215,54 @@ unsigned CTaintAnalysis::isTaintSource(string &funcName) {
 	return -1;
 }
 
-inline void CTaintAnalysis::merge(Instruction *I) {
-	_IN[I].insert(_lastFlowInfo.begin(), _lastFlowInfo.end());
-}
+bool CTaintAnalysis::merge(BasicBlock *curBB, BasicBlock *succBB) {
+	bool wasMerged = false;
+	set<Value *> &curBBOut = _IN[&curBB->back()];
+	set<Value *> &succBBIn = _OUT[&succBB->front()];
 
-void CTaintAnalysis::mergeCopyPredOutFlowToInFlow(Instruction &I) {
-	BasicBlock *BB = I.getParent();
-
-	BasicBlock *aPred = 0;
-	Instruction *pi;
-	for (pred_iterator PI = pred_begin(BB), E = pred_end(BB); PI != E; ++PI) {
-	  aPred = *PI;
-	  pi = &aPred->back();
-	  _IN[&I].insert(_OUT[pi].begin(), _OUT[pi].end());
+	Value *aVal = 0;
+	for(set<Value *>::iterator V = curBBOut.begin(), E=curBBOut.end();
+			V != E;
+			++V) {
+		aVal = (*V);
+		if (0 == succBBIn.count(aVal)) {
+			succBBIn.insert(aVal);
+			wasMerged = true;
+			//errs() << "## merged \n";
+			//aVal->print(errs());
+			//errs() << "\n";
+		}
 	}
 
-	_lastFlowInfo.reset();
+	return wasMerged;
+}
+
+inline void CTaintAnalysis::mergeCopyPredOutFlowToInFlow(Instruction &predInst, Instruction &curInst) {
+	_IN[&curInst].insert(_OUT[&predInst].begin(), _OUT[&predInst].end());
 }
 
 /**
  * Adds value 'v' to the set OUT[I], denoting that instruction
  * I taints value 'v'.
  */
-inline void CTaintAnalysis::insertToOutFlow(Instruction *I, Value *v) {
-	_OUT[I].insert(v);
-	_lastFlowInfo.addValue(v);
+void CTaintAnalysis::insertToOutFlow(Instruction *I, Value *v) {
 
-	//For each pointer p aliasing v, also add 'p' in OUT[I] to indicate
-	//that instruction I taints value 'p'.
-	AliasSet * as = _curAST->getAliasSetForPointerIfExists(v, 0, 0);
-	if (as && as->isMayAlias()) {
-		for(AliasSet::iterator it = as->begin(), itE = as->end(); it != itE; ++it) {
-		  Value *p = it->getValue();
-			_OUT[I].insert(p);
-			_lastFlowInfo.addValue(p);
-			//p->print(errs() << " \n gets tainted through ");
-			//v->print(errs()); errs() << "\n";
+	int n = _OUT[I].count(v);
+
+	if (0 == n) {
+		_OUT[I].insert(v);
+		//v->print(errs()); errs() << " gets tainted => \n";
+
+		//For each pointer p aliasing v, also add 'p' in OUT[I] to indicate
+		//that instruction I taints value 'p'.
+		AliasSet * as = _curAST->getAliasSetForPointerIfExists(v, 0, 0);
+		if (as && as->isMayAlias()) {
+			for(AliasSet::iterator it = as->begin(), itE = as->end(); it != itE; ++it) {
+				Value *p = it->getValue();
+				_OUT[I].insert(p);
+				//p->print(errs() << " \n <= also gets tainted");
+				//v->print(errs()); errs() << "\n";
+			}
 		}
 	}
 }
@@ -283,90 +271,102 @@ inline void CTaintAnalysis::insertToOutFlow(Instruction *I, Value *v) {
  * Returns 'true' if value 'v' is tainted at the program point before
  * instruction 'I'.
  */
-inline bool CTaintAnalysis::isValueTainted(Instruction *I, Value *v) {
-	return (!_IN[I].empty() && 0 == _IN[I].count(v));
+bool CTaintAnalysis::isValueTainted(Instruction *I, Value *v) {
+
+	if (_IN[I].empty()) return false;
+
+	if (0 < _IN[I].count(v)) return true;
+
+	AliasSet * as = _curAST->getAliasSetForPointerIfExists(v, 0, 0);
+
+	if (as && as->isMayAlias()) {
+		for(AliasSet::iterator it = as->begin(), itE = as->end(); it != itE; ++it) {
+			Value *p = it->getValue();
+			if ( _IN[I].count(p) > 0 )
+				return true;
+		}
+	}
+
+	return false;
 }
 
-void CTaintAnalysis::visitLoadInst(LoadInst &I)
-{
-	mergeCopyPredOutFlowToInFlow(I);
+AliasSet *CTaintAnalysis::getAliasSetForValue(Value *v, Function *F) {
+	AliasSetTracker * ast = getAliasSetTracker(F);
+	if (ast) return ast->getAliasSetForPointerIfExists(v, 0, 0);
+	return 0;
 }
 
 void CTaintAnalysis::visitStoreInst(StoreInst &I)
 {
-	mergeCopyPredOutFlowToInFlow(I);
-
-	//errs() << "STORE\n";
+	errs() << "STORE [*p=q]: ";
+	I.print(errs());
+	errs() << "\n";
 
 	Value *q = I.getValueOperand();
-
-	if (!isValueTainted(&I, q))
-		return;
-
 	Value *p = I.getPointerOperand();
 
-	//STORE [*p=q]
-	errs() << "STORE [*p=q]\n";
-
-	insertToOutFlow(&I, p);
-}
-
-void CTaintAnalysis::visitGetElementPtrInst(GetElementPtrInst &I)
-{
-	mergeCopyPredOutFlowToInFlow(I);
-
-	//Value * v  = I.get
+	if ( (0 == _OUT[&I].count(p)) && isValueTainted(&I, q)) {
+		insertToOutFlow(&I, p);
+	}
 }
 
 /*
  * Interprocedural analysis
  */
-void CTaintAnalysis::visitCallInst(CallInst & aCallInst)
+void CTaintAnalysis::visitCallInst(CallInst & I)
 {
-	mergeCopyPredOutFlowToInFlow(aCallInst);
+	errs() << "CALL [call func]: ";
+	I.print(errs());
+	errs() << "\n";
 
-	errs() << "CALL (intra)\n";
+	Function *callee = I.getCalledFunction();
 
-	/*if (_intraFlag) {
+	//TODO: Check why some call statements have null callee
+	if (!callee) {
+		errs() << "## Has no callee!\n";
+		return;
+	}
+	//assert(callee && "## Must have a callee\n");
+
+	string calleeName = callee->getName().str();
+
+	unsigned arg = isTaintSource(calleeName);
+
+	if ( -1 != arg ) {
+		unsigned maxParams = I.getNumArgOperands();
+		assert ( (arg < maxParams) && "Invalid argument position" );
+		Value *taintedArg = I.getArgOperand(arg);
+		insertToOutFlow(&I, taintedArg);
+		//printOut(I);
+		//errs() << "Found a source " << calleeName << "\n";
+		
+		for (Value::use_iterator u = taintedArg->use_begin(), 
+		    e = taintedArg->use_end(); u != e; 
+		    ++u) {
+		  Value *aTaintedUse = *u;
+		  if (Instruction *I = dyn_cast<Instruction>(aTaintedUse)) {
+		        //errs() << "##Setting: "; aTaintedUse->print(errs()); errs() << " as tainted:\n";			
+			insertToOutFlow(I, aTaintedUse); 
+		  }
+		}
 
 	}
-	else {*/
-		//SOURCE[r = call func(a0, a1, ..., an)]
-		//Intraprocedural analysis case: recognizing sources
-		Function *callee = aCallInst.getCalledFunction();
-		string calleeName = callee->getName().str();
-		unsigned arg = isTaintSource(calleeName);
-		if ( -1 != arg ) {
-			unsigned maxParams = aCallInst.getNumArgOperands();
-			assert ( (arg < maxParams) && "Invalid argument position" );
-			Value *taintedArg = aCallInst.getArgOperand(arg);
-
-			//errs() << "Tainted arg: " << taintedArg->getName() << "\n";
-			insertToOutFlow(&aCallInst, taintedArg);
-
-			errs() << "Found a source " << calleeName << "\n";
-		}
-	//}
 }
 
-void CTaintAnalysis::visitVAArgInst(VAArgInst & I)
-{
-}
+void CTaintAnalysis::visitReturnInst(ReturnInst &I) {
+	Function *F = getFunction(I);
+	errs() << "Analyzing return instruction for " << F->getName() << "\n";
+	Value *retVal = I.getReturnValue();
 
-void CTaintAnalysis::visitAllocaInst(AllocaInst &I)
-{
-	//errs() << "ALLOC \n";
-
-	/*for(Value::use_iterator itU = I.use_begin(), itE = I.use_end();
-			itU != itE;
-			++itU)
-	{
-		itU->print(errs());
-		if (isa<Instruction>(itU)) {
-
+	//Check definitions statements that may taint this return value
+	for (User::op_iterator i = I.op_begin(), e = I.op_end(); i != e; ++i) {
+		Value *v = *i;
+		if (isValueTainted(&I, v)) {
+			errs() << "\treturn value"; retVal->print(errs()); errs() << " of " << F->getName() << " is tainted\n";
+			setProcArgTaint(F, F->getNumOperands()+1, true);
+			return;
 		}
-
-	}*/
+	}
 }
 
 static RegisterPass<CTaintAnalysis>

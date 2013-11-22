@@ -1,22 +1,22 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int compute(int);
+int compute(int *);
 int odd(int);
 int even(int);
 int main();
 
-int compute(int x)
+int compute(int *x)
 {
   int sum, i;
-  if (x == 2){
+  if (*x == 2){
     printf("Enter an integer now: ");
     scanf("%d", &sum);
   }
   else
     sum = 0;
-  for(i = 0; i < x; ++ i)
-    sum += i;
+  for(i = 0; i < sum; ++ i)
+    *x += sum;
   return sum;
 }
 
@@ -47,7 +47,7 @@ int main()
   scanf("%d", &x);
   b1 = even(x);
   b2 = odd(3);
-  y = compute(x);
+  y = compute(&x);
   sprintf(str, "%d", y);
   return 0;
 }

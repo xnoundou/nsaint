@@ -50,7 +50,7 @@ namespace {
 
 //Data structure representing the analysis flowset data type
 //TODO: use StringMap from llvm
-typedef map<Instruction *, set<Value *> >  FlowSet;
+typedef map<Instruction *, set<Value *> > FlowSet;
 typedef map<Instruction *, set<Value *> >::iterator ItFlowSet;
 typedef map<Instruction *, set<Value *> >::value_type ValTypeFlowSet;
 
@@ -58,34 +58,10 @@ typedef map<Instruction *, set<Value *> >::value_type ValTypeFlowSet;
 //typedef map<Value *, vector<Instruction &> >::iterator ItValueTaintingTable;
 //typedef map<Value *, vector<Instruction &> >::value_type ValTypeValueTaintingTable;
 
-typedef vector< pair<bool, string> > FunctionParam;
-
-typedef struct {
-
-	set<Value *>::iterator begin(){
-		return _modified.begin();
-	}
-
-	set<Value *>::iterator end(){
-		return _modified.end();
-	}
-
-	void addValue(Value *v){
-		_modified.insert(v);
-	}
-
-	bool hasBeenModified(){
-		return _modified.size() > 0;
-	}
-
-	void reset(){
-		_modified.clear();
-	}
-
-private:
-	set<Value *> _modified;
-
-} OutputModifiedInfo;
+/**
+ * (taintInfo, argNo)
+ */
+//typedef pair<bool, unsigned> FunctionParam;
 
 class CTaintAnalysis : public ModulePass,
 						public InstVisitor<CTaintAnalysis> {
@@ -93,41 +69,61 @@ public:
 	static char ID;
 
 	void getAnalysisUsage(AnalysisUsage & AU) const;
-
 	virtual bool runOnModule(Module & F);
 
 	CTaintAnalysis();
-	void visitLoadInst(LoadInst &I);
+	~CTaintAnalysis();
+	inline vector<Function *> *getAllProcs() {
+		return &_allProcs;
+	}
+
 	void visitStoreInst(StoreInst &I);
-	void visitGetElementPtrInst(GetElementPtrInst &I);
-	void visitVAArgInst(VAArgInst & I);
 	void visitCallInst(CallInst &I);
-	void visitAllocaInst(AllocaInst &I);
+	void visitReturnInst(ReturnInst &I);
+
+	virtual bool merge(BasicBlock *curBB, BasicBlock *succBB);
+	void mergeCopyPredOutFlowToInFlow(Instruction &predInst, Instruction &curInst);
+
+	void printIn(Instruction &I);
+	void printOut(Instruction &I);
 
 	/**
-	 * Returns 'true' if any entry of the 'OUT' set has
-	 * been modified by the previous iteration.
+	 * method is public only for debugging purposes
 	 */
-	bool outFlowHasBeenModified();
+	inline set<Value *> & getInFlow(Instruction &I) {
+		return _IN[&I];
+	}
 
 	/**
-	 * Initialize the work list 'workList' by adding relevant
-	 * instructions to it. This method also initialize
-	 * the '_IN' and '_OUT' flow sets.
+	 * method is public only for debugging purposes
 	 */
-	void initWorkList(vector<Instruction *> &workList);
+	inline set<Value *> & getOutFlow(Instruction &I) {
+		return _OUT[&I];
+	}
+
+	inline AliasSetTracker* getAliasSetTracker(Function *F) {
+		return _functionToAliasSetMap[F];
+	}
+
+	inline void setProcArgTaint(Function *F, unsigned argNo, bool isTainted) {
+		vector<bool> *argInfo = _summaryTable[F];
+		assert ( (argInfo->size() > argNo) && "Invalid function argument number!" );
+		(*argInfo)[argNo] = isTainted;
+	}
+
+	inline bool isProcArgTaint(Function *F, unsigned argNo) {
+		vector<bool> * argInfo = _summaryTable[F];
+		assert ( (argInfo->size() > argNo) && "Invalid function argument number!" );
+		return (*argInfo)[argNo];
+	}
 
 	/**
-	 * Returns the next instruction to process from the
-	 * worklist 'workList'.
+	 * Returns 'true' if value 'v' is tainted at the program
+	 * point before instruction 'I'.
 	 */
-	Instruction * next(vector<Instruction *> &workList);
+	bool isValueTainted(Instruction *I, Value *v);
 
-	/**
-	 * Inserts instruction 'I' in the worklist 'workList'
-	 */
-	inline void insert(vector<Instruction *> &workList, Instruction *I);
-	inline void merge(Instruction *I);
+	AliasSet *getAliasSetForValue(Value *v, Function *F);
 
 private:
 	const static string _taintId;
@@ -183,44 +179,24 @@ private:
 	DenseMap<Function*, AliasSetTracker*> _functionToAliasSetMap;
 
 	/**
-	 * Top level variables
-	 */
-	set<Value *> _addressTakenVars;
-
-	inline bool isTopLevelVar(Value *v) {
-		return (0 == _addressTakenVars.count(v));
-	}
-
-	/**
 	 * Map from program funtion signatures as string to
 	 * Function pointers
 	 */
 	map<string, Function*> _signatureToFunc;
 	typedef map<string, Function*>::iterator ItFunction;
+	vector<Function *> _allProcs;
 
 	/**
 	 * Summary table where we store function parameters and
 	 * return value taunt information
 	 */
-	map<string, FunctionParam> _summaryTable;
-	typedef map<string, FunctionParam>::iterator itSummaryTable;
+	map<Function *, vector<bool> *> _summaryTable;
 
 	FlowSet _IN;
 	FlowSet _OUT;
 	//ValueTaintingTable _valTaintInfo;
 
-	OutputModifiedInfo _lastFlowInfo;
-
-	void printIn(Instruction &I);
-	void printOut(Instruction &I);
-	void mergeCopyPredOutFlowToInFlow(Instruction &I);
-	inline void insertToOutFlow(Instruction *I, Value *v);
-
-	/**
-	 * Returns 'true' if value 'v' is tainted at the program
-	 * point before instruction 'I'.
-	 */
-	inline bool isValueTainted(Instruction *I, Value *v);
+	void insertToOutFlow(Instruction *I, Value *v);
 
 	static void log(const string &msg);
 
@@ -229,9 +205,6 @@ private:
 	 * in order to manage and query alias sets information.
 	 */
 	void collectAliasInfo();
-
-	void getAllBeforeNextTerminator(Instruction *I, vector<Instruction *> &succs);
-	void getSuccessors(Instruction *I, vector<Instruction *> &succs);
 };
 }
 

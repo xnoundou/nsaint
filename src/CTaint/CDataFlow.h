@@ -10,6 +10,7 @@
 
 #include <llvm/IR/Instruction.h>
 #include <llvm/InstVisitor.h>
+#include <llvm/Support/CFG.h>
 
 #include <vector>
 using std::vector;
@@ -20,15 +21,16 @@ namespace {
 class CDataFlow : public InstVisitor<CDataFlow> {
 
 public:
-	CDataFlow(){}
+	CDataFlow(vector<Function *> *allProcs);
 	virtual ~CDataFlow(){}
 
-	virtual void initWorkList(vector<Instruction *> &workList) {
-		errs() << "You must overwrite this method to initialize the worklist!\n";
+	virtual void mergeCopyPredOutFlowToInFlow(Instruction &predInst, Instruction &curInst) {
+		errs() << "You must overwrite this method to implement mergeCopyPredOutFlowToInFlow!\n";
 	}
 
-	virtual void merge(Instruction *curInst, Instruction *nextInst) {
+	virtual bool merge(BasicBlock *curBB, BasicBlock *succBB) {
 		errs() << "You must overwrite this method to implement the 'merge' operation!\n";
+		return false;
 	}
 
 	virtual bool outFlowHasBeenModified() {
@@ -37,60 +39,61 @@ public:
 		return false;
 	}
 
-	inline int getWorkListSize() {
-		return _workList.size();
+	void localVisitBasicBlock(BasicBlock &bb) {
+		static_cast<InstVisitor*>(this)->visit(bb);
 	}
 
-	virtual void visitLoadInst(LoadInst &I){}
+	void visit(Instruction &I) {
+		if (_predInst)
+			mergeCopyPredOutFlowToInFlow(*_predInst, I);
+		static_cast<InstVisitor*>(this)->visit(I);
+		_predInst = &I;
+	}
+
 	virtual void visitStoreInst(StoreInst &I){}
-	virtual void visitGetElementPtrInst(GetElementPtrInst &I){}
-	virtual void visitVAArgInst(VAArgInst & I){}
 	virtual void visitCallInst(CallInst &I){}
-	virtual void visitAllocaInst(AllocaInst &I){}
+	virtual void visitReturnInst(ReturnInst &I){}
+
 	void analyze();
 
 protected:
+	vector<Function *> *_allProcs;
+	vector<BasicBlock *> _workList;
+	Instruction *_predInst;
 
-	vector<Instruction *> _workList;
-	void insert(Instruction *I);
-	Instruction * next();
-	void getAllBeforeNextTerminator(Instruction *I, vector<Instruction *> &succs);
-	void getSuccessors(Instruction *I, vector<Instruction *> &succs);
+	void insert(BasicBlock *BB);
+	BasicBlock * next();
+	void initWorkList();
 };
 }
 
-inline void CDataFlow::insert(Instruction *I) {
-	_workList.insert(_workList.begin(), I);
+CDataFlow::CDataFlow(vector<Function *> *allProcs)
+	:_allProcs(allProcs),
+	 _predInst(0) {
 }
 
-Instruction * CDataFlow::next() {
-	Instruction *result = _workList.back();
-	_workList.pop_back();
-	return result;
-}
+void CDataFlow::initWorkList(){
+	Function *F = 0;
+	BasicBlock *BB = 0;
 
-void CDataFlow::getAllBeforeNextTerminator(Instruction *I, vector<Instruction *> &succs) {
-	Instruction *n = I->getNextNode();
-	while( !n->isTerminator() ){
-		succs.insert(succs.begin(), n);
-		n = n->getNextNode();
-	}
-}
-
-void CDataFlow::getSuccessors(Instruction *I, vector<Instruction *> &succs) {
-	if (I->isTerminator()) {
-		TerminatorInst *T = cast<TerminatorInst> (I);
-		unsigned succNr = T->getNumSuccessors();
-		for(unsigned k = 0; k < succNr; ++k) {
-			BasicBlock *succBB = T->getSuccessor(k);
-			Instruction &succFirst = succBB->front();
-			succs.insert(succs.begin(), &succFirst);
-			getAllBeforeNextTerminator(&succFirst, succs);
+	for(unsigned k = 0; k < _allProcs->size(); ++k) {
+		F = (*_allProcs)[k];
+		for (Function::iterator it = F->begin(), e = F->end(); it != e; ++it) {
+			BB = &*it;
+			insert(BB);
 		}
 	}
-	else {
-		getAllBeforeNextTerminator(I, succs);
-	}
+	//errs() << " _workList size: " << _workList.size() << "\n";
+}
+
+inline void CDataFlow::insert(BasicBlock *BB) {
+	_workList.insert(_workList.begin(), BB);
+}
+
+BasicBlock * CDataFlow::next() {
+	BasicBlock *result = _workList.back();
+	_workList.pop_back();
+	return result;
 }
 
 /**
@@ -98,41 +101,21 @@ void CDataFlow::getSuccessors(Instruction *I, vector<Instruction *> &succs) {
  * worklist algorithm.
  */
 void CDataFlow::analyze() {
-	initWorkList(_workList);
-
-	Instruction *curI = 0;
-	Instruction *nextI = 0;
+	initWorkList();
+	BasicBlock *bb = 0;
+	BasicBlock *succBB = 0;
 
 	while(!_workList.empty()) {
-		curI = next();
-
-		//errs() << "\n## cur inst \n";
-		//curI->print(errs());
-		//errs() << "\n TYPE ";
-		//curI->getType()->print(errs());
-		//errs() << curI->getOpcodeName();
-		//errs() << "\n";
-
-		visit(*curI);
-
-		//Has any _OUT value been modified ?
-		if (outFlowHasBeenModified()) {
-			//errs() << "## cur inst modified \n";
-			//curI->print(errs());
-			//errs() << "\n";
-			vector<Instruction *> succs;
-			getSuccessors(curI, succs);
-			for(vector<Instruction *>::iterator its = succs.begin(), itEnd = succs.end();
-					its != itEnd;
-					++its )
-			{
-				nextI = *its;
-				merge(curI, nextI);
-				insert(nextI);
+		bb = next();
+		localVisitBasicBlock(*bb);
+		for (succ_iterator pi = succ_begin(bb), E = succ_end(bb); pi != E; ++pi) {
+			succBB = *pi;
+			localVisitBasicBlock(*succBB);
+			if ( merge(bb, succBB) ) {
+				insert(succBB);
 			}
 		}
 	}
 }
-
 
 #endif /* CDATAFLOW_H_ */

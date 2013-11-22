@@ -1,7 +1,9 @@
 
 LLVM_BUILD=/home/noundou/tools/llvm-3.3.src/build
 
-LLVM_INC=-I. -I${LLVM_HOME}/include
+LLVM_INC=-I. -I${LLVM_HOME}/include \
+	 -I/home/noundou/ece750-project/benchmarks/gzip-1.6\
+	 -I/home/noundou/ece750-project/benchmarks/gzip-1.6/lib
 
 MACROS=-D __STDC_LIMIT_MACROS \
        -D__STDC_CONSTANT_MACROS

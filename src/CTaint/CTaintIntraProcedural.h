@@ -10,6 +10,7 @@
 
 #include "CDataFlow.h"
 #include "CTaintAnalysis.h"
+#include <llvm/IR/ValueSymbolTable.h>
 
 namespace {
 class CTaintIntraProcedural : public CDataFlow {
@@ -18,39 +19,32 @@ public:
 	CTaintIntraProcedural(CTaintAnalysis *analysis);
 
 	//******* Implementation of methods inherited from CDataFlow *******//
-	inline void initWorkList(vector<Instruction *> &workList);
-	inline virtual void merge(Instruction *curInst, Instruction *nextInst);
-	virtual bool outFlowHasBeenModified();
+	inline virtual bool merge(BasicBlock *curBB, BasicBlock *succBB);
+	virtual void mergeCopyPredOutFlowToInFlow(Instruction &predInst, Instruction &curInst);
 
 	//******* Implementation of visit methods *******//
-	void visitLoadInst(LoadInst &I);
-	void visitStoreInst(StoreInst &I);
-	void visitCallInst(CallInst &I);
-	void visitAllocaInst(AllocaInst &I);
+	virtual void visitStoreInst(StoreInst &I);
+	virtual void visitCallInst(CallInst &I);
+	virtual void visitReturnInst(ReturnInst &I);
 
 private:
 	CTaintAnalysis *_analysis;
+
+	void handleFormals();
 };
 }
 
-CTaintIntraProcedural::CTaintIntraProcedural(CTaintAnalysis *analysis){
+
+CTaintIntraProcedural::CTaintIntraProcedural(CTaintAnalysis *analysis)
+	:CDataFlow(analysis->getAllProcs())
+{
 	_analysis = analysis;
+	analyze();
+	handleFormals();
 }
 
-inline void CTaintIntraProcedural::initWorkList(vector<Instruction *> &workList) {
-	_analysis->initWorkList(workList);
-}
-
-inline void CTaintIntraProcedural::merge(Instruction *curInst, Instruction *nextInst) {
-	_analysis->merge(nextInst);
-}
-
-bool CTaintIntraProcedural::outFlowHasBeenModified() {
-	return _analysis->outFlowHasBeenModified();
-}
-
-void CTaintIntraProcedural::visitLoadInst(LoadInst &I) {
-	_analysis->visitLoadInst(I);
+inline bool CTaintIntraProcedural::merge(BasicBlock *curBB, BasicBlock *succBB) {
+	return _analysis->merge(curBB, succBB);
 }
 
 void CTaintIntraProcedural::visitStoreInst(StoreInst &I) {
@@ -61,8 +55,43 @@ void CTaintIntraProcedural::visitCallInst(CallInst &I) {
 	_analysis->visitCallInst(I);
 }
 
-void CTaintIntraProcedural::visitAllocaInst(AllocaInst &I) {
-	_analysis->visitAllocaInst(I);
+void CTaintIntraProcedural::visitReturnInst(ReturnInst &I) {
+	_analysis->visitReturnInst(I);
+}
+
+void CTaintIntraProcedural::mergeCopyPredOutFlowToInFlow(Instruction &predInst, Instruction &curInst) {
+	_analysis->mergeCopyPredOutFlowToInFlow(predInst, curInst);
+}
+
+void CTaintIntraProcedural::handleFormals() {
+	Function *F = 0;
+	Value *aUse = 0;
+
+	for(vector<Function *>::iterator pf = _allProcs->begin(), Epf = _allProcs->end();
+			pf != Epf; ++pf) {
+		F = *pf;
+		Instruction &I = F->back().back();
+		//ReturnInst *retInst = dyn_cast<ReturnInst>(&I);
+		//errs() << "## What? "; I.print(errs()); errs() << "\n";
+		//assert(retInst && "Expecting a return instruction here!");
+
+		for(Function::arg_iterator pa = F->arg_begin(), Epa = F->arg_end(); pa != Epa; ++pa) {
+			Argument &A = *pa;
+
+			errs() << "Analyzing formal parameter " << A.getName()
+						   << " of function " << F->getName() << "\n";
+
+			//Check if any use of the formal parameter is tainted
+			for(Value::use_iterator pu = A.use_begin(), Epu = A.use_end(); pu!=Epu; ++pu) {
+				aUse = *pu;
+				//TODO: Check this is valid in the case I is not the return instruction
+				//if (_analysis->isValueTainted(retInst, aUse)) {
+				if (_analysis->isValueTainted(&I, aUse)) {
+					errs() << "\tx is tainted from: "; aUse->print(errs()); errs() << "\n";
+				}
+			}
+		}
+	}
 }
 
 #endif /* CTAINTINTRAPROCEDURAL_H_ */
