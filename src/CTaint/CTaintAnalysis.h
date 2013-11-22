@@ -10,27 +10,13 @@
 
 
 #include <llvm/Pass.h>
-#include <llvm/IR/Module.h>
-#include <llvm/Analysis/LoopInfo.h>
-#include <llvm/Support/InstIterator.h>
-#include <llvm/InstVisitor.h>
-#include <llvm/IR/Instruction.h>
 #include <llvm/Analysis/CallGraph.h>
 #include <llvm/Analysis/AliasAnalysis.h>
 #include <llvm/Analysis/AliasSetTracker.h>
-#include <llvm/Target/Mangler.h>
-#include <llvm/Support/CFG.h>
-
-#include <fstream>
-
-#include <sstream>
-#include <algorithm>
-#include <iterator>
 
 #include <vector>
 #include <string>
 using std::vector;
-
 using std::string;
 
 #include <set>
@@ -48,23 +34,14 @@ namespace {
 #define ENTRY_POINT "main"
 #define SOURCE_ARG_DELIM ","
 
-//Data structure representing the analysis flowset data type
-//TODO: use StringMap from llvm
-typedef map<Instruction *, set<Value *> > FlowSet;
-typedef map<Instruction *, set<Value *> >::iterator ItFlowSet;
-typedef map<Instruction *, set<Value *> >::value_type ValTypeFlowSet;
-
 //typedef map<Value *, vector<Instruction &> >  ValueTaintingTable;
-//typedef map<Value *, vector<Instruction &> >::iterator ItValueTaintingTable;
-//typedef map<Value *, vector<Instruction &> >::value_type ValTypeValueTaintingTable;
 
 /**
  * (taintInfo, argNo)
  */
 //typedef pair<bool, unsigned> FunctionParam;
 
-class CTaintAnalysis : public ModulePass,
-						public InstVisitor<CTaintAnalysis> {
+class CTaintAnalysis : public ModulePass {
 public:
 	static char ID;
 
@@ -86,20 +63,6 @@ public:
 
 	void printIn(Instruction &I);
 	void printOut(Instruction &I);
-
-	/**
-	 * method is public only for debugging purposes
-	 */
-	inline set<Value *> & getInFlow(Instruction &I) {
-		return _IN[&I];
-	}
-
-	/**
-	 * method is public only for debugging purposes
-	 */
-	inline set<Value *> & getOutFlow(Instruction &I) {
-		return _OUT[&I];
-	}
 
 	inline AliasSetTracker* getAliasSetTracker(Function *F) {
 		return _functionToAliasSetMap[F];
@@ -151,8 +114,7 @@ private:
 	 * 'p' has the value '-1' in case function 'F' is not a
 	 * taint source.
 	 */
-	unsigned isTaintSource(string &F);
-	inline Function * getFunction(Instruction &I);
+	int isTaintSource(string &F);
 
 	/** Has the intraprocedural analysis been run */
 	bool _intraFlag;
@@ -169,9 +131,6 @@ private:
 	/** Pointer to the 'main' function */
 	Function *_pointerMain;
 
-	/** Pointer the 'main' function's first instruction */
-	Instruction *_firstInstMain;
-
 	AliasAnalysis *_aa;
 
 	AliasSetTracker *_curAST;
@@ -183,7 +142,7 @@ private:
 	 * Function pointers
 	 */
 	map<string, Function*> _signatureToFunc;
-	typedef map<string, Function*>::iterator ItFunction;
+
 	vector<Function *> _allProcs;
 
 	/**
@@ -192,8 +151,10 @@ private:
 	 */
 	map<Function *, vector<bool> *> _summaryTable;
 
-	FlowSet _IN;
-	FlowSet _OUT;
+	//Data structure representing the analysis flowset data type
+	//TODO: use StringMap from llvm
+	map<Instruction *, set<Value *> > _IN;
+	map<Instruction *, set<Value *> > _OUT;
 	//ValueTaintingTable _valTaintInfo;
 
 	void insertToOutFlow(Instruction *I, Value *v);

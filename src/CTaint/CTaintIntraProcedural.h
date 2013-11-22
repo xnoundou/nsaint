@@ -8,11 +8,11 @@
 #ifndef CTAINTINTRAPROCEDURAL_H_
 #define CTAINTINTRAPROCEDURAL_H_
 
-#include "CDataFlow.h"
+#include "CForwardFlowAnalysis.h"
 #include "CTaintAnalysis.h"
 
 namespace {
-class CTaintIntraProcedural : public CDataFlow {
+class CTaintIntraProcedural : public CForwardFlowAnalysis {
 
 public:
 	CTaintIntraProcedural(CTaintAnalysis *analysis);
@@ -35,7 +35,7 @@ private:
 
 
 CTaintIntraProcedural::CTaintIntraProcedural(CTaintAnalysis *analysis)
-	:CDataFlow(analysis->getAllProcs()),
+	:CForwardFlowAnalysis(analysis->getAllProcs()),
 	 _analysis(analysis)
 {
 	analyze();

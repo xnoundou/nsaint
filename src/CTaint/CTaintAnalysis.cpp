@@ -2,7 +2,10 @@
 #include "CTaintAnalysis.h"
 #include "CTaintIntraProcedural.h"
 
-#include <llvm/Support/CFG.h>
+#include <llvm/Support/InstIterator.h>
+#include <llvm/Target/Mangler.h>
+
+#include <fstream>
 
 char CTaintAnalysis::ID = 0;
 
@@ -54,17 +57,12 @@ void CTaintAnalysis::readTaintSourceConfig() {
 	srcFile.close();
 }
 
-inline Function * CTaintAnalysis::getFunction(Instruction &I) {
-	return I.getParent()->getParent();
-}
-
 CTaintAnalysis::CTaintAnalysis() : ModulePass(ID),
 									_intraFlag(false),
 									_interFlag(false),
 									_aliasFlag(false),
 									_interContextSensitiveFlag(false),
-									_pointerMain(0),
-									_firstInstMain(0) {
+									_pointerMain(0) {
 	readTaintSourceConfig();
 }
 
@@ -179,7 +177,6 @@ bool CTaintAnalysis::runOnModule(Module &m) {
 
 		if ( !_pointerMain && 0 == fName.compare(ENTRY_POINT) ) {
 			_pointerMain = f;
-			_firstInstMain = &*inst_begin(_pointerMain);
 		}
 	}
 
@@ -200,7 +197,7 @@ bool CTaintAnalysis::runOnModule(Module &m) {
  * Checks if the function with name 'funcName' taints any
  * of its parameters.
  */
-unsigned CTaintAnalysis::isTaintSource(string &funcName) {
+int CTaintAnalysis::isTaintSource(string &funcName) {
 	map<string, int>::iterator res;
 	res = _taintSources.find(funcName);
 	if (res != _taintSources.end())
@@ -321,10 +318,10 @@ void CTaintAnalysis::visitCallInst(CallInst & I)
 	}
 	//assert(callee && "## Must have a callee\n");
 	string calleeName = callee->getName().str();
-	unsigned arg = isTaintSource(calleeName);
+	int arg = isTaintSource(calleeName);
 
 	if ( -1 != arg ) {
-		unsigned maxParams = I.getNumArgOperands();
+		int maxParams = I.getNumArgOperands();
 		assert ( (arg < maxParams) && "Invalid argument position" );
 		Value *taintedArg = I.getArgOperand(arg);
 		insertToOutFlow(&I, taintedArg);
@@ -345,7 +342,7 @@ void CTaintAnalysis::visitCallInst(CallInst & I)
 }
 
 void CTaintAnalysis::visitReturnInst(ReturnInst &I) {
-	Function *F = getFunction(I);
+	Function *F = I.getParent()->getParent();
 	errs() << "Analyzing return instruction for " << F->getName() << "\n";
 	Value *retVal = I.getReturnValue();
 
