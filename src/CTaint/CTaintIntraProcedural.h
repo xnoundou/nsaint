@@ -10,7 +10,6 @@
 
 #include "CDataFlow.h"
 #include "CTaintAnalysis.h"
-#include <llvm/IR/ValueSymbolTable.h>
 
 namespace {
 class CTaintIntraProcedural : public CDataFlow {
@@ -36,9 +35,9 @@ private:
 
 
 CTaintIntraProcedural::CTaintIntraProcedural(CTaintAnalysis *analysis)
-	:CDataFlow(analysis->getAllProcs())
+	:CDataFlow(analysis->getAllProcs()),
+	 _analysis(analysis)
 {
-	_analysis = analysis;
 	analyze();
 	handleFormals();
 }
@@ -47,19 +46,19 @@ inline bool CTaintIntraProcedural::merge(BasicBlock *curBB, BasicBlock *succBB) 
 	return _analysis->merge(curBB, succBB);
 }
 
-void CTaintIntraProcedural::visitStoreInst(StoreInst &I) {
+inline void CTaintIntraProcedural::visitStoreInst(StoreInst &I) {
 	_analysis->visitStoreInst(I);
 }
 
-void CTaintIntraProcedural::visitCallInst(CallInst &I) {
+inline void CTaintIntraProcedural::visitCallInst(CallInst &I) {
 	_analysis->visitCallInst(I);
 }
 
-void CTaintIntraProcedural::visitReturnInst(ReturnInst &I) {
+inline void CTaintIntraProcedural::visitReturnInst(ReturnInst &I) {
 	_analysis->visitReturnInst(I);
 }
 
-void CTaintIntraProcedural::mergeCopyPredOutFlowToInFlow(Instruction &predInst, Instruction &curInst) {
+inline void CTaintIntraProcedural::mergeCopyPredOutFlowToInFlow(Instruction &predInst, Instruction &curInst) {
 	_analysis->mergeCopyPredOutFlowToInFlow(predInst, curInst);
 }
 

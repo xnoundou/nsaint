@@ -40,13 +40,13 @@ public:
 	}
 
 	void localVisitBasicBlock(BasicBlock &bb) {
-		static_cast<InstVisitor*>(this)->visit(bb);
+		_super->visit(bb);
 	}
 
 	void visit(Instruction &I) {
 		if (_predInst)
 			mergeCopyPredOutFlowToInFlow(*_predInst, I);
-		static_cast<InstVisitor*>(this)->visit(I);
+		_super->visit(I);
 		_predInst = &I;
 	}
 
@@ -61,6 +61,8 @@ protected:
 	vector<BasicBlock *> _workList;
 	Instruction *_predInst;
 
+	InstVisitor *_super;
+
 	void insert(BasicBlock *BB);
 	BasicBlock * next();
 	void initWorkList();
@@ -70,6 +72,8 @@ protected:
 CDataFlow::CDataFlow(vector<Function *> *allProcs)
 	:_allProcs(allProcs),
 	 _predInst(0) {
+	_super = static_cast<InstVisitor*>(this);
+	assert(_super && "The super class InstVisitor must be non null!");
 }
 
 void CDataFlow::initWorkList(){

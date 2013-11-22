@@ -94,7 +94,6 @@ CTaintAnalysis::~CTaintAnalysis() {
 
 void CTaintAnalysis::getAnalysisUsage(AnalysisUsage &AU) const {
 	AU.setPreservesAll();
-	AU.addRequired<LoopInfo> ();
 	AU.addRequired<CallGraph> ();
 	AU.addRequired<AliasAnalysis> ();
 }
@@ -164,16 +163,13 @@ bool CTaintAnalysis::runOnModule(Module &m) {
 
 		//TODO: use function signature as key instead
 		_signatureToFunc[fName] = f;
-
 		_allProcs.push_back(f);
-
 
 		{//Initialize _summaryTable info.
 			vector<bool> *argVec = new vector<bool>;
 			for(Function::arg_iterator A = f->arg_begin(), E=f->arg_end(); A != E; ++A) {
 				argVec->push_back(false);
 			}
-
 			//Add an element if the function has a non-void type
 			if (!f->getReturnType()->isVoidTy())
 				argVec->push_back(false);
@@ -193,9 +189,7 @@ bool CTaintAnalysis::runOnModule(Module &m) {
 	//_curAST->print(errs());
 
 	log("Now performs the intraprocedural analysis");
-
 	CTaintIntraProcedural intraFlow(this);
-
 	_intraFlag = true;
 
 	return false;
@@ -278,7 +272,6 @@ bool CTaintAnalysis::isValueTainted(Instruction *I, Value *v) {
 	if (0 < _IN[I].count(v)) return true;
 
 	AliasSet * as = _curAST->getAliasSetForPointerIfExists(v, 0, 0);
-
 	if (as && as->isMayAlias()) {
 		for(AliasSet::iterator it = as->begin(), itE = as->end(); it != itE; ++it) {
 			Value *p = it->getValue();
@@ -327,9 +320,7 @@ void CTaintAnalysis::visitCallInst(CallInst & I)
 		return;
 	}
 	//assert(callee && "## Must have a callee\n");
-
 	string calleeName = callee->getName().str();
-
 	unsigned arg = isTaintSource(calleeName);
 
 	if ( -1 != arg ) {
