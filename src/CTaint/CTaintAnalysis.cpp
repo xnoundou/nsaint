@@ -6,12 +6,19 @@
 #include <llvm/Target/Mangler.h>
 
 #include <fstream>
+#include <sstream>
 
 char CTaintAnalysis::ID = 0;
 
 const string CTaintAnalysis::_taintId("[STTAL]");
 
 const string CTaintAnalysis::_taintSourceFile("cfg/sources.cfg");
+
+const int CTaintAnalysis::_sourceArgRet(-1);
+
+const int CTaintAnalysis::_SOURCE_ARG_INVALID_MIN(-2);
+
+const int CTaintAnalysis::_FUNCTION_NOT_SOURCE(100);
 
 map<string, int> CTaintAnalysis::_taintSources;
 typedef map<string, int>::value_type sourceType;
@@ -203,7 +210,7 @@ int CTaintAnalysis::isTaintSource(string &funcName) {
 	if (res != _taintSources.end())
 		return res->second;
 
-	return -1;
+	return _FUNCTION_NOT_SOURCE;
 }
 
 bool CTaintAnalysis::merge(BasicBlock *curBB, BasicBlock *succBB) {
@@ -300,9 +307,6 @@ void CTaintAnalysis::visitStoreInst(StoreInst &I)
 	}
 }
 
-/*
- * Interprocedural analysis
- */
 void CTaintAnalysis::visitCallInst(CallInst & I)
 {
 	errs() << "CALL [call func]: ";
@@ -311,19 +315,22 @@ void CTaintAnalysis::visitCallInst(CallInst & I)
 
 	Function *callee = I.getCalledFunction();
 
-	//TODO: Check why some call statements have null callee
+	//TODO: Check why some call statements may have a null callee
 	if (!callee) {
-		errs() << "## Has no callee!\n";
+		errs() << I.getParent()->getParent()->getName()
+			   << " nas no callee at: "; I.print(errs()); errs() << " !\n";
 		return;
 	}
-	//assert(callee && "## Must have a callee\n");
-	string calleeName = callee->getName().str();
-	int arg = isTaintSource(calleeName);
 
-	if ( -1 != arg ) {
-		int maxParams = I.getNumArgOperands();
-		assert ( (arg < maxParams) && "Invalid argument position" );
-		Value *taintedArg = I.getArgOperand(arg);
+	string calleeName = callee->getName().str();
+	int arg_pos = isTaintSource(calleeName);
+
+	if ( _FUNCTION_NOT_SOURCE == arg_pos ) return;
+
+	int maxParams = I.getNumArgOperands();
+
+	if ( _SOURCE_ARG_INVALID_MIN < arg_pos && arg_pos < maxParams ) {
+		Value *taintedArg = I.getArgOperand(arg_pos);
 		insertToOutFlow(&I, taintedArg);
 		//printOut(I);
 		//errs() << "Found a source " << calleeName << "\n";
@@ -337,7 +344,12 @@ void CTaintAnalysis::visitCallInst(CallInst & I)
 			insertToOutFlow(I, aTaintedUse); 
 		  }
 		}
-
+	}
+	else {
+		std::ostringstream msg;
+		msg << "Invalid argument position (" << arg_pos << ")"
+			<< " max parameters is " << maxParams;
+		log(msg.str());
 	}
 }
 

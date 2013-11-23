@@ -91,6 +91,9 @@ public:
 private:
 	const static string _taintId;
 	const static string _taintSourceFile;
+	const static int _sourceArgRet;
+	const static int _SOURCE_ARG_INVALID_MIN;
+	const static int _FUNCTION_NOT_SOURCE;
 	static map<string, int> _taintSources;
 
 	/**
