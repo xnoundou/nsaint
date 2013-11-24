@@ -67,24 +67,12 @@ void CTaintAnalysis::readTaintSourceConfig() {
 CTaintAnalysis::CTaintAnalysis() : ModulePass(ID),
 									_intraFlag(false),
 									_interFlag(false),
-									_aliasFlag(false),
 									_interContextSensitiveFlag(false),
 									_pointerMain(0) {
 	readTaintSourceConfig();
 }
 
 CTaintAnalysis::~CTaintAnalysis() {
-
-	{ //Delete all alias set tracker
-		Function *F = 0;
-		AliasSetTracker *functionAST = 0;
-		for(unsigned k = 0; k < _allProcs.size(); ++k) {
-			F = _allProcs[k];
-			functionAST = _functionToAliasSetMap[F];
-			delete functionAST;
-		}
-		delete _curAST;
-	}
 
 	{//Delete _summaryTable info
 		Function *F = 0;
@@ -100,28 +88,7 @@ CTaintAnalysis::~CTaintAnalysis() {
 void CTaintAnalysis::getAnalysisUsage(AnalysisUsage &AU) const {
 	AU.setPreservesAll();
 	AU.addRequired<CallGraph> ();
-	AU.addRequired<AliasAnalysis> ();
-}
-
-void CTaintAnalysis::collectAliasInfo() {
-	if ( _aliasFlag )
-		return;
-
-	Function *F = 0;
-	AliasSetTracker *functionAST = 0;
-
-	for(unsigned k = 0; k < _allProcs.size(); ++k) {
-		F = _allProcs[k];
-		functionAST = new AliasSetTracker(*_aa);
-		_functionToAliasSetMap[F] = functionAST;
-
-		for (inst_iterator I = inst_begin(*F), E = inst_end(*F); I != E; ++I) {
-			functionAST->add(&*I);
-		}
-		_curAST->add(*functionAST);
-	}
-
-	_aliasFlag = true;
+	AU.addRequired<EQTDDataStructures> ();
 }
 
 void CTaintAnalysis::printOut(Instruction &I) {
@@ -149,11 +116,9 @@ void CTaintAnalysis::printIn(Instruction &I) {
 bool CTaintAnalysis::runOnModule(Module &m) {
 	log("module identifier is " + m.getModuleIdentifier());
 
-	_aa = &getAnalysis<AliasAnalysis>();
+	_aliasInfo = &getAnalysis<EQTDDataStructures>();
 
-	assert (_aa && "Alias analysis was not instantiated (_aa is null)!");
-
-	_curAST = new AliasSetTracker(*_aa);
+	assert(_aliasInfo && "An instance of DSA could not be created!");
 
 	for (Module::iterator b = m.begin(), be = m.end(); b != be; ++b) {
 
@@ -182,15 +147,17 @@ bool CTaintAnalysis::runOnModule(Module &m) {
 			_summaryTable[f] = argVec;
 		}
 
+		{//Initialize alias info from DSA
+			if (_aliasInfo->hasDSGraph(*f))
+				_functionToDSGraph[f] = _aliasInfo->getDSGraph(*f);
+		}
+
 		if ( !_pointerMain && 0 == fName.compare(ENTRY_POINT) ) {
 			_pointerMain = f;
 		}
 	}
 
-	//Adds function instructions relevant for the alias analysis pass
-	collectAliasInfo();
-
-	//_curAST->print(errs());
+	_aliasInfo->print(errs(), &m);
 
 	log("Now performs the intraprocedural analysis");
 	CTaintIntraProcedural intraFlow(this);
@@ -240,6 +207,38 @@ inline void CTaintAnalysis::mergeCopyPredOutFlowToInFlow(Instruction &predInst, 
 }
 
 /**
+ * Given a value v, and a DSGraph dsg (a DSGraph
+ * represents the aliasing relationship within a function),
+ * this method checks if v has aliases in function F with
+ * dsg as DSGraph.
+ */
+void CTaintAnalysis::getAliases(Value *v,
+								DSGraph *dsg,
+								vector<Value *> &aliases) {
+
+	if (dsg && dsg->hasNodeForValue(v)) {
+		//If value v is sharing the same DSNode
+		//as another value w, then mayAlias(v,w)
+		DSNodeHandle &vHandle = dsg->getNodeForValue(v);
+		DSGraph::ScalarMapTy &scalarMap = dsg->getScalarMap();
+
+		DSGraph::ScalarMapTy::iterator sIt = scalarMap.begin();
+		DSGraph::ScalarMapTy::iterator EsIt = scalarMap.end();
+
+		const Value *vAlias = 0;
+		while(sIt != EsIt) {
+			DSNodeHandle &cur = (*sIt).second;
+			if (cur == vHandle) {
+				vAlias = (*sIt).first;
+				if (vAlias)
+					aliases.push_back(const_cast<Value *>(vAlias));
+			}
+			++sIt;
+		}
+	}
+}
+
+/**
  * Adds value 'v' to the set OUT[I], denoting that instruction
  * I taints value 'v'.
  */
@@ -249,11 +248,27 @@ void CTaintAnalysis::insertToOutFlow(Instruction *I, Value *v) {
 
 	if (0 == n) {
 		_OUT[I].insert(v);
-		//v->print(errs()); errs() << " gets tainted \n";
+		v->print(errs()); errs() << " gets tainted\n";
+
+		Function *f = I->getParent()->getParent();
+		DSGraph *dsg = _functionToDSGraph[f];
+
+		/**
+		 * Mark all aliases of v as tainted.
+		 */
+		if (dsg) {
+			vector<Value *> vAliases;
+			getAliases(v, dsg, vAliases);
+			int s = vAliases.size();
+			for(int k = 0; k < s; ++k) {
+				_OUT[I].insert(vAliases[k]);
+				vAliases[k]->print(errs() << " \n\t also gets tainted\n");
+			}
+		}
 
 		//For each pointer p aliasing v, also add 'p' in OUT[I] to indicate
 		//that instruction I taints value 'p'.
-		AliasSet * as = _curAST->getAliasSetForPointerIfExists(v, 0, 0);
+		/*AliasSet * as = _curAST->getAliasSetForPointerIfExists(v, 0, 0);
 		if (as && as->isMayAlias()) {
 			for(AliasSet::iterator it = as->begin(), itE = as->end(); it != itE; ++it) {
 				Value *p = it->getValue();
@@ -261,7 +276,7 @@ void CTaintAnalysis::insertToOutFlow(Instruction *I, Value *v) {
 				//p->print(errs() << " \n\t also gets tainted\n");
 				//v->print(errs()); errs() << "\n";
 			}
-		}
+		}*/
 	}
 }
 
@@ -275,23 +290,42 @@ bool CTaintAnalysis::isValueTainted(Instruction *I, Value *v) {
 
 	if (0 < _IN[I].count(v)) return true;
 
-	AliasSet * as = _curAST->getAliasSetForPointerIfExists(v, 0, 0);
+	/*Function *f = I->getParent()->getParent();
+	DSGraph *dsg = _functionToDSGraph[f];
+
+	if (dsg) {
+		vector<Value *> vAliases;
+		getAliases(v, dsg, vAliases);
+		Value *curAlias = 0;
+		int s = vAliases.size();
+		for(int k = 0; k < s; ++k) {
+			curAlias = vAliases[k];
+			if (0 < _IN[I].count(curAlias)) {
+				errs() << "An alias: ";
+				vAliases[k]->print(errs());
+				errs() << " is tainted\n";
+				return true;
+			}
+		}
+	}*/
+
+	/*AliasSet * as = _curAST->getAliasSetForPointerIfExists(v, 0, 0);
 	if (as && as->isMayAlias()) {
 		for(AliasSet::iterator it = as->begin(), itE = as->end(); it != itE; ++it) {
 			Value *p = it->getValue();
 			if ( _IN[I].count(p) > 0 )
 				return true;
 		}
-	}
+	}*/
 
 	return false;
 }
 
-AliasSet *CTaintAnalysis::getAliasSetForValue(Value *v, Function *F) {
+/*AliasSet *CTaintAnalysis::getAliasSetForValue(Value *v, Function *F) {
 	AliasSetTracker * ast = getAliasSetTracker(F);
 	if (ast) return ast->getAliasSetForPointerIfExists(v, 0, 0);
 	return 0;
-}
+}*/
 
 void CTaintAnalysis::visitStoreInst(StoreInst &I)
 {
@@ -302,7 +336,7 @@ void CTaintAnalysis::visitStoreInst(StoreInst &I)
 	Value *q = I.getValueOperand();
 	Value *p = I.getPointerOperand();
 
-	if ( (0 == _OUT[&I].count(p)) && isValueTainted(&I, q)) {
+	if ( isValueTainted(&I, q)) {
 		insertToOutFlow(&I, p);
 	}
 }

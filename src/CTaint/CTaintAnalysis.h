@@ -11,8 +11,8 @@
 
 #include <llvm/Pass.h>
 #include <llvm/Analysis/CallGraph.h>
-#include <llvm/Analysis/AliasAnalysis.h>
-#include <llvm/Analysis/AliasSetTracker.h>
+#include <dsa/DSGraph.h>
+#include <dsa/DataStructure.h>
 
 #include <vector>
 #include <string>
@@ -64,8 +64,8 @@ public:
 	void printIn(Instruction &I);
 	void printOut(Instruction &I);
 
-	inline AliasSetTracker* getAliasSetTracker(Function *F) {
-		return _functionToAliasSetMap[F];
+	inline DSGraph* getDSGraph(Function *F) {
+		return _functionToDSGraph[F];
 	}
 
 	inline void setProcArgTaint(Function *F, unsigned argNo, bool isTainted) {
@@ -86,7 +86,7 @@ public:
 	 */
 	bool isValueTainted(Instruction *I, Value *v);
 
-	AliasSet *getAliasSetForValue(Value *v, Function *F);
+	//AliasSet *getAliasSetForValue(Value *v, Function *F);
 
 private:
 	const static string _taintId;
@@ -125,20 +125,11 @@ private:
 	/** Has the interprocedural Context-Insenstive analysis been run */
 	bool _interFlag;
 
-	/** Was the AliasSetTracker instance already been initialized */
-	bool _aliasFlag;
-
 	/** Has the interprocedural Context-Senstive analysis been run */
 	bool _interContextSensitiveFlag;
 
 	/** Pointer to the 'main' function */
 	Function *_pointerMain;
-
-	AliasAnalysis *_aa;
-
-	AliasSetTracker *_curAST;
-
-	DenseMap<Function*, AliasSetTracker*> _functionToAliasSetMap;
 
 	/**
 	 * Map from program funtion signatures as string to
@@ -154,6 +145,12 @@ private:
 	 */
 	map<Function *, vector<bool> *> _summaryTable;
 
+	EQTDDataStructures *_aliasInfo;
+
+	map<Function *, DSGraph *> _functionToDSGraph;
+
+	void getAliases(Value *v, DSGraph *dsg, vector<Value *> &aliases);
+
 	//Data structure representing the analysis flowset data type
 	//TODO: use StringMap from llvm
 	map<Instruction *, set<Value *> > _IN;
@@ -163,12 +160,6 @@ private:
 	void insertToOutFlow(Instruction *I, Value *v);
 
 	static void log(const string &msg);
-
-	/**
-	 * Adds all relevant instructions to the AliasSetTracker instance
-	 * in order to manage and query alias sets information.
-	 */
-	void collectAliasInfo();
 };
 }
 

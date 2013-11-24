@@ -2,8 +2,9 @@
 LLVM_BUILD=/home/noundou/tools/llvm-3.3.src/build
 
 LLVM_INC=-I. -I${LLVM_HOME}/include \
-	 -I/home/noundou/ece750-project/benchmarks/gzip-1.6\
-	 -I/home/noundou/ece750-project/benchmarks/gzip-1.6/lib
+	 -I/home/noundou/ece750-project/benchmarks/gzip-1.6 \
+	 -I/home/noundou/ece750-project/benchmarks/gzip-1.6 \
+	 -I/home/noundou/tools/poolalloc/include
 
 MACROS=-D __STDC_LIMIT_MACROS \
        -D__STDC_CONSTANT_MACROS
@@ -24,8 +25,8 @@ all: compile
 
 #${OBJ}: ${SRC}
 
-compile: ${OBJ}
-	make -C ${LLVM_BUILD} -I ${LLVM_BUILD} > /dev/null
+compile: ${OBJ} 
+	make -C ${LLVM_BUILD} ${LLVM_INC} > /dev/null
 
 clean:
 	make -C ${LLVM_BUILD} clean

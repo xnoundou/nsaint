@@ -42,9 +42,13 @@ fi
 
 PASSARG="-ctaintmod"
 
+OPT=/home/noundou/tools/llvm-3.3.src/build/Release+Asserts/bin/opt
+
 COMPILE="make -f Makefile.ctaint compile > /dev/null"
-#CMD="opt -load $LLVM_LIB/LLVMipa.so -load $LLVM_LIB/CTaint.so -anders-aa "$PASSARG" < "$INPUTFILE" > /dev/null"
-CMD="opt -load $LLVM_LIB/CTaint.so "$PASSARG" < "$INPUTFILE" > /dev/null"
+#CMD="$OPT -load $LLVM_LIB/LLVMipa.so -load $LLVM_LIB/CTaint.so -anders-aa "$PASSARG" < "$INPUTFILE" > /dev/null"
+CMD="$OPT -load $LLVM_LIB/LLVMDataStructure.so \
+  -load $LLVM_LIB/CTaint.so -calltarget-eqtd "$PASSARG" < "$INPUTFILE" > /dev/null"
+#CMD="$OPT -load $LLVM_LIB/CTaint.so "$PASSARG" < "$INPUTFILE" > /dev/null"
 
 run_cmd "$COMPILE"
 run_cmd "$CMD"
