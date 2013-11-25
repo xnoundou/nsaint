@@ -22,11 +22,12 @@ public:
 	virtual void mergeCopyPredOutFlowToInFlow(Instruction &predInst, Instruction &curInst);
 
 	//******* Implementation of visit methods *******//
+	virtual void visitLoadInst(LoadInst &I);
 	virtual void visitStoreInst(StoreInst &I);
 	virtual void visitCallInst(CallInst &I);
 	virtual void visitReturnInst(ReturnInst &I);
 
-private:
+protected:
 	CTaintAnalysis *_analysis;
 
 	void handleFormals();
@@ -44,6 +45,10 @@ CTaintIntraProcedural::CTaintIntraProcedural(CTaintAnalysis *analysis)
 
 inline bool CTaintIntraProcedural::merge(BasicBlock *curBB, BasicBlock *succBB) {
 	return _analysis->merge(curBB, succBB);
+}
+
+inline void CTaintIntraProcedural::visitLoadInst(LoadInst &I) {
+	_analysis->visitLoadInst(I);
 }
 
 inline void CTaintIntraProcedural::visitStoreInst(StoreInst &I) {

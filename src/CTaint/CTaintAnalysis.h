@@ -13,6 +13,7 @@
 #include <llvm/Analysis/CallGraph.h>
 #include <dsa/DSGraph.h>
 #include <dsa/DataStructure.h>
+#include <llvm/InstVisitor.h>
 
 #include <vector>
 #include <string>
@@ -41,7 +42,7 @@ namespace {
  */
 //typedef pair<bool, unsigned> FunctionParam;
 
-class CTaintAnalysis : public ModulePass {
+class CTaintAnalysis : public ModulePass, public InstVisitor<CTaintAnalysis> {
 public:
 	static char ID;
 
@@ -51,13 +52,17 @@ public:
 	CTaintAnalysis();
 	~CTaintAnalysis();
 	inline vector<Function *> *getAllProcs() {
-		return &_allProcs;
+		return &_allProcsTPOrder;
 	}
 
+	void visitLoadInst(LoadInst &I);
 	void visitStoreInst(StoreInst &I);
 	void visitCallInst(CallInst &I);
 	void visitReturnInst(ReturnInst &I);
+	void visitCallInstInter(CallInst &I, Function *caller, Function *callee);
 
+	void localVisitFunction(Function &F);
+	
 	virtual bool merge(BasicBlock *curBB, BasicBlock *succBB);
 	void mergeCopyPredOutFlowToInFlow(Instruction &predInst, Instruction &curInst);
 
@@ -86,7 +91,9 @@ public:
 	 */
 	bool isValueTainted(Instruction *I, Value *v);
 
-	//AliasSet *getAliasSetForValue(Value *v, Function *F);
+	inline CallGraph &getCallGraph() {
+		return *_cg;
+	}
 
 private:
 	const static string _taintId;
@@ -137,17 +144,19 @@ private:
 	 */
 	map<string, Function*> _signatureToFunc;
 
-	vector<Function *> _allProcs;
+	vector<Function *> _allProcsTPOrder;
 
 	/**
 	 * Summary table where we store function parameters and
-	 * return value taunt information
+	 * return value taint information
 	 */
 	map<Function *, vector<bool> *> _summaryTable;
 
 	EQTDDataStructures *_aliasInfo;
 
 	map<Function *, DSGraph *> _functionToDSGraph;
+
+	CallGraph *_cg;
 
 	void getAliases(Value *v, DSGraph *dsg, vector<Value *> &aliases);
 
@@ -158,6 +167,7 @@ private:
 	//ValueTaintingTable _valTaintInfo;
 
 	void insertToOutFlow(Instruction *I, Value *v);
+	void insertToOutFlow(Instruction *I, Value *v, DSGraph *dsg);
 
 	static void log(const string &msg);
 };

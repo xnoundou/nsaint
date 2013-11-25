@@ -1,6 +1,7 @@
 
 #include "CTaintAnalysis.h"
-#include "CTaintIntraProcedural.h"
+#include "intra-ctaint.h"
+#include "inter-ctaint.h"
 
 #include <llvm/Support/InstIterator.h>
 #include <llvm/Target/Mangler.h>
@@ -76,8 +77,8 @@ CTaintAnalysis::~CTaintAnalysis() {
 
 	{//Delete _summaryTable info
 		Function *F = 0;
-		for(unsigned k = 0; k < _allProcs.size(); ++k) {
-			F = _allProcs[k];
+		for(unsigned k = 0; k < _allProcsTPOrder.size(); ++k) {
+			F = _allProcsTPOrder[k];
 			vector<bool> * argVec = _summaryTable[F];
 			delete argVec;
 		}
@@ -118,22 +119,32 @@ bool CTaintAnalysis::runOnModule(Module &m) {
 
 	_aliasInfo = &getAnalysis<EQTDDataStructures>();
 
+	_cg = &getAnalysis<CallGraph>();
+
 	assert(_aliasInfo && "An instance of DSA could not be created!");
 
-	for (Module::iterator b = m.begin(), be = m.end(); b != be; ++b) {
+	assert(_cg && "An instance of the callgraph could not be created!");
 
-		Function *f = dyn_cast<Function> (b);
+	Function *f = 0;
+	for(CallGraph::iterator pc = _cg->begin(), Epc = _cg->end();
+			pc != Epc;
+			++pc) {
+		f = const_cast<Function *>(pc->first);
 
 		//We only handle function defined in the code
-		if (f && f->isDeclaration())
+		if (!f)
+			continue;
+
+		if(f->isDeclaration())
 			continue;
 
 		string fName(f->getName().str());
 		log("discovered function " + fName);
 
+
 		//TODO: use function signature as key instead
 		_signatureToFunc[fName] = f;
-		_allProcs.push_back(f);
+		_allProcsTPOrder.push_back(f);
 
 		{//Initialize _summaryTable info.
 			vector<bool> *argVec = new vector<bool>;
@@ -157,11 +168,11 @@ bool CTaintAnalysis::runOnModule(Module &m) {
 		}
 	}
 
-	_aliasInfo->print(errs(), &m);
+	//_aliasInfo->print(errs(), &m);
 
-	log("Now performs the intraprocedural analysis");
-	CTaintIntraProcedural intraFlow(this);
-	_intraFlag = true;
+	//log("Now performs the intraprocedural analysis");
+	//CTaintIntraProcedural intraFlow(this);
+	CTaintInterProcedural interFlow(this);
 
 	return false;
 }
@@ -230,7 +241,7 @@ void CTaintAnalysis::getAliases(Value *v,
 			DSNodeHandle &cur = (*sIt).second;
 			if (cur == vHandle) {
 				vAlias = (*sIt).first;
-				if (vAlias)
+				if (vAlias && v != vAlias)
 					aliases.push_back(const_cast<Value *>(vAlias));
 			}
 			++sIt;
@@ -243,15 +254,21 @@ void CTaintAnalysis::getAliases(Value *v,
  * I taints value 'v'.
  */
 void CTaintAnalysis::insertToOutFlow(Instruction *I, Value *v) {
+  int n = _OUT[I].count(v);
+  if (0 == n) {
+	Function *f = I->getParent()->getParent();
+	DSGraph *dsg = _functionToDSGraph[f];
+	insertToOutFlow(I, v, dsg);
+  }
+}
 
-	int n = _OUT[I].count(v);
+void CTaintAnalysis::insertToOutFlow(Instruction *I, Value *v, DSGraph *dsg) {
 
-	if (0 == n) {
+  assert(I && "The instruction to which an outflow is to be added must be non null!");
+  assert(v && "The value to insert in the outflow of an instruction must be non null!");
+
 		_OUT[I].insert(v);
 		v->print(errs()); errs() << " gets tainted\n";
-
-		Function *f = I->getParent()->getParent();
-		DSGraph *dsg = _functionToDSGraph[f];
 
 		/**
 		 * Mark all aliases of v as tainted.
@@ -265,19 +282,6 @@ void CTaintAnalysis::insertToOutFlow(Instruction *I, Value *v) {
 				vAliases[k]->print(errs() << " \n\t also gets tainted\n");
 			}
 		}
-
-		//For each pointer p aliasing v, also add 'p' in OUT[I] to indicate
-		//that instruction I taints value 'p'.
-		/*AliasSet * as = _curAST->getAliasSetForPointerIfExists(v, 0, 0);
-		if (as && as->isMayAlias()) {
-			for(AliasSet::iterator it = as->begin(), itE = as->end(); it != itE; ++it) {
-				Value *p = it->getValue();
-				_OUT[I].insert(p);
-				//p->print(errs() << " \n\t also gets tainted\n");
-				//v->print(errs()); errs() << "\n";
-			}
-		}*/
-	}
 }
 
 /**
@@ -285,47 +289,20 @@ void CTaintAnalysis::insertToOutFlow(Instruction *I, Value *v) {
  * instruction 'I'.
  */
 bool CTaintAnalysis::isValueTainted(Instruction *I, Value *v) {
-
-	if (_IN[I].empty()) return false;
-
-	if (0 < _IN[I].count(v)) return true;
-
-	/*Function *f = I->getParent()->getParent();
-	DSGraph *dsg = _functionToDSGraph[f];
-
-	if (dsg) {
-		vector<Value *> vAliases;
-		getAliases(v, dsg, vAliases);
-		Value *curAlias = 0;
-		int s = vAliases.size();
-		for(int k = 0; k < s; ++k) {
-			curAlias = vAliases[k];
-			if (0 < _IN[I].count(curAlias)) {
-				errs() << "An alias: ";
-				vAliases[k]->print(errs());
-				errs() << " is tainted\n";
-				return true;
-			}
-		}
-	}*/
-
-	/*AliasSet * as = _curAST->getAliasSetForPointerIfExists(v, 0, 0);
-	if (as && as->isMayAlias()) {
-		for(AliasSet::iterator it = as->begin(), itE = as->end(); it != itE; ++it) {
-			Value *p = it->getValue();
-			if ( _IN[I].count(p) > 0 )
-				return true;
-		}
-	}*/
-
-	return false;
+	return ( !_IN[I].empty() && (0 < _IN[I].count(v)) );
 }
 
-/*AliasSet *CTaintAnalysis::getAliasSetForValue(Value *v, Function *F) {
-	AliasSetTracker * ast = getAliasSetTracker(F);
-	if (ast) return ast->getAliasSetForPointerIfExists(v, 0, 0);
-	return 0;
-}*/
+void CTaintAnalysis::visitLoadInst(LoadInst &I) {
+	errs() << "LOAD [p=*q]: ";
+	I.print(errs());
+	errs() << "\n";
+
+	Value *q = I.getPointerOperand();
+
+	if ( isValueTainted(&I, q)) {
+		insertToOutFlow(&I, &I);
+	}
+}
 
 void CTaintAnalysis::visitStoreInst(StoreInst &I)
 {
@@ -352,7 +329,7 @@ void CTaintAnalysis::visitCallInst(CallInst & I)
 	//TODO: Check why some call statements may have a null callee
 	if (!callee) {
 		errs() << I.getParent()->getParent()->getName()
-			   << " nas no callee at: "; I.print(errs()); errs() << " !\n";
+			   << " has no callee at: "; I.print(errs()); errs() << " !\n";
 		return;
 	}
 
@@ -387,6 +364,69 @@ void CTaintAnalysis::visitCallInst(CallInst & I)
 	}
 }
 
+void CTaintAnalysis::localVisitFunction(Function &F) {
+  visit(F);
+}
+
+void CTaintAnalysis::visitCallInstInter(CallInst &I,
+					Function *caller,
+					Function *callee)
+{
+	errs() << "INTER CALL [call func]: ";
+	I.print(errs());
+	errs() << "\n";
+
+	//if (!visitFunction) return;
+
+	if (!callee) {
+	  //The callee must be non null at all time
+	  return;
+	}
+
+	if (caller && callee == caller) {
+	  //We don't handle recursive functions at this point
+	  return ;
+	}
+
+	//Now copy call aruguments taint information into
+	//the callee formal parameter taint information
+	int argNr = I.getNumArgOperands();
+	vector<bool> *calleeFormals = _summaryTable[callee];
+	if (calleeFormals) {
+	  Instruction &calleeFirstI = callee->front().front();
+	  for (int k = 0; k < argNr; ++k) {
+	    Value *curArg = I.getArgOperand(k);
+	    //If the call argument is tainted and the callee's corresponding formal
+	    //parameter has not already been marked as tainted by previous
+	    //analyzes (e.g. intraprocedural), then copy call arguments taint
+	    //information into the callee.
+	    if ( isValueTainted(&I, curArg) && !(*calleeFormals)[k] )
+	      _IN[&calleeFirstI].insert(curArg); 
+	  }
+
+	  //errs() << "## Before callee analysis\n";
+
+	  //Now analyze the callee
+	  localVisitFunction(*callee);
+	  
+	  Instruction &calleeLastI = callee->back().back();
+	  DSGraph *calleeDSG = _functionToDSGraph[callee];
+	  Function::arg_iterator pf = callee->arg_begin(), Epf = callee->arg_end();
+	  int j = 0; //To iterate over vector calleeFormals
+	  while (pf != Epf) {
+	    //TODO: Fix this
+	    //if ( !(*calleeFormals)[j] && (_OUT[&calleeLastI] != _IN[&calleeFirstI]) ) {
+	    if ( !(*calleeFormals)[j] ) {
+	      Argument &fml = (*pf);
+	      insertToOutFlow(&calleeLastI, &fml, calleeDSG);
+	    }
+	    ++pf;
+	    ++j;
+	  }
+	  //errs() << "## After callee analysis\n";
+	}
+}
+
 void CTaintAnalysis::visitReturnInst(ReturnInst &I) {
 	Function *F = I.getParent()->getParent();
 	errs() << "Analyzing return instruction for " << F->getName() << "\n";
@@ -398,7 +438,6 @@ void CTaintAnalysis::visitReturnInst(ReturnInst &I) {
 	Instruction *defI = 0;
 	//Check definitions statements that may taint this return value
 	for (User::op_iterator i = I.op_begin(), e = I.op_end(); i != e; ++i) {
-		//Value *v = *i;
 		defI = dyn_cast<Instruction>(*i);
 		if (defI) {
 			if (isValueTainted(&I, defI)) {

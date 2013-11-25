@@ -44,11 +44,12 @@ public:
 		_predInst = &I;
 	}
 
+	virtual void visitLoadInst(LoadInst &I){}
 	virtual void visitStoreInst(StoreInst &I){}
 	virtual void visitCallInst(CallInst &I){}
 	virtual void visitReturnInst(ReturnInst &I){}
 
-	void analyze();
+	virtual void analyze();
 
 protected:
 	vector<Function *> *_allProcs;
@@ -56,20 +57,22 @@ protected:
 	Instruction *_predInst;
 	InstVisitor *_super;
 
-	void insert(BasicBlock *BB);
+	virtual void insert(BasicBlock *BB);
 	BasicBlock * next();
-	void initWorkList();
+	virtual void initWorkList();
 };
 }
 
 CForwardFlowAnalysis::CForwardFlowAnalysis(vector<Function *> *allProcs)
 	:_allProcs(allProcs),
 	 _predInst(0) {
-	_super = static_cast<InstVisitor*>(this);
+	_super = static_cast<InstVisitor *>(this);
 	assert(_super && "The super class InstVisitor must be non null!");
 }
 
 void CForwardFlowAnalysis::initWorkList(){
+	_workList.clear();
+
 	Function *F = 0;
 	BasicBlock *BB = 0;
 

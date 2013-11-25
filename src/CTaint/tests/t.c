@@ -7,7 +7,7 @@ char *testIt(int *y) {
   return buf;
 }
 
-int main()
+int main(int argc, char *argv[])
 {
   int x;
   int y;
@@ -16,7 +16,8 @@ int main()
   int *px = &x;
   int *py = px;
   char *z = testIt(py);
-  //py = px;
+  char *pz = z;
+  py = px;
 
   return 0;
 }
