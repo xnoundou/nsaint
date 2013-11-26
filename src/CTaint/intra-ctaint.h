@@ -39,8 +39,9 @@ CTaintIntraProcedural::CTaintIntraProcedural(CTaintAnalysis *analysis)
 	:CForwardFlowAnalysis(analysis->getAllProcs()),
 	 _analysis(analysis)
 {
-	analyze();
-	handleFormals();
+  errs() << "## Starting intraprocedural analysis\n";
+  analyze();
+  handleFormals();
 }
 
 inline bool CTaintIntraProcedural::merge(BasicBlock *curBB, BasicBlock *succBB) {

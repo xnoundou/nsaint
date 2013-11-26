@@ -55,14 +55,18 @@ public:
 		return &_allProcsTPOrder;
 	}
 
+	virtual void visit(Instruction &I);
+	virtual void visit(BasicBlock &BB){
+	  _super->visit(BB.begin(), BB.end());
+	}
 	void visitLoadInst(LoadInst &I);
 	void visitStoreInst(StoreInst &I);
 	void visitCallInst(CallInst &I);
 	void visitReturnInst(ReturnInst &I);
 	void visitCallInstInter(CallInst &I, Function *caller, Function *callee);
 
-	void localVisitFunction(Function &F);
-	
+	void setDiff(set<Value *> &A, set<Value *> &B, set<Value *> &AMinusB);
+
 	virtual bool merge(BasicBlock *curBB, BasicBlock *succBB);
 	void mergeCopyPredOutFlowToInFlow(Instruction &predInst, Instruction &curInst);
 
@@ -95,10 +99,14 @@ public:
 		return *_cg;
 	}
 
+	bool calls(Function *caller, Function *callee);
+
+	Function *getMainFunction() { return _pointerMain; }
+
 private:
 	const static string _taintId;
 	const static string _taintSourceFile;
-	const static int _sourceArgRet;
+	const static int _SOURCE_ARG_RET;
 	const static int _SOURCE_ARG_INVALID_MIN;
 	const static int _FUNCTION_NOT_SOURCE;
 	static map<string, int> _taintSources;
@@ -137,6 +145,10 @@ private:
 
 	/** Pointer to the 'main' function */
 	Function *_pointerMain;
+
+	InstVisitor<CTaintAnalysis> *_super;
+
+	Instruction *_predInst;
 
 	/**
 	 * Map from program funtion signatures as string to

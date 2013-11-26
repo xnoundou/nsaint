@@ -33,15 +33,12 @@ public:
 		return false;
 	}
 
-	void localVisitBasicBlock(BasicBlock &bb) {
-		_super->visit(bb);
-	}
-
 	void visit(Instruction &I) {
-		if (_predInst)
-			mergeCopyPredOutFlowToInFlow(*_predInst, I);
-		_super->visit(I);
-		_predInst = &I;
+	  if(_predInst)
+	    mergeCopyPredOutFlowToInFlow(*_predInst, I);
+	  _super->visit(I);
+	  //errs() << "## pred: "; _predInst->print(errs()); errs()<<"\n";
+	  _predInst = &I;
 	}
 
 	virtual void visitLoadInst(LoadInst &I){}
@@ -108,10 +105,10 @@ void CForwardFlowAnalysis::analyze() {
 
 	while(!_workList.empty()) {
 		bb = next();
-		localVisitBasicBlock(*bb);
+		_super->visit(*bb);
 		for (succ_iterator pi = succ_begin(bb), E = succ_end(bb); pi != E; ++pi) {
 			succBB = *pi;
-			localVisitBasicBlock(*succBB);
+			_super->visit(*succBB);
 			outHasBeenModified = merge(bb, succBB);
 			if ( outHasBeenModified )
 				insert(succBB);

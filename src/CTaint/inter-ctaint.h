@@ -17,6 +17,8 @@ class CTaintInterProcedural : public CTaintIntraProcedural {
 public:
 	CTaintInterProcedural(CTaintAnalysis *analysis);
 
+	virtual void initWorkList();
+
 	//******* Implementation of visit methods *******//
 	virtual void visitCallInst(CallInst &I);
 private:
@@ -26,10 +28,25 @@ private:
 CTaintInterProcedural::CTaintInterProcedural(CTaintAnalysis *analysis)
 	:CTaintIntraProcedural(analysis)
 {
-	analyze();
+  errs() << "## Starting interprocedural analysis\n";
+  analyze();
 }
 
-inline void CTaintInterProcedural::visitCallInst(CallInst &I) {
+void CTaintInterProcedural::initWorkList() {
+  _workList.clear();
+  Function *pointerMain = _analysis->getMainFunction();
+  if (!pointerMain)
+    return;
+	BasicBlock *BB = 0;
+
+		for (Function::iterator it = pointerMain->begin(), e = pointerMain->end(); it != e; ++it) {
+			BB = &*it;
+			insert(BB);
+		}
+	//errs() << " _workList size: " << _workList.size() << "\n";
+}
+
+void CTaintInterProcedural::visitCallInst(CallInst &I) {
   Function *caller = I.getParent()->getParent();
   Function *callee = I.getCalledFunction();
   //void (* visitFunction)(Function &) = this->visitFunction;

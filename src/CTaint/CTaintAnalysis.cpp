@@ -12,13 +12,10 @@
 char CTaintAnalysis::ID = 0;
 
 const string CTaintAnalysis::_taintId("[STTAL]");
-
 const string CTaintAnalysis::_taintSourceFile("cfg/sources.cfg");
 
-const int CTaintAnalysis::_sourceArgRet(-1);
-
+const int CTaintAnalysis::_SOURCE_ARG_RET(-1);
 const int CTaintAnalysis::_SOURCE_ARG_INVALID_MIN(-2);
-
 const int CTaintAnalysis::_FUNCTION_NOT_SOURCE(100);
 
 map<string, int> CTaintAnalysis::_taintSources;
@@ -69,7 +66,10 @@ CTaintAnalysis::CTaintAnalysis() : ModulePass(ID),
 									_intraFlag(false),
 									_interFlag(false),
 									_interContextSensitiveFlag(false),
-									_pointerMain(0) {
+									_pointerMain(0),
+									_super(0),
+									_predInst(0){
+	_super = static_cast<InstVisitor<CTaintAnalysis> *>(this);
 	readTaintSourceConfig();
 }
 
@@ -191,30 +191,35 @@ int CTaintAnalysis::isTaintSource(string &funcName) {
 	return _FUNCTION_NOT_SOURCE;
 }
 
+void CTaintAnalysis::setDiff(set<Value *> &A,
+                             set<Value *> &B, 
+                             set<Value *> &AMinusB) {
+    AMinusB.clear();
+    for(set<Value *>::iterator ps = A.begin(), Eps = A.end();
+            ps != Eps;
+            ++ps) {
+        Value *e = *(ps);
+        if (0 == B.count(e))
+            AMinusB.insert(e);
+      }
+}
+
 bool CTaintAnalysis::merge(BasicBlock *curBB, BasicBlock *succBB) {
-	bool wasMerged = false;
 	set<Value *> &curBBOut = _IN[&curBB->back()];
 	set<Value *> &succBBIn = _OUT[&succBB->front()];
 
-	Value *aVal = 0;
-	for(set<Value *>::iterator V = curBBOut.begin(), E=curBBOut.end();
-			V != E;
-			++V) {
-		aVal = (*V);
-		if (0 == succBBIn.count(aVal)) {
-			succBBIn.insert(aVal);
-			wasMerged = true;
-			//errs() << "## merged \n";
-			//aVal->print(errs());
-			//errs() << "\n";
-		}
-	}
-
-	return wasMerged;
+	set<Value *> inDiff;
+	setDiff(curBBOut, succBBIn, inDiff);
+	
+        if (!inDiff.empty())
+	  succBBIn.insert(inDiff.begin(), inDiff.end());
+	 
+	return (inDiff.size() > 0);
 }
 
 inline void CTaintAnalysis::mergeCopyPredOutFlowToInFlow(Instruction &predInst, Instruction &curInst) {
-	_IN[&curInst].insert(_OUT[&predInst].begin(), _OUT[&predInst].end());
+  _IN[&curInst].insert(_OUT[&predInst].begin(), _OUT[&predInst].end());
+  _OUT[&curInst].insert(_IN[&curInst].begin(), _IN[&curInst].end());
 }
 
 /**
@@ -279,17 +284,41 @@ void CTaintAnalysis::insertToOutFlow(Instruction *I, Value *v, DSGraph *dsg) {
 			int s = vAliases.size();
 			for(int k = 0; k < s; ++k) {
 				_OUT[I].insert(vAliases[k]);
-				vAliases[k]->print(errs() << " \n\t also gets tainted\n");
+				vAliases[k]->print(errs());
+			        errs() << " \t also gets tainted\n";
 			}
 		}
 }
+
+bool CTaintAnalysis::calls(Function *caller, Function *callee) {
+	  CallGraphNode *cn = (*_cg)[caller];
+	  if (cn) {
+	    Function *curCallee = 0;
+	    for(CallGraphNode::iterator pn = cn->begin(), Epn = cn->end();
+		pn != Epn;
+		++pn) {
+	      curCallee = (*pn).second->getFunction();
+	      if (curCallee == callee) return true;
+	    }
+	  }
+	  return false;
+	}
 
 /**
  * Returns 'true' if value 'v' is tainted at the program point before
  * instruction 'I'.
  */
 bool CTaintAnalysis::isValueTainted(Instruction *I, Value *v) {
-	return ( !_IN[I].empty() && (0 < _IN[I].count(v)) );
+	return ( 0 < _IN[I].count(v) );
+}
+
+void CTaintAnalysis::visit(Instruction &I) {
+  if (_predInst)
+    mergeCopyPredOutFlowToInFlow(*_predInst, I);
+  //errs() << "## pred: "; _predInst->print(errs()); errs()<<"\n";
+  //printIn(I);
+  _super->visit(I);
+  _predInst = &I;
 }
 
 void CTaintAnalysis::visitLoadInst(LoadInst &I) {
@@ -341,12 +370,16 @@ void CTaintAnalysis::visitCallInst(CallInst & I)
 	int maxParams = I.getNumArgOperands();
 
 	if ( _SOURCE_ARG_INVALID_MIN < arg_pos && arg_pos < maxParams ) {
-		Value *taintedArg = I.getArgOperand(arg_pos);
+		Value *taintedArg = 0;
+		if (_SOURCE_ARG_RET == arg_pos)
+		  taintedArg = &I;
+		else
+		  taintedArg = I.getArgOperand(arg_pos);
 		insertToOutFlow(&I, taintedArg);
 		//printOut(I);
-		//errs() << "Found a source " << calleeName << "\n";
+		errs() << "Found a source " << calleeName << " with arg_pos " << arg_pos << "\n";
 		
-		for (Value::use_iterator u = taintedArg->use_begin(), 
+		/*for (Value::use_iterator u = taintedArg->use_begin(), 
 		    e = taintedArg->use_end(); u != e; 
 		    ++u) {
 		  Value *aTaintedUse = *u;
@@ -354,7 +387,7 @@ void CTaintAnalysis::visitCallInst(CallInst & I)
 		        //errs() << "##Setting: "; aTaintedUse->print(errs()); errs() << " as tainted:\n";			
 			insertToOutFlow(I, aTaintedUse); 
 		  }
-		}
+		}*/
 	}
 	else {
 		std::ostringstream msg;
@@ -362,10 +395,6 @@ void CTaintAnalysis::visitCallInst(CallInst & I)
 			<< " max parameters is " << maxParams;
 		log(msg.str());
 	}
-}
-
-void CTaintAnalysis::localVisitFunction(Function &F) {
-  visit(F);
 }
 
 void CTaintAnalysis::visitCallInstInter(CallInst &I,
@@ -388,40 +417,76 @@ void CTaintAnalysis::visitCallInstInter(CallInst &I,
 	  return ;
 	}
 
+	if (!calls(caller, callee)) {
+	  errs() << "## " << caller->getName() << " doesn't call "
+	         << callee->getName() << " in our callgraph \n";
+	  return ;
+	}
+
+	
 	//Now copy call aruguments taint information into
 	//the callee formal parameter taint information
 	int argNr = I.getNumArgOperands();
 	vector<bool> *calleeFormals = _summaryTable[callee];
 	if (calleeFormals) {
 	  Instruction &calleeFirstI = callee->front().front();
-	  for (int k = 0; k < argNr; ++k) {
-	    Value *curArg = I.getArgOperand(k);
+	  Function::arg_iterator pf = callee->arg_begin(), Epf = callee->arg_end();
+
+	  
+	  int k = 0;
+	  Value *curArg;
+	  while (pf != Epf && k < argNr) {
+	    Argument &fml = (*pf);
+	  //for (int k = 0; k < argNr; ++k) {
+	    curArg = I.getArgOperand(k);
 	    //If the call argument is tainted and the callee's corresponding formal
 	    //parameter has not already been marked as tainted by previous
 	    //analyzes (e.g. intraprocedural), then copy call arguments taint
 	    //information into the callee.
 	    if ( isValueTainted(&I, curArg) && !(*calleeFormals)[k] )
-	      _IN[&calleeFirstI].insert(curArg); 
+	      _IN[&calleeFirstI].insert(&fml); 
+	    ++pf;
+	    ++k;
 	  }
 
 	  //errs() << "## Before callee analysis\n";
+	  Instruction &calleeLastI = callee->back().back();
+	   //errs() << "## Before INTER\n";
+	  //printIn(calleeFirstI);
+	  //errs() << "## Start INTER\n";
 
 	  //Now analyze the callee
-	  localVisitFunction(*callee);
+	  _predInst = &I;
+	  _super->visit(*callee);
+	  //errs() << "## Print after INTER\n";
+	  //printOut(calleeLastI);
+	  //errs() << "## After INTER\n";
+	  //errs() << "## Before INTER\n";
 	  
-	  Instruction &calleeLastI = callee->back().back();
-	  DSGraph *calleeDSG = _functionToDSGraph[callee];
-	  Function::arg_iterator pf = callee->arg_begin(), Epf = callee->arg_end();
-	  int j = 0; //To iterate over vector calleeFormals
-	  while (pf != Epf) {
-	    //TODO: Fix this
-	    //if ( !(*calleeFormals)[j] && (_OUT[&calleeLastI] != _IN[&calleeFirstI]) ) {
-	    if ( !(*calleeFormals)[j] ) {
-	      Argument &fml = (*pf);
-	      insertToOutFlow(&calleeLastI, &fml, calleeDSG);
+	  set<Value *> outDiff;
+	  setDiff(_OUT[&calleeLastI], _IN[&calleeFirstI], outDiff);
+
+	  DSGraph * calleeDSG = _functionToDSGraph[callee];
+	  vector<Value *> fmlAliases; 
+	  pf = callee->arg_begin();
+	  Epf = callee->arg_end();
+	  k = 0; //To iterate over vector calleeFormals
+	  curArg = 0;
+	  while (pf != Epf && k < argNr) {
+	    Argument &fml = (*pf);
+	    curArg = I.getArgOperand(k);
+	    getAliases(&fml, calleeDSG, fmlAliases);
+	    fmlAliases.insert(fmlAliases.begin(), &fml);
+	    for(unsigned j = 0; j < fmlAliases.size(); ++j) {
+	      if ( outDiff.count(fmlAliases[j]) > 0 ) {
+	        setProcArgTaint(callee, k, true);
+	        if ( !isValueTainted(&I, curArg) )
+	          insertToOutFlow(&I, curArg);
+	        break;
+	      }
 	    }
 	    ++pf;
-	    ++j;
+	    ++k;
 	  }
 	  //errs() << "## After callee analysis\n";
 	}
@@ -433,21 +498,20 @@ void CTaintAnalysis::visitReturnInst(ReturnInst &I) {
 	Value *retVal = I.getReturnValue();
 
 	//TODO: check if this could happen
-	if (!retVal) return;
+	if (!retVal){
+	  errs() << "No return value for: " << F->getName() << "\n";
+	  return;
+	}
 
-	Instruction *defI = 0;
-	//Check definitions statements that may taint this return value
-	for (User::op_iterator i = I.op_begin(), e = I.op_end(); i != e; ++i) {
-		defI = dyn_cast<Instruction>(*i);
-		if (defI) {
-			if (isValueTainted(&I, defI)) {
-				errs() << "\treturn value"; retVal->print(errs()); errs() 
-			       	<< " of " << F->getName() << " is tainted from\n";
-				errs() << "\t "; defI->print(errs()); errs() << "\n";
-				setProcArgTaint(F, F->getNumOperands()+1, true);
-				return;
-			}
-		}
+	errs() << "\t";
+	retVal->print(errs());
+        errs()<< "\n";
+	
+	//printIn(I);
+
+	if (isValueTainted(&I, retVal)) {
+	  errs() << "\tis tainted\n";
+	  setProcArgTaint(F, F->getNumOperands()+1, true);
 	}
 }
 
