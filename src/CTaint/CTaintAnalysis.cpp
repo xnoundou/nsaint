@@ -69,7 +69,8 @@ CTaintAnalysis::CTaintAnalysis() : ModulePass(ID),
 									_ctxInterRunning(false),
 									_pointerMain(0),
 									_super(0),
-									_predInst(0){
+									_predInst(0),
+									_module(0) {
 	_super = static_cast<InstVisitor<CTaintAnalysis> *>(this);
 	readTaintSourceConfig();
 }
@@ -117,6 +118,8 @@ void CTaintAnalysis::printIn(Instruction &I) {
 
 bool CTaintAnalysis::runOnModule(Module &m) {
 	log("module identifier is " + m.getModuleIdentifier());
+
+	_module = &m;
 
 	_aliasInfo = &getAnalysis<EQTDDataStructures>();
 
@@ -362,16 +365,11 @@ void CTaintAnalysis::visitCallInst(CallInst & I)
 	I.print(errs());
 	errs() << "\n";
 
-	Function *callee = I.getCalledFunction();
-
-	//TODO: Check why some call statements may have a null callee
-	if (!callee) {
-		errs() << I.getParent()->getParent()->getName()
-			   << " has no callee at: "; I.print(errs()); errs() << " !\n";
-		return;
-	}
-
 	if (!_intraWasRun) {
+		Function *callee = I.getCalledFunction();
+		if (!callee)
+			return ;
+
 		string calleeName = callee->getName().str();
 		int arg_pos = isTaintSource(calleeName);
 
@@ -398,90 +396,75 @@ void CTaintAnalysis::visitCallInst(CallInst & I)
 		}
 	}
 	else if (_ctxInterRunning) {
-		  Function *caller = I.getParent()->getParent();
-		  Function *callee = I.getCalledFunction();
-		  handleInterProceduralCall(I, caller, callee);
+		static unsigned depth = 0;
+
+		if (depth > 2)
+			return;
+
+		Function *callee = I.getCalledFunction();
+		if (!callee)
+			return ;
+
+		Function *caller = I.getParent()->getParent();
+
+		if (caller && !calls(caller, callee)) {
+		  errs() << "## " << caller->getName() << " does not call "
+		         << callee->getName() << " in our callgraph \n";
+		  return ;
+		}
+
+		depth += 1;
+		handleContextCall(I, *callee);
+		depth -= 1;
 	}
 }
 
-void CTaintAnalysis::handleInterProceduralCall(CallInst &I,
-										Function *caller,
-										Function *callee)
+void CTaintAnalysis::handleContextCall(CallInst &I, Function &callee)
 {
-	errs() << "INTER CALL [call func]: ";
+	errs() << "CONTEXT CALL [call func]: ";
 	I.print(errs());
 	errs() << "\n";
-
-	//if (!visitFunction) return;
-
-	if (!callee) {
-	  //The callee must be non null at all time
-	  return;
-	}
-
-	if (caller && callee == caller) {
-	  //We don't handle recursive functions at this point
-	  return ;
-	}
-
-	if (!calls(caller, callee)) {
-	  errs() << "## " << caller->getName() << " does not call "
-	         << callee->getName() << " in our callgraph \n";
-	  return ;
-	}
-
 	
 	//Now copy call aruguments taint information into
 	//the callee formal parameter taint information
 	int argNr = I.getNumArgOperands();
-	vector<bool> *calleeFormals = _summaryTable[callee];
-
+	vector<bool> *calleeFormals = _summaryTable[&callee];
 
 	if (!calleeFormals) {
-		errs() << "\tWe do not analyze function '" << callee->getName() << "'\n";
+		errs() << "\tWe do not analyze function '" << callee.getName() << "'\n";
 	}
 	else {
-	  Instruction &calleeFirstI = callee->front().front();
-	  Function::arg_iterator pf = callee->arg_begin(), Epf = callee->arg_end();
+	  Instruction &calleeFirstI = callee.front().front();
+	  Function::arg_iterator pf = callee.arg_begin(), Epf = callee.arg_end();
 
-	  
 	  int k = 0;
 	  Value *curArg;
 	  while (pf != Epf && k < argNr) {
 	    Argument &fml = (*pf);
-	  //for (int k = 0; k < argNr; ++k) {
 	    curArg = I.getArgOperand(k);
 	    //If the call argument is tainted and the callee's corresponding formal
 	    //parameter has not already been marked as tainted by previous
 	    //analyzes (e.g. intraprocedural), then copy call arguments taint
 	    //information into the callee.
-	    if ( isValueTainted(&I, curArg) && !(*calleeFormals)[k] )
+	    if ( !(*calleeFormals)[k] && isValueTainted(&I, curArg) )
 	      _IN[&calleeFirstI].insert(&fml); 
 	    ++pf;
 	    ++k;
 	  }
 
-	  //errs() << "## Before callee analysis\n";
-	  Instruction &calleeLastI = callee->back().back();
-	   //errs() << "## Before INTER\n";
-	  //printIn(calleeFirstI);
-	  //errs() << "## Start INTER\n";
+	  Instruction &calleeLastI = callee.back().back();
 
 	  //Now analyze the callee
 	  _predInst = &I;
-	  _super->visit(*callee);
-	  //errs() << "## Print after INTER\n";
-	  //printOut(calleeLastI);
-	  //errs() << "## After INTER\n";
-	  //errs() << "## Before INTER\n";
+	  _super->visit(callee);
 	  
 	  set<Value *> outDiff;
 	  setDiff(_OUT[&calleeLastI], _IN[&calleeFirstI], outDiff);
 
-	  DSGraph * calleeDSG = _functionToDSGraph[callee];
+	  DSGraph * calleeDSG = _functionToDSGraph[&callee];
 	  vector<Value *> fmlAliases; 
-	  pf = callee->arg_begin();
-	  Epf = callee->arg_end();
+	  pf = callee.arg_begin();
+	  Epf = callee.arg_end();
 	  k = 0; //To iterate over vector calleeFormals
 	  curArg = 0;
 	  while (pf != Epf && k < argNr) {
@@ -490,8 +473,8 @@ void CTaintAnalysis::handleInterProceduralCall(CallInst &I,
 	    getAliases(&fml, calleeDSG, fmlAliases);
 	    fmlAliases.insert(fmlAliases.begin(), &fml);
 	    for(unsigned j = 0; j < fmlAliases.size(); ++j) {
-	      if ( outDiff.count(fmlAliases[j]) > 0 ) {
-	        setProcArgTaint(callee, k, true);
+	      if ( !(*calleeFormals)[j] && outDiff.count(fmlAliases[j]) > 0 ) {
+	        setProcArgTaint(&callee, k, true);
 	        if ( !isValueTainted(&I, curArg) )
 	          insertToOutFlow(&I, curArg);
 	        break;
@@ -500,11 +483,14 @@ void CTaintAnalysis::handleInterProceduralCall(CallInst &I,
 	    ++pf;
 	    ++k;
 	  }
-	  //errs() << "## After callee analysis\n";
 	}
 }
 
 void CTaintAnalysis::visitReturnInst(ReturnInst &I) {
+
+	if (_ctxInterRunning)
+		return;
+
 	Function *F = I.getParent()->getParent();
 	errs() << "Analyzing return instruction for " << F->getName() << "\n";
 	Value *retVal = I.getReturnValue();

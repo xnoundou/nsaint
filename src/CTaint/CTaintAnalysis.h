@@ -69,7 +69,7 @@ public:
 	void visitCallInst(CallInst &I);
 	void visitReturnInst(ReturnInst &I);
 
-	void handleInterProceduralCall(CallInst &I, Function *caller, Function *callee);
+	void handleContextCall(CallInst &I, Function &callee);
 
 	void setDiff(set<Value *> &A, set<Value *> &B, set<Value *> &AMinusB);
 
@@ -121,6 +121,10 @@ public:
 		_ctxInterRunning = flag;
 	}
 
+	Module * getModule() {
+		return _module;
+	}
+
 private:
 	const static string _taintId;
 	const static string _taintSourceFile;
@@ -167,6 +171,8 @@ private:
 	InstVisitor<CTaintAnalysis> *_super;
 
 	Instruction *_predInst;
+
+	Module *_module;
 
 	/**
 	 * Map from program funtion signatures as string to

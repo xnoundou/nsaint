@@ -11,6 +11,10 @@
 #include "intra-ctaint.h"
 #include "CTaintAnalysis.h"
 
+//#include <llvm/ADT/SCCIterator.h>
+
+using namespace llvm;
+
 namespace {
 class CTaintInterProcedural : public CTaintIntraProcedural {
 
