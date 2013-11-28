@@ -8,6 +8,7 @@
 
 #include <fstream>
 #include <sstream>
+#include <algorithm>
 
 char CTaintAnalysis::ID = 0;
 
@@ -63,9 +64,9 @@ void CTaintAnalysis::readTaintSourceConfig() {
 }
 
 CTaintAnalysis::CTaintAnalysis() : ModulePass(ID),
-									_intraFlag(false),
+									_intraWasRun(false),
 									_interFlag(false),
-									_interContextSensitiveFlag(false),
+									_ctxInterRunning(false),
 									_pointerMain(0),
 									_super(0),
 									_predInst(0){
@@ -168,11 +169,19 @@ bool CTaintAnalysis::runOnModule(Module &m) {
 		}
 	}
 
+	//We need the list of procedure in reverse topological order
+
+	_allProcsRTPOrder.insert(_allProcsRTPOrder.begin(), _allProcsTPOrder.begin(), _allProcsTPOrder.end());
+
+	std::reverse(_allProcsRTPOrder.begin(), _allProcsRTPOrder.end());
+
 	//_aliasInfo->print(errs(), &m);
 
 	//log("Now performs the intraprocedural analysis");
 	//CTaintIntraProcedural intraFlow(this);
 	CTaintInterProcedural interFlow(this);
+
+	//interFlow.analyze();
 
 	return false;
 }
@@ -362,44 +371,42 @@ void CTaintAnalysis::visitCallInst(CallInst & I)
 		return;
 	}
 
-	string calleeName = callee->getName().str();
-	int arg_pos = isTaintSource(calleeName);
+	if (!_intraWasRun) {
+		string calleeName = callee->getName().str();
+		int arg_pos = isTaintSource(calleeName);
 
-	if ( _FUNCTION_NOT_SOURCE == arg_pos ) return;
+		if ( _FUNCTION_NOT_SOURCE == arg_pos ) return;
 
-	int maxParams = I.getNumArgOperands();
+		int maxParams = I.getNumArgOperands();
 
-	if ( _SOURCE_ARG_INVALID_MIN < arg_pos && arg_pos < maxParams ) {
-		Value *taintedArg = 0;
-		if (_SOURCE_ARG_RET == arg_pos)
-		  taintedArg = &I;
-		else
-		  taintedArg = I.getArgOperand(arg_pos);
-		insertToOutFlow(&I, taintedArg);
-		//printOut(I);
-		errs() << "Found a source " << calleeName << " with arg_pos " << arg_pos << "\n";
-		
-		/*for (Value::use_iterator u = taintedArg->use_begin(), 
-		    e = taintedArg->use_end(); u != e; 
-		    ++u) {
-		  Value *aTaintedUse = *u;
-		  if (Instruction *I = dyn_cast<Instruction>(aTaintedUse)) {
-		        //errs() << "##Setting: "; aTaintedUse->print(errs()); errs() << " as tainted:\n";			
-			insertToOutFlow(I, aTaintedUse); 
-		  }
-		}*/
+		if ( _SOURCE_ARG_INVALID_MIN < arg_pos && arg_pos < maxParams ) {
+			Value *taintedArg = 0;
+
+			if (_SOURCE_ARG_RET == arg_pos)
+				taintedArg = &I;
+			else
+				taintedArg = I.getArgOperand(arg_pos);
+
+			insertToOutFlow(&I, taintedArg);
+			errs() << "Found a source " << calleeName << " with arg_pos " << arg_pos << "\n";
+		}
+		else {
+			std::ostringstream msg;
+			msg << "Invalid argument position (" << arg_pos << ")"
+					<< " max parameters is " << maxParams;
+			log(msg.str());
+		}
 	}
-	else {
-		std::ostringstream msg;
-		msg << "Invalid argument position (" << arg_pos << ")"
-			<< " max parameters is " << maxParams;
-		log(msg.str());
+	else if (_ctxInterRunning) {
+		  Function *caller = I.getParent()->getParent();
+		  Function *callee = I.getCalledFunction();
+		  handleInterProceduralCall(I, caller, callee);
 	}
 }
 
-void CTaintAnalysis::visitCallInstInter(CallInst &I,
-					Function *caller,
-					Function *callee)
+void CTaintAnalysis::handleInterProceduralCall(CallInst &I,
+										Function *caller,
+										Function *callee)
 {
 	errs() << "INTER CALL [call func]: ";
 	I.print(errs());
@@ -418,7 +425,7 @@ void CTaintAnalysis::visitCallInstInter(CallInst &I,
 	}
 
 	if (!calls(caller, callee)) {
-	  errs() << "## " << caller->getName() << " doesn't call "
+	  errs() << "## " << caller->getName() << " does not call "
 	         << callee->getName() << " in our callgraph \n";
 	  return ;
 	}
@@ -428,7 +435,12 @@ void CTaintAnalysis::visitCallInstInter(CallInst &I,
 	//the callee formal parameter taint information
 	int argNr = I.getNumArgOperands();
 	vector<bool> *calleeFormals = _summaryTable[callee];
-	if (calleeFormals) {
+
+
+	if (!calleeFormals) {
+		errs() << "\tWe do not analyze function '" << callee->getName() << "'\n";
+	}
+	else {
 	  Instruction &calleeFirstI = callee->front().front();
 	  Function::arg_iterator pf = callee->arg_begin(), Epf = callee->arg_end();
 

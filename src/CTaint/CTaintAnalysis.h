@@ -51,8 +51,13 @@ public:
 
 	CTaintAnalysis();
 	~CTaintAnalysis();
-	inline vector<Function *> *getAllProcs() {
+
+	inline vector<Function *> *getAllProcsTPOrder() {
 		return &_allProcsTPOrder;
+	}
+
+	inline vector<Function *> *getAllProcsRTPOrder() {
+			return &_allProcsRTPOrder;
 	}
 
 	virtual void visit(Instruction &I);
@@ -63,7 +68,8 @@ public:
 	void visitStoreInst(StoreInst &I);
 	void visitCallInst(CallInst &I);
 	void visitReturnInst(ReturnInst &I);
-	void visitCallInstInter(CallInst &I, Function *caller, Function *callee);
+
+	void handleInterProceduralCall(CallInst &I, Function *caller, Function *callee);
 
 	void setDiff(set<Value *> &A, set<Value *> &B, set<Value *> &AMinusB);
 
@@ -103,6 +109,18 @@ public:
 
 	Function *getMainFunction() { return _pointerMain; }
 
+	void setIntraWasRun(bool flag) {
+		_intraWasRun = flag;
+	}
+
+	void setInterFlag(bool flag) {
+		_interFlag = flag;
+	}
+
+	void setCtxInterRunning(bool flag) {
+		_ctxInterRunning = flag;
+	}
+
 private:
 	const static string _taintId;
 	const static string _taintSourceFile;
@@ -135,13 +153,13 @@ private:
 	int isTaintSource(string &F);
 
 	/** Has the intraprocedural analysis been run */
-	bool _intraFlag;
+	bool _intraWasRun;
 
 	/** Has the interprocedural Context-Insenstive analysis been run */
 	bool _interFlag;
 
-	/** Has the interprocedural Context-Senstive analysis been run */
-	bool _interContextSensitiveFlag;
+	/** Is the interprocedural Context-Insenstive analysis currently running */
+	bool _ctxInterRunning;
 
 	/** Pointer to the 'main' function */
 	Function *_pointerMain;
@@ -157,6 +175,8 @@ private:
 	map<string, Function*> _signatureToFunc;
 
 	vector<Function *> _allProcsTPOrder;
+
+	vector<Function *> _allProcsRTPOrder;
 
 	/**
 	 * Summary table where we store function parameters and
