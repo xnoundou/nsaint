@@ -1,9 +1,6 @@
 #!/bin/bash
-# Script to rename file from
-# pattern old*.X to new*.X
-# Usage: ./thisScript <-n NEW> <-o OLD> <list of files>
 
-USAGE="Usage: $(basename $0) <-i inputfile.bc>"
+USAGE="Usage: $(basename $0) <-i bc files>"
 
 if [ $# -lt 1 ]; then
   echo "$USAGE"
@@ -20,6 +17,7 @@ do
 	;;
     i)	fileflag=1
       	INPUTFILE="$OPTARG"
+	echo "Input file: $INPUTFILE"
 	;;
     ?)	echo "$USAGE" >&2
         exit 2
@@ -45,11 +43,10 @@ PASSARG="-ctaintmod"
 OPT=/home/noundou/tools/llvm-3.3.src/build/Release+Asserts/bin/opt
 
 COMPILE="make -f Makefile.ctaint compile > /dev/null"
-#CMD="$OPT -load $LLVM_LIB/LLVMipa.so -load $LLVM_LIB/CTaint.so -anders-aa "$PASSARG" < "$INPUTFILE" > /dev/null"
-CMD="$OPT -load $LLVM_LIB/LLVMDataStructure.so \
-  -load $LLVM_LIB/CTaint.so -calltarget-eqtd "$PASSARG" < "$INPUTFILE" > /dev/null"
-#CMD="$OPT -load $LLVM_LIB/CTaint.so "$PASSARG" < "$INPUTFILE" > /dev/null"
-
 run_cmd "$COMPILE"
+
+CMD="$OPT -load $LLVM_LIB/LLVMDataStructure.so \
+   -load $LLVM_LIB/CTaint.so -calltarget-eqtd "$PASSARG" < "$INPUTFILE" > /dev/null"
+
 run_cmd "$CMD"
 
