@@ -18,7 +18,7 @@ public:
 	CTaintIntraProcedural(CTaintAnalysis *analysis);
 
 	//******* Implementation of methods inherited from CDataFlow *******//
-	inline virtual bool merge(BasicBlock *curBB, BasicBlock *succBB);
+	virtual bool merge(BasicBlock *curBB, BasicBlock *succBB);
 	virtual void mergeCopyPredOutFlowToInFlow(Instruction &predInst, Instruction &curInst);
 
 	//******* Implementation of visit methods *******//
@@ -36,12 +36,13 @@ protected:
 
 
 CTaintIntraProcedural::CTaintIntraProcedural(CTaintAnalysis *analysis)
-	:CForwardFlowAnalysis(analysis->getAllProcs()),
+	:CForwardFlowAnalysis(analysis->getAllProcsRTPOrder()),
 	 _analysis(analysis)
 {
   errs() << "## Starting intraprocedural analysis\n";
   analyze();
   handleFormals();
+  _analysis->setIntraWasRun(true);
 }
 
 inline bool CTaintIntraProcedural::merge(BasicBlock *curBB, BasicBlock *succBB) {

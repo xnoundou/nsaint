@@ -52,11 +52,15 @@ protected:
 	vector<Function *> *_allProcs;
 	vector<BasicBlock *> _workList;
 	Instruction *_predInst;
-	InstVisitor *_super;
 
 	virtual void insert(BasicBlock *BB);
 	BasicBlock * next();
 	virtual void initWorkList();
+
+
+private:
+	InstVisitor *_super;
+
 };
 }
 
