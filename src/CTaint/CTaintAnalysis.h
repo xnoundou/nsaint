@@ -42,6 +42,16 @@ namespace {
  */
 //typedef pair<bool, unsigned> FunctionParam;
 
+/**
+ * This class inherits from InstVisitor only because of the context-sensitive
+ * analysis. This is needed so that a call to InsVisitor::visit(Function &)
+ * can happen in method 'handleContextCall'.
+ *
+ * This enables the reuse of visit-methods defined in this class. During
+ * the intraprocedural analysis, the visit-methods defined in this class
+ * are called by subclasses of CForwardFlowAnalysis.
+ *
+ */
 class CTaintAnalysis : public ModulePass, public InstVisitor<CTaintAnalysis> {
 public:
 	static char ID;

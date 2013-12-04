@@ -53,12 +53,15 @@ void CTaintAnalysis::readTaintSourceConfig() {
 			arg = line.substr(coma+1);
 			pos = atoi(arg.c_str());
 
-			//TODO: use the mangler here Mangler aMangler
-			string s("__isoc99_");
-			s.append(source);
-			addTaintSource(s, pos);
+			addTaintSource(source, pos);
 		}
 	}
+
+	string r("__isoc99_scanf");
+	addTaintSource(r, 1);
+
+	r = "__isoc99_sscanf";
+	addTaintSource(r, 1);
 
 	srcFile.close();
 }
@@ -235,10 +238,9 @@ inline void CTaintAnalysis::mergeCopyPredOutFlowToInFlow(Instruction &predInst, 
 }
 
 /**
- * Given a value v, and a DSGraph dsg (a DSGraph
- * represents the aliasing relationship within a function),
- * this method checks if v has aliases in function F with
- * dsg as DSGraph.
+ * Given a value v, and a DSGraph dsg (a DSGraph represents the
+ * aliasing relationship within a function), this method checks
+ * if v has aliases in function F with dsg as DSGraph.
  */
 void CTaintAnalysis::getAliases(Value *v,
 								DSGraph *dsg,
@@ -279,33 +281,41 @@ void CTaintAnalysis::insertToOutFlow(Instruction *I, Value *v) {
   }
 }
 
+/**
+ * Adds value 'v' as tainted by instruction 'I'
+ */
 void CTaintAnalysis::insertToOutFlow(Instruction *I, Value *v, DSGraph *dsg) {
 
-  assert(I && "The instruction to which an outflow is to be added must be non null!");
-  assert(v && "The value to insert in the outflow of an instruction must be non null!");
+	assert(I && "The instruction to which an outflow is to be added must be non null!");
+	assert(v && "The value to insert in the outflow of an instruction must be non null!");
 
-		_OUT[I].insert(v);
-		v->print(errs()); errs() << " gets tainted\n";
+	_OUT[I].insert(v);
+	v->print(errs()); errs() << " gets tainted\n";
 
-		/**
-		 * Mark all aliases of v as tainted.
-		 */
-		if (dsg) {
-			vector<Value *> vAliases;
-			getAliases(v, dsg, vAliases);
-			int s = vAliases.size();
-			for(int k = 0; k < s; ++k) {
-				_OUT[I].insert(vAliases[k]);
-				vAliases[k]->print(errs());
-			        errs() << " \t also gets tainted\n";
-			}
+	/**
+	 * Mark all aliases of v as tainted.
+	 */
+	if (dsg) {
+		vector<Value *> vAliases;
+		getAliases(v, dsg, vAliases);
+		int s = vAliases.size();
+		for(int k = 0; k < s; ++k) {
+			_OUT[I].insert(vAliases[k]);
+			vAliases[k]->print(errs());
+			errs() << " \t also gets tainted\n";
 		}
+	}
 }
 
+/**
+ * Checks if there is an edge (caller, callee) in the callgraph
+ */
 bool CTaintAnalysis::calls(Function *caller, Function *callee) {
 	  CallGraphNode *cn = (*_cg)[caller];
 	  if (cn) {
+		//There a node for the caller in the callgraph
 	    Function *curCallee = 0;
+	    //Iterate over functions called by 'caller'
 	    for(CallGraphNode::iterator pn = cn->begin(), Epn = cn->end();
 		pn != Epn;
 		++pn) {
@@ -366,6 +376,7 @@ void CTaintAnalysis::visitCallInst(CallInst & I)
 	errs() << "\n";
 
 	if (!_intraWasRun) {
+		//The intraprocedural analysis has not been run yet
 		Function *callee = I.getCalledFunction();
 		if (!callee)
 			return ;
@@ -396,6 +407,7 @@ void CTaintAnalysis::visitCallInst(CallInst & I)
 		}
 	}
 	else if (_ctxInterRunning) {
+		//The context-sensitive analysis is running
 		static unsigned depth = 0;
 
 		if (depth > 2)
@@ -419,6 +431,10 @@ void CTaintAnalysis::visitCallInst(CallInst & I)
 	}
 }
 
+/**
+ * This method is responsible for the analysis of a callee during
+ * the context-sensitive analysis.
+ */
 void CTaintAnalysis::handleContextCall(CallInst &I, Function &callee)
 {
 	errs() << "CONTEXT CALL [call func]: ";
@@ -455,6 +471,7 @@ void CTaintAnalysis::handleContextCall(CallInst &I, Function &callee)
 	  Instruction &calleeLastI = callee.back().back();
 
 	  //Now analyze the callee
+	  //We set the predecessor instruction before analysis of the callee
 	  _predInst = &I;
 	  _super->visit(callee);
 	  
