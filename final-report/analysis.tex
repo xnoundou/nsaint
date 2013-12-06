@@ -16,25 +16,24 @@
 \newcommand{\aand}{\mathit{and}}
 \newcommand{\mybigcup}[2]{\mathlarger{\bigcup_{#1}^{#2}}}
 
-Our taint analysis is interprocedural and can be run
+Our taint analysis is interprocedural and runs
 either context-insensitively or context-sensitively.
-Either of the interprocedural analyses is always preceded
-by an intraprocedural analysis. The intraprocedural analysis
-computes initial data flow sets that are reused by the
-interprocedural analyses.
-The analysis constructs a summary table which contains
-taint information about program procedure's formal
-parameters and return value.
-The initial values of the summary table are written by
-the intraprocedural analysis. The use of a summary table
-allows fast access to key information about procedures.
-This is especially useful during the subsequent interprocedural
-phases.
+Any of the interprocedural analysis is always preceded
+by a unique intraprocedural analysis that computes initial
+information that are reused by the interprocedural analyses.
+The intraprocedural analysis detects taint sources and
+initializes a summary table which contains taint information
+about program procedure's formal parameters and return value.
+The use of a summary table allows fast access to key
+information about program procedures. This is especially
+useful during the subsequent interprocedural phases.
 For instance, the intraprocedural analysis would
 detect that variable \texttt{sum} of procedure \compute{} in
 Figure~\ref{fig:sample}, which also holds the return
 value of \compute{}, may be tainted due to the call
-to \texttt{scanf} at line $13$.
+to \texttt{scanf} at line $13$. This information is then
+reused by the context-insensitive analysis to infer that
+variable y may hold a tainted value.
 Appendix~\ref{app:algo} presents pseudo code for all
 our analysis algorithms.
 
@@ -110,25 +109,16 @@ points-to set of a variable after the statement labelled s.
 \end{comment}
 \paragraph{Pointer Analysis}
 Our analysis is designed to work using the results of
-a previously computed pointer analysis. This would enable us to
-do experiments with different types of pointer
-analyses. For this project, we choose to use a hybrid
-pointer analysis \cite{Lhotak:2011:PAE}. The hybrid
-pointer analysis attempts to benefit from the
-advantages of both flow-insensitive and flow-sensitive 
-pointer analyses. It is implemented as an extension of
-Andersen's interprocedural flow-insensitive analysis, but
-additionally produces flow-sensitive information. The analysis
-algorithm relies on the observation that strong updates
-are only possible whenever an abstract pointer location is
-a singleton set. Therefore the analysis works as a
-flow-insensitive analysis, but applies flow-sensitive
-rules whenever an abstract pointer location is a singleton set.
-The evaluation of the hybrid pointer analysis shows that its
-strong update analysis runs about as fast as a flow-insensitive analysis.
-The results also show that the hybrid
-analysis provides the same benefits as a fully flow-sensitive
-analysis at $98\%$ of stores and loads in the program.
+a previously computed pointer analysis. This may enable
+us to experiment with different pointer analyses.
+For this project, we chose the pointer analysis
+\DSA (\texttt{Data Structure Analysis}) \cite{DSA:PLDI07}.
+\DSA is a field- and context-sensitive pointer analysis.
+\DSA uses full heap cloning (by acyclic call paths) and 
+still scales well with programs in a size range of 100K-200K
+lines of C code. 
+\DSA operates in three phases: \textit{local}, \textit{bottom-up},
+and \textit{top-down}.
 
 \paragraph{Taint Propagation}
 

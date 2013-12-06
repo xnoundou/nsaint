@@ -4,36 +4,29 @@ This section gives an overview of LLVM's intermediate
 representation (IR), which we use as basis for the
 description of our analysis.
 
-LLVM's IR assumes the existence of two types of variables
+LLVM's IR uses partial static single assignment (SSA)
+and assumes the existence of only two types of variables
 in C code: \textit{top-level} and \textit{address-taken}
 variables.
-Top-level variables are variables that can not be
-accessed via a pointer to their address. That is,
-their memory address was not copied to another variable
-(i.e. the do not have any application of the address-of
-operator in the code under analysis). In this paper, we
-denote the set of top-level variables with $\Pset$.
-For instance, $b1$, and $b2$ in our sample code of
-Figure~\ref{fig:sample} are top-level
-variables ($b1, b2 \in \Pset$).
+Top-level variables are in SSA form and can not be
+accessed indirectly via a pointer. That is, their memory
+address is never copied to another variable (i.e. they are
+never applied the address-of operator). Top-level variables
+are accessed with \alloct and \copyt instructions.
+In this paper, we denote the set of top-level variables
+with $\Pset$. For instance, $b1$, and $b2$ in Figure~\ref{fig:sample}
+are top-level variables ($\{b1, b2\} \in \Pset$).
 
-Address-taken variables are the ones accessible not
-only with their first declared name, but also through
-other variables that may point to their memory addresses.
-In fact, address-taken variables are variables on which the
-address-of operator (\texttt{\&}) has been applied. We
-will use $\Aset$ to denote the set of all address-taken
-variables in this paper.
-Variable \texttt{x} in Figure~\ref{fig:sample} is an example
-of an address-taken variable ($x \in \Aset$).
+Address-taken variables are never accessed directly through
+their first declared name. Address-taken variables are only
+accessed indirectly through pointer variables via \loadt and
+\storet instructions. In fact, address-taken variables
+are those ones on which the address-of operator (\texttt{\&})
+is applied. We use $\Aset$ for the set of all address-taken
+variables. Variable \texttt{x} in Figure~\ref{fig:sample} is
+for instance an address-taken variable ($x \in \Aset$).
 
-Address-taken variables are accessed in memory only via
-STORE and LOAD instructions, while top-level  variables
-are modified using ALLOC (memory allocation) and COPY
-instructions.
-
-%LLVM's IR maps all exit points of a function to one
-%unique location.
+\begin{comment}
 We capture program elements using the following abstract
 instructions:
 \begin{itemize}
@@ -45,3 +38,4 @@ instructions:
 \item $\calldef$: call to a function. $r \in \Pset$
 \item $\sinkdef$: call to sink function. $r \in \Pset$
 \end{itemize}
+\end{comment}
