@@ -7,11 +7,11 @@ Algorithm~\ref{fig:algoAnalyze} presents the standard worklist
 based interprocedural algorithm for fixed point computation.
 The intraprocedural algorithm is illustrated in
 Algorithm~\ref{fig:intraFlow}. Algorithm~\ref{fig:interFlow}
-and algorithm~\ref{fig:csInterFlow} show the context-insensitive
+and algorithm~\ref{fig:algoAnalyze}ef{fig:csInterFlow} show the context-insensitive
 and context-sensitive analysis respectively.
 
 \IncMargin{1em}
-\begin{algorithm}[!h]
+\begin{algorithm}[!htbp]
 \caption{Analyze}\label{fig:algoAnalyze}
 %\SetAlgoNoLine
 \SetAlgoLined
@@ -53,184 +53,12 @@ $\worklist \leftarrow \set{s_0}$\;
 \end{algorithm}
 \DecMargin{1em}
 
-\newpage
-
-\IncMargin{1em}
-\begin{algorithm*}
-\caption{IntraFlow: Intraprocedural Analysis Transfer Equations}\label{fig:intraFlow}
-%\SetAlgoNoLine
-\SetAlgoLined
-\LinesNumbered
-\DontPrintSemicolon
-\SetKwData{Caller}{caller}
-\SetKwData{stmt}{s}
-\SetKwData{stmtV}{v}
-\SetKwData{stmtA}{a}
-\SetKwData{stmtF}{f}
-\SetKwData{stmtK}{k}
-\SetKwData{stmtR}{r}
-\SetKwData{stmtT}{t}
-\SetKwData{stmtB}{b}
-\SetKwData{stmtQ}{q}
-\SetKwData{stmtP}{p}
-\SetKwData{summaryTable}{summaryTable}
-\SetKwData{tainted}{tainted}
-\SetKwData{fZero}{$f_0$}
-\SetKwData{False}{False}
-\SetKwData{Input}{IN$_s$}
-\SetKwData{Output}{OUT$_s$}
-\SetKwData{TmpFlow}{tmpFlow}
-\SetKwFunction{Map}{map}
-\SetKwFunction{LCOPY}{COPY}
-\SetKwFunction{LLOAD}{LOAD}
-\SetKwFunction{LSTORE}{STORE}
-\SetKwFunction{LADDROF}{ADDROF}
-\SetKwFunction{LCALL}{CALL}
-\SetKwFunction{LSOURCE}{SOURCE}
-\SetKwFunction{LSINK}{SINK}
-\SetKwFunction{Type}{TypeOf}
-\SetKwFunction{TaintUse}{taintUse}
-\SetKwFunction{Update}{Update}
-\SetKwFunction{Taint}{taint}
-\SetKwFunction{Func}{func}
-\SetKwFunction{First}{first}
-\SetKwFunction{Formal}{formal}
-\SetKwFunction{Formals}{formals}
-\SetKwFunction{Toplevel}{toplevel}
-\SetKwInOut{InData}{input}
-\SetKwInOut{OutData}{output}
-
-
-\InData{$\Caller: \mathit{Proc}, \stmt: \mathit{Inst}$}
-\OutData{}
-\Switch{$\Type(\stmt)$}{
-	\Case{$\LCOPY\ [\stmtP = \stmtQ] $}{
-		\If{$\Input[\stmtQ] \neq \emptyset$}{
-			$\Output[\stmtP] \leftarrow \Input[\stmtQ] \cup \set{\stmt}$;
-		}
-	}
-	\Case{$\LLOAD\ [p = *q] $}{
-		\ForEach{$\stmtA_k \in \pointsto{\overline{\stmt}}{q}$}{
-			$\stmtT_k \leftarrow \Toplevel(\stmtA_k)$;		
-			$\TmpFlow \leftarrow \TmpFlow \cup \Input[\stmtT_k]$\;				
-		}
-		\If{$\TmpFlow \neq \emptyset$}{
-			$\Output[\stmtP] \leftarrow \Input[\stmtP] \cup \TmpFlow \cup \set{\stmt}$\;
-		}
-	}	
-	\uCase{$\LSTORE\ [*p = q] $}{
-		\If{$\Input[\stmtQ] \neq \emptyset$}{	
-			\ForEach{$\stmtA_k \in \pointsto{\overline{\stmt}}{p}$}{
-				$\stmtT_k \leftarrow \Toplevel(\stmtA_k)$\;					
-				$\Output[\stmtT_k] \leftarrow \Input[\stmtT_k] \cup \Input[\stmtQ] \cup \set{\stmt}$\;				
-			}
-		}	
-	}	
-	\Case{$\LSOURCE\ [\stmtR = \mathit{call}\ \Func(a_0, a_1, ..., a_n)]$}{
-		\ForEach{$k \in \set{0, 1, ..., n}$}{
-			\If{$\Taint(k)$}{			
-				$\Output[\stmtA_k] \leftarrow \Input[\stmtA_k] \cup \set{\stmt}$\;
-			}			
-		}
-	}	
-	\uCase{$\LCALL\ [\stmtR = \mathit{call}\ \Func]$}{
-	}		
-	\uCase{$\LADDROF\ [p = \&a]$}{
-	}	
-	\Case{$\LSINK [\stmtR = \mathit{call}\ \Func]$}{
-	}		
-}
-\ForEach{$\stmtF_k \in \Formals(\mathit{Proc})$}{
-	\If{$\Output[\stmtF_k] \neq \Input[\stmtF_k]$}{
-		$\summaryTable[\Func][k] = 1$\;
-	}
-}
-\end{algorithm*}
-\DecMargin{1em}
-
-\newpage
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\IncMargin{1em}
-\begin{algorithm*}[!h]
-\caption{InterFlow: Context-Insentive Flow Function}\label{fig:interFlow}
-%\SetAlgoNoLine
-\SetAlgoLined
-\LinesNumbered
-\DontPrintSemicolon
-\SetKwData{Caller}{caller}
-\SetKwData{stmt}{s}
-\SetKwData{stmtV}{v}
-\SetKwData{stmtA}{a}
-\SetKwData{stmtF}{f}
-\SetKwData{stmtK}{k}
-\SetKwData{stmtR}{r}
-\SetKwData{stmtT}{t}
-\SetKwData{stmtB}{b}
-\SetKwData{stmtQ}{q}
-\SetKwData{stmtP}{p}
-\SetKwData{summaryTable}{summaryTable}
-\SetKwData{tainted}{tainted}
-\SetKwData{fZero}{$f_0$}
-\SetKwData{False}{False}
-\SetKwData{Input}{IN$_s$}
-\SetKwData{Output}{OUT$_s$}
-\SetKwData{TmpFlow}{tmpFlow}
-\SetKwFunction{Map}{map}
-\SetKwFunction{LCOPY}{COPY}
-\SetKwFunction{LLOAD}{LOAD}
-\SetKwFunction{LSTORE}{STORE}
-\SetKwFunction{LADDROF}{ADDROF}
-\SetKwFunction{LCALL}{CALL}
-\SetKwFunction{LSOURCE}{SOURCE}
-\SetKwFunction{LSINK}{SINK}
-\SetKwFunction{Type}{TypeOf}
-\SetKwFunction{TaintUse}{taintUse}
-\SetKwFunction{Update}{Update}
-\SetKwFunction{Taint}{taint}
-\SetKwFunction{Func}{func}
-\SetKwFunction{First}{first}
-\SetKwFunction{Formal}{formal}
-\SetKwFunction{Toplevel}{toplevel}
-\SetKwInOut{InData}{input}
-\SetKwInOut{OutData}{output}
-
-
-\InData{$\Caller: \mathit{Proc}, \stmt: \mathit{Inst}$}
-\OutData{}
-\Switch{$\Type(\stmt)$}{
-	\Case(//Same as IntraProc){$\LCOPY\ [\stmtP = \stmtQ] $}{
-	}
-	\Case(//Same as IntraProc){$\LLOAD\ [p = *q] $}{
-	}	
-	\Case(//Same as IntraProc){$\LSTORE\ [*p = q] $}{
-	}	
-%Context-insensitive	
-	\Case{$\LCALL\ [\stmtR = \mathit{call}\ \Func(a_0, a_1, ..., a_n)]$}{
-		\If{$\summaryTable[\Func][n+1] = 1$}{
-			$\Output[\stmtR] \leftarrow \Input[\stmtR] \cup \set{\stmt}$\;						
-		}			
-		\ForEach{$\stmtA_k, k \in \set{0, 1, ..., n}$}{
-			\If{$\summaryTable[\Func][k] = 1$}{
-				$\Output[\stmtA_k] \leftarrow \Input[\stmtA_k] \cup  \set{\stmt}$\;																
-			}							
-		}
-	}		
-	\uCase{$\LSOURCE\ [\stmtR = \mathit{call}\ \Func]$}{
-	}	
-	\uCase{$\LADDROF\ [p = \&a]$}{
-	}	
-	\Case{$\LSINK [\stmtR = \mathit{call}\ \Func]$}{
-	}		
-}
-\end{algorithm*}
-\DecMargin{1em}
-
-\newpage
+%\newpage
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \IncMargin{1em}
 \begin{algorithm*}[!h]
-\caption{csInterFlow: Context-Sentive Flow Function}\label{fig:csInterFlow}
+\caption{csInterFlow: Context-Sentive Flow Function.}\label{fig:csInterFlow}
 %\SetAlgoNoLine
 \SetAlgoLined
 \LinesNumbered
