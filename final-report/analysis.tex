@@ -6,6 +6,7 @@
 \newcommand{\formalsset}{\mathit{formals}}
 \newcommand{\firstfunc}{\mathit{first}}
 \newcommand{\toplevelfunc}{\mathit{toplevel}}
+\newcommand{\taintfunc}{\mathit{taint}}
 \newcommand{\pointsto}[2]{{pt}_{[#1]}(#2)}
 \newcommand{\pointstobefore}[2]{{pt}_{[\overline{#1}]	}(#2)}
 \newcommand{\pointstoafter}[2]{{pt}_{[\underline{#1}]}(#2)}
@@ -16,7 +17,7 @@
 \newcommand{\aand}{\mathit{and}}
 \newcommand{\mybigcup}[2]{\mathlarger{\bigcup_{#1}^{#2}}}
 
-Our taint analysis is interprocedural and runs
+The taint analysis is interprocedural and runs
 either context-insensitively or context-sensitively.
 Any of the interprocedural analysis is always preceded
 by a unique intraprocedural analysis that computes initial
@@ -52,14 +53,14 @@ file. The analysis uses by default a subset of C functions as
 sinks ({\tt  }, etc).
 
 \paragraph{Taint Propagation}
-Our analysis only performs \textit{explicit taint propagation}
+The analysis only performs \textit{explicit taint propagation}
 (data-flow taint propagation). Explicit taint propagation tracks variables
 that are tainted due to assignment statements. The assignment in line $6$
 of Figure~\ref{fig:sample} is an instance of explicit taint propagation.
 Variable $y$ becomes tainted since it gets assigned the return value of
 \texttt{compute}, which is tainted value.\\
-Our analysis does not perform \textit{implicit taint propagation}
-(control-flow propagation) is another type of taint propagation.
+The analysis does not perform \textit{implicit taint propagation}
+(control-flow propagation), which is another type of taint propagation.
 Implicit taint propagation also takes into account tainted variables
 used in control conditions. For instance, if a tainted variable $x$ is
 used in the boolean condition of an if-statement, then variables
@@ -67,7 +68,7 @@ assigned in both branches of the statement becomes tainted because
 their value depend on tainted variable $x$.
 
 \paragraph{Formalisms}
-Our analysis dataflow set is $\varset \times 2^\instset$,
+The analysis dataflow set is $\varset \times 2^\instset$,
 where $\varset$ is the set of all program variables and
 $\instset$ the set of all program statements. 
 At a statement labelled $s$, the incoming dataflow set $\myinflow_s$
@@ -77,7 +78,8 @@ If $v$ is definitely not tainted before statement $s$, then
 $\myinflow_s[v] = \emptyset$. Otherwise, $\myinflow_s[v]$
 contains statements where $v$ might get tainted.
 
-We use the following elements to describe our analysis:
+This paper uses the following elements to describe the
+taint analysis:
 $\varset$ is the set of all program variables,
 $\procset$ is the set of all program functions and procedures\footnote{We
 will use the terms function and procedure interchangeably in
@@ -90,52 +92,17 @@ set of formal parameters of a function,
 $\toplevelfunc{}: \Aset \rightarrow \Pset$ returns the top level
 variable of an address-taken variable,
 $\pointstobefore{s}{}: \varset \rightarrow 2^\Aset$ returns the
-points-to set of a variable before the statement labelled s,
-and $\pointstoafter{s}{}: \varset \rightarrow 2^\Aset$ returns the
-points-to set of a variable after the statement labelled s.
-\begin{comment}
-\begin{figure*}
-\[
-\begin{array}{lcl}
-	\myoutflow[p] & = & \emptyset,\   \addrofdef	\\
-		
-	\myoutflow[r] & = & \emptyset,\   \sinkdef	\\
-			
-	\myoutflow[p] & = & \set{s},\   \copydef	\\
-				
-	\myoutflow[p] & = & \mybigcup{a_k \in\ \pointsto{s}{q}}{} \myinflow{}_s[t_k]\, t_k =\ \mathit{toplevel(a_k)},\   \loaddef	\\		
-			
-	\myoutflow[p] & = & \mybigcup{a_k \in\ \pointsto{s}{p}}{} \myinflow{}_s[t_k] \cup \myinflow{}_s[q]\, t_k =\ \mathit{toplevel(a_k)},\
-	   \storedef	\\
-	   
-	\myoutflow[p] & = & \mybigcup{f_k \in\ \text{formals}(s)}{} \myinflow{}_s[f_k] \cup \set{s},\ \text{taint}(f_k) \equiv\ 
-	\text{true},\   \sourcedef	\\
-	
-	\myoutflow[r] & = & \myinflow{}_s[r] \cup \set{s},\ \text{summaryTable}[\text{func}][n+1] \equiv\ 1,\	\callinsdef	\\							
+points-to set of a variable before the statement labelled s, 
+$\pointstoafter{s}{}: \varset \rightarrow 2^\Aset$ returns the
+points-to set of a variable after the statement labelled s,
+and $\taintfunc: \varset \rightarrow bool$ returns \texttt{true}
+if the formal parameter at position $k$ of procedure $f$ is always
+tainted during execution of $f$.
 
-	\myoutflow[a_k] & = & \mybigcup{f_k \in\ \text{formals}(s)}{} \myinflow{}_s[f_k] \cup \set{s},\ 
-		\text{summaryTable}[\text{func}][k] \equiv\ 1,\	\callinsdef	\\							
-	
-	\myoutflow[r] & = & \mybigcup{f_k \in\ \text{formals}(s)}{} \myinflow{}_s[f_k] \cup \myinflow{}_s[r] \cup \set{s}\,
-	\text{summaryTable}[\text{func}][k] \equiv\ 1,\	\calldef	\\
-	
-	\myoutflow[r] & = & \mybigcup{f_k \in\ \text{formals}(s)}{} \myinflow{}_s[f_k] \cup \myinflow{}_s[r] \cup \set{s}\,
-	\text{summaryTable}[\text{func}][k] \equiv\ 1,\	\calldef	\\
-	
-	\myoutflow[r] & = & \mybigcup{f_k \in\ \text{formals}(s)}{} \myinflow{}_s[f_k] \cup \myinflow{}_s[r] \cup \set{s}\,
-	\text{summaryTable}[\text{func}][k] \equiv\ 1,\	\calldef	\\
-	
-	\myoutflow[b] & = & \mybigcup{b \in\ \text{formals}(s)}{} \myinflow{}_s[f_k] \cup \myinflow{}_s[r] \cup \set{s}\,
-	\text{summaryTable}[\text{func}][k] \equiv\ 1,\	\calldef	\\			
-\end{array}
-\]
-\caption{Transfer Equations}
-\end{figure*}
-\end{comment}
 \paragraph{Pointer Analysis}
-Our analysis is designed to work using the results of
+This paper's taint analysis is designed to work using the results of
 a previously computed pointer analysis.
-Our current implementation uses the pointer analysis
+The current implementation uses the pointer analysis
 \DSA (\texttt{Data Structure Analysis}) \cite{DSA:PLDI07}.
 \DSA is a field- and context-sensitive pointer analysis.
 \DSA uses full heap cloning (by acyclic call paths) and 
@@ -158,13 +125,13 @@ in Figure~\ref{fig:sample} may be tainted due to the call to
 \texttt{scanf} at line $13$. The intraprocedural analysis always
 runs first, before any of the interprocedural analyses. 
 Algorithm~\ref{fig:intraFlow} in the following shows the flow
-function for the \callt statement of the intraprocedural analysis.
+function for the \callt statement during the intraprocedural analysis.
 Flow functions for all other statement types are same as the ones
 of Algorithm~\ref{fig:csInterFlow} in Appendix~\ref{app:algo}.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \IncMargin{1em}
 \begin{algorithm}
-\caption{IntraFlow: Intraprocedural Analysis Transfer Equations}\label{fig:intraFlow}
+\caption{Intraprocedural Analysis Flow Function for the \callt statement}\label{fig:intraFlow}
 %\SetAlgoNoLine
 \SetAlgoLined
 \LinesNumbered
@@ -204,7 +171,7 @@ of Algorithm~\ref{fig:csInterFlow} in Appendix~\ref{app:algo}.
 	\Case{$\LCALL\ [\stmtR = \mathit{call}\ \Func(a_0, a_1, ..., a_n)]$}{
 		\ForEach{$k \in \set{0, 1, ..., n}$}{
 			\If{$\Taint(k)$}{			
-				$\Output[\stmtA_k] \leftarrow \Input[\stmtA_k] \cup \set{\stmt}$\;
+				$\Output[\stmtA_k] \leftarrow \Input[\stmtA_k]$\;
 			}			
 		}
 	}			
@@ -287,11 +254,11 @@ as the one for the intraprocedural analysis}\label{fig:interFlow}
 %Context-insensitive	
 	\Case{$\LCALL\ [\stmtR = \mathit{call}\ \Func(a_0, a_1, ..., a_n)]$}{
 		\If{$\summaryTable[\Func][n+1] = 1$}{
-			$\Output[\stmtR] \leftarrow \Input[\stmtR] \cup \set{\stmt}$\;						
+			$\Output[\stmtR] \leftarrow \Input[\stmtR]$\;						
 		}			
 		\ForEach{$\stmtA_k, k \in \set{0, 1, ..., n}$}{
 			\If{$\summaryTable[\Func][k] = 1$}{
-				$\Output[\stmtA_k] \leftarrow \Input[\stmtA_k] \cup  \set{\stmt}$\;																
+				$\Output[\stmtA_k] \leftarrow \Input[\stmtA_k]$\;																
 			}							
 		}
 	}				
