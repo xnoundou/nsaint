@@ -1,27 +1,19 @@
 \section{Conclusion}\label{sec:conclusion}
 
 In this project report, we have presented an interprocedural
-taint analysis that comes in two flavors: a context-sensitive
-and a context-insensitive version.
+static taint analysis that comes in two flavors: a
+context-insensitive and context-sensitive version.
 
-Due to time constraints, we could only implement the
-LLVM infrastructure for hosting our analysis algorithms.
-We are going to finish the implementation in the following
-weeks as we intend to submit our work for publication
-in a conference.
-
-The presented analysis does not handle the use of
-\textit{sanitizer functions} in the analyzed code.
-In future work, we plan to generate kill sets at
-program points whenever an adequate sanitizer will
-be encountered.
-
-Our current analysis does not track tainted fields of
-\texttt{struct} and arrays. We plan to add this feature
-in future work.
+The analysis does not handle the use of
+\textit{sanitizer functions}, which would correspond
+to \texttt{kill-sets} in the analysis description.
+In future work, we plan to generate kill-sets at
+program points whenever an adequate sanitizer is
+encountered.
+We also plan to handle structures and arrays in future work.
 
 Given the staged nature of the presented analysis, and its
-usage of a summary table that stores newer analysis results
+use of a summary table that stores newer analysis results
 (i.e. new information from successive analyzes run are stored
 in the summary table), we believe that an integration in IDE
-would be possible and plan this as future work.
+would be possible.

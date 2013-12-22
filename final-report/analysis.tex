@@ -1,9 +1,11 @@
 \section{Staged Taint Analysis}\label{sec:analysis}
 
-\newcommand{\varset}{\mathit{Var}}
-\newcommand{\instset}{\mathit{Inst}}
-\newcommand{\procset}{\mathit{Proc}}
-\newcommand{\formalsset}{\mathit{formals}}
+\newcommand{\varset}{\mathit{Var}\xspace}
+\newcommand{\instset}{\mathit{Inst}\xspace}
+\newcommand{\procset}{\mathit{Proc}\xspace}
+\newcommand{\formalsset}{\mathit{formals}\xspace}
+\newcommand{\aliases}{\mathit{aliases}\xspace}
+\newcommand{\intset}{\mathbb{N}^+}
 \newcommand{\firstfunc}{\mathit{first}}
 \newcommand{\toplevelfunc}{\mathit{toplevel}}
 \newcommand{\taintfunc}{\mathit{taint}}
@@ -95,94 +97,109 @@ $\pointstobefore{s}{}: \varset \rightarrow 2^\Aset$ returns the
 points-to set of a variable before the statement labelled s, 
 $\pointstoafter{s}{}: \varset \rightarrow 2^\Aset$ returns the
 points-to set of a variable after the statement labelled s,
-and $\taintfunc: \varset \rightarrow bool$ returns \texttt{true}
-if the formal parameter at position $k$ of procedure $f$ is always
-tainted during execution of $f$.
+$\taintfunc: \intset \rightarrow bool$ returns \texttt{true}
+if function $f$ always taints its $k^{th}$ formal parameter, and
+$\aliases: \varset \rightarrow 2^\varset$ returns the alias set of
+a variable as returned by the pointer analysis.
 
 \paragraph{Pointer Analysis}
 This paper's taint analysis is designed to work using the results of
 a previously computed pointer analysis.
-The current implementation uses the pointer analysis
-\DSA (\texttt{Data Structure Analysis}) \cite{DSA:PLDI07}.
+The current implementation uses the pointer analysis \DSA (\texttt{Data Structure Analysis}) \cite{DSA:PLDI07}.
 \DSA is a field- and context-sensitive pointer analysis.
 \DSA uses full heap cloning (by acyclic call paths) and 
 scales well with programs in a size range of 100K-200K lines of C code. 
+Algorithm~\ref{fig:insertTaint} illustrates how the taint analysis uses
+the results of the pointer analysis using function \texttt{aliases}
+to update data flowsets.
 %\DSA operates in three phases: \textit{local}, \textit{bottom-up},
 %and \textit{top-down}.
 
-\paragraph{Intraprocedural Analysis}
-Program functions are analyzed in the reverse topological order
-of the call graph (i.e starting from the leaves of the callgraph).
-The intraprocedural analysis works on each function body and do
-not take into account interprocedural control flow. The computed
-data flow sets are reused later by the subsequent interprocedural
-analyses. In particular, taint information about function
-formal parameters and return value is kept in a global summary table.
-All tainted variables due to source functions are found during
-the intraprocedural analysis. For instance, the intraprocedural
-analysis detects that variable \texttt{sum} of function \compute{}
-in Figure~\ref{fig:sample} may be tainted due to the call to
-\texttt{scanf} at line $13$. The intraprocedural analysis always
-runs first, before any of the interprocedural analyses. 
-Algorithm~\ref{fig:intraFlow} in the following shows the flow
-function for the \callt statement during the intraprocedural analysis.
-Flow functions for all other statement types are same as the ones
-of Algorithm~\ref{fig:csInterFlow} in Appendix~\ref{app:algo}.
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\IncMargin{1em}
 \begin{algorithm}
-\caption{Intraprocedural Analysis Flow Function for the \callt statement}\label{fig:intraFlow}
-%\SetAlgoNoLine
-\SetAlgoLined
+\caption{flowInsert. Insertion of Taint Information}\label{fig:insertTaint}
 \LinesNumbered
 \DontPrintSemicolon
 \SetKwData{Caller}{caller}
 \SetKwData{stmt}{s}
-\SetKwData{stmtV}{v}
-\SetKwData{stmtA}{a}
+\SetKwData{Input}{IN}
+\SetKwData{ValueV}{v}
+\SetKwData{ValueW}{$a_v$}
+\SetKwData{Output}{OUT}
+\SetKwFunction{Aliases}{aliases}
+\SetKwFunction{Func}{func}
+\SetKwInOut{InData}{input}
+\SetKwInOut{OutData}{output}
+
+\InData{$\stmt: \mathit{Inst}, \ValueV: \mathit{Var}$}
+\OutData{}
+$\Output[\stmt] \leftarrow \Output[\stmt] \cup \{ \ValueV \}$\;
+	\ForEach{$\ValueW \in \Aliases(\ValueV)$}{			
+		$\Output[\stmt] \leftarrow \Output[\stmt] \cup \{ \ValueW \}$\;
+	}
+\end{algorithm}
+
+\paragraph{Intraprocedural Analysis}
+The intraprocedural analysis always runs first, before any of
+the interprocedural analyses, and is responsible for discovering
+initial taint sources. During the intraprocedural analysis,
+program functions are analyzed in the reverse topological order
+of the call graph (i.e starting from the leaves of the callgraph).
+The analysis works on each function body and do not take into account
+the interprocedural control flow. The computed data flow sets are
+reused later by the subsequent interprocedural analyses. In particular,
+taint information about function formal parameters and return
+value is kept in a global summary table. All tainted variables due
+to source functions are found during the intraprocedural analysis.
+For instance, the intraprocedural analysis detects that variable
+\texttt{sum} of function \compute{} in Figure~\ref{fig:sample}
+may be tainted at line $13$ due to the call to \texttt{scanf}, which
+the analysis considers as a taint source. 
+Algorithm~\ref{fig:intraFlow} shows the flow function for
+\callt statements, which handles the discovery of taint sources
+during the intraprocedural analysis pass.
+Flow functions for all other statement types are same as the ones
+of Algorithm~\ref{fig:csInterFlow} in Appendix~\ref{app:algo}.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{algorithm}
+\caption{Intraprocedural Analysis Flow Function for \callt statements}\label{fig:intraFlow}
+%\SetAlgoNoLine
+\LinesNumbered
+\DontPrintSemicolon
+\SetKwData{Caller}{caller}
+\SetKwData{stmt}{s}
+\SetKwData{VarA}{a}
 \SetKwData{stmtF}{f}
-\SetKwData{stmtK}{k}
 \SetKwData{stmtR}{r}
-\SetKwData{stmtT}{t}
-\SetKwData{stmtB}{b}
-\SetKwData{stmtQ}{q}
-\SetKwData{stmtP}{p}
+\SetKwData{VarK}{k}
 \SetKwData{summaryTable}{summaryTable}
-\SetKwData{tainted}{tainted}
-\SetKwData{fZero}{$f_0$}
-\SetKwData{False}{False}
-\SetKwData{Input}{IN$_s$}
-\SetKwData{Output}{OUT$_s$}
-\SetKwData{TmpFlow}{tmpFlow}
-\SetKwFunction{Map}{map}
-\SetKwFunction{LCALL}{CALL}
+\SetKwData{Input}{IN}
+\SetKwData{Output}{OUT}
+\SetKwFunction{LSOURCE}{SOURCE}
 \SetKwFunction{Type}{TypeOf}
 \SetKwFunction{Taint}{taint}
-\SetKwFunction{Func}{func}
-\SetKwFunction{Formal}{formal}
+\SetKwFunction{Source}{source}
 \SetKwFunction{Formals}{formals}
-\SetKwFunction{Toplevel}{toplevel}
+\SetKwFunction{FlowInsert}{flowInsert}
 \SetKwInOut{InData}{input}
 \SetKwInOut{OutData}{output}
 
 \InData{$\Caller: \mathit{Proc}, \stmt: \mathit{Inst}$}
 \OutData{}
 \Switch{$\Type(\stmt)$}{	
-	\Case{$\LCALL\ [\stmtR = \mathit{call}\ \Func(a_0, a_1, ..., a_n)]$}{
-		\ForEach{$k \in \set{0, 1, ..., n}$}{
-			\If{$\Taint(k)$}{			
-				$\Output[\stmtA_k] \leftarrow \Input[\stmtA_k]$\;
+	\Case{$\LSOURCE\ [\stmtR = \mathit{call}\ \Source(\VarA_0, \VarA_1, ..., \VarA_n)]$}{
+		\ForEach{$\VarK \in \set{0, 1, ..., n}$}{
+			\If{$\Taint(\VarK)$}{			
+				$\FlowInsert(\stmt, \VarA_k)$\;
 			}			
 		}
 	}			
 }
-\ForEach{$\stmtF_k \in \Formals(\mathit{Proc})$}{
-	\If{$\Output[\stmtF_k] \neq \Input[\stmtF_k]$}{
-		$\summaryTable[\Func][k] = 1$\;
+\ForEach{$\stmtF_k \in \Formals(\Caller)$}{
+	\If{$\Output[\stmt] \neq \Input[\stmt]$ {\bf and} $\stmtF_k \in \Output[\stmt]$}{
+		$\summaryTable[\Caller][\VarK] = 1$\;
 	}
 }
 \end{algorithm}
-\DecMargin{1em}
 
 \paragraph{Context-Insensitive Analysis}
 The context-insensitive analysis starts from the \textit{main function}
@@ -202,49 +219,27 @@ tainted variable during the context-insensitive analysis.
 Algorithm~\ref{fig:interFlow} in the following
 illustrates the context-insensitive algorithm.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\IncMargin{1em}
+%\IncMargin{1em}
 \begin{algorithm}[!htbp]
-\caption{InterFlow: Context-Insentive Flow Function for \callt
-statement. Flow functions for other statement types are same
-as the one for the intraprocedural analysis}\label{fig:interFlow}
+\caption{Context-Insentive Interprocedural Flow Function for \callt
+statements}\label{fig:interFlow}
 %\SetAlgoNoLine
 %\SetAlgoLined
 \LinesNumbered
 \DontPrintSemicolon
 \SetKwData{Caller}{caller}
 \SetKwData{stmt}{s}
-\SetKwData{stmtV}{v}
-\SetKwData{stmtA}{a}
+\SetKwData{ValueV}{v}
+\SetKwData{VarA}{a}
 \SetKwData{stmtF}{f}
-\SetKwData{stmtK}{k}
-\SetKwData{stmtR}{r}
-\SetKwData{stmtT}{t}
-\SetKwData{stmtB}{b}
-\SetKwData{stmtQ}{q}
-\SetKwData{stmtP}{p}
+\SetKwData{VarK}{k}
+\SetKwData{ValueR}{r}
 \SetKwData{summaryTable}{summaryTable}
-\SetKwData{tainted}{tainted}
-\SetKwData{fZero}{$f_0$}
-\SetKwData{False}{False}
-\SetKwData{Input}{IN$_s$}
-\SetKwData{Output}{OUT$_s$}
-\SetKwData{TmpFlow}{tmpFlow}
-\SetKwFunction{Map}{map}
-\SetKwFunction{LCOPY}{COPY}
-\SetKwFunction{LLOAD}{LOAD}
-\SetKwFunction{LSTORE}{STORE}
-\SetKwFunction{LADDROF}{ADDROF}
+\SetKwData{Input}{IN}
+\SetKwData{Output}{OUT}
 \SetKwFunction{LCALL}{CALL}
-\SetKwFunction{LSOURCE}{SOURCE}
-\SetKwFunction{LSINK}{SINK}
-\SetKwFunction{Type}{TypeOf}
-\SetKwFunction{TaintUse}{taintUse}
-\SetKwFunction{Update}{Update}
-\SetKwFunction{Taint}{taint}
 \SetKwFunction{Func}{func}
-\SetKwFunction{First}{first}
-\SetKwFunction{Formal}{formal}
-\SetKwFunction{Toplevel}{toplevel}
+\SetKwFunction{FlowInsert}{flowInsert}
 \SetKwInOut{InData}{input}
 \SetKwInOut{OutData}{output}
 
@@ -252,19 +247,19 @@ as the one for the intraprocedural analysis}\label{fig:interFlow}
 \OutData{}
 \Switch{$\Type(\stmt)$}{	
 %Context-insensitive	
-	\Case{$\LCALL\ [\stmtR = \mathit{call}\ \Func(a_0, a_1, ..., a_n)]$}{
+	\Case{$\LCALL\ [\ValueR = \mathit{call}\ \Func(a_0, a_1, ..., a_n)]$}{
 		\If{$\summaryTable[\Func][n+1] = 1$}{
-			$\Output[\stmtR] \leftarrow \Input[\stmtR]$\;						
+			$\FlowInsert(\stmt, \ValueR)$\;						
 		}			
-		\ForEach{$\stmtA_k, k \in \set{0, 1, ..., n}$}{
-			\If{$\summaryTable[\Func][k] = 1$}{
-				$\Output[\stmtA_k] \leftarrow \Input[\stmtA_k]$\;																
+		\ForEach{$\VarK \in \set{0, 1, ..., n}$}{
+			\If{$\summaryTable[\Func][\VarK] = 1$}{
+				$\FlowInsert(\stmt, \VarA_k)$\;						
 			}							
 		}
 	}				
 }
 \end{algorithm}
-\DecMargin{1em}
+%\DecMargin{1em}
 
 \paragraph{Context-Sensitive Analysis}
 The context-sensitive analysis works in the topological order

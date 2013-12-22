@@ -27,16 +27,14 @@ was applied. This paper uses $\Aset$ for the set of all address-taken
 variables. Variable \texttt{x} in Figure~\ref{fig:sample} is
 for instance an address-taken variable ($x \in \Aset$).
 
-\begin{comment}
-We capture program elements using the following abstract
+This paper describes the analysis by using the following abstract
 instructions:
 \begin{itemize}
+\item $\addrofdef$: address-of operator. $p \in \Aset, a \in \Pset$.
 \item $\copydef$: copy instruction. $p, q \in \Aset$.
 \item $\loaddef$: load instruction. $q \in \Aset$.
-\item $\addrofdef$: address-of operator. $p \in \Aset, a \in \Pset$.
 \item $\storedef$: store instruction. $p \in \Aset, q \in \Pset$.
-\item $\sourcedef$: call to a taint source function. $r \in \Pset$
 \item $\calldef$: call to a function. $r \in \Pset$
-\item $\sinkdef$: call to sink function. $r \in \Pset$
+\item $\sourcedef$: call to a taint source function. $r \in \Pset$
+%\item $\sinkdef$: call to a sink function. $r \in \Pset$
 \end{itemize}
-\end{comment}

@@ -59,10 +59,10 @@
 	\lstinputlisting[]{#2} 
 }
 
-\newcommand{\main}{\texttt{main}}
-\newcommand{\even}{\texttt{even}}
-\newcommand{\odd}{\texttt{odd}}
-\newcommand{\compute}{\texttt{compute}}
+\newcommand{\main}{\texttt{main}\xspace}
+\newcommand{\even}{\texttt{even}\xspace}
+\newcommand{\odd}{\texttt{odd}\xspace}
+\newcommand{\compute}{\texttt{compute}\xspace}
 
 \newcommand{\lothak}{Lhot\'{a}k}
 
@@ -72,14 +72,14 @@
 
 \newcommand{\mathbold}[1]{\text{\textbf{#1}}}
 
-\newcommand{\copydef}{$\mathbold{COPY}\ [p = q]$\xspace}
-\newcommand{\loaddef}{$\mathbold{LOAD}\ [p = *q]$\xspace}
-\newcommand{\addrofdef}{$\mathbold{ADDROF}\ [p = \&a]$\xspace}
-\newcommand{\storedef}{$\mathbold{STORE}\ [*p = q]$\xspace}
-\newcommand{\sourcedef}{\mathbold{SOURCE}\ [r = \text{call}\ \text{func}(a_0, a_1, ..., a_n)]}
+\newcommand{\copydef}{\mathbold{COPY}\ [p = q]\xspace}
+\newcommand{\loaddef}{\mathbold{LOAD}\ [p = *q]\xspace}
+\newcommand{\addrofdef}{\mathbold{ADDROF}\ [p = \&a]\xspace}
+\newcommand{\storedef}{\mathbold{STORE}\ [*p = q]\xspace}
+\newcommand{\sourcedef}{\mathbold{SOURCE}\ [r = \text{call}\ \text{source}(f_0, f_1, ..., f_n)]\xspace}
 \newcommand{\calldef}{\mathbold{CALL}\ [r = \text{call}\ \text{func}(a_0, a_1, ..., a_n)]}
 \newcommand{\callinsdef}{\mathbold{CALL-INS}\ [r = \text{call}\ \text{func}(a_0, a_1, ..., a_n)]}
-\newcommand{\sinkdef}{\mathbold{SINK}\ [r = \text{call}\ \text{func}]}
+\newcommand{\sinkdef}{\mathbold{SINK}\ [r = \text{call}\ \text{sink}]}
 
 \newcommand{\ALLOC}{\text{\textbf{[ALLOC]}}\xspace}
 \newcommand{\COPY}{\text{\textbf{[COPY]}}\xspace}
@@ -87,6 +87,7 @@
 \newcommand{\ADDROF}{\text{\textbf{[ADDROF]}}\xspace}
 \newcommand{\STORE}{\text{\textbf{[STORE]}}\xspace}
 \newcommand{\CALL}{\text{\textbf{[CALL]}}\xspace}
+\newcommand{\SOURCE}{\text{\textbf{[SOURCE]}}\xspace}
 
 \newcommand{\alloct}{\texttt{ALLOC}\xspace}
 \newcommand{\copyt}{\texttt{COPY}\xspace}
@@ -112,7 +113,7 @@
 
 \date{}
 
-\authorinfo{Xavier Noumbissi Noundou}
+\authorinfo{Xavier N. Noumbissi}
            {University of Waterloo}
            {xnoumbis@uwaterloo.ca}
 %\authorinfo{Name2\and Name3}
@@ -138,8 +139,6 @@ taint analysis, static analysis
 \input{llvm}
 
 \input{analysis}
-
-\input{casestudy}
 
 \input{evaluation}
 

@@ -3,57 +3,8 @@
 This section presents a listing of all analysis algorithms
 we describe in this paper in Section~\ref{sec:analysis}.
 
-Algorithm~\ref{fig:algoAnalyze} presents the standard worklist
-based interprocedural algorithm for fixed point computation.
-The intraprocedural algorithm is illustrated in
-Algorithm~\ref{fig:intraFlow}. Algorithm~\ref{fig:interFlow}
-and algorithm~\ref{fig:algoAnalyze}ef{fig:csInterFlow} show the context-insensitive
-and context-sensitive analysis respectively.
-
-\IncMargin{1em}
-\begin{algorithm}[!htbp]
-\caption{Analyze}\label{fig:algoAnalyze}
-%\SetAlgoNoLine
-\SetAlgoLined
-\LinesNumbered
-\DontPrintSemicolon
-\SetKwData{varJ}{j}
-\SetKwData{varI}{i}
-\SetKwData{worklist}{worklist}
-\SetKwFunction{Input}{input}
-\SetKwFunction{Output}{output}
-\SetKwFunction{InterFlow}{InterFlow}
-\SetKwFunction{First}{first}
-\SetKwFunction{Update}{Update}
-\SetKwFunction{InitDataFlow}{initDataFlow}
-\SetKwFunction{Next}{next}
-\SetKwFunction{Succs}{succs}
-\SetKwFunction{AnalyzeAlgo}{Analyze}
-\SetKwFunction{Func}{main}
-\SetKwInOut{InData}{input}
-\SetKwInOut{OutData}{output}
-
-
-\InData{$\Func: \mathit{Proc}, \newline
-		 \Input: \mathit{Inst} \rightarrow (\mathit{Var} \rightarrow 2^\mathit{Inst}), \newline
-		 \Output: \mathit{Inst} \rightarrow (\mathit{Var} \rightarrow 2^\mathit{Inst})$}
-\OutData{}
-$ s_0 \leftarrow \First(\Func)$\;
-$\worklist \leftarrow \set{s_0}$\;
-\While{ $\worklist\ \neq\ \emptyset$ }{
-	$\varI \leftarrow \Next(\worklist)$\;
-	$\Output[i] \leftarrow \InterFlow(\AnalyzeAlgo, \varI)$\;
-	\ForEach{ $\varJ \in \Succs(\varI)$ }{
-		\If{ $\Output[\varI] \not\sqsubseteq \Input[\varJ]$}{
-			$\Input[\varJ] \leftarrow \Input[\varJ] \sqcup \Output[\varI]$\;
-			$\worklist \leftarrow \worklist \cup\ \set{\varJ}$\;
-		}	
-	}
-}
-\end{algorithm}
-\DecMargin{1em}
-
-%\newpage
+Algorithm~\ref{fig:csInterFlow} shows the flow functions
+for the context-sensitive analysis.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \IncMargin{1em}
