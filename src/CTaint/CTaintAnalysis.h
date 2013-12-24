@@ -80,6 +80,7 @@ public:
 	void visitReturnInst(ReturnInst &I);
 
 	void handleContextCall(CallInst &I, Function &callee);
+	void handleSinks(CallInst &I, Function &callee);
 
 	void setDiff(set<Value *> &A, set<Value *> &B, set<Value *> &AMinusB);
 
@@ -123,8 +124,8 @@ public:
 		_intraWasRun = flag;
 	}
 
-	void setInterFlag(bool flag) {
-		_interFlag = flag;
+	void setInterRunning(bool flag) {
+		_interRunning = flag;
 	}
 
 	void setCtxInterRunning(bool flag) {
@@ -138,10 +139,12 @@ public:
 private:
 	const static string _taintId;
 	const static string _taintSourceFile;
+	const static string _taintSinkFile;
 	const static int _SOURCE_ARG_RET;
 	const static int _SOURCE_ARG_INVALID_MIN;
 	const static int _FUNCTION_NOT_SOURCE;
 	static map<string, int> _taintSources;
+	static vector<string> _taintSinks;
 
 	/**
 	 * Adds the function with name 'source' as a taint source and
@@ -155,6 +158,7 @@ private:
 	 * as taint source are registered.
 	 */
 	static void readTaintSourceConfig();
+	static void readTaintSinkConfig();
 
 	/**
 	 * Returns an integer p (p > 0) whenever function with
@@ -170,7 +174,7 @@ private:
 	bool _intraWasRun;
 
 	/** Has the interprocedural Context-Insenstive analysis been run */
-	bool _interFlag;
+	bool _interRunning;
 
 	/** Is the interprocedural Context-Insenstive analysis currently running */
 	bool _ctxInterRunning;

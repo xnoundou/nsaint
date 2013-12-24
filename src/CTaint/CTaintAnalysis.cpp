@@ -1,7 +1,8 @@
 
 #include "CTaintAnalysis.h"
-#include "intra-ctaint.h"
-#include "inter-ctaint.h"
+//#include "intra-ctaint.h"
+//#include "context-inter-ctaint.h"
+#include "context-insensitive-ctaint.h"
 
 #include <llvm/Support/InstIterator.h>
 #include <llvm/Target/Mangler.h>
@@ -14,6 +15,7 @@ char CTaintAnalysis::ID = 0;
 
 const string CTaintAnalysis::_taintId("[STTAL]");
 const string CTaintAnalysis::_taintSourceFile("cfg/sources.cfg");
+const string CTaintAnalysis::_taintSinkFile("cfg/sinks.cfg");
 
 const int CTaintAnalysis::_SOURCE_ARG_RET(-1);
 const int CTaintAnalysis::_SOURCE_ARG_INVALID_MIN(-2);
@@ -21,6 +23,8 @@ const int CTaintAnalysis::_FUNCTION_NOT_SOURCE(100);
 
 map<string, int> CTaintAnalysis::_taintSources;
 typedef map<string, int>::value_type sourceType;
+
+vector<string> CTaintAnalysis::_taintSinks;
 
 inline void CTaintAnalysis::log(const string &msg) {
 	errs() << _taintId << msg << '\n';
@@ -66,9 +70,23 @@ void CTaintAnalysis::readTaintSourceConfig() {
 	srcFile.close();
 }
 
+void CTaintAnalysis::readTaintSinkConfig() {
+	//Open the file with taint source functions listed
+	std::ifstream srcFile(_taintSinkFile.c_str());
+	string line;
+
+	while (!srcFile.eof()) {
+		std::getline(srcFile, line);
+		if (!line.empty())
+			_taintSinks.push_back(line);
+	}
+
+	srcFile.close();
+}
+
 CTaintAnalysis::CTaintAnalysis() : ModulePass(ID),
 									_intraWasRun(false),
-									_interFlag(false),
+									_interRunning(false),
 									_ctxInterRunning(false),
 									_pointerMain(0),
 									_super(0),
@@ -76,6 +94,7 @@ CTaintAnalysis::CTaintAnalysis() : ModulePass(ID),
 									_module(0) {
 	_super = static_cast<InstVisitor<CTaintAnalysis> *>(this);
 	readTaintSourceConfig();
+	readTaintSinkConfig();
 }
 
 CTaintAnalysis::~CTaintAnalysis() {
@@ -185,7 +204,8 @@ bool CTaintAnalysis::runOnModule(Module &m) {
 
 	//log("Now performs the intraprocedural analysis");
 	//CTaintIntraProcedural intraFlow(this);
-	CTaintInterProcedural interFlow(this);
+	//CTaintContextInterProcedural contextInterFlow(this);
+	InterProcedural interFlow(this);
 
 	//interFlow.analyze();
 
@@ -425,10 +445,70 @@ void CTaintAnalysis::visitCallInst(CallInst & I)
 		  return ;
 		}
 
-		depth += 1;
-		handleContextCall(I, *callee);
-		depth -= 1;
+		//string calleeName = callee->getName().str();
+		//bool foundSink = (_taintSinks.end() != find(_taintSinks.begin(), _taintSinks.end(), calleeName));
+
+		//We do not analyze sink functions context-sensitively
+		//if (foundSink) {
+		//	errs() << "Found sink function " << calleeName << "\n";
+		//	handleSinks(I, *callee);
+		//}
+		//else {
+			depth += 1;
+			handleContextCall(I, *callee);
+			depth -= 1;
+		//}
 	}
+	else if (_interRunning) {
+		//Context-insensitive analysis
+		Function *callee = I.getCalledFunction();
+		if (!callee) return ;
+		vector<bool> *calleeFormals = _summaryTable[callee];
+
+		//Check if the function has a non-void type
+		if (calleeFormals && !callee->getReturnType()->isVoidTy()) {
+			//the last element of the vector is the return value taint information
+			bool retIsTaint = calleeFormals->back();
+			if (retIsTaint) {
+				insertToOutFlow(&I, &I);
+			}
+		}
+
+		string calleeName = callee->getName().str();
+		bool foundSink = (_taintSinks.end() != find(_taintSinks.begin(), _taintSinks.end(), calleeName));
+
+		if (foundSink) {
+			errs() << "Found sink function " << calleeName << "\n";
+			handleSinks(I, *callee);
+		}
+	}
+}
+
+void CTaintAnalysis::handleSinks(CallInst &I, Function &callee)
+{
+	StringRef calleeName = callee.getName();
+	//vector<string>::iterator sink = find(_taintSinks.begin(), _taintSinks.end(), calleeName);
+	//if (_taintSinks.end() == sink)
+	//	return ;
+
+	//errs() << "Found sink function " << calleeName << "\n";
+
+	unsigned argNr = I.getNumArgOperands();
+	Value *curArg = 0;
+
+	//We allow k to go at max 1, since we are analyzing only the
+	//first parameter of a printf-like function here
+	for(unsigned k = 0; k < argNr; ++k) {
+	    curArg = I.getArgOperand(k);
+	    errs() << "\targ (" << k << "): ";
+	    curArg->print(errs()); errs() << "\n";
+	    if ( isValueTainted(&I, curArg) ) {
+	    	errs() << "## [WARNING][format string vulnerability]: \n\tTainted value";
+	    	curArg->print(errs());
+	    	errs() << " is used in sink function '" << calleeName << "'\n";
+	    }
+	}
+
 }
 
 /**

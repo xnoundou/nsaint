@@ -33,7 +33,7 @@ public:
 		return false;
 	}
 
-	void visit(Instruction &I) {
+	virtual void visit(Instruction &I) {
 	  if(_predInst)
 	    mergeCopyPredOutFlowToInFlow(*_predInst, I);
 	  _super->visit(I);
@@ -48,10 +48,13 @@ public:
 
 	virtual void analyze();
 
+	bool updateAnalyzedFunction(BasicBlock *bb);
+
 protected:
 	vector<Function *> *_allProcs;
 	vector<BasicBlock *> _workList;
 	Instruction *_predInst;
+	Function *_curAnalyzedFunction;
 
 	virtual void insert(BasicBlock *BB);
 	BasicBlock * next();
@@ -66,7 +69,9 @@ private:
 
 CForwardFlowAnalysis::CForwardFlowAnalysis(vector<Function *> *allProcs)
 	:_allProcs(allProcs),
-	 _predInst(0) {
+	 _predInst(0),
+	 _curAnalyzedFunction(0)
+{
 	_super = static_cast<InstVisitor *>(this);
 	assert(_super && "The super class InstVisitor must be non null!");
 }
@@ -97,6 +102,22 @@ BasicBlock * CForwardFlowAnalysis::next() {
 	return result;
 }
 
+bool CForwardFlowAnalysis::updateAnalyzedFunction(BasicBlock *bb) {
+	Function *f = bb->getParent();
+	if ( 0 == _curAnalyzedFunction ){
+		_curAnalyzedFunction = f;
+		errs() << "[Processing][Function][" << _curAnalyzedFunction->getName() << "]\n";
+		return true;
+	}
+	else if (!f->getName().equals(_curAnalyzedFunction->getName())) {
+		_curAnalyzedFunction = f;
+		errs() << "[Processing][Function][" << _curAnalyzedFunction->getName() << "]\n";
+		return true;
+	}
+
+	return false;
+}
+
 /**
  * Implements the data flow framework iterative
  * worklist algorithm.
@@ -109,6 +130,7 @@ void CForwardFlowAnalysis::analyze() {
 
 	while(!_workList.empty()) {
 		bb = next();
+		updateAnalyzedFunction(bb);
 		_super->visit(*bb);
 		for (succ_iterator pi = succ_begin(bb), E = succ_end(bb); pi != E; ++pi) {
 			succBB = *pi;

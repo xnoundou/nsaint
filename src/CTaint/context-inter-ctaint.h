@@ -16,21 +16,19 @@
 using namespace llvm;
 
 namespace {
-class CTaintInterProcedural : public CTaintIntraProcedural {
+class CTaintContextInterProcedural : public CTaintIntraProcedural {
 
 public:
-	CTaintInterProcedural(CTaintAnalysis *analysis);
+	CTaintContextInterProcedural(CTaintAnalysis *analysis);
 
 protected:
 	virtual void initWorkList();
 
-	//******* Implementation of visit methods *******//
-	//virtual void visitCallInst(CallInst &I);
 private:
 };
 }
 
-CTaintInterProcedural::CTaintInterProcedural(CTaintAnalysis *analysis)
+CTaintContextInterProcedural::CTaintContextInterProcedural(CTaintAnalysis *analysis)
 	:CTaintIntraProcedural(analysis)
 {
   errs() << "## Starting interprocedural analysis\n";
@@ -39,7 +37,7 @@ CTaintInterProcedural::CTaintInterProcedural(CTaintAnalysis *analysis)
   _analysis->setCtxInterRunning(false);
 }
 
-void CTaintInterProcedural::initWorkList() {
+void CTaintContextInterProcedural::initWorkList() {
 	_workList.clear();
 
 	Function *pointerMain = _analysis->getMainFunction();
