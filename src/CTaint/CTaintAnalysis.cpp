@@ -6,6 +6,7 @@
 
 #include <llvm/Support/InstIterator.h>
 #include <llvm/Target/Mangler.h>
+#include <llvm/DebugInfo.h>
 
 #include <fstream>
 #include <sstream>
@@ -445,19 +446,9 @@ void CTaintAnalysis::visitCallInst(CallInst & I)
 		  return ;
 		}
 
-		//string calleeName = callee->getName().str();
-		//bool foundSink = (_taintSinks.end() != find(_taintSinks.begin(), _taintSinks.end(), calleeName));
-
-		//We do not analyze sink functions context-sensitively
-		//if (foundSink) {
-		//	errs() << "Found sink function " << calleeName << "\n";
-		//	handleSinks(I, *callee);
-		//}
-		//else {
-			depth += 1;
-			handleContextCall(I, *callee);
-			depth -= 1;
-		//}
+		depth += 1;
+		handleContextCall(I, *callee);
+		depth -= 1;
 	}
 	else if (_interRunning) {
 		//Context-insensitive analysis
@@ -487,25 +478,23 @@ void CTaintAnalysis::visitCallInst(CallInst & I)
 void CTaintAnalysis::handleSinks(CallInst &I, Function &callee)
 {
 	StringRef calleeName = callee.getName();
-	//vector<string>::iterator sink = find(_taintSinks.begin(), _taintSinks.end(), calleeName);
-	//if (_taintSinks.end() == sink)
-	//	return ;
-
-	//errs() << "Found sink function " << calleeName << "\n";
 
 	unsigned argNr = I.getNumArgOperands();
 	Value *curArg = 0;
 
-	//We allow k to go at max 1, since we are analyzing only the
-	//first parameter of a printf-like function here
 	for(unsigned k = 0; k < argNr; ++k) {
 	    curArg = I.getArgOperand(k);
-	    errs() << "\targ (" << k << "): ";
-	    curArg->print(errs()); errs() << "\n";
 	    if ( isValueTainted(&I, curArg) ) {
+	    	int line = -1;
+	    	if (MDNode *N = I.getMetadata("dbg")) { // this if is never executed
+	    		DILocation Loc(N);
+	    		line = Loc.getLineNumber();
+	    	}
 	    	errs() << "## [WARNING][format string vulnerability]: \n\tTainted value";
 	    	curArg->print(errs());
-	    	errs() << " is used in sink function '" << calleeName << "'\n";
+	    	errs() << " (" << k
+	    	<< ") is used in sink function '" << calleeName
+	    	<< " [line " << line << "] '\n";
 	    }
 	}
 

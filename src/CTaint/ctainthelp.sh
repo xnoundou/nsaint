@@ -66,8 +66,8 @@ function genByteCode(){
   for cf in $(dir "$srcfolder"/*.c); do
     f=${cf##*/}
     p=${f%*.c}
-    echo "clang -emit-llvm "$incfolder" "$cf" -c -o "$outfolder"/"$p".bc"
-    clang -emit-llvm $incfolder "$cf" -c -o "$outfolder"/"$p".bc 2> "$logfile"
+    echo "clang -emit-llvm "$incfolder" "$cf" -c -g -o "$outfolder"/"$p".bc"
+    clang -emit-llvm $incfolder "$cf" -c -g -o "$outfolder"/"$p".bc 2> "$logfile"
   done
 }
 
@@ -75,8 +75,8 @@ function genIR(){
   for cf in $(dir "$srcfolder"/*.c); do
     f=${cf##*/}
     p=${f%*.c}
-    echo "clang "$MACROS" "$incfolder" -S -emit-llvm "$cf" -o "$outfolder"/"$p.s""
-    clang "$MACROS" $incfolder -S -emit-llvm "$cf" -o "$outfolder"/"$p.s" 2> $logfile
+    echo "clang "$MACROS" "$incfolder" -S -emit-llvm "$cf" -g -o "$outfolder"/"$p.s""
+    clang "$MACROS" $incfolder -S -emit-llvm "$cf" -g -o "$outfolder"/"$p.s" 2> $logfile
   done
 }
 
