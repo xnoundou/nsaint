@@ -1,1 +1,40 @@
 \section{Experimental Evaluation}\label{sec:evaluation}
+In the C programming language, format string vulnerabilities
+happen when an incorrect number of arguments is used when
+calling variable-length functions. For instance, a call
+\begin{center}
+{\tt printf(buf);} // format string vulnerability
+\end{center}
+may cause the program to crash because the function \texttt{printf}
+expects its first parameter to be a format string. For
+instance {\tt printf("\%s", buf)} would be a correct call.
+
+We evaluated our taint analysis by trying to detect
+\textit{format string vulnerabilities} of printf-like functions
+in four different open-source C programs: \texttt{mongoose}\footnote{http://code.google.com/p/mongoose} (web server),
+\texttt{claws}\footnote{http://www.claws-mail.org} (email client),
+\texttt{milter-manager}\footnote{http://milter-manager.sourceforge.net} (anti-spam),
+\texttt{apache} (web server).
+
+We could not get any results from running the analysis on
+\texttt{apache} because the \texttt{DSA} pointer analysis 
+crashed at runtime. 
+The results below for the \texttt{milter-manager} are only those
+of its submodule \texttt{milter-manager/core}.
+
+We ran the analysis on an \texttt{Intel i7 @ 3.4GHz} with
+$4$ cores and $16$ GB of RAM, running {\tt Debian Wheezy}.
+Table~\ref{tab:results} shows the analysis results.
+
+\begin{table}[!hbtp]
+\centering
+\begin{tabular}{|l|c|c|c|}
+\hline
+{\bf Programs}			&	{\bf SLOC}	& {\bf Vulnerabilities}	&	{\bf Running time}	\\ \hline
+{\tt mongoose}			&	$4,339$		&	$173$	&	$8m23s$ \\ \hline
+{\tt claws}				&	$142,890$ 	&	$5$		&	$4m19s$	\\ \hline
+{\tt milter-manager}	&	$12,514$ 	&	$0$		&	$2m27s$\\ \hline
+\end{tabular}\caption{Taint Analysis Results}\label{tab:results}
+\end{table}
+
+%Note that some analysis

@@ -73,12 +73,10 @@ their value depend on tainted variable $x$.
 The analysis dataflow set is $\varset \times 2^\instset$,
 where $\varset$ is the set of all program variables and
 $\instset$ the set of all program statements. 
-At a statement labelled $s$, the incoming dataflow set $\myinflow_s$
-is a mapping from each program variable $v$ to a set of
-previous program tainting statements.
-If $v$ is definitely not tainted before statement $s$, then
-$\myinflow_s[v] = \emptyset$. Otherwise, $\myinflow_s[v]$
-contains statements where $v$ might get tainted.
+At a statement labelled $s$, the incoming dataflow set $\myinflow[s]$
+is the set of program variables that are tainted before statement $s$.
+If a variable $v$ is not tainted before statement $s$, then
+$v \notin \myinflow[s]$; otherwise $\myinflow[s]$ contains $v$.
 
 This paper uses the following elements to describe the
 taint analysis:
@@ -112,9 +110,6 @@ scales well with programs in a size range of 100K-200K lines of C code.
 Algorithm~\ref{fig:insertTaint} illustrates how the taint analysis uses
 the results of the pointer analysis using function \texttt{aliases}
 to update data flowsets.
-%\DSA operates in three phases: \textit{local}, \textit{bottom-up},
-%and \textit{top-down}.
-
 \begin{algorithm}
 \caption{flowInsert. Insertion of Taint Information}\label{fig:insertTaint}
 \LinesNumbered
@@ -171,7 +166,7 @@ of Algorithm~\ref{fig:csInterFlow} in Appendix~\ref{app:algo}.
 \SetKwData{stmtF}{f}
 \SetKwData{stmtR}{r}
 \SetKwData{VarK}{k}
-\SetKwData{summaryTable}{summaryTable}
+\SetKwData{summaryTable}{sumTable}
 \SetKwData{Input}{IN}
 \SetKwData{Output}{OUT}
 \SetKwFunction{LSOURCE}{SOURCE}
@@ -217,12 +212,11 @@ analysis  would take into account that the return value of \compute is
 stored into variable \texttt{y}. Thus, \texttt{y} becomes a
 tainted variable during the context-insensitive analysis.
 Algorithm~\ref{fig:interFlow} in the following
-illustrates the context-insensitive algorithm.
+illustrates the context-insensitive flow function for \callt statements.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%\IncMargin{1em}
-\begin{algorithm}[!htbp]
-\caption{Context-Insentive Interprocedural Flow Function for \callt
-statements}\label{fig:interFlow}
+\begin{algorithm}
+\caption{Context-Insentive Interprocedural Flow Function for
+\callt statements}\label{fig:interFlow}
 %\SetAlgoNoLine
 %\SetAlgoLined
 \LinesNumbered
@@ -234,32 +228,30 @@ statements}\label{fig:interFlow}
 \SetKwData{stmtF}{f}
 \SetKwData{VarK}{k}
 \SetKwData{ValueR}{r}
-\SetKwData{summaryTable}{summaryTable}
+\SetKwData{summaryTable}{sumTable}
 \SetKwData{Input}{IN}
 \SetKwData{Output}{OUT}
 \SetKwFunction{LCALL}{CALL}
-\SetKwFunction{Func}{func}
+\SetKwFunction{Func}{G}
 \SetKwFunction{FlowInsert}{flowInsert}
 \SetKwInOut{InData}{input}
 \SetKwInOut{OutData}{output}
 
 \InData{$\Caller: \mathit{Proc}, \stmt: \mathit{Inst}$}
 \OutData{}
-\Switch{$\Type(\stmt)$}{	
-%Context-insensitive	
+\Switch{$\Type(\stmt)$}{		
 	\Case{$\LCALL\ [\ValueR = \mathit{call}\ \Func(a_0, a_1, ..., a_n)]$}{
-		\If{$\summaryTable[\Func][n+1] = 1$}{
+		\If{$\summaryTable[\Func][n+1]$}{
 			$\FlowInsert(\stmt, \ValueR)$\;						
 		}			
 		\ForEach{$\VarK \in \set{0, 1, ..., n}$}{
-			\If{$\summaryTable[\Func][\VarK] = 1$}{
+			\If{$\summaryTable[\Func][\VarK]$}{
 				$\FlowInsert(\stmt, \VarA_k)$\;						
 			}							
 		}
 	}				
 }
 \end{algorithm}
-%\DecMargin{1em}
 
 \paragraph{Context-Sensitive Analysis}
 The context-sensitive analysis works in the topological order
@@ -270,9 +262,61 @@ finds more precise information in the summary table. At call sites,
 the context-sensitive analysis propagates actual parameters
 taint information from the caller into the callee. At callees' exits,
 newly computed taint information are propagated back from the
-callee to the caller context. Algorithm~\ref{fig:csInterFlow}
-in Appendix~\ref{app:algo} presents our context-sensitive
-algorithm in detail.
+callee to the caller context. Algorithm~\ref{fig:contextIF}
+illustrates the flow function for \callt statements during the
+context-sensitive analysis. On the other hand, algorithm~\ref{fig:csInterFlow}
+in Appendix~\ref{app:algo} presents the full context-sensitive
+algorithm.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{algorithm}
+\caption{csInterFlow: Context-Sentive Flow Function for \callt
+statements}\label{fig:contextIF}
+%\SetAlgoNoLine
+\SetAlgoLined
+\LinesNumbered
+\DontPrintSemicolon
+\SetKwData{Caller}{caller}
+\SetKwData{stmt}{s}
+\SetKwData{stmtA}{a}
+\SetKwData{stmtF}{f}
+\SetKwData{stmtR}{r}
+\SetKwData{False}{false}
+\SetKwData{Input}{IN}
+\SetKwData{Output}{OUT}
+\SetKwData{summaryTable}{sumTable}
+\SetKwFunction{LCALL}{CALL}
+\SetKwFunction{Type}{TypeOf}
+\SetKwFunction{InterFlow}{csInterFlow}
+\SetKwFunction{Func}{G}
+\SetKwFunction{Formals}{formals}
+\SetKwFunction{FlowInsert}{flowInsert}
+\SetKwInOut{InData}{input}
+\SetKwInOut{OutData}{output}
+
+\InData{$\Caller: \mathit{Proc}, \stmt: \mathit{Inst}$}
+\OutData{}
+\Switch{$\Type(\stmt)$}{
+%Context-sensitive		
+	\Case{$\LCALL\ [\stmtR = \mathit{call}\ \Func(\stmtA_0, \stmtA_1, ..., \stmtA_n)]$}{
+		\If{$\Caller \neq \Func$}{
+			\If{$0 \in \summaryTable[\Func]$}{
+				\ForEach{$\stmtF_k \in \Formals(\Func)$}{
+					\If{$\summaryTable[\Func][k]$}{	
+							$\FlowInsert(\stmt, \stmtA_k)$;											
+					}
+				}											
+				$\InterFlow(\Caller, \Func)$\;			
+				\ForEach{$\stmtF_k \in \Formals(\Func)$}{
+					\If{$!\summaryTable[\Func][k] \ \aand\ \Output[\stmtF_k] \neq \Input[\stmtF_k]$}{		
+						$\summaryTable[\Func][k] = 1$\;						
+						$\FlowInsert(\stmt, \stmtA_k)$\;				
+					}
+				}					
+			}
+		}
+	}				
+}
+\end{algorithm}
 
 \paragraph{Recursive and Mutual Recursive Function Calls} 
 The context-sensitive analysis computes results for simple recursive

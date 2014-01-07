@@ -1,15 +1,17 @@
 \section{Analysis Algorithms}\label{app:algo}
 
-This section presents a listing of all analysis algorithms
-we describe in this paper in Section~\ref{sec:analysis}.
-
-Algorithm~\ref{fig:csInterFlow} shows the flow functions
-for the context-sensitive analysis.
+In this section, algorithm~\ref{fig:csInterFlow} shows the full
+pseudo-algorithm for the context-sensitive analysis described
+in Section~\ref{sec:analysis}.
+Only the handling of the \callt statement is specific to
+the context-sensitive algorithm. All other flow functions
+are common to the intraprocedural and context-insensitive
+analysis, both described in Section~\ref{sec:analysis} as well.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \IncMargin{1em}
 \begin{algorithm*}[!h]
-\caption{csInterFlow: Context-Sentive Flow Function.}\label{fig:csInterFlow}
+\caption{csInterFlow: Context-Sentive Analysis Algorithm}\label{fig:csInterFlow}
 %\SetAlgoNoLine
 \SetAlgoLined
 \LinesNumbered
@@ -28,10 +30,10 @@ for the context-sensitive analysis.
 \SetKwData{tainted}{tainted}
 \SetKwData{fZero}{$f_0$}
 \SetKwData{False}{False}
-\SetKwData{Input}{IN$_s$}
-\SetKwData{Output}{OUT$_s$}
+\SetKwData{Input}{IN}
+\SetKwData{Output}{OUT}
 \SetKwData{TmpFlow}{tmpFlow}
-\SetKwData{summaryTable}{summaryTable}
+\SetKwData{summaryTable}{sumTable}
 \SetKwFunction{Map}{map}
 \SetKwFunction{LCOPY}{COPY}
 \SetKwFunction{LLOAD}{LOAD}
@@ -50,6 +52,7 @@ for the context-sensitive analysis.
 \SetKwFunction{Formal}{formal}
 \SetKwFunction{Formals}{formals}
 \SetKwFunction{Toplevel}{toplevel}
+\SetKwFunction{FlowInsert}{flowInsert}
 \SetKwInOut{InData}{input}
 \SetKwInOut{OutData}{output}
 
@@ -58,25 +61,26 @@ for the context-sensitive analysis.
 \OutData{}
 \Switch{$\Type(\stmt)$}{
 	\Case{$\LCOPY\ [\stmtP = \stmtQ] $}{
-		\If{$\Input[\stmtQ] \neq \emptyset$}{
-			$\Output[\stmtP] \leftarrow \Input[\stmtQ] \cup \set{\stmt}$;
+		\If{$\stmtQ \in \Input[\stmt]$}{
+			$\FlowInsert(\stmt, \stmtP)$;
 		}
 	}
 	\Case{$\LLOAD\ [p = *q] $}{
 		\ForEach{$\stmtA_k \in \pointsto{\overline{\stmt}}{q}$}{
-			$\stmtT_k \leftarrow \Toplevel(\stmtA_k)$;		
-			$\TmpFlow \leftarrow \TmpFlow \cup \Input[\stmtT_k]$\;				
-		}
-		\If{$\TmpFlow \neq \emptyset$}{
-			$\Output[\stmtP] \leftarrow \Input[\stmtP] \cup \TmpFlow \cup \set{\stmt}$\;
+			$\stmtT_k \leftarrow \Toplevel(\stmtA_k)$\;					
+			\If{$\stmtT_k \in \Input[\stmt]$}{
+				$\FlowInsert(\stmt, \stmtP)$\;
+				$break$
+			}
 		}
 	}	
 	\Case{$\LSTORE\ [*p = q] $}{
-		\If{$\Input[\stmtQ] \neq \emptyset$}{	
-			\ForEach{$\stmtA_k \in \pointsto{\overline{\stmt}}{p}$}{
-				$\stmtT_k \leftarrow \Toplevel(\stmtA_k)$\;					
-				$\Output[\stmtT_k] \leftarrow \Input[\stmtT_k] \cup \Input[\stmtQ] \cup \set{\stmt}$\;				
-			}
+		\If{$\stmtQ \in \Input[\stmt]$}{	
+			%\ForEach{$\stmtA_k \in \pointsto{\overline{\stmt}}{p}$}{
+				%$\stmtT_k \leftarrow \Toplevel(\stmtA_k)$\;					
+				%$\Output[\stmtT_k] \leftarrow \Input[\stmtT_k] \cup \Input[\stmtQ] \cup \set{\stmt}$\;				
+				$\FlowInsert(\stmt, \stmtP)$;
+			%}
 		}	
 	}	
 %Context-sensitive		
@@ -85,28 +89,27 @@ for the context-sensitive analysis.
 			\If{$0 \in \summaryTable[\Func]$}{
 				\ForEach{$\stmtF_k \in \Formals(\Func)$}{
 					\If{$\summaryTable[\Func][k] = 0$}{
-						\ForEach{$\stmtB \in \pointsto{\overline{\stmt}}{\stmtA_k}$}{
-							$\Input[\stmtF_k] \leftarrow \Input[\stmtF_k] \cup  \Input[\stmtB]$\;						
-						}
+						%\ForEach{$\stmtB \in \pointsto{\overline{\stmt}}{\stmtA_k}$}{
+							%$\Input[\stmtF_k] \leftarrow \Input[\stmtF_k] \cup  \Input[\stmtB]$\;		
+							$\FlowInsert(\stmt, \stmtA_k)$;											
+						%}
 					}
 				}											
 				$\InterFlow(\Caller, \Func)$\;			
 				\ForEach{$\stmtF_k \in \Formals(\Func)$}{
 					\If{$\summaryTable[\Func][k] = 0\ \aand\ \Output[\stmtF_k] \neq \Input[\stmtF_k]$}{
-						$\Output[\stmtA_k] \leftarrow \Output[\stmtF_k] \cup \set{\stmt}$;			
-						$\summaryTable[\Func][k] = 1$\;
-						\ForEach{$\stmtB \in \pointsto{\overline{\stmt}}{\stmtA_k}$}{
-							$\Output[\stmtB] \leftarrow \Output[\stmtB] \cup \Output[\stmtA_k]$\;						
-						}
+						%$\Output[\stmtA_k] \leftarrow \Output[\stmtF_k] \cup \set{\stmt}$;			
+						$\summaryTable[\Func][k] = 1$\;						
+						$\FlowInsert(\stmt, \stmtA_k)$\;				
 					}
 				}					
 			}
 		}
 	}		
-	\uCase{$\LADDROF\ [p = \&a]$}{
-	}	
-	\Case{$\LSINK [\stmtR = \mathit{call}\ \Func]$}{
-	}		
+%	\uCase{$\LADDROF\ [p = \&a]$}{
+%	}	
+%	\Case{$\LSINK [\stmtR = \mathit{call}\ \Func]$}{
+%	}		
 }
 \end{algorithm*}
 \DecMargin{1em}
