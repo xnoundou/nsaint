@@ -46,7 +46,7 @@ COMPILE="make -f Makefile.ctaint compile > /dev/null"
 run_cmd "$COMPILE"
 
 CMD="$OPT -load $LLVM_LIB/LLVMDataStructure.so \
-   -load $LLVM_LIB/CTaint.so -calltarget-eqtd "$PASSARG" < "$INPUTFILE" > /dev/null"
+  -load $LLVM_LIB/CTaint.so -calltarget-eqtd "$PASSARG" < "$INPUTFILE" > /dev/null"
 
 run_cmd "$CMD"
 

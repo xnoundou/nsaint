@@ -494,7 +494,7 @@ void CTaintAnalysis::handleSinks(CallInst &I, Function &callee)
 	    	curArg->print(errs());
 	    	errs() << " (" << k
 	    	<< ") is used in sink function '" << calleeName
-	    	<< " [line " << line << "] '\n";
+	    	<< "' [line " << line << "]\n";
 	    }
 	}
 
@@ -510,7 +510,7 @@ void CTaintAnalysis::handleContextCall(CallInst &I, Function &callee)
 	I.print(errs());
 	errs() << "\n";
 	
-	//Now copy call aruguments taint information into
+	//Now copy call arguments taint information into
 	//the callee formal parameter taint information
 	int argNr = I.getNumArgOperands();
 	vector<bool> *calleeFormals = _summaryTable[&callee];

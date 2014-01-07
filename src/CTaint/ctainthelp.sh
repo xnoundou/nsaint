@@ -3,7 +3,7 @@
 # pattern old*.X to new*.X
 # Usage: ./thisScript <-n NEW> <-o OLD> <list of files>
 
-USAGE="Usage: $(basename $0) <-s SRC_FOLDER> [-i INC_FOLDER] <-c i|b|p|m> [files]"
+USAGE="Usage: $(basename $0) <-s SRC_FOLDER> [-o OUT_FOLDER] [-i INC_FOLDER] <-c i|b|p|m> [files]"
 
 if [ $# -lt 4 ]; then
   echo "$USAGE"
@@ -13,12 +13,16 @@ fi
 sflag=
 iflag=
 cflag=
+oflag=
 
-while getopts 's:i:c:f:' OPTION
+while getopts 's:o:i:c:f:' OPTION
 do
   case $OPTION in
     s)	sflag=1
       	srcfolder="$OPTARG"
+	;;
+    o)	oflag=1
+      	outfolder="$OPTARG"
 	;;
     i)	iflag=1
       	incfolder="-I$OPTARG "$incfolder""
@@ -45,29 +49,40 @@ if [ ! "$sflag" ]; then
   exit 4
 fi
 
-outfolder="output"
+if [ ! "$oflag" ]; then
+  outfolder="output"
+fi
+
 srcfolder=$(echo "$srcfolder"| awk '{gsub(/^ +| +$/,"")}1')
 #srcfolder=$(echo "$srcfolder"| awk '{gsub(/ //$/,"")}1')
 incfolder=$(echo "$incfolder"| awk '{gsub(/^ +| +$/,"")}1')
 MACROS="-D__STDC_LIMIT_MACROS -D__STDC_CONSTANT_MACROS"
 
-logfile="ctainthelp.log"
-
 echo "source folder: "$srcfolder""
 echo "include folder: "$incfolder""
-echo "log file: "$logfile""
+echo "output folder: "$outfolder""
 
 if [ ! -d "$outfolder" ]; then
   mkdir -p "$outfolder"
   echo "Created output folder "$outfolder""
 fi
 
+appendlogfile="ctainthelp.log"
+logfile="$outfolder/$appendlogfile"
+
+if [ -f "$logfile" ]; then
+  ID=$(date +%Y-%m-%d-%T)
+  mv $logfile "$outfolder/"$ID"_$appendlogfile"
+fi
+
+echo "log file: $logfile"
+
 function genByteCode(){
   for cf in $(dir "$srcfolder"/*.c); do
     f=${cf##*/}
     p=${f%*.c}
     echo "clang -emit-llvm "$incfolder" "$cf" -c -g -o "$outfolder"/"$p".bc"
-    clang -emit-llvm $incfolder "$cf" -c -g -o "$outfolder"/"$p".bc 2> "$logfile"
+    clang -emit-llvm $incfolder "$cf" -c -g -o "$outfolder"/"$p".bc 2>> "$logfile"
   done
 }
 
@@ -76,20 +91,20 @@ function genIR(){
     f=${cf##*/}
     p=${f%*.c}
     echo "clang "$MACROS" "$incfolder" -S -emit-llvm "$cf" -g -o "$outfolder"/"$p.s""
-    clang "$MACROS" $incfolder -S -emit-llvm "$cf" -g -o "$outfolder"/"$p.s" 2> $logfile
+    clang "$MACROS" $incfolder -S -emit-llvm "$cf" -g -o "$outfolder"/"$p.s" 2>> $logfile
   done
 }
 
 function genLLFiles(){
   genIR
   for f in $(dir "$outfolder"/*.bc); do
-    llvm-dis "$incfolder" "$outfolder"/"$f" 2> $logfile
+    llvm-dis "$incfolder" "$outfolder"/"$f" 2>> $logfile
   done
 }
 
 function mergeBCFiles(){
-  echo "llvm-link -o "one.bc" $srcfolder/*.bc"
-  llvm-link -o "one.bc" $srcfolder/*.bc 2> $logfile
+  echo "llvm-link -o "$outfolder/one.bc" $srcfolder/*.bc"
+  llvm-link -o "$outfolder/one.bc" $srcfolder/*.bc 2>> $logfile
 }
 
 case "$action" in
