@@ -3,7 +3,8 @@
 # pattern old*.X to new*.X
 # Usage: ./thisScript <-n NEW> <-o OLD> <list of files>
 
-USAGE="Usage: $(basename $0) <-s SRC_FOLDER> [-o OUT_FOLDER] [-i INC_FOLDER] <-c i|b|p|m> [files]"
+USAGE="Usage: $(basename $0) <-s SRC_FOLDER> [-o OUT_FOLDER] [-m MACROS] [-i INC_FOLDER] <-c i|b|p|m> [files]"
+#USAGE="Usage: $(basename $0) <-s SRC_FOLDER> [-o OUT_FOLDER] [-i INC_FOLDER] <-c i|b|p|m> [files]"
 
 if [ $# -lt 4 ]; then
   echo "$USAGE"
@@ -14,8 +15,9 @@ sflag=
 iflag=
 cflag=
 oflag=
+mflag=
 
-while getopts 's:o:i:c:f:' OPTION
+while getopts 's:o:m:i:c:f:' OPTION
 do
   case $OPTION in
     s)	sflag=1
@@ -23,6 +25,9 @@ do
 	;;
     o)	oflag=1
       	outfolder="$OPTARG"
+	;;
+    m)	mflag=1
+      	inmacro="$OPTARG"
 	;;
     i)	iflag=1
       	incfolder="-I$OPTARG "$incfolder""
@@ -47,6 +52,11 @@ fi
 if [ ! "$sflag" ]; then 
   echo "You must specify a source folder"
   exit 4
+fi
+
+if [ "$mflag" ]; then 
+  inmacro=$(sed 's/\"/\"\\"/g' <<< $inmacro)
+  echo "MACRO from user: $inmacro"
 fi
 
 if [ ! "$oflag" ]; then
@@ -81,8 +91,8 @@ function genByteCode(){
   for cf in $(dir "$srcfolder"/*.c); do
     f=${cf##*/}
     p=${f%*.c}
-    echo "clang -emit-llvm "$incfolder" "$cf" -c -g -o "$outfolder"/"$p".bc"
-    clang -emit-llvm $incfolder "$cf" -c -g -o "$outfolder"/"$p".bc 2>> "$logfile"
+    echo "clang -emit-llvm "$inmacro" "$incfolder" "$cf" -c -g -o "$outfolder"/"$p".bc"
+    clang -emit-llvm "$inmacro" $incfolder "$cf" -c -g -o "$outfolder"/"$p".bc 2>> "$logfile"
   done
 }
 
@@ -90,8 +100,8 @@ function genIR(){
   for cf in $(dir "$srcfolder"/*.c); do
     f=${cf##*/}
     p=${f%*.c}
-    echo "clang "$MACROS" "$incfolder" -S -emit-llvm "$cf" -g -o "$outfolder"/"$p.s""
-    clang "$MACROS" $incfolder -S -emit-llvm "$cf" -g -o "$outfolder"/"$p.s" 2>> $logfile
+    echo "clang "$MACROS" "$inmacro" "$incfolder" -S -emit-llvm "$cf" -g -o "$outfolder"/"$p.s""
+    clang "$MACROS" "$inmacro" $incfolder -S -emit-llvm "$cf" -g -o "$outfolder"/"$p.s" 2>> $logfile
   done
 }
 
