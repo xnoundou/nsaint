@@ -254,19 +254,6 @@ illustrates the context-insensitive flow function for \callt statements.
 \end{algorithm}
 
 \paragraph{Context-Sensitive Analysis}
-The context-sensitive analysis works in the topological order
-of the call graph, and uses information from the summary table
-that were produced by previous analyses. Even if the context-insensitive
-analysis was run before, the context-sensitive analysis eventually
-finds more precise information in the summary table. At call sites,
-the context-sensitive analysis propagates actual parameters
-taint information from the caller into the callee. At callees' exits,
-newly computed taint information are propagated back from the
-callee to the caller context. Algorithm~\ref{fig:contextIF}
-illustrates the flow function for \callt statements during the
-context-sensitive analysis. On the other hand, algorithm~\ref{fig:csInterFlow}
-in Appendix~\ref{app:algo} presents the full context-sensitive
-algorithm.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{algorithm}
 \caption{csInterFlow: Context-Sentive Flow Function for \callt
@@ -318,9 +305,28 @@ statements}\label{fig:contextIF}
 }
 \end{algorithm}
 
+The context-sensitive analysis works in the topological order
+of the call graph, and uses information from the summary table
+that were produced by previous analyses. Even if the context-insensitive
+analysis was run before, the context-sensitive analysis eventually
+finds more precise information in the summary table. At call sites,
+the context-sensitive analysis propagates actual parameters
+taint information from the caller into the callee. At callees' exits,
+newly computed taint information are propagated back from the
+callee to the caller context. Algorithm~\ref{fig:contextIF}
+illustrates the flow function for \callt statements during the
+context-sensitive analysis. On the other hand, algorithm~\ref{fig:csInterFlow}
+in Appendix~\ref{app:algo} presents the full context-sensitive
+algorithm.
+
 \paragraph{Recursive and Mutual Recursive Function Calls} 
 The context-sensitive analysis computes results for simple recursive
 functions only for their first calling context.
+
+Our current implementation does not handle mutual recursive function
+calls in a specific manner. However, we plan to handle
+this in future work as explained below.
+
 The analysis identifies mutual recursive function calls by finding
 strongly connected components (SCC) in the call graph generated
 by LLVM.
