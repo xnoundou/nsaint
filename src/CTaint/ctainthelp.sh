@@ -1,10 +1,9 @@
 #!/bin/bash
 # Script to rename file from
 # pattern old*.X to new*.X
-# Usage: ./thisScript <-n NEW> <-o OLD> <list of files>
+# Usage: ./thisScript <-s SRC_FOLDER> [-o OUT_FOLDER] [-m MACROS] [-i INC_FOLDER] <-c i|b|p|m> [files]
 
 USAGE="Usage: $(basename $0) <-s SRC_FOLDER> [-o OUT_FOLDER] [-m MACROS] [-i INC_FOLDER] <-c i|b|p|m> [files]"
-#USAGE="Usage: $(basename $0) <-s SRC_FOLDER> [-o OUT_FOLDER] [-i INC_FOLDER] <-c i|b|p|m> [files]"
 
 if [ $# -lt 4 ]; then
   echo "$USAGE"
