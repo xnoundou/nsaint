@@ -2,13 +2,14 @@
  * CTaintAnalysis.h
  *
  *  Created on: 2013-11-10
- *      Author: noundou
+ *  Author: Xavier N. Noumbissi
  */
 
 #ifndef CTAINTANALYSIS_H_
 #define CTAINTANALYSIS_H_
 
-
+#include <llvm/ADT/Statistic.h>
+#include <llvm/Support/Debug.h>
 #include <llvm/Pass.h>
 #include <llvm/Analysis/CallGraph.h>
 #include <dsa/DSGraph.h>
@@ -40,14 +41,14 @@ typedef struct {
 } AnalysisIssue;
 
 typedef struct {
-	unsigned _nrIssues;
 	vector<unsigned> *_currentLines;
-	//vector<AnalysisIssue> *_issues;
 
 	bool addIssue(unsigned line) {
-		++_nrIssues;
-		vector<unsigned>::iterator findIter =  std::find(_currentLines->begin(), _currentLines->end(), line);
-		if (findIter == _currentLines->end()) {
+		vector<unsigned>::iterator findIter =
+				std::find(_currentLines->begin(), _currentLines->end(), line);
+
+		if (findIter == _currentLines->end())
+		{
 			_currentLines->push_back(line);
 			//TODO: Add a new issue
 			return true;
@@ -87,13 +88,8 @@ public:
 	CTaintAnalysis();
 	~CTaintAnalysis();
 
-	inline vector<Function *> *getAllProcsTPOrder() {
-		return &_allProcsTPOrder;
-	}
-
-	inline vector<Function *> *getAllProcsRTPOrder() {
-			return &_allProcsRTPOrder;
-	}
+	inline vector<Function *> *getAllProcsTPOrder() { return &_allProcsTPOrder; }
+	inline vector<Function *> *getAllProcsRTPOrder() { return &_allProcsRTPOrder; }
 
 	virtual void visit(Instruction &I);
 	virtual void visit(BasicBlock &BB){
@@ -108,58 +104,28 @@ public:
 	void handleSinks(CallInst &I, Function &callee);
 
 	void setDiff(set<Value *> &A, set<Value *> &B, set<Value *> &AMinusB);
-
 	virtual bool merge(BasicBlock *curBB, BasicBlock *succBB);
 	void mergeCopyPredOutFlowToInFlow(Instruction &predInst, Instruction &curInst);
 
-	void printIn(Instruction &I);
-	void printOut(Instruction &I);
-
-	inline DSGraph* getDSGraph(Function *F) {
-		return _functionToDSGraph[F];
-	}
-
-	inline void setProcArgTaint(Function *F, unsigned argNo, bool isTainted) {
-		vector<bool> *argInfo = _summaryTable[F];
-		assert ( (argInfo->size() > argNo) && "Invalid function argument number!" );
-		(*argInfo)[argNo] = isTainted;
-	}
-
-	inline bool isProcArgTaint(Function *F, unsigned argNo) {
-		vector<bool> * argInfo = _summaryTable[F];
-		assert ( (argInfo->size() > argNo) && "Invalid function argument number!" );
-		return (*argInfo)[argNo];
-	}
+	bool isProcArgTaint(Function *F, unsigned argNo);
+	void setProcArgTaint(Function *F, unsigned argNo, bool isTainted);
 
 	/**
 	 * Returns 'true' if value 'v' is tainted at the program
 	 * point before instruction 'I'.
 	 */
 	bool isValueTainted(Instruction *I, Value *v);
-
-	inline CallGraph &getCallGraph() {
-		return *_cg;
-	}
-
 	bool calls(Function *caller, Function *callee);
 
-	Function *getMainFunction() { return _pointerMain; }
+	inline DSGraph* getDSGraph(Function *F) { return _functionToDSGraph[F]; }
+	inline CallGraph &getCallGraph() { return *_cg; }
+	inline Function *getMainFunction() { return _pointerMain; }
 
-	void setIntraWasRun(bool flag) {
-		_intraWasRun = flag;
-	}
+	inline void setIntraWasRun(bool flag) { _intraWasRun = flag; }
+	inline void setInterRunning(bool flag) { _interRunning = flag; }
+	inline void setCtxInterRunning(bool flag) { _ctxInterRunning = flag; }
 
-	void setInterRunning(bool flag) {
-		_interRunning = flag;
-	}
-
-	void setCtxInterRunning(bool flag) {
-		_ctxInterRunning = flag;
-	}
-
-	Module * getModule() {
-		return _module;
-	}
+	inline Module * getModule() { return _module; }
 
 private:
 	const static string _taintId;
@@ -170,19 +136,8 @@ private:
 	const static int _FUNCTION_NOT_SOURCE;
 	static map<string, int> _taintSources;
 	static vector<string> _taintSinks;
+
 	map<Function *, AnalysisWarnings * > _allWarnings;
-
-	AnalysisWarnings *createAnalysisWarning() {
-		AnalysisWarnings *a = (AnalysisWarnings *) malloc(sizeof(AnalysisWarnings));
-		a->_nrIssues = 0;
-		a->_currentLines = new vector<unsigned>;
-		return a;
-	}
-
-	void deleteAnalysisWarning(AnalysisWarnings *a) {
-		free(a->_currentLines);
-		free(a);
-	}
 
 	/**
 	 * Adds the function with name 'source' as a taint source and
@@ -260,7 +215,10 @@ private:
 	void insertToOutFlow(Instruction *I, Value *v, DSGraph *dsg);
 
 	static void log(const string &msg);
+	static AnalysisWarnings *createAnalysisWarning();
+	static void deleteAnalysisWarning(AnalysisWarnings *a);
 };
+
 }
 
 

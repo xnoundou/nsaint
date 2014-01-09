@@ -23,5 +23,5 @@ LOGFILE=$RESULT/analysis-result".$MODULE"
 
 echo "Log file: $LOGFILE"
 
-./runOpt.sh -o "$OPT" -p "VLC-input" -i $RESULT/one.bc 2> "$LOGFILE"
+./runOpt.sh -o "$OPT" -s -p "VLC-input" -i $RESULT/one.bc 2> "$LOGFILE"
 

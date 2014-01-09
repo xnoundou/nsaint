@@ -1,7 +1,13 @@
+/*
+ * CTaintAnalysis.cpp
+ *
+ *  Created on: 2013-11-10
+ *  Author: Xavier N. Noumbissi
+ */
+
+#define DEBUG_TYPE "isstac"
 
 #include "CTaintAnalysis.h"
-//#include "intra-ctaint.h"
-//#include "context-inter-ctaint.h"
 #include "context-insensitive-ctaint.h"
 
 #include <llvm/Support/InstIterator.h>
@@ -14,7 +20,12 @@
 
 char CTaintAnalysis::ID = 0;
 
-const string CTaintAnalysis::_taintId("[STTAL]");
+using namespace llvm; 
+STATISTIC(NumContextCalls, "Number of context-sensitive analysis calls");
+STATISTIC(NumWarnings, 	   "Number of emited warnings");
+STATISTIC(NumIssues, 	   "Number of found issues");
+
+const string CTaintAnalysis::_taintId("[ISSTAC]");
 const string CTaintAnalysis::_taintSourceFile("cfg/sources.cfg");
 const string CTaintAnalysis::_taintSinkFile("cfg/sinks.cfg");
 
@@ -31,7 +42,8 @@ inline void CTaintAnalysis::log(const string &msg) {
 	errs() << _taintId << msg << '\n';
 }
 
-void CTaintAnalysis::addTaintSource(string &source, unsigned taintedPos) {
+void CTaintAnalysis::addTaintSource(string &source, unsigned taintedPos)
+{
 	map<string, int>::iterator it;
 	it = _taintSources.find(source);
 
@@ -41,7 +53,8 @@ void CTaintAnalysis::addTaintSource(string &source, unsigned taintedPos) {
 		_taintSources.insert( sourceType(source, taintedPos) );
 }
 
-void CTaintAnalysis::readTaintSourceConfig() {
+void CTaintAnalysis::readTaintSourceConfig()
+{
 	//Open the file with taint source functions listed
 	std::ifstream srcFile(_taintSourceFile.c_str());
 	string line;
@@ -71,7 +84,8 @@ void CTaintAnalysis::readTaintSourceConfig() {
 	srcFile.close();
 }
 
-void CTaintAnalysis::readTaintSinkConfig() {
+void CTaintAnalysis::readTaintSinkConfig()
+{
 	//Open the file with taint source functions listed
 	std::ifstream srcFile(_taintSinkFile.c_str());
 	string line;
@@ -85,6 +99,19 @@ void CTaintAnalysis::readTaintSinkConfig() {
 	srcFile.close();
 }
 
+AnalysisWarnings *CTaintAnalysis::createAnalysisWarning()
+{
+	AnalysisWarnings *a = (AnalysisWarnings *) malloc(sizeof(AnalysisWarnings));
+	a->_currentLines = new vector<unsigned>;
+	return a;
+}
+
+void CTaintAnalysis::deleteAnalysisWarning(AnalysisWarnings *a)
+{
+	free(a->_currentLines);
+	free(a);
+}
+
 CTaintAnalysis::CTaintAnalysis() : ModulePass(ID),
 									_intraWasRun(false),
 									_interRunning(false),
@@ -92,14 +119,15 @@ CTaintAnalysis::CTaintAnalysis() : ModulePass(ID),
 									_pointerMain(0),
 									_super(0),
 									_predInst(0),
-									_module(0) {
+									_module(0)
+{
 	_super = static_cast<InstVisitor<CTaintAnalysis> *>(this);
 	readTaintSourceConfig();
 	readTaintSinkConfig();
 }
 
-CTaintAnalysis::~CTaintAnalysis() {
-
+CTaintAnalysis::~CTaintAnalysis()
+{
 	{//Delete _summaryTable info
 		Function *F = 0;
 		for(unsigned k = 0; k < _allProcsTPOrder.size(); ++k) {
@@ -114,40 +142,20 @@ CTaintAnalysis::~CTaintAnalysis() {
 		for(unsigned k = 0; k < _allProcsTPOrder.size(); ++k) {
 			F = _allProcsTPOrder[k];
 			AnalysisWarnings * warnings = _allWarnings[F];
-			delete warnings;
+			deleteAnalysisWarning(warnings);
 		}
 	}
 }
 
-void CTaintAnalysis::getAnalysisUsage(AnalysisUsage &AU) const {
+void CTaintAnalysis::getAnalysisUsage(AnalysisUsage &AU) const
+{
 	AU.setPreservesAll();
 	AU.addRequired<CallGraph> ();
 	AU.addRequired<EQTDDataStructures> ();
 }
 
-void CTaintAnalysis::printOut(Instruction &I) {
-	set<Value *> &out = _OUT[&I];
-	errs() << "printOut for: "; I.print(errs()); errs() << "\n";
-	for( set<Value *>::iterator it = out.begin(), itEnd = out.end();
-			it != itEnd;
-			++it) {
-		(*it)->print(errs());
-		errs() << "\n";
-	}
-	errs() << "printOut for: "; I.print(errs()); errs() << " END\n";
-}
-
-void CTaintAnalysis::printIn(Instruction &I) {
-	set<Value *> &in = _IN[&I];
-	for( set<Value *>::iterator it = in.begin(), itEnd = in.end();
-			it != itEnd;
-			++it) {
-		(*it)->print(errs());
-		errs() << "\n";
-	}
-}
-
-bool CTaintAnalysis::runOnModule(Module &m) {
+bool CTaintAnalysis::runOnModule(Module &m)
+{
 	log("module identifier is " + m.getModuleIdentifier());
 
 	_module = &m;
@@ -214,7 +222,6 @@ bool CTaintAnalysis::runOnModule(Module &m) {
 
 	//_aliasInfo->print(errs(), &m);
 
-	//log("Now performs the intraprocedural analysis");
 	//CTaintIntraProcedural intraFlow(this);
 	//CTaintContextInterProcedural contextInterFlow(this);
 	InterProcedural interFlow(this);
@@ -229,7 +236,8 @@ bool CTaintAnalysis::runOnModule(Module &m) {
  * Checks if the function with name 'funcName' taints any
  * of its parameters.
  */
-int CTaintAnalysis::isTaintSource(string &funcName) {
+int CTaintAnalysis::isTaintSource(string &funcName)
+{
 	map<string, int>::iterator res;
 	res = _taintSources.find(funcName);
 	if (res != _taintSources.end())
@@ -240,7 +248,8 @@ int CTaintAnalysis::isTaintSource(string &funcName) {
 
 void CTaintAnalysis::setDiff(set<Value *> &A,
                              set<Value *> &B, 
-                             set<Value *> &AMinusB) {
+                             set<Value *> &AMinusB)
+{
     AMinusB.clear();
     for(set<Value *>::iterator ps = A.begin(), Eps = A.end();
             ps != Eps;
@@ -251,7 +260,8 @@ void CTaintAnalysis::setDiff(set<Value *> &A,
       }
 }
 
-bool CTaintAnalysis::merge(BasicBlock *curBB, BasicBlock *succBB) {
+bool CTaintAnalysis::merge(BasicBlock *curBB, BasicBlock *succBB)
+{
 	set<Value *> &curBBOut = _IN[&curBB->back()];
 	set<Value *> &succBBIn = _OUT[&succBB->front()];
 
@@ -259,12 +269,14 @@ bool CTaintAnalysis::merge(BasicBlock *curBB, BasicBlock *succBB) {
 	setDiff(curBBOut, succBBIn, inDiff);
 	
         if (!inDiff.empty())
-	  succBBIn.insert(inDiff.begin(), inDiff.end());
+        	succBBIn.insert(inDiff.begin(), inDiff.end());
 	 
 	return (inDiff.size() > 0);
 }
 
-inline void CTaintAnalysis::mergeCopyPredOutFlowToInFlow(Instruction &predInst, Instruction &curInst) {
+inline void CTaintAnalysis::mergeCopyPredOutFlowToInFlow(Instruction &predInst,
+														 Instruction &curInst)
+{
   _IN[&curInst].insert(_OUT[&predInst].begin(), _OUT[&predInst].end());
   _OUT[&curInst].insert(_IN[&curInst].begin(), _IN[&curInst].end());
 }
@@ -276,8 +288,8 @@ inline void CTaintAnalysis::mergeCopyPredOutFlowToInFlow(Instruction &predInst, 
  */
 void CTaintAnalysis::getAliases(Value *v,
 								DSGraph *dsg,
-								vector<Value *> &aliases) {
-
+								vector<Value *> &aliases)
+{
 	if (dsg && dsg->hasNodeForValue(v)) {
 		//If value v is sharing the same DSNode
 		//as another value w, then mayAlias(v,w)
@@ -304,7 +316,8 @@ void CTaintAnalysis::getAliases(Value *v,
  * Adds value 'v' to the set OUT[I], denoting that instruction
  * I taints value 'v'.
  */
-void CTaintAnalysis::insertToOutFlow(Instruction *I, Value *v) {
+void CTaintAnalysis::insertToOutFlow(Instruction *I, Value *v)
+{
   int n = _OUT[I].count(v);
   if (0 == n) {
 	Function *f = I->getParent()->getParent();
@@ -316,14 +329,13 @@ void CTaintAnalysis::insertToOutFlow(Instruction *I, Value *v) {
 /**
  * Adds value 'v' as tainted by instruction 'I'
  */
-void CTaintAnalysis::insertToOutFlow(Instruction *I, Value *v, DSGraph *dsg) {
-
+void CTaintAnalysis::insertToOutFlow(Instruction *I, Value *v, DSGraph *dsg)
+{
 	assert(I && "The instruction to which an outflow is to be added must be non null!");
 	assert(v && "The value to insert in the outflow of an instruction must be non null!");
 
 	_OUT[I].insert(v);
-	//DEBUG
-	//v->print(errs()); errs() << " gets tainted\n";
+	DEBUG_WITH_TYPE("isstac-tainted", v->print(errs()); errs() << " gets tainted\n");
 
 	/**
 	 * Mark all aliases of v as tainted.
@@ -334,9 +346,7 @@ void CTaintAnalysis::insertToOutFlow(Instruction *I, Value *v, DSGraph *dsg) {
 		int s = vAliases.size();
 		for(int k = 0; k < s; ++k) {
 			_OUT[I].insert(vAliases[k]);
-			//DEBUG
-			//vAliases[k]->print(errs());
-			//errs() << " \t also gets tainted\n";
+			DEBUG_WITH_TYPE("isstac-tainted", vAliases[k]->print(errs());errs() << " \t also gets tainted\n");
 		}
 	}
 }
@@ -344,47 +354,57 @@ void CTaintAnalysis::insertToOutFlow(Instruction *I, Value *v, DSGraph *dsg) {
 /**
  * Checks if there is an edge (caller, callee) in the callgraph
  */
-bool CTaintAnalysis::calls(Function *caller, Function *callee) {
-	  CallGraphNode *cn = (*_cg)[caller];
-	  if (cn) {
+bool CTaintAnalysis::calls(Function *caller, Function *callee)
+{
+	CallGraphNode *cn = (*_cg)[caller];
+	if (cn) {
 		//There a node for the caller in the callgraph
-	    Function *curCallee = 0;
-	    //Iterate over functions called by 'caller'
-	    for(CallGraphNode::iterator pn = cn->begin(), Epn = cn->end();
-		pn != Epn;
-		++pn) {
-	      curCallee = (*pn).second->getFunction();
-	      if (curCallee == callee) return true;
-	    }
-	  }
-	  return false;
+		Function *curCallee = 0;
+		//Iterate over functions called by 'caller'
+		for(CallGraphNode::iterator pn = cn->begin(), Epn = cn->end();
+				pn != Epn;
+				++pn) {
+			curCallee = (*pn).second->getFunction();
+			if (curCallee == callee) return true;
+		}
 	}
+	return false;
+}
 
 /**
  * Returns 'true' if value 'v' is tainted at the program point before
  * instruction 'I'.
  */
-bool CTaintAnalysis::isValueTainted(Instruction *I, Value *v) {
+bool CTaintAnalysis::isValueTainted(Instruction *I, Value *v)
+{
 	return ( 0 < _IN[I].count(v) );
 }
 
-void CTaintAnalysis::visit(Instruction &I) {
+bool CTaintAnalysis::isProcArgTaint(Function *F, unsigned argNo)
+{
+	vector<bool> * argInfo = _summaryTable[F];
+	assert ( (argInfo->size() > argNo) && "Invalid function argument number!" );
+	return (*argInfo)[argNo];
+}
+
+void CTaintAnalysis::setProcArgTaint(Function *F, unsigned argNo, bool isTainted)
+{
+	vector<bool> *argInfo = _summaryTable[F];
+	assert ( (argInfo->size() > argNo) && "Invalid function argument number!" );
+	(*argInfo)[argNo] = isTainted;
+}
+
+void CTaintAnalysis::visit(Instruction &I)
+{
   if (_predInst)
     mergeCopyPredOutFlowToInFlow(*_predInst, I);
-  //errs() << "## pred: "; _predInst->print(errs()); errs()<<"\n";
-  //printIn(I);
   _super->visit(I);
   _predInst = &I;
 }
 
 void CTaintAnalysis::visitLoadInst(LoadInst &I) {
-	//DEBUG
-	//errs() << "LOAD [p=*q]: ";
-	//I.print(errs());
-	//errs() << "\n";
-
+	DEBUG(errs() << "LOAD [p=*q]: "; I.print(errs()); errs()<<"\n");
 	Value *q = I.getPointerOperand();
-
 	if ( isValueTainted(&I, q)) {
 		insertToOutFlow(&I, &I);
 	}
@@ -392,14 +412,9 @@ void CTaintAnalysis::visitLoadInst(LoadInst &I) {
 
 void CTaintAnalysis::visitStoreInst(StoreInst &I)
 {
-	//DEBUG
-	//errs() << "STORE [*p=q]: ";
-	//I.print(errs());
-	//errs() << "\n";
-
+	DEBUG(errs() << "STORE [*p=q]: ";I.print(errs());errs()<<"\n");
 	Value *q = I.getValueOperand();
 	Value *p = I.getPointerOperand();
-
 	if ( isValueTainted(&I, q)) {
 		insertToOutFlow(&I, p);
 	}
@@ -407,11 +422,7 @@ void CTaintAnalysis::visitStoreInst(StoreInst &I)
 
 void CTaintAnalysis::visitCallInst(CallInst & I)
 {
-	//DEBUG
-	//errs() << "CALL [call func]: ";
-	//I.print(errs());
-	//errs() << "\n";
-
+	DEBUG(errs() << "CALL [call func]: ";I.print(errs());errs()<<"\n");
 	if (!_intraWasRun) {
 		//The intraprocedural analysis has not been run yet
 		Function *callee = I.getCalledFunction();
@@ -434,8 +445,8 @@ void CTaintAnalysis::visitCallInst(CallInst & I)
 				taintedArg = I.getArgOperand(arg_pos);
 
 			insertToOutFlow(&I, taintedArg);
-			//DEBUG
-			//errs() << "Found a source " << calleeName << " with arg_pos " << arg_pos << "\n";
+			DEBUG_WITH_TYPE("isstac-sources", errs() << "Found a source "
+					<< calleeName << " with arg_pos " << arg_pos << "\n");
 		}
 		else {
 			std::ostringstream msg;
@@ -458,9 +469,8 @@ void CTaintAnalysis::visitCallInst(CallInst & I)
 		Function *caller = I.getParent()->getParent();
 
 		if (caller && !calls(caller, callee)) {
-		  //DEBUG
-		  //errs() << "## " << caller->getName() << " does not call "
-		         //<< callee->getName() << " in our callgraph \n";
+		  DEBUG(errs() << "## " << caller->getName() 
+		      		<< " does not call "<< callee->getName() << " in our callgraph \n");
 		  return ;
 		}
 
@@ -487,8 +497,7 @@ void CTaintAnalysis::visitCallInst(CallInst & I)
 		bool foundSink = (_taintSinks.end() != find(_taintSinks.begin(), _taintSinks.end(), calleeName));
 
 		if (foundSink) {
-			//DEBUG
-			//errs() << "Found sink function " << calleeName << "\n";
+			DEBUG_WITH_TYPE("isstac-sinks", errs() << "Found sink function " << calleeName << "\n");
 			handleSinks(I, *callee);
 		}
 	}
@@ -511,19 +520,19 @@ void CTaintAnalysis::handleSinks(CallInst &I, Function &callee)
 	    	}
 	    	Function *caller = I.getParent()->getParent();
 	    	AnalysisWarnings *warnings = _allWarnings[caller];
-	    	if (!warnings) {
-	    		errs() << "No AnalysisWarning data struture was instantiated for this callee!";
-	    	}
-	    	else {
-	    		bool isOnNewLine = warnings->addIssue(line);
-	    		if (isOnNewLine) {
-	    			//Emit a new warning
-	    			errs() << "## [WARNING][format string vulnerability]: \n\tTainted value";
-	    			curArg->print(errs());
-	    			errs() << " (" << k
-	    					<< ") is used in sink function '" << calleeName
-	    					<< "' [line " << line << "]\n";
-	    		}
+
+	    	assert ( warnings && "No AnalysisWarning data struture was instantiated for this callee!");
+
+	    	++NumIssues;
+
+	    	bool isOnNewLine = warnings->addIssue(line);
+	    	if (isOnNewLine) {
+	    		++NumWarnings;
+	    		//Emit a new warning
+	    		DEBUG_WITH_TYPE("isstac-warnings", errs() << "## [WARNING][format string vulnerability]: \n\tTainted value");
+	    		DEBUG_WITH_TYPE("isstac-warnings", curArg->print(errs()));
+	    		DEBUG_WITH_TYPE("isstac-warnings", errs() << " (" << k << ") is used in sink function '"
+	    				<< calleeName << "' [line " << line << "]\n");
 	    	}
 	    }
 	}
@@ -536,10 +545,7 @@ void CTaintAnalysis::handleSinks(CallInst &I, Function &callee)
  */
 void CTaintAnalysis::handleContextCall(CallInst &I, Function &callee)
 {
-	//DEBUG
-	//errs() << "CONTEXT CALL [call func]: ";
-	//I.print(errs());
-	//errs() << "\n";
+	DEBUG(errs() << "CONTEXT CALL [call func]: ";I.print(errs());errs()<<"\n");
 	
 	//Now copy call arguments taint information into
 	//the callee formal parameter taint information
@@ -547,10 +553,10 @@ void CTaintAnalysis::handleContextCall(CallInst &I, Function &callee)
 	vector<bool> *calleeFormals = _summaryTable[&callee];
 
 	if (!calleeFormals) {
-		//DEBUG
-		//errs() << "\tWe do not analyze function '" << callee.getName() << "'\n";
+		DEBUG(errs() << "\tWe do not analyze function '" << callee.getName() << "'\n");
 	}
 	else {
+	  ++NumContextCalls;
 	  Instruction &calleeFirstI = callee.front().front();
 	  Function::arg_iterator pf = callee.arg_begin(), Epf = callee.arg_end();
 
@@ -610,34 +616,25 @@ void CTaintAnalysis::visitReturnInst(ReturnInst &I) {
 		return;
 
 	Function *F = I.getParent()->getParent();
-	//DEBUG
-	//errs() << "Analyzing return instruction for " << F->getName() << "\n";
+	DEBUG(errs() << "Analyzing return instruction for " << F->getName() << "\n");
 	Value *retVal = I.getReturnValue();
 
-	//TODO: check if this could happen
 	if (!retVal || retVal->getType()->isVoidTy()){
-	  //DEBUG
-	  //errs() << "No return value for: " << F->getName() << "\n";
+	  DEBUG(errs() << "No return value for: " << F->getName() << "\n");
 	  return;
 	}
 
-	//DEBUG
-	//errs() << "\t";
-	//retVal->print(errs());
-    //errs()<< "\n";
+	DEBUG(errs() << "\t";retVal->print(errs());errs()<< "\n");
 	
-	//printIn(I);
-
 	if (isValueTainted(&I, retVal)) {
-	  //DEBUG
-	  //errs() << "\tis tainted\n";
+	  DEBUG(errs() << "\tis tainted\n");
 	  unsigned retPos = _summaryTable[F]->size() - 1;
 	  setProcArgTaint(F, retPos, true);
 	}
 }
 
 static RegisterPass<CTaintAnalysis>
-X("ctaintmod", "CTaint Module Pass",
-		false /* Only looks at CFG */,
-		true /* Analysis Pass */);
+X("isstac", "CTaint Module Pass",
+	     false /* Only looks at CFG */,
+	     true /* Analysis Pass */);
 

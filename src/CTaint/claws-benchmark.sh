@@ -17,5 +17,5 @@ set -x
 
 ./ctainthelp.sh -s $RESULT -o $RESULT -c m
 
-./runOpt.sh -o "$OPT" -p "CLAWS" -i $RESULT/one.bc 2> $RESULT/analysis-result
+./runOpt.sh -o "$OPT" -s -p "CLAWS" -i $RESULT/one.bc 2> $RESULT/analysis-result
 

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-USAGE="Usage: $(basename $0) <-e llvm-opt> <-i bc files> [-p project]"
+USAGE="Usage: $(basename $0) <-e llvm-opt> <-i bc files> [-s|-p project]"
 
 if [ $# -lt 1 ]; then
   echo "$USAGE"
@@ -11,11 +11,14 @@ moduleflag=
 fileflag=
 projectflag=
 optflag=
+statsflag=
 
-while getopts 'mfo:i:p:' OPTION
+while getopts 'mfo:i:p:s' OPTION
 do
   case $OPTION in
     m)	moduleflag=1
+	;;
+    s)	statsflag=1
 	;;
     o)	optflag=1
       	OPT="$OPTARG"
@@ -55,11 +58,16 @@ else
   echo "No project name given. Defaults to: $PROJECT"
 fi
 
-PASSARG="-ctaintmod"
+if [ "$statsflag" ]; then
+  STATS="-stats"
+fi
+
+PASSARG="-isstac"
 
 make -f Makefile.ctaint compile > /dev/null
 
-time $($OPT -load $LLVM_LIB/LLVMDataStructure.so \
-  	    -load $LLVM_LIB/CTaint.so \
-  	    -calltarget-eqtd "$PASSARG" < "$INPUTFILE" > /dev/null)
+time $($OPT $STATS -load $LLVM_LIB/LLVMDataStructure.so \
+  	    	   -load $LLVM_LIB/CTaint.so \
+  	    	   -calltarget-eqtd "$PASSARG" < "$INPUTFILE" > /dev/null)
+  	    	   #-debug -debug-only=isstac-warnings -calltarget-eqtd "$PASSARG" < "$INPUTFILE" > /dev/null)
 

@@ -1,105 +1,105 @@
-[STTAL]module identifier is <stdin>
-[STTAL]discovered function bi_init
-[STTAL]discovered function send_bits
-[STTAL]discovered function bi_reverse
-[STTAL]discovered function bi_windup
-[STTAL]discovered function create_outfile
-[STTAL]discovered function input_eof
-[STTAL]discovered function copy_stat
-[STTAL]discovered function shorten_name
-[STTAL]discovered function check_ofname
-[STTAL]discovered function progerror
-[STTAL]discovered function getbits
-[STTAL]discovered function read_pt_len
-[STTAL]discovered function read_c_len
-[STTAL]discovered function get_suffix
-[STTAL]discovered function discard_input_bytes
-[STTAL]discovered function open_and_stat
-[STTAL]discovered function inflate
-[STTAL]discovered function inflate_block
-[STTAL]discovered function inflate_dynamic
-[STTAL]discovered function inflate_stored
-[STTAL]discovered function inflate_fixed
-[STTAL]discovered function huft_build
-[STTAL]discovered function huft_free
-[STTAL]discovered function inflate_codes
-[STTAL]discovered function lzw
-[STTAL]discovered function ct_init
-[STTAL]discovered function copy_block
-[STTAL]discovered function lm_init
-[STTAL]discovered function fill_window
-[STTAL]discovered function deflate
-[STTAL]discovered function deflate_fast
-[STTAL]discovered function treat_file
-[STTAL]discovered function longest_match
-[STTAL]discovered function main
-[STTAL]discovered function try_help
-[STTAL]discovered function help
-[STTAL]discovered function do_exit
-[STTAL]discovered function license
-[STTAL]discovered function version
-[STTAL]discovered function install_signal_handlers
-[STTAL]discovered function treat_stdin
-[STTAL]discovered function do_list
-[STTAL]discovered function abort_gzip
-[STTAL]discovered function remove_output_file
-[STTAL]discovered function abort_gzip_signal
-[STTAL]discovered function open_input_file
-[STTAL]discovered function treat_dir
-[STTAL]discovered function make_ofname
-[STTAL]discovered function get_method
-[STTAL]discovered function gen_codes
-[STTAL]discovered function init_block
-[STTAL]discovered function flush_block
-[STTAL]discovered function set_file_type
-[STTAL]discovered function build_tree
-[STTAL]discovered function build_bl_tree
-[STTAL]discovered function compress_block
-[STTAL]discovered function send_all_trees
-[STTAL]discovered function ct_tally
-[STTAL]discovered function send_tree
-[STTAL]discovered function scan_tree
-[STTAL]discovered function pqdownheap
-[STTAL]discovered function gen_bitlen
-[STTAL]discovered function unlzh
-[STTAL]discovered function decode_start
-[STTAL]discovered function decode
-[STTAL]discovered function decode_c
-[STTAL]discovered function decode_p
-[STTAL]discovered function fillbuf
-[STTAL]discovered function make_table
-[STTAL]discovered function huf_decode_start
-[STTAL]discovered function init_getbits
-[STTAL]discovered function unlzw
-[STTAL]discovered function unpack
-[STTAL]discovered function read_tree
-[STTAL]discovered function build_tree166
-[STTAL]discovered function read_byte
-[STTAL]discovered function check_zipfile
-[STTAL]discovered function unzip
-[STTAL]discovered function copy
-[STTAL]discovered function write_buf
-[STTAL]discovered function read_buffer
-[STTAL]discovered function read_error
-[STTAL]discovered function updcrc
-[STTAL]discovered function clear_bufs
-[STTAL]discovered function fill_inbuf
-[STTAL]discovered function flush_window
-[STTAL]discovered function flush_outbuf
-[STTAL]discovered function write_buffer
-[STTAL]discovered function write_error
-[STTAL]discovered function strlwr
-[STTAL]discovered function gzip_base_name
-[STTAL]discovered function xunlink
-[STTAL]discovered function make_simple_name
-[STTAL]discovered function add_envopt
-[STTAL]discovered function gzip_error
-[STTAL]discovered function xalloc_die
-[STTAL]discovered function warning
-[STTAL]discovered function display_ratio
-[STTAL]discovered function fprint_off
-[STTAL]discovered function zip
-[STTAL]discovered function file_read
+[ISSTAC]module identifier is <stdin>
+[ISSTAC]discovered function bi_init
+[ISSTAC]discovered function send_bits
+[ISSTAC]discovered function bi_reverse
+[ISSTAC]discovered function bi_windup
+[ISSTAC]discovered function create_outfile
+[ISSTAC]discovered function input_eof
+[ISSTAC]discovered function copy_stat
+[ISSTAC]discovered function shorten_name
+[ISSTAC]discovered function check_ofname
+[ISSTAC]discovered function progerror
+[ISSTAC]discovered function getbits
+[ISSTAC]discovered function read_pt_len
+[ISSTAC]discovered function read_c_len
+[ISSTAC]discovered function get_suffix
+[ISSTAC]discovered function discard_input_bytes
+[ISSTAC]discovered function open_and_stat
+[ISSTAC]discovered function inflate
+[ISSTAC]discovered function inflate_block
+[ISSTAC]discovered function inflate_dynamic
+[ISSTAC]discovered function inflate_stored
+[ISSTAC]discovered function inflate_fixed
+[ISSTAC]discovered function huft_build
+[ISSTAC]discovered function huft_free
+[ISSTAC]discovered function inflate_codes
+[ISSTAC]discovered function lzw
+[ISSTAC]discovered function ct_init
+[ISSTAC]discovered function copy_block
+[ISSTAC]discovered function lm_init
+[ISSTAC]discovered function fill_window
+[ISSTAC]discovered function deflate
+[ISSTAC]discovered function deflate_fast
+[ISSTAC]discovered function treat_file
+[ISSTAC]discovered function longest_match
+[ISSTAC]discovered function main
+[ISSTAC]discovered function try_help
+[ISSTAC]discovered function help
+[ISSTAC]discovered function do_exit
+[ISSTAC]discovered function license
+[ISSTAC]discovered function version
+[ISSTAC]discovered function install_signal_handlers
+[ISSTAC]discovered function treat_stdin
+[ISSTAC]discovered function do_list
+[ISSTAC]discovered function abort_gzip
+[ISSTAC]discovered function remove_output_file
+[ISSTAC]discovered function abort_gzip_signal
+[ISSTAC]discovered function open_input_file
+[ISSTAC]discovered function treat_dir
+[ISSTAC]discovered function make_ofname
+[ISSTAC]discovered function get_method
+[ISSTAC]discovered function gen_codes
+[ISSTAC]discovered function init_block
+[ISSTAC]discovered function flush_block
+[ISSTAC]discovered function set_file_type
+[ISSTAC]discovered function build_tree
+[ISSTAC]discovered function build_bl_tree
+[ISSTAC]discovered function compress_block
+[ISSTAC]discovered function send_all_trees
+[ISSTAC]discovered function ct_tally
+[ISSTAC]discovered function send_tree
+[ISSTAC]discovered function scan_tree
+[ISSTAC]discovered function pqdownheap
+[ISSTAC]discovered function gen_bitlen
+[ISSTAC]discovered function unlzh
+[ISSTAC]discovered function decode_start
+[ISSTAC]discovered function decode
+[ISSTAC]discovered function decode_c
+[ISSTAC]discovered function decode_p
+[ISSTAC]discovered function fillbuf
+[ISSTAC]discovered function make_table
+[ISSTAC]discovered function huf_decode_start
+[ISSTAC]discovered function init_getbits
+[ISSTAC]discovered function unlzw
+[ISSTAC]discovered function unpack
+[ISSTAC]discovered function read_tree
+[ISSTAC]discovered function build_tree166
+[ISSTAC]discovered function read_byte
+[ISSTAC]discovered function check_zipfile
+[ISSTAC]discovered function unzip
+[ISSTAC]discovered function copy
+[ISSTAC]discovered function write_buf
+[ISSTAC]discovered function read_buffer
+[ISSTAC]discovered function read_error
+[ISSTAC]discovered function updcrc
+[ISSTAC]discovered function clear_bufs
+[ISSTAC]discovered function fill_inbuf
+[ISSTAC]discovered function flush_window
+[ISSTAC]discovered function flush_outbuf
+[ISSTAC]discovered function write_buffer
+[ISSTAC]discovered function write_error
+[ISSTAC]discovered function strlwr
+[ISSTAC]discovered function gzip_base_name
+[ISSTAC]discovered function xunlink
+[ISSTAC]discovered function make_simple_name
+[ISSTAC]discovered function add_envopt
+[ISSTAC]discovered function gzip_error
+[ISSTAC]discovered function xalloc_die
+[ISSTAC]discovered function warning
+[ISSTAC]discovered function display_ratio
+[ISSTAC]discovered function fprint_off
+[ISSTAC]discovered function zip
+[ISSTAC]discovered function file_read
 ## Starting intraprocedural analysis
 [Processing][Function][file_read]
 [Processing][Function][zip]
@@ -122,12 +122,6 @@
 [Processing][Function][updcrc]
 [Processing][Function][read_error]
 [Processing][Function][read_buffer]
-  %9 = load i8** %2, align 8, !dbg !587 gets tainted
-@.str = private unnamed_addr constant [15 x i8] c"bad pack level\00", align 1i8* %buf  %39 = load i8** %2, align 8, !dbg !599Found a source read with arg_pos 1
-Found a source read with arg_pos 1
-Found a source read with arg_pos 1
-Found a source read with arg_pos 1
-Found a source read with arg_pos 1
 [Processing][Function][write_buf]
 [Processing][Function][copy]
 [Processing][Function][unzip]
@@ -167,17 +161,6 @@ Found a source read with arg_pos 1
 [Processing][Function][remove_output_file]
 [Processing][Function][abort_gzip]
 [Processing][Function][do_list]
-  %89 = getelementptr inbounds [8 x i8]* %buf, i32 0, i32 0, !dbg !637 gets tainted
-  %buf = alloca [8 x i8], align 1  %94 = getelementptr inbounds [8 x i8]* %buf, i32 0, i64 0, !dbg !640  %98 = getelementptr inbounds [8 x i8]* %buf, i32 0, i64 1, !dbg !640  %105 = getelementptr inbounds [8 x i8]* %buf, i32 0, i32 0, !dbg !640  %106 = getelementptr inbounds i8* %105, i64 2, !dbg !640  %107 = getelementptr inbounds i8* %106, i64 0, !dbg !640  %111 = getelementptr inbounds [8 x i8]* %buf, i32 0, i32 0, !dbg !640  %112 = getelementptr inbounds i8* %111, i64 2, !dbg !640  %113 = getelementptr inbounds i8* %112, i64 1, !dbg !640  %122 = getelementptr inbounds [8 x i8]* %buf, i32 0, i32 0, !dbg !641  %123 = getelementptr inbounds i8* %122, i64 4, !dbg !641  %124 = getelementptr inbounds i8* %123, i64 0, !dbg !641  %128 = getelementptr inbounds [8 x i8]* %buf, i32 0, i32 0, !dbg !641  %129 = getelementptr inbounds i8* %128, i64 4, !dbg !641  %130 = getelementptr inbounds i8* %129, i64 1, !dbg !641  %137 = getelementptr inbounds [8 x i8]* %buf, i32 0, i32 0, !dbg !641  %138 = getelementptr inbounds i8* %137, i64 4, !dbg !641  %139 = getelementptr inbounds i8* %138, i64 2, !dbg !641  %140 = getelementptr inbounds i8* %139, i64 0, !dbg !641  %144 = getelementptr inbounds [8 x i8]* %buf, i32 0, i32 0, !dbg !641  %145 = getelementptr inbounds i8* %144, i64 4, !dbg !641  %146 = getelementptr inbounds i8* %145, i64 2, !dbg !641  %147 = getelementptr inbounds i8* %146, i64 1, !dbg !641Found a source read with arg_pos 1
-Found a source read with arg_pos 1
-  %95 = load i8* %94, align 1, !dbg !640 gets tainted
-  %99 = load i8* %98, align 1, !dbg !640 gets tainted
-  %108 = load i8* %107, !dbg !640 gets tainted
-  %114 = load i8* %113, !dbg !640 gets tainted
-  %125 = load i8* %124, !dbg !641 gets tainted
-  %131 = load i8* %130, !dbg !641 gets tainted
-  %141 = load i8* %140, !dbg !641 gets tainted
-  %148 = load i8* %147, !dbg !641 gets tainted
 [Processing][Function][treat_stdin]
 [Processing][Function][install_signal_handlers]
 [Processing][Function][version]
@@ -223,6 +206,6 @@ Found a source read with arg_pos 1
 [Processing][Function][main]
 ## Starting context-insensitive interprocedural analysis
 
-real	0m0.240s
-user	0m0.224s
-sys	0m0.012s
+real	0m0.203s
+user	0m0.184s
+sys	0m0.016s

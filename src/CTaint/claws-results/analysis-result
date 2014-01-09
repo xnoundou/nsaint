@@ -1,335 +1,335 @@
-[STTAL]module identifier is <stdin>
-[STTAL]discovered function addrcache_create
-[STTAL]discovered function addrcache_get_root_folder
-[STTAL]discovered function addrcache_get_list_folder
-[STTAL]discovered function addrcache_get_list_person
-[STTAL]discovered function addrcache_get_dirty
-[STTAL]discovered function addrcache_set_dirty
-[STTAL]discovered function addrcache_get_name
-[STTAL]discovered function addrcache_set_name
-[STTAL]discovered function addrcache_refresh
-[STTAL]discovered function addrcache_next_id
-[STTAL]discovered function addrcache_clear
-[STTAL]discovered function addrcache_free_all_folders
-[STTAL]discovered function addrcache_free_item_hash
-[STTAL]discovered function addrcache_free
-[STTAL]discovered function addrcache_check_file
-[STTAL]discovered function addrcache_mark_file
-[STTAL]discovered function addrcache_print
-[STTAL]discovered function addrcache_id_person
-[STTAL]discovered function addrcache_add_folder
-[STTAL]discovered function addrcache_id_group
-[STTAL]discovered function addrcache_id_folder
-[STTAL]discovered function addrcache_id_email
-[STTAL]discovered function addrcache_id_attribute
-[STTAL]discovered function addrcache_hash_add_person
-[STTAL]discovered function addritem_parse_first_last
-[STTAL]discovered function addritem_folder_path
-[STTAL]discovered function addritem_format_email
-[STTAL]discovered function qryreq_set_search_type
-[STTAL]discovered function qryreq_add_query
-[STTAL]discovered function qrymgr_add_request
-[STTAL]discovered function qrymgr_find_request
-[STTAL]discovered function qrymgr_delete_request
-[STTAL]discovered function qryreq_free
-[STTAL]discovered function qrymgr_initialize
-[STTAL]discovered function qrymgr_teardown
-[STTAL]discovered function qrymgr_free_all_request
-[STTAL]discovered function qryreq_clear
-[STTAL]discovered function get_default_xface
-[STTAL]discovered function get_content_for_any_face
-[STTAL]discovered function get_account_xface
-[STTAL]discovered function get_any_face_filename_for_account
-[STTAL]discovered function get_default_face
-[STTAL]discovered function get_account_face
-[STTAL]discovered function custom_header_get_str
-[STTAL]discovered function custom_header_read_str
-[STTAL]discovered function custom_header_find
-[STTAL]discovered function custom_header_free
-[STTAL]discovered function custom_header_is_allowed
-[STTAL]discovered function display_header_prop_get_str
-[STTAL]discovered function display_header_prop_read_str
-[STTAL]discovered function display_header_prop_free
-[STTAL]discovered function ertf_parser_new
-[STTAL]discovered function ertf_parser_destroy
-[STTAL]discovered function ertf_parse
-[STTAL]discovered function ertf_read_line
-[STTAL]discovered function ertf_parse_tag
-[STTAL]discovered function ertf_append_char
-[STTAL]discovered function ertf_get_parenthesis
-[STTAL]discovered function g_string_append_c_inline
-[STTAL]discovered function exporthtml_create
-[STTAL]discovered function exporthtml_build_entry
-[STTAL]discovered function exporthtml_free
-[STTAL]discovered function exporthtml_set_stylesheet
-[STTAL]discovered function exporthtml_set_name_format
-[STTAL]discovered function exporthtml_set_banding
-[STTAL]discovered function exporthtml_set_link_email
-[STTAL]discovered function exporthtml_set_attributes
-[STTAL]discovered function exporthtml_process
-[STTAL]discovered function exporthtml_fmt_header
-[STTAL]discovered function exporthtml_fmt_folder
-[STTAL]discovered function exporthtml_create_css_files
-[STTAL]discovered function exporthtml_parse_filespec
-[STTAL]discovered function exporthtml_test_dir
-[STTAL]discovered function exporthtml_create_dir
-[STTAL]discovered function exporthtml_get_create_msg
-[STTAL]discovered function exporthtml_load_settings
-[STTAL]discovered function exporthtml_default_values
-[STTAL]discovered function exporthtml_build_filespec
-[STTAL]discovered function exporthtml_save_settings
-[STTAL]discovered function exporthtml_create_css_dfl
-[STTAL]discovered function exporthtml_create_css_full
-[STTAL]discovered function exporthtml_fmt_folderhead
-[STTAL]discovered function exporthtml_fmt_person
-[STTAL]discovered function exporthtml_fmt_group
-[STTAL]discovered function exporthtml_sort_name
-[STTAL]discovered function exporthtml_compare_name
-[STTAL]discovered function exporthtml_fmt_email
-[STTAL]discovered function exporthtml_sort_email
-[STTAL]discovered function exporthtml_compare_email
-[STTAL]discovered function exporthtml_fmt_fullname
-[STTAL]discovered function exporthtml_fmt_attribs
-[STTAL]discovered function exporthtml_sort_attrib
-[STTAL]discovered function exporthtml_compare_attrib
-[STTAL]discovered function exporthtml_find_stylesheet
-[STTAL]discovered function exportldif_create
-[STTAL]discovered function exportldif_free
-[STTAL]discovered function exportldif_set_suffix
-[STTAL]discovered function exportldif_set_rdn
-[STTAL]discovered function exportldif_set_use_dn
-[STTAL]discovered function exportldif_set_exclude_email
-[STTAL]discovered function exportldif_process
-[STTAL]discovered function exportldif_fmt_folder
-[STTAL]discovered function exportldif_parse_filespec
-[STTAL]discovered function exportldif_test_dir
-[STTAL]discovered function exportldif_create_dir
-[STTAL]discovered function exportldif_get_create_msg
-[STTAL]discovered function exportldif_load_settings
-[STTAL]discovered function exportldif_default_values
-[STTAL]discovered function exportldif_build_filespec
-[STTAL]discovered function exportldif_save_settings
-[STTAL]discovered function exportldif_fmt_person
-[STTAL]discovered function exportldif_test_email
-[STTAL]discovered function addrcache_hash_add_group
-[STTAL]discovered function addrcache_hash_add_folder
-[STTAL]discovered function addrcache_folder_add_person
-[STTAL]discovered function addrcache_folder_add_folder
-[STTAL]discovered function addrcache_folder_add_group
-[STTAL]discovered function addrcache_add_person
-[STTAL]discovered function addrcache_person_add_email
-[STTAL]discovered function addrcache_hash_add_email
-[STTAL]discovered function addrcache_add_group
-[STTAL]discovered function addrcache_group_add_email
-[STTAL]discovered function addrharvest_free_table
-[STTAL]discovered function addrharvest_harvest
-[STTAL]discovered function addrcache_folder_move_person
-[STTAL]discovered function addrcache_folder_move_group
-[STTAL]discovered function addrcache_folder_move_folder
-[STTAL]discovered function addrcache_get_object
-[STTAL]discovered function addrcache_get_email
-[STTAL]discovered function addrcache_remove_group
-[STTAL]discovered function addrcache_remove_email
-[STTAL]discovered function addrcache_remove_person
-[STTAL]discovered function addrcache_allgrp_rem_email_vis
-[STTAL]discovered function addrcache_person_remove_email
-[STTAL]discovered function addrcache_get_group_for_person
-[STTAL]discovered function addrcache_get_grp_person_vis
-[STTAL]discovered function addrcache_get_all_persons
-[STTAL]discovered function addrcache_get_all_persons_vis
-[STTAL]discovered function addrcache_get_all_groups
-[STTAL]discovered function addrcache_get_all_groups_vis
-[STTAL]discovered function addrcache_remove_folder
-[STTAL]discovered function addrcache_remove_folder_delete
-[STTAL]discovered function addrcache_add_contact
-[STTAL]discovered function addrcache_add_new_folder
-[STTAL]discovered function addrcache_free_item_vis
-[STTAL]discovered function addrcache_next_cache_id
-[STTAL]discovered function addrharvest_create
-[STTAL]discovered function addrharvest_build_entry
-[STTAL]discovered function addrharvest_set_path
-[STTAL]discovered function addrharvest_set_folder_size
-[STTAL]discovered function addrharvest_set_recurse
-[STTAL]discovered function addrharvest_set_header
-[STTAL]discovered function addrharvest_find
-[STTAL]discovered function addrharvest_get_count
-[STTAL]discovered function addrharvest_free
-[STTAL]discovered function addritem_print_item_folder
-[STTAL]discovered function addritem_folder_get_person_list
-[STTAL]discovered function addritem_folder_get_group_list
-[STTAL]discovered function addrharvest_harvest_dir
-[STTAL]discovered function addrharvest_harvest_list
-[STTAL]discovered function addrharvest_check_header
-[STTAL]discovered function addrharvest_readfile
-[STTAL]discovered function addrharvest_get_header
-[STTAL]discovered function addrharvest_parse_address
-[STTAL]discovered function addrharvest_find_at
-[STTAL]discovered function addrharvest_find_address
-[STTAL]discovered function addrharvest_extract_address
-[STTAL]discovered function addrharvest_del_email
-[STTAL]discovered function addrharvest_insert_cache
-[STTAL]discovered function addrharvest_check_hdr
-[STTAL]discovered function addrharvest_free_table_vis
-[STTAL]discovered function addritem_create_item_email
-[STTAL]discovered function addritem_copy_item_email
-[STTAL]discovered function addritem_copyfull_item_email
-[STTAL]discovered function addritem_email_set_alias
-[STTAL]discovered function addritem_email_set_address
-[STTAL]discovered function addritem_email_set_remarks
-[STTAL]discovered function addritem_free_item_email
-[STTAL]discovered function addritem_create_attribute
-[STTAL]discovered function addritem_copy_attribute
-[STTAL]discovered function addritem_attrib_set_id
-[STTAL]discovered function addritem_attrib_set_name
-[STTAL]discovered function addritem_attrib_set_value
-[STTAL]discovered function addritem_free_attribute
-[STTAL]discovered function addritem_create_item_person
-[STTAL]discovered function addritem_copy_item_person
-[STTAL]discovered function addritem_person_set_picture
-[STTAL]discovered function addritem_person_get_picture
-[STTAL]discovered function addritem_person_set_first_name
-[STTAL]discovered function addritem_person_set_last_name
-[STTAL]discovered function addritem_person_set_nick_name
-[STTAL]discovered function addritem_person_set_common_name
-[STTAL]discovered function addritem_person_set_external_id
-[STTAL]discovered function addritem_person_set_opened
-[STTAL]discovered function addritem_free_list_email
-[STTAL]discovered function addritem_free_list_attribute
-[STTAL]discovered function addritem_free_item_person
-[STTAL]discovered function addritem_print_item_email
-[STTAL]discovered function addritem_print_item_person
-[STTAL]discovered function addritem_print_attribute
-[STTAL]discovered function addritem_person_add_email
-[STTAL]discovered function addritem_person_remove_email
-[STTAL]discovered function addritem_person_add_attribute
-[STTAL]discovered function addritem_person_remove_attribute
-[STTAL]discovered function addritem_create_item_group
-[STTAL]discovered function addritem_copy_item_group
-[STTAL]discovered function addritem_group_set_name
-[STTAL]discovered function addritem_free_item_group
-[STTAL]discovered function addritem_group_add_email
-[STTAL]discovered function addritem_folder_remove_person
-[STTAL]discovered function addritem_print_item_group
-[STTAL]discovered function addritem_create_item_folder
-[STTAL]discovered function addritem_copy_item_folder
-[STTAL]discovered function addritem_folder_set_name
-[STTAL]discovered function addritem_folder_set_remarks
-[STTAL]discovered function addritem_folder_set_hidden
-[STTAL]discovered function addritem_free_item_folder
-[STTAL]discovered function addritem_folder_add_person
-[STTAL]discovered function addritem_folder_add_folder
-[STTAL]discovered function addritem_folder_add_group
-[STTAL]discovered function ldif_field_compare
-[STTAL]discovered function ldif_get_line
-[STTAL]discovered function ldif_hash_add_list
-[STTAL]discovered function ldif_get_tagname
-[STTAL]discovered function ldif_create_fieldrec
-[STTAL]discovered function exportldif_find_dn
-[STTAL]discovered function exportldif_fmt_dn
-[STTAL]discovered function exportldif_find_displayName
-[STTAL]discovered function exportldif_fmt_email
-[STTAL]discovered function exportldif_fmt_other_attributes
-[STTAL]discovered function exportldif_fmt_value
-[STTAL]discovered function sc_html_parser_new
-[STTAL]discovered function sc_html_parser_destroy
-[STTAL]discovered function sc_html_parse
-[STTAL]discovered function sc_html_read_line
-[STTAL]discovered function sc_html_parse_tag
-[STTAL]discovered function sc_html_parse_special
-[STTAL]discovered function sc_html_append_char
-[STTAL]discovered function sc_html_append_str
-[STTAL]discovered function g_string_append_c_inline394
-[STTAL]discovered function sc_html_get_parenthesis
-[STTAL]discovered function sc_html_get_tag
-[STTAL]discovered function decode_href
-[STTAL]discovered function sc_html_free_tag
-[STTAL]discovered function ldif_create
-[STTAL]discovered function ldif_set_file
-[STTAL]discovered function ldif_set_accessed
-[STTAL]discovered function ldif_field_set_name
-[STTAL]discovered function ldif_field_set_selected
-[STTAL]discovered function ldif_field_toggle
-[STTAL]discovered function ldif_free
-[STTAL]discovered function ldif_hash_free_vis
-[STTAL]discovered function ldif_import_data
-[STTAL]discovered function ldif_open_file
-[STTAL]discovered function ldif_read_file
-[STTAL]discovered function ldif_close_file
-[STTAL]discovered function ldif_read_tags
-[STTAL]discovered function ldif_read_tag_list
-[STTAL]discovered function ldif_get_fieldlist
-[STTAL]discovered function ldif_hash2list_vis
-[STTAL]discovered function ldif_write_value
-[STTAL]discovered function ldif_write_eor
-[STTAL]discovered function ldif_clear_rec
-[STTAL]discovered function ldif_add_value
-[STTAL]discovered function ldif_build_items
-[STTAL]discovered function ldif_get_tagvalue
-[STTAL]discovered function ldif_add_user_attr
-[STTAL]discovered function ldif_free_fieldrec
-[STTAL]discovered function mutt_create
-[STTAL]discovered function mutt_set_file
-[STTAL]discovered function mutt_free
-[STTAL]discovered function mutt_free_table_vis
-[STTAL]discovered function mutt_import_data
-[STTAL]discovered function mutt_open_file
-[STTAL]discovered function mutt_read_file
-[STTAL]discovered function mutt_close_file
-[STTAL]discovered function mutt_find_file
-[STTAL]discovered function mutt_get_line
-[STTAL]discovered function mutt_build_items
-[STTAL]discovered function mutt_parse_rcplist
-[STTAL]discovered function mutt_build_address
-[STTAL]discovered function mutt_insert_table
-[STTAL]discovered function mutt_free_rec
-[STTAL]discovered function pine_create
-[STTAL]discovered function pine_set_file
-[STTAL]discovered function pine_free
-[STTAL]discovered function pine_free_table_vis
-[STTAL]discovered function pine_import_data
-[STTAL]discovered function pine_open_file
-[STTAL]discovered function pine_read_file
-[STTAL]discovered function pine_close_file
-[STTAL]discovered function pine_find_file
-[STTAL]discovered function pine_read_line
-[STTAL]discovered function pine_build_items
-[STTAL]discovered function pine_parse_record
-[STTAL]discovered function pine_clean_name
-[STTAL]discovered function pine_parse_address
-[STTAL]discovered function pine_insert_table
-[STTAL]discovered function pine_free_rec
-[STTAL]discovered function pine_parse_name
-[STTAL]discovered function recv_set_ui_func
-[STTAL]discovered function unmime_header
-[STTAL]discovered function vcard_create
-[STTAL]discovered function vcard_set_name
-[STTAL]discovered function vcard_set_file
-[STTAL]discovered function vcard_set_accessed
-[STTAL]discovered function vcard_get_modified
-[STTAL]discovered function vcard_get_accessed
-[STTAL]discovered function vcard_get_read_flag
-[STTAL]discovered function vcard_get_status
-[STTAL]discovered function vcard_get_root_folder
-[STTAL]discovered function vcard_get_name
-[STTAL]discovered function vcard_free
-[STTAL]discovered function vcard_read_data
-[STTAL]discovered function vcard_open_file
-[STTAL]discovered function vcard_read_file
-[STTAL]discovered function vcard_close_file
-[STTAL]discovered function vcard_get_list_person
-[STTAL]discovered function vcard_get_list_folder
-[STTAL]discovered function vcard_get_all_persons
-[STTAL]discovered function vcard_find_gnomecard
-[STTAL]discovered function vcard_test_read_file
-[STTAL]discovered function vcard_create_path
-[STTAL]discovered function vcard_get_line
-[STTAL]discovered function vcard_get_tagname
-[STTAL]discovered function vcard_get_tagvalue
-[STTAL]discovered function vcard_read_qp
-[STTAL]discovered function vcard_unescape_qp
-[STTAL]discovered function vcard_read_line
-[STTAL]discovered function vcard_free_lists
-[STTAL]discovered function vcard_build_items
+[ISSTAC]module identifier is <stdin>
+[ISSTAC]discovered function addrcache_create
+[ISSTAC]discovered function addrcache_get_root_folder
+[ISSTAC]discovered function addrcache_get_list_folder
+[ISSTAC]discovered function addrcache_get_list_person
+[ISSTAC]discovered function addrcache_get_dirty
+[ISSTAC]discovered function addrcache_set_dirty
+[ISSTAC]discovered function addrcache_get_name
+[ISSTAC]discovered function addrcache_set_name
+[ISSTAC]discovered function addrcache_refresh
+[ISSTAC]discovered function addrcache_next_id
+[ISSTAC]discovered function addrcache_clear
+[ISSTAC]discovered function addrcache_free_all_folders
+[ISSTAC]discovered function addrcache_free_item_hash
+[ISSTAC]discovered function addrcache_free
+[ISSTAC]discovered function addrcache_check_file
+[ISSTAC]discovered function addrcache_mark_file
+[ISSTAC]discovered function addrcache_print
+[ISSTAC]discovered function addrcache_id_person
+[ISSTAC]discovered function addrcache_add_folder
+[ISSTAC]discovered function addrcache_id_group
+[ISSTAC]discovered function addrcache_id_folder
+[ISSTAC]discovered function addrcache_id_email
+[ISSTAC]discovered function addrcache_id_attribute
+[ISSTAC]discovered function addrcache_hash_add_person
+[ISSTAC]discovered function addritem_parse_first_last
+[ISSTAC]discovered function addritem_folder_path
+[ISSTAC]discovered function addritem_format_email
+[ISSTAC]discovered function qryreq_set_search_type
+[ISSTAC]discovered function qryreq_add_query
+[ISSTAC]discovered function qrymgr_add_request
+[ISSTAC]discovered function qrymgr_find_request
+[ISSTAC]discovered function qrymgr_delete_request
+[ISSTAC]discovered function qryreq_free
+[ISSTAC]discovered function qrymgr_initialize
+[ISSTAC]discovered function qrymgr_teardown
+[ISSTAC]discovered function qrymgr_free_all_request
+[ISSTAC]discovered function qryreq_clear
+[ISSTAC]discovered function get_default_xface
+[ISSTAC]discovered function get_content_for_any_face
+[ISSTAC]discovered function get_account_xface
+[ISSTAC]discovered function get_any_face_filename_for_account
+[ISSTAC]discovered function get_default_face
+[ISSTAC]discovered function get_account_face
+[ISSTAC]discovered function custom_header_get_str
+[ISSTAC]discovered function custom_header_read_str
+[ISSTAC]discovered function custom_header_find
+[ISSTAC]discovered function custom_header_free
+[ISSTAC]discovered function custom_header_is_allowed
+[ISSTAC]discovered function display_header_prop_get_str
+[ISSTAC]discovered function display_header_prop_read_str
+[ISSTAC]discovered function display_header_prop_free
+[ISSTAC]discovered function ertf_parser_new
+[ISSTAC]discovered function ertf_parser_destroy
+[ISSTAC]discovered function ertf_parse
+[ISSTAC]discovered function ertf_read_line
+[ISSTAC]discovered function ertf_parse_tag
+[ISSTAC]discovered function ertf_append_char
+[ISSTAC]discovered function ertf_get_parenthesis
+[ISSTAC]discovered function g_string_append_c_inline
+[ISSTAC]discovered function exporthtml_create
+[ISSTAC]discovered function exporthtml_build_entry
+[ISSTAC]discovered function exporthtml_free
+[ISSTAC]discovered function exporthtml_set_stylesheet
+[ISSTAC]discovered function exporthtml_set_name_format
+[ISSTAC]discovered function exporthtml_set_banding
+[ISSTAC]discovered function exporthtml_set_link_email
+[ISSTAC]discovered function exporthtml_set_attributes
+[ISSTAC]discovered function exporthtml_process
+[ISSTAC]discovered function exporthtml_fmt_header
+[ISSTAC]discovered function exporthtml_fmt_folder
+[ISSTAC]discovered function exporthtml_create_css_files
+[ISSTAC]discovered function exporthtml_parse_filespec
+[ISSTAC]discovered function exporthtml_test_dir
+[ISSTAC]discovered function exporthtml_create_dir
+[ISSTAC]discovered function exporthtml_get_create_msg
+[ISSTAC]discovered function exporthtml_load_settings
+[ISSTAC]discovered function exporthtml_default_values
+[ISSTAC]discovered function exporthtml_build_filespec
+[ISSTAC]discovered function exporthtml_save_settings
+[ISSTAC]discovered function exporthtml_create_css_dfl
+[ISSTAC]discovered function exporthtml_create_css_full
+[ISSTAC]discovered function exporthtml_fmt_folderhead
+[ISSTAC]discovered function exporthtml_fmt_person
+[ISSTAC]discovered function exporthtml_fmt_group
+[ISSTAC]discovered function exporthtml_sort_name
+[ISSTAC]discovered function exporthtml_compare_name
+[ISSTAC]discovered function exporthtml_fmt_email
+[ISSTAC]discovered function exporthtml_sort_email
+[ISSTAC]discovered function exporthtml_compare_email
+[ISSTAC]discovered function exporthtml_fmt_fullname
+[ISSTAC]discovered function exporthtml_fmt_attribs
+[ISSTAC]discovered function exporthtml_sort_attrib
+[ISSTAC]discovered function exporthtml_compare_attrib
+[ISSTAC]discovered function exporthtml_find_stylesheet
+[ISSTAC]discovered function exportldif_create
+[ISSTAC]discovered function exportldif_free
+[ISSTAC]discovered function exportldif_set_suffix
+[ISSTAC]discovered function exportldif_set_rdn
+[ISSTAC]discovered function exportldif_set_use_dn
+[ISSTAC]discovered function exportldif_set_exclude_email
+[ISSTAC]discovered function exportldif_process
+[ISSTAC]discovered function exportldif_fmt_folder
+[ISSTAC]discovered function exportldif_parse_filespec
+[ISSTAC]discovered function exportldif_test_dir
+[ISSTAC]discovered function exportldif_create_dir
+[ISSTAC]discovered function exportldif_get_create_msg
+[ISSTAC]discovered function exportldif_load_settings
+[ISSTAC]discovered function exportldif_default_values
+[ISSTAC]discovered function exportldif_build_filespec
+[ISSTAC]discovered function exportldif_save_settings
+[ISSTAC]discovered function exportldif_fmt_person
+[ISSTAC]discovered function exportldif_test_email
+[ISSTAC]discovered function addrcache_hash_add_group
+[ISSTAC]discovered function addrcache_hash_add_folder
+[ISSTAC]discovered function addrcache_folder_add_person
+[ISSTAC]discovered function addrcache_folder_add_folder
+[ISSTAC]discovered function addrcache_folder_add_group
+[ISSTAC]discovered function addrcache_add_person
+[ISSTAC]discovered function addrcache_person_add_email
+[ISSTAC]discovered function addrcache_hash_add_email
+[ISSTAC]discovered function addrcache_add_group
+[ISSTAC]discovered function addrcache_group_add_email
+[ISSTAC]discovered function addrharvest_free_table
+[ISSTAC]discovered function addrharvest_harvest
+[ISSTAC]discovered function addrcache_folder_move_person
+[ISSTAC]discovered function addrcache_folder_move_group
+[ISSTAC]discovered function addrcache_folder_move_folder
+[ISSTAC]discovered function addrcache_get_object
+[ISSTAC]discovered function addrcache_get_email
+[ISSTAC]discovered function addrcache_remove_group
+[ISSTAC]discovered function addrcache_remove_email
+[ISSTAC]discovered function addrcache_remove_person
+[ISSTAC]discovered function addrcache_allgrp_rem_email_vis
+[ISSTAC]discovered function addrcache_person_remove_email
+[ISSTAC]discovered function addrcache_get_group_for_person
+[ISSTAC]discovered function addrcache_get_grp_person_vis
+[ISSTAC]discovered function addrcache_get_all_persons
+[ISSTAC]discovered function addrcache_get_all_persons_vis
+[ISSTAC]discovered function addrcache_get_all_groups
+[ISSTAC]discovered function addrcache_get_all_groups_vis
+[ISSTAC]discovered function addrcache_remove_folder
+[ISSTAC]discovered function addrcache_remove_folder_delete
+[ISSTAC]discovered function addrcache_add_contact
+[ISSTAC]discovered function addrcache_add_new_folder
+[ISSTAC]discovered function addrcache_free_item_vis
+[ISSTAC]discovered function addrcache_next_cache_id
+[ISSTAC]discovered function addrharvest_create
+[ISSTAC]discovered function addrharvest_build_entry
+[ISSTAC]discovered function addrharvest_set_path
+[ISSTAC]discovered function addrharvest_set_folder_size
+[ISSTAC]discovered function addrharvest_set_recurse
+[ISSTAC]discovered function addrharvest_set_header
+[ISSTAC]discovered function addrharvest_find
+[ISSTAC]discovered function addrharvest_get_count
+[ISSTAC]discovered function addrharvest_free
+[ISSTAC]discovered function addritem_print_item_folder
+[ISSTAC]discovered function addritem_folder_get_person_list
+[ISSTAC]discovered function addritem_folder_get_group_list
+[ISSTAC]discovered function addrharvest_harvest_dir
+[ISSTAC]discovered function addrharvest_harvest_list
+[ISSTAC]discovered function addrharvest_check_header
+[ISSTAC]discovered function addrharvest_readfile
+[ISSTAC]discovered function addrharvest_get_header
+[ISSTAC]discovered function addrharvest_parse_address
+[ISSTAC]discovered function addrharvest_find_at
+[ISSTAC]discovered function addrharvest_find_address
+[ISSTAC]discovered function addrharvest_extract_address
+[ISSTAC]discovered function addrharvest_del_email
+[ISSTAC]discovered function addrharvest_insert_cache
+[ISSTAC]discovered function addrharvest_check_hdr
+[ISSTAC]discovered function addrharvest_free_table_vis
+[ISSTAC]discovered function addritem_create_item_email
+[ISSTAC]discovered function addritem_copy_item_email
+[ISSTAC]discovered function addritem_copyfull_item_email
+[ISSTAC]discovered function addritem_email_set_alias
+[ISSTAC]discovered function addritem_email_set_address
+[ISSTAC]discovered function addritem_email_set_remarks
+[ISSTAC]discovered function addritem_free_item_email
+[ISSTAC]discovered function addritem_create_attribute
+[ISSTAC]discovered function addritem_copy_attribute
+[ISSTAC]discovered function addritem_attrib_set_id
+[ISSTAC]discovered function addritem_attrib_set_name
+[ISSTAC]discovered function addritem_attrib_set_value
+[ISSTAC]discovered function addritem_free_attribute
+[ISSTAC]discovered function addritem_create_item_person
+[ISSTAC]discovered function addritem_copy_item_person
+[ISSTAC]discovered function addritem_person_set_picture
+[ISSTAC]discovered function addritem_person_get_picture
+[ISSTAC]discovered function addritem_person_set_first_name
+[ISSTAC]discovered function addritem_person_set_last_name
+[ISSTAC]discovered function addritem_person_set_nick_name
+[ISSTAC]discovered function addritem_person_set_common_name
+[ISSTAC]discovered function addritem_person_set_external_id
+[ISSTAC]discovered function addritem_person_set_opened
+[ISSTAC]discovered function addritem_free_list_email
+[ISSTAC]discovered function addritem_free_list_attribute
+[ISSTAC]discovered function addritem_free_item_person
+[ISSTAC]discovered function addritem_print_item_email
+[ISSTAC]discovered function addritem_print_item_person
+[ISSTAC]discovered function addritem_print_attribute
+[ISSTAC]discovered function addritem_person_add_email
+[ISSTAC]discovered function addritem_person_remove_email
+[ISSTAC]discovered function addritem_person_add_attribute
+[ISSTAC]discovered function addritem_person_remove_attribute
+[ISSTAC]discovered function addritem_create_item_group
+[ISSTAC]discovered function addritem_copy_item_group
+[ISSTAC]discovered function addritem_group_set_name
+[ISSTAC]discovered function addritem_free_item_group
+[ISSTAC]discovered function addritem_group_add_email
+[ISSTAC]discovered function addritem_folder_remove_person
+[ISSTAC]discovered function addritem_print_item_group
+[ISSTAC]discovered function addritem_create_item_folder
+[ISSTAC]discovered function addritem_copy_item_folder
+[ISSTAC]discovered function addritem_folder_set_name
+[ISSTAC]discovered function addritem_folder_set_remarks
+[ISSTAC]discovered function addritem_folder_set_hidden
+[ISSTAC]discovered function addritem_free_item_folder
+[ISSTAC]discovered function addritem_folder_add_person
+[ISSTAC]discovered function addritem_folder_add_folder
+[ISSTAC]discovered function addritem_folder_add_group
+[ISSTAC]discovered function ldif_field_compare
+[ISSTAC]discovered function ldif_get_line
+[ISSTAC]discovered function ldif_hash_add_list
+[ISSTAC]discovered function ldif_get_tagname
+[ISSTAC]discovered function ldif_create_fieldrec
+[ISSTAC]discovered function exportldif_find_dn
+[ISSTAC]discovered function exportldif_fmt_dn
+[ISSTAC]discovered function exportldif_find_displayName
+[ISSTAC]discovered function exportldif_fmt_email
+[ISSTAC]discovered function exportldif_fmt_other_attributes
+[ISSTAC]discovered function exportldif_fmt_value
+[ISSTAC]discovered function sc_html_parser_new
+[ISSTAC]discovered function sc_html_parser_destroy
+[ISSTAC]discovered function sc_html_parse
+[ISSTAC]discovered function sc_html_read_line
+[ISSTAC]discovered function sc_html_parse_tag
+[ISSTAC]discovered function sc_html_parse_special
+[ISSTAC]discovered function sc_html_append_char
+[ISSTAC]discovered function sc_html_append_str
+[ISSTAC]discovered function g_string_append_c_inline394
+[ISSTAC]discovered function sc_html_get_parenthesis
+[ISSTAC]discovered function sc_html_get_tag
+[ISSTAC]discovered function decode_href
+[ISSTAC]discovered function sc_html_free_tag
+[ISSTAC]discovered function ldif_create
+[ISSTAC]discovered function ldif_set_file
+[ISSTAC]discovered function ldif_set_accessed
+[ISSTAC]discovered function ldif_field_set_name
+[ISSTAC]discovered function ldif_field_set_selected
+[ISSTAC]discovered function ldif_field_toggle
+[ISSTAC]discovered function ldif_free
+[ISSTAC]discovered function ldif_hash_free_vis
+[ISSTAC]discovered function ldif_import_data
+[ISSTAC]discovered function ldif_open_file
+[ISSTAC]discovered function ldif_read_file
+[ISSTAC]discovered function ldif_close_file
+[ISSTAC]discovered function ldif_read_tags
+[ISSTAC]discovered function ldif_read_tag_list
+[ISSTAC]discovered function ldif_get_fieldlist
+[ISSTAC]discovered function ldif_hash2list_vis
+[ISSTAC]discovered function ldif_write_value
+[ISSTAC]discovered function ldif_write_eor
+[ISSTAC]discovered function ldif_clear_rec
+[ISSTAC]discovered function ldif_add_value
+[ISSTAC]discovered function ldif_build_items
+[ISSTAC]discovered function ldif_get_tagvalue
+[ISSTAC]discovered function ldif_add_user_attr
+[ISSTAC]discovered function ldif_free_fieldrec
+[ISSTAC]discovered function mutt_create
+[ISSTAC]discovered function mutt_set_file
+[ISSTAC]discovered function mutt_free
+[ISSTAC]discovered function mutt_free_table_vis
+[ISSTAC]discovered function mutt_import_data
+[ISSTAC]discovered function mutt_open_file
+[ISSTAC]discovered function mutt_read_file
+[ISSTAC]discovered function mutt_close_file
+[ISSTAC]discovered function mutt_find_file
+[ISSTAC]discovered function mutt_get_line
+[ISSTAC]discovered function mutt_build_items
+[ISSTAC]discovered function mutt_parse_rcplist
+[ISSTAC]discovered function mutt_build_address
+[ISSTAC]discovered function mutt_insert_table
+[ISSTAC]discovered function mutt_free_rec
+[ISSTAC]discovered function pine_create
+[ISSTAC]discovered function pine_set_file
+[ISSTAC]discovered function pine_free
+[ISSTAC]discovered function pine_free_table_vis
+[ISSTAC]discovered function pine_import_data
+[ISSTAC]discovered function pine_open_file
+[ISSTAC]discovered function pine_read_file
+[ISSTAC]discovered function pine_close_file
+[ISSTAC]discovered function pine_find_file
+[ISSTAC]discovered function pine_read_line
+[ISSTAC]discovered function pine_build_items
+[ISSTAC]discovered function pine_parse_record
+[ISSTAC]discovered function pine_clean_name
+[ISSTAC]discovered function pine_parse_address
+[ISSTAC]discovered function pine_insert_table
+[ISSTAC]discovered function pine_free_rec
+[ISSTAC]discovered function pine_parse_name
+[ISSTAC]discovered function recv_set_ui_func
+[ISSTAC]discovered function unmime_header
+[ISSTAC]discovered function vcard_create
+[ISSTAC]discovered function vcard_set_name
+[ISSTAC]discovered function vcard_set_file
+[ISSTAC]discovered function vcard_set_accessed
+[ISSTAC]discovered function vcard_get_modified
+[ISSTAC]discovered function vcard_get_accessed
+[ISSTAC]discovered function vcard_get_read_flag
+[ISSTAC]discovered function vcard_get_status
+[ISSTAC]discovered function vcard_get_root_folder
+[ISSTAC]discovered function vcard_get_name
+[ISSTAC]discovered function vcard_free
+[ISSTAC]discovered function vcard_read_data
+[ISSTAC]discovered function vcard_open_file
+[ISSTAC]discovered function vcard_read_file
+[ISSTAC]discovered function vcard_close_file
+[ISSTAC]discovered function vcard_get_list_person
+[ISSTAC]discovered function vcard_get_list_folder
+[ISSTAC]discovered function vcard_get_all_persons
+[ISSTAC]discovered function vcard_find_gnomecard
+[ISSTAC]discovered function vcard_test_read_file
+[ISSTAC]discovered function vcard_create_path
+[ISSTAC]discovered function vcard_get_line
+[ISSTAC]discovered function vcard_get_tagname
+[ISSTAC]discovered function vcard_get_tagvalue
+[ISSTAC]discovered function vcard_read_qp
+[ISSTAC]discovered function vcard_unescape_qp
+[ISSTAC]discovered function vcard_read_line
+[ISSTAC]discovered function vcard_free_lists
+[ISSTAC]discovered function vcard_build_items
 ## Starting intraprocedural analysis
 [Processing][Function][vcard_build_items]
 [Processing][Function][vcard_free_lists]
@@ -1067,13 +1067,7 @@ No main function exists
 [Processing][Function][ldif_add_value]
 [Processing][Function][ldif_clear_rec]
 [Processing][Function][ldif_write_eor]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %2 = load %struct._IO_FILE** %1, align 8, !dbg !1963 (0) is used in sink function 'fprintf' [line 1009]
 [Processing][Function][ldif_write_value]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %23 = load %struct._IO_FILE** %2, align 8, !dbg !1978 (0) is used in sink function 'fprintf' [line 997]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %26 = load %struct._IO_FILE** %2, align 8, !dbg !1979 (0) is used in sink function 'fprintf' [line 998]
 [Processing][Function][ldif_hash2list_vis]
 [Processing][Function][ldif_get_fieldlist]
 [Processing][Function][ldif_read_tag_list]
@@ -1244,323 +1238,17 @@ No main function exists
 [Processing][Function][exporthtml_compare_attrib]
 [Processing][Function][exporthtml_sort_attrib]
 [Processing][Function][exporthtml_fmt_attribs]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %7 = load %struct._IO_FILE** %2, align 8, !dbg !2015 (0) is used in sink function 'fprintf' [line 655]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %10 = load %struct._IO_FILE** %2, align 8, !dbg !2018 (0) is used in sink function 'fprintf' [line 659]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %47 = load %struct._IO_FILE** %2, align 8, !dbg !2039 (0) is used in sink function 'fprintf' [line 671]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %31 = load %struct._IO_FILE** %2, align 8, !dbg !2033 (0) is used in sink function 'fprintf' [line 664]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %33 = load %struct._IO_FILE** %2, align 8, !dbg !2034 (0) is used in sink function 'fprintf' [line 665]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %38 = load %struct._IO_FILE** %2, align 8, !dbg !2035 (0) is used in sink function 'fprintf' [line 666]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %43 = load %struct._IO_FILE** %2, align 8, !dbg !2036 (0) is used in sink function 'fprintf' [line 667]
 [Processing][Function][exporthtml_fmt_fullname]
 [Processing][Function][exporthtml_compare_email]
 [Processing][Function][exporthtml_sort_email]
 [Processing][Function][exporthtml_fmt_email]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %8 = load %struct._IO_FILE** %2, align 8, !dbg !2019 (0) is used in sink function 'fprintf' [line 524]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %43 = load %struct._IO_FILE** %2, align 8, !dbg !2053 (0) is used in sink function 'fprintf' [line 542]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %52 = load %struct._IO_FILE** %2, align 8, !dbg !2057 (0) is used in sink function 'fprintf' [line 545]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %58 = load %struct._IO_FILE** %2, align 8, !dbg !2060 (0) is used in sink function 'fprintf' [line 548]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %60 = load %struct._IO_FILE** %2, align 8, !dbg !2061 (0) is used in sink function 'fprintf' [line 549]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %65 = load %struct._IO_FILE** %2, align 8, !dbg !2062 (0) is used in sink function 'fprintf' [line 550]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %72 = load %struct._IO_FILE** %2, align 8, !dbg !2064 (0) is used in sink function 'fprintf' [line 552]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %93 = load %struct._IO_FILE** %2, align 8, !dbg !2074 (0) is used in sink function 'fprintf' [line 559]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %86 = load %struct._IO_FILE** %2, align 8, !dbg !2070 (0) is used in sink function 'fprintf' [line 556]
 [Processing][Function][exporthtml_compare_name]
 [Processing][Function][exporthtml_sort_name]
 [Processing][Function][exporthtml_fmt_group]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %19 = load %struct._IO_FILE** %3, align 8, !dbg !2053 (0) is used in sink function 'fprintf' [line 589]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %21 = load %struct._IO_FILE** %3, align 8, !dbg !2054 (0) is used in sink function 'fprintf' [line 590]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %23 = load %struct._IO_FILE** %3, align 8, !dbg !2055 (0) is used in sink function 'fprintf' [line 591]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %25 = load %struct._IO_FILE** %3, align 8, !dbg !2056 (0) is used in sink function 'fprintf' [line 592]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %27 = load %struct._IO_FILE** %3, align 8, !dbg !2057 (0) is used in sink function 'fprintf' [line 593]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %29 = load %struct._IO_FILE** %3, align 8, !dbg !2058 (0) is used in sink function 'fprintf' [line 595]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %31 = load %struct._IO_FILE** %3, align 8, !dbg !2059 (0) is used in sink function 'fprintf' [line 596]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %33 = load %struct._IO_FILE** %3, align 8, !dbg !2060 (0) is used in sink function 'fprintf' [line 597]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %36 = load %struct._IO_FILE** %3, align 8, !dbg !2062 (0) is used in sink function 'fprintf' [line 598]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %38 = load %struct._IO_FILE** %3, align 8, !dbg !2063 (0) is used in sink function 'fprintf' [line 599]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %40 = load %struct._IO_FILE** %3, align 8, !dbg !2064 (0) is used in sink function 'fprintf' [line 600]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %43 = load %struct._IO_FILE** %3, align 8, !dbg !2066 (0) is used in sink function 'fprintf' [line 601]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %45 = load %struct._IO_FILE** %3, align 8, !dbg !2067 (0) is used in sink function 'fprintf' [line 602]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %16 = load %struct._IO_FILE** %3, align 8, !dbg !2050 (0) is used in sink function 'fprintf' [line 585]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %127 = load %struct._IO_FILE** %3, align 8, !dbg !2113 (0) is used in sink function 'fprintf' [line 638]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %70 = load %struct._IO_FILE** %3, align 8, !dbg !2088 (0) is used in sink function 'fprintf' [line 612]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %92 = load %struct._IO_FILE** %3, align 8, !dbg !2100 (0) is used in sink function 'fprintf' [line 623]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %94 = load %struct._IO_FILE** %3, align 8, !dbg !2101 (0) is used in sink function 'fprintf' [line 625]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %96 = load %struct._IO_FILE** %3, align 8, !dbg !2102 (0) is used in sink function 'fprintf' [line 626]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %102 = load %struct._IO_FILE** %3, align 8, !dbg !2103 (0) is used in sink function 'fprintf' [line 627]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %104 = load %struct._IO_FILE** %3, align 8, !dbg !2104 (0) is used in sink function 'fprintf' [line 628]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %111 = load %struct._IO_FILE** %3, align 8, !dbg !2106 (0) is used in sink function 'fprintf' [line 630]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %113 = load %struct._IO_FILE** %3, align 8, !dbg !2107 (0) is used in sink function 'fprintf' [line 631]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %84 = load %struct._IO_FILE** %3, align 8, !dbg !2097 (0) is used in sink function 'fprintf' [line 620]
 [Processing][Function][exporthtml_fmt_person]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %12 = load %struct._IO_FILE** %3, align 8, !dbg !2052 (0) is used in sink function 'fprintf' [line 753]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %14 = load %struct._IO_FILE** %3, align 8, !dbg !2053 (0) is used in sink function 'fprintf' [line 754]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %16 = load %struct._IO_FILE** %3, align 8, !dbg !2054 (0) is used in sink function 'fprintf' [line 755]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %18 = load %struct._IO_FILE** %3, align 8, !dbg !2055 (0) is used in sink function 'fprintf' [line 756]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %20 = load %struct._IO_FILE** %3, align 8, !dbg !2056 (0) is used in sink function 'fprintf' [line 757]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %22 = load %struct._IO_FILE** %3, align 8, !dbg !2057 (0) is used in sink function 'fprintf' [line 759]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %24 = load %struct._IO_FILE** %3, align 8, !dbg !2058 (0) is used in sink function 'fprintf' [line 760]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %26 = load %struct._IO_FILE** %3, align 8, !dbg !2059 (0) is used in sink function 'fprintf' [line 761]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %29 = load %struct._IO_FILE** %3, align 8, !dbg !2061 (0) is used in sink function 'fprintf' [line 762]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %31 = load %struct._IO_FILE** %3, align 8, !dbg !2062 (0) is used in sink function 'fprintf' [line 763]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %33 = load %struct._IO_FILE** %3, align 8, !dbg !2063 (0) is used in sink function 'fprintf' [line 764]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %36 = load %struct._IO_FILE** %3, align 8, !dbg !2065 (0) is used in sink function 'fprintf' [line 765]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %38 = load %struct._IO_FILE** %3, align 8, !dbg !2066 (0) is used in sink function 'fprintf' [line 766]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %40 = load %struct._IO_FILE** %3, align 8, !dbg !2067 (0) is used in sink function 'fprintf' [line 767]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %43 = load %struct._IO_FILE** %3, align 8, !dbg !2069 (0) is used in sink function 'fprintf' [line 768]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %50 = load %struct._IO_FILE** %3, align 8, !dbg !2071 (0) is used in sink function 'fprintf' [line 770]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %52 = load %struct._IO_FILE** %3, align 8, !dbg !2073 (0) is used in sink function 'fprintf' [line 771]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %55 = load %struct._IO_FILE** %3, align 8, !dbg !2075 (0) is used in sink function 'fprintf' [line 772]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %58 = load %struct._IO_FILE** %3, align 8, !dbg !2077 (0) is used in sink function 'fprintf' [line 774]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %173 = load %struct._IO_FILE** %3, align 8, !dbg !2145 (0) is used in sink function 'fprintf' [line 831]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %86 = load %struct._IO_FILE** %3, align 8, !dbg !2106 (0) is used in sink function 'fprintf' [line 787]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %108 = load %struct._IO_FILE** %3, align 8, !dbg !2118 (0) is used in sink function 'fprintf' [line 798]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %110 = load %struct._IO_FILE** %3, align 8, !dbg !2119 (0) is used in sink function 'fprintf' [line 800]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %112 = load %struct._IO_FILE** %3, align 8, !dbg !2120 (0) is used in sink function 'fprintf' [line 801]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %118 = load %struct._IO_FILE** %3, align 8, !dbg !2121 (0) is used in sink function 'fprintf' [line 802]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %120 = load %struct._IO_FILE** %3, align 8, !dbg !2122 (0) is used in sink function 'fprintf' [line 804]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %127 = load %struct._IO_FILE** %3, align 8, !dbg !2124 (0) is used in sink function 'fprintf' [line 806]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %129 = load %struct._IO_FILE** %3, align 8, !dbg !2125 (0) is used in sink function 'fprintf' [line 808]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %100 = load %struct._IO_FILE** %3, align 8, !dbg !2115 (0) is used in sink function 'fprintf' [line 795]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %135 = load %struct._IO_FILE** %3, align 8, !dbg !2127 (0) is used in sink function 'fprintf' [line 810]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %139 = load %struct._IO_FILE** %3, align 8, !dbg !2130 (0) is used in sink function 'fprintf' [line 813]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %142 = load %struct._IO_FILE** %3, align 8, !dbg !2132 (0) is used in sink function 'fprintf' [line 815]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %149 = load %struct._IO_FILE** %3, align 8, !dbg !2134 (0) is used in sink function 'fprintf' [line 818]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %156 = load %struct._IO_FILE** %3, align 8, !dbg !2137 (0) is used in sink function 'fprintf' [line 821]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %159 = load %struct._IO_FILE** %3, align 8, !dbg !2139 (0) is used in sink function 'fprintf' [line 823]
 [Processing][Function][exporthtml_fmt_folderhead]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %32 = load %struct._IO_FILE** %1, align 8, !dbg !2053 (0) is used in sink function 'fprintf' [line 855]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %35 = load %struct._IO_FILE** %1, align 8, !dbg !2056 (0) is used in sink function 'fprintf' [line 857]
 [Processing][Function][exporthtml_create_css_full]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %17 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2017 (0) is used in sink function 'fprintf' [line 326]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %19 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2018 (0) is used in sink function 'fprintf' [line 327]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %21 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2019 (0) is used in sink function 'fprintf' [line 328]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %23 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2020 (0) is used in sink function 'fprintf' [line 329]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %25 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2021 (0) is used in sink function 'fprintf' [line 330]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %27 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2022 (0) is used in sink function 'fprintf' [line 331]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %29 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2023 (0) is used in sink function 'fprintf' [line 332]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %31 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2024 (0) is used in sink function 'fprintf' [line 333]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %33 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2025 (0) is used in sink function 'fprintf' [line 334]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %35 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2026 (0) is used in sink function 'fprintf' [line 335]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %37 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2027 (0) is used in sink function 'fprintf' [line 336]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %39 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2028 (0) is used in sink function 'fprintf' [line 337]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %41 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2029 (0) is used in sink function 'fprintf' [line 338]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %43 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2030 (0) is used in sink function 'fprintf' [line 339]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %45 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2031 (0) is used in sink function 'fprintf' [line 340]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %47 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2032 (0) is used in sink function 'fprintf' [line 341]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %49 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2033 (0) is used in sink function 'fprintf' [line 342]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %51 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2034 (0) is used in sink function 'fprintf' [line 343]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %53 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2035 (0) is used in sink function 'fprintf' [line 344]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %55 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2036 (0) is used in sink function 'fprintf' [line 345]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %57 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2037 (0) is used in sink function 'fprintf' [line 346]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %59 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2038 (0) is used in sink function 'fprintf' [line 347]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %61 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2039 (0) is used in sink function 'fprintf' [line 348]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %63 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2040 (0) is used in sink function 'fprintf' [line 349]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %65 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2041 (0) is used in sink function 'fprintf' [line 350]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %67 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2042 (0) is used in sink function 'fprintf' [line 351]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %69 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2043 (0) is used in sink function 'fprintf' [line 352]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %71 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2044 (0) is used in sink function 'fprintf' [line 353]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %73 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2045 (0) is used in sink function 'fprintf' [line 354]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %75 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2046 (0) is used in sink function 'fprintf' [line 355]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %77 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2047 (0) is used in sink function 'fprintf' [line 356]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %79 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2048 (0) is used in sink function 'fprintf' [line 357]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %81 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2049 (0) is used in sink function 'fprintf' [line 358]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %83 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2050 (0) is used in sink function 'fprintf' [line 359]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %85 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2051 (0) is used in sink function 'fprintf' [line 360]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %87 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2052 (0) is used in sink function 'fprintf' [line 361]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %89 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2053 (0) is used in sink function 'fprintf' [line 362]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %91 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2054 (0) is used in sink function 'fprintf' [line 363]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %93 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2055 (0) is used in sink function 'fprintf' [line 364]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %95 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2056 (0) is used in sink function 'fprintf' [line 365]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %97 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2057 (0) is used in sink function 'fprintf' [line 366]
 [Processing][Function][exporthtml_create_css_dfl]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %17 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2017 (0) is used in sink function 'fprintf' [line 268]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %19 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2018 (0) is used in sink function 'fprintf' [line 269]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %21 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2019 (0) is used in sink function 'fprintf' [line 270]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %23 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2020 (0) is used in sink function 'fprintf' [line 271]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %25 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2021 (0) is used in sink function 'fprintf' [line 272]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %27 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2022 (0) is used in sink function 'fprintf' [line 273]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %29 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2023 (0) is used in sink function 'fprintf' [line 274]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %31 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2024 (0) is used in sink function 'fprintf' [line 275]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %33 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2025 (0) is used in sink function 'fprintf' [line 276]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %35 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2026 (0) is used in sink function 'fprintf' [line 277]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %37 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2027 (0) is used in sink function 'fprintf' [line 278]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %39 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2028 (0) is used in sink function 'fprintf' [line 279]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %41 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2029 (0) is used in sink function 'fprintf' [line 280]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %43 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2030 (0) is used in sink function 'fprintf' [line 281]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %45 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2031 (0) is used in sink function 'fprintf' [line 282]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %47 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2032 (0) is used in sink function 'fprintf' [line 283]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %49 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2033 (0) is used in sink function 'fprintf' [line 284]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %51 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2034 (0) is used in sink function 'fprintf' [line 285]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %53 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2035 (0) is used in sink function 'fprintf' [line 286]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %55 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2036 (0) is used in sink function 'fprintf' [line 287]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %57 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2037 (0) is used in sink function 'fprintf' [line 288]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %59 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2038 (0) is used in sink function 'fprintf' [line 289]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %61 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2039 (0) is used in sink function 'fprintf' [line 290]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %63 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2040 (0) is used in sink function 'fprintf' [line 291]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %65 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2041 (0) is used in sink function 'fprintf' [line 292]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %67 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2042 (0) is used in sink function 'fprintf' [line 293]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %69 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2043 (0) is used in sink function 'fprintf' [line 294]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %71 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2044 (0) is used in sink function 'fprintf' [line 295]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %73 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2045 (0) is used in sink function 'fprintf' [line 296]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %75 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2046 (0) is used in sink function 'fprintf' [line 297]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %77 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2047 (0) is used in sink function 'fprintf' [line 298]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %79 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2048 (0) is used in sink function 'fprintf' [line 299]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %81 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2049 (0) is used in sink function 'fprintf' [line 300]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %83 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2050 (0) is used in sink function 'fprintf' [line 301]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %85 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2051 (0) is used in sink function 'fprintf' [line 302]
 [Processing][Function][exporthtml_save_settings]
 [Processing][Function][exporthtml_build_filespec]
 [Processing][Function][exporthtml_default_values]
@@ -1571,60 +1259,8 @@ No main function exists
 [Processing][Function][exporthtml_parse_filespec]
 [Processing][Function][exporthtml_create_css_files]
 [Processing][Function][exporthtml_fmt_folder]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %16 = load %struct._IO_FILE** %2, align 8, !dbg !2051 (0) is used in sink function 'fprintf' [line 883]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %18 = load %struct._IO_FILE** %2, align 8, !dbg !2053 (0) is used in sink function 'fprintf' [line 884]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %23 = load %struct._IO_FILE** %2, align 8, !dbg !2056 (0) is used in sink function 'fprintf' [line 886]
 [Processing][Function][exporthtml_fmt_header]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %6 = load %struct._IO_FILE** %2, align 8, !dbg !2011 (0) is used in sink function 'fprintf' [line 921]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %8 = load %struct._IO_FILE** %2, align 8, !dbg !2012 (0) is used in sink function 'fprintf' [line 923]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %10 = load %struct._IO_FILE** %2, align 8, !dbg !2013 (0) is used in sink function 'fprintf' [line 925]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %12 = load %struct._IO_FILE** %2, align 8, !dbg !2014 (0) is used in sink function 'fprintf' [line 926]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %35 = load %struct._IO_FILE** %2, align 8, !dbg !2022 (0) is used in sink function 'fprintf' [line 935]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %25 = load %struct._IO_FILE** %2, align 8, !dbg !2017 (0) is used in sink function 'fprintf' [line 929]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %27 = load %struct._IO_FILE** %2, align 8, !dbg !2019 (0) is used in sink function 'fprintf' [line 930]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %29 = load %struct._IO_FILE** %2, align 8, !dbg !2020 (0) is used in sink function 'fprintf' [line 931]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %65 = load %struct._IO_FILE** %2, align 8, !dbg !2034 (0) is used in sink function 'fprintf' [line 945]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %52 = load %struct._IO_FILE** %2, align 8, !dbg !2027 (0) is used in sink function 'fprintf' [line 939]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %54 = load %struct._IO_FILE** %2, align 8, !dbg !2029 (0) is used in sink function 'fprintf' [line 940]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %56 = load %struct._IO_FILE** %2, align 8, !dbg !2030 (0) is used in sink function 'fprintf' [line 941]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %58 = load %struct._IO_FILE** %2, align 8, !dbg !2031 (0) is used in sink function 'fprintf' [line 942]
 [Processing][Function][exporthtml_process]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %23 = load %struct._IO_FILE** %htmlFile, align 8, !dbg !2067 (0) is used in sink function 'fprintf' [line 980]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %25 = load %struct._IO_FILE** %htmlFile, align 8, !dbg !2068 (0) is used in sink function 'fprintf' [line 981]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %28 = load %struct._IO_FILE** %htmlFile, align 8, !dbg !2069 (0) is used in sink function 'fprintf' [line 983]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %30 = load %struct._IO_FILE** %htmlFile, align 8, !dbg !2070 (0) is used in sink function 'fprintf' [line 984]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %33 = load %struct._IO_FILE** %htmlFile, align 8, !dbg !2072 (0) is used in sink function 'fprintf' [line 985]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %36 = load %struct._IO_FILE** %htmlFile, align 8, !dbg !2073 (0) is used in sink function 'fprintf' [line 986]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %42 = load %struct._IO_FILE** %htmlFile, align 8, !dbg !2076 (0) is used in sink function 'fprintf' [line 991]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %46 = load %struct._IO_FILE** %htmlFile, align 8, !dbg !2078 (0) is used in sink function 'fprintf' [line 992]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %48 = load %struct._IO_FILE** %htmlFile, align 8, !dbg !2079 (0) is used in sink function 'fprintf' [line 994]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %50 = load %struct._IO_FILE** %htmlFile, align 8, !dbg !2080 (0) is used in sink function 'fprintf' [line 995]
 [Processing][Function][exporthtml_set_attributes]
 [Processing][Function][exporthtml_set_link_email]
 [Processing][Function][exporthtml_set_banding]
@@ -1692,9 +1328,34 @@ No main function exists
 [Processing][Function][addrcache_get_list_folder]
 [Processing][Function][addrcache_get_root_folder]
 [Processing][Function][addrcache_create]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %6 = call i32 @addrcache_next_cache_id(), !dbg !1970 (1) is used in sink function 'g_strdup_printf' [line 60]
+===-------------------------------------------------------------------------===
+                          ... Statistics Collected ...
+===-------------------------------------------------------------------------===
 
-real	0m11.034s
-user	0m10.653s
-sys	0m0.364s
+    1           - Number of OOB offsets that caused node folding
+  238           - Number of call nodes merged
+ 3252           - Number of direct calls
+    4           - Number of indirect calls
+28977           - Number of nodes allocated
+  340           - Number of nodes completely folded
+  149           - Number of nodes folded in std lib
+   19           - Number of nodes removed by reachability
+   84           - Number of nodes trivially removed
+    3 dsa-bu    - Maximum SCC Size in Call Graph
+ 5712 dsa-bu    - Number of 'actual' call edges
+   12 dsa-bu    - Number of calls we know nothing about
+  995 dsa-bu    - Number of graphs inlined
+   12 dsa-bu    - Number of unresolved IndCalls
+ 2042 dsa-local - Number of direct calls added
+    4 dsa-local - Number of indirect calls added
+ 1210 dsa-local - Number of intrinsics called
+    6 dsa-local - Number of inttoptr used only in cmp
+ 2169 isstac    - Number of context-sensitive analysis calls
+  183 isstac    - Number of emited warnings
+  406 isstac    - Number of found issues
+  330 td_dsa    - Number of graphs inlined
+
+
+real	0m11.698s
+user	0m11.285s
+sys	0m0.396s
