@@ -33,7 +33,7 @@ its version in parenthesis.
 \hline
 {\bf Program}				&	{\bf Description}	&	{\bf SLOC}	& {\bf Warnings}	&	{\bf Time}	\\ \hline
 {\tt mongoose}	($4.1$)		&	Web server			&	$4k$		&	$26$			&	$56s$ 	\\ %\hline
-{\tt vlc-input}	($4.1$)		&	Media player		&	$16k$		&	$0$				&	$6s$ 	\\ %\hline
+{\tt vlc-input}	($2.1.2$)		&	Media player		&	$16k$		&	$0$				&	$6s$ 	\\ %\hline
 {\tt claws}		($3.9.3$)	&	Email client		& 	$142k$ 		&	$183$			&	$11s$		\\ %\hline
 {\tt apache}	($2.4.7$)	&	Web server			&	$144k$		&	n/a				&	n/a	 		\\ \hline
 \end{tabular}\caption{Taint Analysis Evaluation Results}\label{tab:results}
@@ -62,5 +62,5 @@ of the high amount of tainted values, the analysis spends more time
 when checking if a value (argument of call) is tainted or not.
 
 We believe that our current implementation performs in an acceptable
-time, since the developer has to wait for a maximum of $5$ minutes
+time, since the developer has to wait for a maximum of $56$ seconds
 for a project with around $140k$ lines of code.
