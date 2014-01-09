@@ -35,6 +35,31 @@ namespace {
 #define ENTRY_POINT "main"
 #define SOURCE_ARG_DELIM ","
 
+typedef struct {
+
+} AnalysisIssue;
+
+typedef struct {
+	unsigned _nrIssues;
+	vector<unsigned> *_currentLines;
+	//vector<AnalysisIssue> *_issues;
+
+	bool addIssue(unsigned line) {
+		++_nrIssues;
+		vector<unsigned>::iterator findIter =  std::find(_currentLines->begin(), _currentLines->end(), line);
+		if (findIter == _currentLines->end()) {
+			_currentLines->push_back(line);
+			//TODO: Add a new issue
+			return true;
+		}
+		else {
+			//TODO: Add a new issue
+			return false;
+		}
+	}
+
+} AnalysisWarnings;
+
 //typedef map<Value *, vector<Instruction &> >  ValueTaintingTable;
 
 /**
@@ -145,6 +170,19 @@ private:
 	const static int _FUNCTION_NOT_SOURCE;
 	static map<string, int> _taintSources;
 	static vector<string> _taintSinks;
+	map<Function *, AnalysisWarnings * > _allWarnings;
+
+	AnalysisWarnings *createAnalysisWarning() {
+		AnalysisWarnings *a = (AnalysisWarnings *) malloc(sizeof(AnalysisWarnings));
+		a->_nrIssues = 0;
+		a->_currentLines = new vector<unsigned>;
+		return a;
+	}
+
+	void deleteAnalysisWarning(AnalysisWarnings *a) {
+		free(a->_currentLines);
+		free(a);
+	}
 
 	/**
 	 * Adds the function with name 'source' as a taint source and

@@ -1,5 +1,6 @@
 #!/bin/bash
 
+OPT=/home/noundou/tools/llvm-3.3.src/build/Release+Asserts/bin/opt
 VLC="/home/noundou/ece750-project/benchmarks/vlc"
 RESULT="vlc-results"
 MODULE=input
@@ -11,6 +12,7 @@ INPUT_INC="-i $VLC/src \
   -i $VLC/include "
 
 #input
+set -x
 ./ctainthelp.sh \
   -s $VLC/src/$MODULE \
   $INPUT_INC \
@@ -21,5 +23,5 @@ LOGFILE=$RESULT/analysis-result".$MODULE"
 
 echo "Log file: $LOGFILE"
 
-time ./runOpt.sh -i $RESULT/one.bc 2> "$LOGFILE"
+./runOpt.sh -o "$OPT" -p "VLC-input" -i $RESULT/one.bc 2> "$LOGFILE"
 

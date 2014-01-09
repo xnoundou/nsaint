@@ -84,8 +84,8 @@ void CTaintIntraProcedural::handleFormals() {
 		for(Function::arg_iterator pa = F->arg_begin(), Epa = F->arg_end(); pa != Epa; ++pa) {
 			Argument &A = *pa;
 
-			errs() << "Analyzing formal parameter " << A.getName()
-						   << " of function " << F->getName() << "\n";
+			//errs() << "Analyzing formal parameter " << A.getName()
+						   //<< " of function " << F->getName() << "\n";
 
 			//Check if any use of the formal parameter is tainted
 			for(Value::use_iterator pu = A.use_begin(), Epu = A.use_end(); pu!=Epu; ++pu) {
@@ -93,7 +93,7 @@ void CTaintIntraProcedural::handleFormals() {
 				//TODO: Check this is valid in the case I is not the return instruction
 				//if (_analysis->isValueTainted(retInst, aUse)) {
 				if (_analysis->isValueTainted(&I, aUse)) {
-					errs() << "\tis tainted from: "; aUse->print(errs()); errs() << "\n";
+					//errs() << "\tis tainted from: "; aUse->print(errs()); errs() << "\n";
 				}
 			}
 		}

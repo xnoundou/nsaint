@@ -1,6 +1,6 @@
 #!/bin/bash
 
-USAGE="Usage: $(basename $0) <-i bc files>"
+USAGE="Usage: $(basename $0) <-e llvm-opt> <-i bc files> [-p project]"
 
 if [ $# -lt 1 ]; then
   echo "$USAGE"
@@ -9,11 +9,19 @@ fi
 
 moduleflag=
 fileflag=
+projectflag=
+optflag=
 
-while getopts 'mfi:' OPTION
+while getopts 'mfo:i:p:' OPTION
 do
   case $OPTION in
     m)	moduleflag=1
+	;;
+    o)	optflag=1
+      	OPT="$OPTARG"
+	;;
+    p)	projectflag=1
+	PROJECT="$OPTARG"
 	;;
     i)	fileflag=1
       	INPUTFILE="$OPTARG"
@@ -26,27 +34,32 @@ do
 done
 shift $(($OPTIND - 1))
 
-function run_cmd(){
-  local CMD="$1"
-  echo "$CMD"
-  eval "$CMD"
-}
+if [ ! "$optflag" ]; then
+  echo "You must specify which llvm-opt to execute."
+  echo "$USAGE"
+  exit 3
+else
+  echo "Executing llvm-opt: $OPT"
+fi
 
 if [ ! "$fileflag" ]; then
   echo "A .bc file must be given to run the analysis"
   echo "$USAGE"
-  exit 2
+  exit 4
+fi
+
+if [ "$projectflag" ]; then
+  echo "Current project: $PROJECT"
+else
+  PROJECT="default"
+  echo "No project name given. Defaults to: $PROJECT"
 fi
 
 PASSARG="-ctaintmod"
 
-OPT=/home/noundou/tools/llvm-3.3.src/build/Release+Asserts/bin/opt
+make -f Makefile.ctaint compile > /dev/null
 
-COMPILE="make -f Makefile.ctaint compile > /dev/null"
-run_cmd "$COMPILE"
-
-CMD="$OPT -load $LLVM_LIB/LLVMDataStructure.so \
-  -load $LLVM_LIB/CTaint.so -calltarget-eqtd "$PASSARG" < "$INPUTFILE" > /dev/null"
-
-run_cmd "$CMD"
+time $($OPT -load $LLVM_LIB/LLVMDataStructure.so \
+  	    -load $LLVM_LIB/CTaint.so \
+  	    -calltarget-eqtd "$PASSARG" < "$INPUTFILE" > /dev/null)
 

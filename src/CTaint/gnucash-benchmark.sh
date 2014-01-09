@@ -1,5 +1,6 @@
 #!/bin/bash
 
+OPT=/home/noundou/tools/llvm-3.3.src/build/Release+Asserts/bin/opt
 GNUCASH="/home/noundou/ece750-project/benchmarks/gnucash-2.4.13"
 RESULT="gnucash-results"
 #MODULE=backend
@@ -54,6 +55,7 @@ REPORT_INC="-i $GNUCASH/$SRC/report-gnome \
   -i $GLIB2_AMD64"
 
 #report
+set -x
 ./ctainthelp.sh \
   -s $GNUCASH/$SRC/report-gnome $REPORT_INC \
   -o $RESULT -c b
@@ -77,5 +79,5 @@ LOGFILE=$RESULT/analysis-result".$MODULE"
 
 echo "Log file: $LOGFILE"
 
-time ./runOpt.sh -i $RESULT/one.bc 2> "$LOGFILE"
+./runOpt.sh -o "$OPT" -p "GNUCASH" -i $RESULT/one.bc 2> "$LOGFILE"
 
