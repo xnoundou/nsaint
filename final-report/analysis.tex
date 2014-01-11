@@ -169,7 +169,7 @@ of Algorithm~\ref{fig:csInterFlow} in Appendix~\ref{app:algo}.
 \SetKwData{summaryTable}{sumTable}
 \SetKwData{Input}{IN}
 \SetKwData{Output}{OUT}
-\SetKwFunction{LSOURCE}{SOURCE}
+\SetKwFunction{LCALL}{CALL}
 \SetKwFunction{Type}{TypeOf}
 \SetKwFunction{Taint}{taint}
 \SetKwFunction{Source}{source}
@@ -181,7 +181,7 @@ of Algorithm~\ref{fig:csInterFlow} in Appendix~\ref{app:algo}.
 \InData{$\Caller: \mathit{Proc}, \stmt: \mathit{Inst}$}
 \OutData{}
 \Switch{$\Type(\stmt)$}{	
-	\Case{$\LSOURCE\ [\stmtR = \mathit{call}\ \Source(\VarA_0, \VarA_1, ..., \VarA_n)]$}{
+	\Case{$\LCALL\ [\stmtR = \mathit{call}\ \Source(\VarA_0, \VarA_1, ..., \VarA_n)]$}{
 		\ForEach{$\VarK \in \set{0, 1, ..., n}$}{
 			\If{$\Taint(\VarK)$}{			
 				$\FlowInsert(\stmt, \VarA_k)$\;
