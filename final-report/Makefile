@@ -1,12 +1,12 @@
-default: ece750-fr.pdf
+default: ece750.pdf
 
-ece750-fr.pdf: clean ece750-fr.tex ece750-fr.bib
-	pdflatex ece750-fr
-	bibtex ece750-fr
-	pdflatex ece750-fr
-	pdflatex ece750-fr
-	evince ece750-fr.pdf
+ece750.pdf: clean ece750.tex ece750.bib
+	pdflatex ece750
+	bibtex ece750
+	pdflatex ece750
+	pdflatex ece750
+	evince ece750.pdf
 
 clean:
 	rm -f *~ *.glo *.aux *.bbl *.brf *.idx *.bak *.ilg *.ind *.lof *.log \
-	   *.lot *.out *.thm *.toc *.blg ece750-fr.pdf ece750-fr.synctex.gz
+	   *.lot *.out *.thm *.toc *.blg ece750.pdf ece750.synctex.gz

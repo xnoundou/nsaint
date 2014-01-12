@@ -1,57 +1,66 @@
+\newcommand{\parfait}{\texttt{Parfait}\xspace}
+\newcommand{\cqual}{\texttt{CQual}\xspace}
+
+\begin{table*}[!htbp]
+\centering
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+{\bf Name} & {\bf Language}	& {\bf Technique } &	{\bf Annotation}	& {\bf Context-Sensitive} & {\bf Input}  \\ \hline
+Parfait	    &	C, C++		&	DD,	static		&						&	Yes					&							\\
+CQual	 	&	C			&	TS, static		&	Yes					&						&   						\\
+Archer	 	&	C			&	SA				&						&						&   						\\
+Splint		&	C			&					&	Yes					&						&							\\
+Jlint		&	Java		&	DF, AI			&						&						&							\\
+Safer		&				&					&	Yes					&						&							\\
+Coverity	& C, C++, Java  &					&						&						&							\\
+VeraCode	& C, C++, Java  &					&						&						&	Binaries				\\
+Klocwork	& C, C++, Java  &	IDF				&						&						&							\\
+Pixy		&				&					&						&						&							\\ \hline
+\end{tabular}\caption{Program Analysis Tool for Security}
+\end{table*}
+
 \section{Related Work}\label{sec:related}
 
-\paragraph{\cite{Shankar:2001:DFS}} presents a tool to statically
-detect format string vulnerabilities in C programs. The analysis
-is based on \textit{type qualifiers} and type inference. Given a C program,
+\subsection{Static Analysis}
+
+\cite{Engler:2000:CSR}
+
+\subsection{Dynamic Analysis}
+
+\subsection{Static Analysis for Vulnerability Detection}
+
+\parfait\cite{Parfait:2008} is a tool for finding bugs in
+C programs. \parfait is built on top of LLVM and employs
+demand-driven algorithms to mitigate scalability issues
+inherent to standard forward dataflow analysis techniques
+and to static analysis in general.	
+\parfait does not require annotations from developers and
+is advertised to scale to millions of lines of code. 
+Specifically for security vulnerabilities, \parfait implements
+a user-input dependence analysis\cite{Scholz:2008:UDA} (i.e taint analysis) that
+is linear in the number of statements and dependencies. \parfait's
+user-input dependence analysis is formulated as a graph
+reachability problem. It implements both a context-insensitive and
+a context-sensitive approach. The authors of \parfait added 
+a may-function alias analysis to LLVM to better support
+the accuracy of the user-dependence analysis.\\
+
+\cqual\cite{Shankar:2001:DFS} detects format string vulnerabilities
+in C programs. \cqual's analysis is based on type
+qualifiers\cite{Foster:1999:TTQ} and type inference. Given a C program,
 an initial subset of the program is annotated with the type qualifiers
-\texttt{tainted} and \texttt{untainted}, which are new qualifiers
-introduced by the authors. The paper defines a set
-of inference rules for C language elements. The inference rules are used,
-together with the initial program annotation to generate type qualifier
-constraints over the program. The analysis then warns the user
-about a format string vulnerability whenever the program does not
-type checks due to an unsatisfiable constraint. The presented tool
-is built on top of the type qualifier framework \textit{CQUAL} 
-\cite{Foster:pldi99}.
+\texttt{tainted} and \texttt{untainted}. \cqual then uses a set of
+inference rules to generate type (qualifier) constraints over the program.
+The analysis then warns the user of a format string vulnerability
+whenever the program does not type checks due to an unsatisfiable
+constraint. According to results published in \cite{Shankar:2001:DFS},
+\cqual performs on average $85$s for a code base of $20$k lines of code.
+It took $268$s to analyze the biggest program of $43$k.
 
-\paragraph{\cite{Dimitru:2009:STAC}} presents STAC: a static taint
-analysis for C, implemented as a type system. The paper defines a type
-domain consisting of the values \texttt{Tainted} and \texttt{Untainted}.
-A type environment is a mapping from variables to type domain values.
-STAC defines a set of inference rules that allows to compute
-type environments for C program statements and functions. The paper
-also proves the soundness of the presented taint analysis.
+\subsection{Dynamic Analysis for Vulnerability Detection}
 
-\paragraph{\cite{Jovanovic:2006:Pixy}} presents \texttt{Pixy}: a tool
-that statically scans for cross site scripting vulnerabilities in PHP
-scripts. Pixy and and our project have similar goals. The main
-difference is that Pixy performs a static analysis whereas we plan
-to develop a dynamic analysis. Pixy implements a flow-sensitive,
-interprocedural and context-sensitive dataflow analysis, which
-is based on an alias and literal analysis. After evaluating
-their tool on three PHP applications, they authors observed 
-a false positives rate of around $50\%$.
+\subsection{Type System Based Vulnerability Detection}
 
-%Dynamic taint analysis
-\paragraph{\cite{Clause:2007:Dytan}} presents \texttt{Dytan}: a generic
-framework for implementing dynamic taint analyses. Dytan generates
-dynamic analyses that perform on x86 binaries. The source code of the
-analyzed application does not need to be available.
-Developers specify a dynamic taint analysis with Dytan by giving
-(1) taint sources, (2) taint sinks, (3) and a propagation policy.
-Taint sources can be variable names, function-return values, and
-data read from I/O stream such as a file or a network connection.
-Taint sinks are specified by memory/code location or based on the
-usage scenario. Memory and code location specifications may include 
-a variable's name and scope, a procedure name and the index of a formal parameter, 
-a position in the source code, an offset from the base address of the program,
-and the entry or exit points of a procedure.
-A usage scenario specification takes into account whether the developer
-wants check a taint information before the execution instructions of a given type
-(e.g., a jump instruction). For that, the developer needs to
-specify an instruction type and its corresponding checking operation.
-Dytan provides dataflow and control-flow based propagation policies.
-Dataflow propagation policies are based on (explicit) data dependencies.
-Control-flow dependencies relies on (implicit) control dependencies. 
+\subsection{Comparison}
 
 %Taint Analysis for managed languages
