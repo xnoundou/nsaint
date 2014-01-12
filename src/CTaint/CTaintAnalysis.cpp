@@ -5,7 +5,7 @@
  *  Author: Xavier N. Noumbissi
  */
 
-#define DEBUG_TYPE "isstac"
+#define DEBUG_TYPE "waint"
 
 #include "CTaintAnalysis.h"
 #include "context-insensitive-ctaint.h"
@@ -21,36 +21,39 @@
 char CTaintAnalysis::ID = 0;
 
 using namespace llvm; 
-STATISTIC(NumContextCalls, "Number of context-sensitive analysis calls");
 STATISTIC(NumWarnings, 	   "Number of emited warnings");
+STATISTIC(NumTaintedValUse,"Number of found tainted value usage");
+STATISTIC(NumFormatString, "Number of found format string vulnerabilities");
 STATISTIC(NumIssues, 	   "Number of found issues");
+STATISTIC(NumFunctions,	   "Number of functions found in the module");
+STATISTIC(NumContextCalls, "Number of context-sensitive analysis calls");
 
-const string CTaintAnalysis::_taintId("[ISSTAC]");
+const string CTaintAnalysis::_taintId("[WAINT]");
 const string CTaintAnalysis::_taintSourceFile("cfg/sources.cfg");
 const string CTaintAnalysis::_taintSinkFile("cfg/sinks.cfg");
 
-const int CTaintAnalysis::_SOURCE_ARG_RET(-1);
-const int CTaintAnalysis::_SOURCE_ARG_INVALID_MIN(-2);
-const int CTaintAnalysis::_FUNCTION_NOT_SOURCE(100);
+//const string CTaintAnalysis::FORMAT_REGEX("%[-+ #0][1-9|*][.0-9|.*][ |hh|h|l|ll|j|z|t|L]d|i|");
+const unsigned CTaintAnalysis::_SOURCE_ARG_RET(0);
+const unsigned CTaintAnalysis::_FUNCTION_NOT_SOURCE(10000);
+const unsigned CTaintAnalysis::_FUNCTION_NOT_FORMAT(10000);
 
-map<string, int> CTaintAnalysis::_taintSources;
-typedef map<string, int>::value_type sourceType;
+map<string, unsigned> CTaintAnalysis::_taintSources;
+map<string, unsigned> CTaintAnalysis::_formatSinks;
+typedef map<string, unsigned>::value_type sourceType;
 
 vector<string> CTaintAnalysis::_taintSinks;
 
-inline void CTaintAnalysis::log(const string &msg) {
-	errs() << _taintId << msg << '\n';
-}
-
-void CTaintAnalysis::addTaintSource(string &source, unsigned taintedPos)
+void CTaintAnalysis::addTaintInfo(map<string, unsigned> *target,
+    				  string &source,
+   				  unsigned taintedPos)
 {
-	map<string, int>::iterator it;
-	it = _taintSources.find(source);
+	map<string, unsigned>::iterator it;
+	it = target->find(source);
 
-	if (it != _taintSources.end())
+	if (it != target->end())
 		it->second = taintedPos;
 	else
-		_taintSources.insert( sourceType(source, taintedPos) );
+		target->insert( sourceType(source, taintedPos) );
 }
 
 void CTaintAnalysis::readTaintSourceConfig()
@@ -60,7 +63,7 @@ void CTaintAnalysis::readTaintSourceConfig()
 	string line;
 	string source;
 	string arg;
-	int pos;
+	unsigned pos;
 
 	while (!srcFile.eof()) {
 		std::getline(srcFile, line);
@@ -69,19 +72,26 @@ void CTaintAnalysis::readTaintSourceConfig()
 			source = line.substr(0, coma);
 
 			arg = line.substr(coma+1);
-			pos = atoi(arg.c_str());
+			pos = (unsigned) atoi(arg.c_str());
 
-			addTaintSource(source, pos);
+			addTaintInfo(&_taintSources, source, pos);
 		}
 	}
 
 	string r("__isoc99_scanf");
-	addTaintSource(r, 1);
+	addTaintInfo(&_taintSources, r, 1);
 
 	r = "__isoc99_sscanf";
-	addTaintSource(r, 1);
+	addTaintInfo(&_taintSources, r, 1);
 
 	srcFile.close();
+}
+
+static bool is_number(string &s) 
+{
+    string::size_type i = 0;
+    while ( (i<s.length()) && (std::isdigit(s[i])) ) { ++i; }
+    return (s.length() == i);
 }
 
 void CTaintAnalysis::readTaintSinkConfig()
@@ -89,11 +99,28 @@ void CTaintAnalysis::readTaintSinkConfig()
 	//Open the file with taint source functions listed
 	std::ifstream srcFile(_taintSinkFile.c_str());
 	string line;
+	string sink;
+	string arg;
+	int pos=-1;
 
 	while (!srcFile.eof()) {
 		std::getline(srcFile, line);
-		if (!line.empty())
-			_taintSinks.push_back(line);
+		if (!line.empty()) {
+			size_t coma = line.find(SINK_ARG_DELIM);
+			sink = line.substr(0, coma);
+			arg = line.substr(coma+1);
+			if (!arg.empty() && is_number(arg)){
+			  pos = atoi(arg.c_str());
+			  if (pos > -1) {
+			    addTaintInfo(&_formatSinks, sink, pos);
+			    DEBUG_WITH_TYPE("waint-sinks", errs() << "[WAINT]sink format string function '" << sink << "'\n");
+			  }
+			}
+			else{
+			  _taintSinks.push_back(sink);
+			  DEBUG_WITH_TYPE("waint-sinks", errs() << "[WAINT]sink function '" << sink << "'\n");
+			}
+		}
 	}
 
 	srcFile.close();
@@ -156,7 +183,7 @@ void CTaintAnalysis::getAnalysisUsage(AnalysisUsage &AU) const
 
 bool CTaintAnalysis::runOnModule(Module &m)
 {
-	log("module identifier is " + m.getModuleIdentifier());
+	errs() << "module identifier is " << m.getModuleIdentifier() << "\n";
 
 	_module = &m;
 
@@ -181,8 +208,9 @@ bool CTaintAnalysis::runOnModule(Module &m)
 		if(f->isDeclaration())
 			continue;
 
+		++NumFunctions;
 		string fName(f->getName().str());
-		log("discovered function " + fName);
+		DEBUG_WITH_TYPE("waint-functions", errs() << "discovered function '" << fName << "'\n");
 
 
 		//TODO: use function signature as key instead
@@ -236,14 +264,24 @@ bool CTaintAnalysis::runOnModule(Module &m)
  * Checks if the function with name 'funcName' taints any
  * of its parameters.
  */
-int CTaintAnalysis::isTaintSource(string &funcName)
+unsigned CTaintAnalysis::isTaintSource(string &funcName)
 {
-	map<string, int>::iterator res;
+	map<string, unsigned>::iterator res;
 	res = _taintSources.find(funcName);
 	if (res != _taintSources.end())
 		return res->second;
 
 	return _FUNCTION_NOT_SOURCE;
+}
+
+unsigned CTaintAnalysis::isFormatSink(string &funcName)
+{
+	map<string, unsigned>::iterator res;
+	res = _formatSinks.find(funcName);
+	if (res != _formatSinks.end())
+		return res->second;
+
+	return _FUNCTION_NOT_FORMAT;
 }
 
 void CTaintAnalysis::setDiff(set<Value *> &A,
@@ -335,7 +373,7 @@ void CTaintAnalysis::insertToOutFlow(Instruction *I, Value *v, DSGraph *dsg)
 	assert(v && "The value to insert in the outflow of an instruction must be non null!");
 
 	_OUT[I].insert(v);
-	DEBUG_WITH_TYPE("isstac-tainted", v->print(errs()); errs() << " gets tainted\n");
+	DEBUG_WITH_TYPE("waint-tainted", v->print(errs()); errs() << " gets tainted\n");
 
 	/**
 	 * Mark all aliases of v as tainted.
@@ -346,7 +384,7 @@ void CTaintAnalysis::insertToOutFlow(Instruction *I, Value *v, DSGraph *dsg)
 		int s = vAliases.size();
 		for(int k = 0; k < s; ++k) {
 			_OUT[I].insert(vAliases[k]);
-			DEBUG_WITH_TYPE("isstac-tainted", vAliases[k]->print(errs());errs() << " \t also gets tainted\n");
+			DEBUG_WITH_TYPE("waint-tainted", vAliases[k]->print(errs());errs() << " \t also gets tainted\n");
 		}
 	}
 }
@@ -430,13 +468,13 @@ void CTaintAnalysis::visitCallInst(CallInst & I)
 			return ;
 
 		string calleeName = callee->getName().str();
-		int arg_pos = isTaintSource(calleeName);
+		unsigned arg_pos = isTaintSource(calleeName);
 
 		if ( _FUNCTION_NOT_SOURCE == arg_pos ) return;
 
 		int maxParams = I.getNumArgOperands();
 
-		if ( _SOURCE_ARG_INVALID_MIN < arg_pos && arg_pos < maxParams ) {
+		if ( arg_pos != _FUNCTION_NOT_SOURCE && arg_pos < maxParams ) {
 			Value *taintedArg = 0;
 
 			if (_SOURCE_ARG_RET == arg_pos)
@@ -445,14 +483,14 @@ void CTaintAnalysis::visitCallInst(CallInst & I)
 				taintedArg = I.getArgOperand(arg_pos);
 
 			insertToOutFlow(&I, taintedArg);
-			DEBUG_WITH_TYPE("isstac-sources", errs() << "Found a source "
+			DEBUG_WITH_TYPE("waint-sources", errs() << "Found a source "
 					<< calleeName << " with arg_pos " << arg_pos << "\n");
 		}
 		else {
 			std::ostringstream msg;
 			msg << "Invalid argument position (" << arg_pos << ")"
 					<< " max parameters is " << maxParams;
-			log(msg.str());
+			errs() << msg.str() << "\n";
 		}
 	}
 	else if (_ctxInterRunning) {
@@ -495,43 +533,76 @@ void CTaintAnalysis::visitCallInst(CallInst & I)
 
 		string calleeName = callee->getName().str();
 		bool foundSink = (_taintSinks.end() != find(_taintSinks.begin(), _taintSinks.end(), calleeName));
+		
+		unsigned formatPos = isFormatSink(calleeName);
+		bool formatSink = (_FUNCTION_NOT_FORMAT != formatPos);
+		//bool formatSink = (_formatSinks.end() != find(_formatSinks.begin(), _formatSinks.end(), calleeName));
 
 		if (foundSink) {
-			DEBUG_WITH_TYPE("isstac-sinks", errs() << "Found sink function " << calleeName << "\n");
+			DEBUG_WITH_TYPE("waint-sinks", errs() << "[WAINT]Handling sink function '" << calleeName << "'\n");
 			handleSinks(I, *callee);
 		}
+		else if (formatSink) {
+			DEBUG_WITH_TYPE("waint-sinks", errs() << "[WAINT]Handling sink format string function '" << calleeName << "'\n");
+			handleSinks(I, *callee, formatPos);
+		}
+
 	}
 }
 
-void CTaintAnalysis::handleSinks(CallInst &I, Function &callee)
+void CTaintAnalysis::handleSinks(CallInst &I, Function &callee, unsigned formatPos /* = 10000*/)
 {
 	StringRef calleeName = callee.getName();
 
 	unsigned argNr = I.getNumArgOperands();
 	Value *curArg = 0;
 
+	int line = -1;
+	if (MDNode *N = I.getMetadata("dbg")) {
+	    DILocation Loc(N);
+	    line = Loc.getLineNumber();
+	
+	}
+	Function *caller = I.getParent()->getParent();
+    	AnalysisWarnings *warnings = _allWarnings[caller];
+	assert ( warnings && "No AnalysisWarning data struture was instantiated for this callee!");
+
 	for(unsigned k = 0; k < argNr; ++k) {
 	    curArg = I.getArgOperand(k);
-	    if ( isValueTainted(&I, curArg) ) {
-	    	int line = -1;
-	    	if (MDNode *N = I.getMetadata("dbg")) { // this if is never executed
-	    		DILocation Loc(N);
-	    		line = Loc.getLineNumber();
-	    	}
-	    	Function *caller = I.getParent()->getParent();
-	    	AnalysisWarnings *warnings = _allWarnings[caller];
 
-	    	assert ( warnings && "No AnalysisWarning data struture was instantiated for this callee!");
-
+	    //Check for format string vulnerabilities
+	    if (formatPos < 10000 && formatPos == k) {
+	      if (isa<ConstantArray>(curArg)) {
+		//check this is a string constant
+	      }
+	      else {
 	    	++NumIssues;
-
-	    	bool isOnNewLine = warnings->addIssue(line);
+		//TODO: refine this number
+	    	++NumFormatString;
+	    	bool isOnNewLine = warnings->addIssue(line, FORMAT_STRING_VUL);
 	    	if (isOnNewLine) {
-	    		++NumWarnings;
-	    		//Emit a new warning
-	    		DEBUG_WITH_TYPE("isstac-warnings", errs() << "## [WARNING][format string vulnerability]: \n\tTainted value");
-	    		DEBUG_WITH_TYPE("isstac-warnings", curArg->print(errs()));
-	    		DEBUG_WITH_TYPE("isstac-warnings", errs() << " (" << k << ") is used in sink function '"
+		  ++NumWarnings;
+		  //errs() << "## Type "; curArg->print(errs()); errs() << "\n";
+	 	  DEBUG_WITH_TYPE("waint-warnings", errs() << "[waint][fmtvul] ");
+		  DEBUG_WITH_TYPE("waint-warnings", errs() << " Argument at position " << k 
+		      		<< " of function '" << calleeName 
+				<< "' shall be a format string [line " << line << "] \n");
+		}
+	      }
+	    }
+
+	    //Check for tainted value usage
+	    if ( isValueTainted(&I, curArg) ) {
+	    	++NumIssues;
+		//TODO: refine this number by checking the reported function and tainted value
+		++NumTaintedValUse;
+	    	bool isOnNewLine = warnings->addIssue(line, TAINTED_VALUE_USE);
+	    	if (isOnNewLine) {
+		  ++NumWarnings;
+	    	  //Emit a new warning
+	    	  DEBUG_WITH_TYPE("waint-warnings", errs() << "[waint][tval] ");
+		  DEBUG_WITH_TYPE("waint-warnings", if (curArg->hasName()) errs() << curArg->getName(); else curArg->print(errs()));
+		  DEBUG_WITH_TYPE("waint-warnings", errs() << " # [" << k << "] used in sink function '"
 	    				<< calleeName << "' [line " << line << "]\n");
 	    	}
 	    }
@@ -634,7 +705,7 @@ void CTaintAnalysis::visitReturnInst(ReturnInst &I) {
 }
 
 static RegisterPass<CTaintAnalysis>
-X("isstac", "CTaint Module Pass",
+X("waint", "CTaint Module Pass",
 	     false /* Only looks at CFG */,
 	     true /* Analysis Pass */);
 

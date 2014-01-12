@@ -3,7 +3,22 @@
 # pattern old*.X to new*.X
 # Usage: ./thisScript <-s SRC_FOLDER> [-o OUT_FOLDER] [-m MACROS] [-i INC_FOLDER] <-c i|b|p|m> [files]
 
-USAGE="Usage: $(basename $0) <-s SRC_FOLDER> [-o OUT_FOLDER] [-m MACROS] [-i INC_FOLDER] <-c i|b|p|m> [files]"
+#USAGE="Usage: $(basename $0) <-s SRC_FOLDER> [-o OUT_FOLDER] [-m MACROS] [-i INC_FOLDER] <-c i|b|p|m> [files]"
+
+USAGE=$(cat <<EOF
+Usage: $(basename $0) -s source_folder -c actions -t file_type [options] [files]
+actions:
+	g  | Generates LLVM IR files(.s)
+	m  | Merges input files
+file_type:
+	b  | Generates LLVM bytecode files (.bc)
+	i  | Generates LLVM IR text files (.s)
+	l  | Generates LLVM IR text files (.ll)
+options:
+	-i | Specifies an include folder
+	-o | Specifies an output folder.
+EOF
+)
 
 if [ $# -lt 4 ]; then
   echo "$USAGE"
@@ -12,11 +27,12 @@ fi
 
 sflag=
 iflag=
-cflag=
+cmdflag=
 oflag=
 mflag=
+typeflag=
 
-while getopts 's:o:m:i:c:f:' OPTION
+while getopts 's:o:m:i:c:f:t:' OPTION
 do
   case $OPTION in
     s)	sflag=1
@@ -31,9 +47,12 @@ do
     i)	iflag=1
       	incfolder="-I$OPTARG "$incfolder""
 	;;
-    c)	cflag=1
+    c)	cmdflag=1
       	action="$OPTARG"
 	echo "action: "$action""
+	;;
+    t)	typeflag=1
+        filetype="$OPTARG"
 	;;
     ?)	printf "$USAGE\n" >&2
         exit 2
@@ -42,7 +61,17 @@ do
 done
 shift $(($OPTIND - 1))
 
-if [ ! "$cflag" ]; then
+if [ ! "$typeflag" ]; then
+  echo "You must specify a file type"
+  exit 3
+fi
+
+if [ "$cmdflag" ]; then
+  if [[ "$action" -ne "m" || "$action" -ne "g" ]]; then
+    echo "You must specify a valid action"
+    exit 5 
+  fi
+else
   echo "You must specify a valid operation"
   printf "$USAGE\n" >&2
   exit 3
@@ -112,19 +141,29 @@ function genLLFiles(){
 }
 
 function mergeBCFiles(){
-  echo "llvm-link -o "$outfolder/one.bc" $srcfolder/*.bc"
-  llvm-link -o "$outfolder/one.bc" $srcfolder/*.bc 2>> $logfile
+  if [ "$filetype" == "b" ]; then
+    llvm-link -o "$outfolder/one.bc" $srcfolder/*.bc 2>> $logfile
+  else
+    llvm-link -o "$outfolder/one.bc" $srcfolder/*.s 2>> $logfile
+  fi
+}
+
+function generateIRFiles(){
+  if [ "$filetype" == "i" ]; then
+    echo "(.s)" 
+    genIR
+  elif [ "$filetype" == "b" ]; then
+    echo "(.bc)"
+    genByteCode
+  else
+    echo "(.l)"
+    genLLFiles
+  fi
 }
 
 case "$action" in
-  i) echo "Generating IR files"
-    genIR
-    ;;
-  b) echo "Generating bytecode files"
-    genByteCode
-    ;;
-  p) echo "Generating human readable bytecode files"
-    genLLFiles
+  g) printf "Generating IR files: "
+    generateIRFiles
     ;;
   m) echo "Merging bytecode files"
     mergeBCFiles
