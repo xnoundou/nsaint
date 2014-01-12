@@ -4,7 +4,7 @@ OPT=/home/noundou/tools/llvm-3.3.src/build/Release+Asserts/bin/opt
 VLC="/home/noundou/ece750-project/benchmarks/vlc"
 RESULT="vlc-results"
 MODULE=input
-#MODULE=report
+IRTYPE="b"
 
 allmodules=(input)
 
@@ -13,11 +13,8 @@ INPUT_INC="-i $VLC/src \
 
 #input
 set -x
-./ctainthelp.sh \
-  -s $VLC/src/$MODULE \
-  $INPUT_INC \
-  -o $RESULT -c b
-./ctainthelp.sh -s $RESULT -o $RESULT -c m
+./ctainthelp.sh -s $VLC/src/$MODULE $INPUT_INC -o $RESULT -c g -t "$IRTYPE"
+./ctainthelp.sh -s $RESULT -o $RESULT -c m -t "$IRTYPE"
 
 LOGFILE=$RESULT/analysis-result".$MODULE"
 

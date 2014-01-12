@@ -1,682 +1,78 @@
-[STTAL]module identifier is <stdin>
-[STTAL]discovered function MD5Final
-[STTAL]discovered function bin2str
-[STTAL]discovered function mg_modify_passwords_file
-[STTAL]discovered function mg_url_encode
-[STTAL]discovered function mg_send_file
-[STTAL]discovered function mg_stat
-[STTAL]discovered function send_http_error
-[STTAL]discovered function mg_upload
-[STTAL]discovered function get_request_len
-[STTAL]discovered function mg_close_connection
-[STTAL]discovered function close_connection
-[STTAL]discovered function mg_connect
-[STTAL]discovered function conn2
-[STTAL]discovered function sslize
-[STTAL]discovered function mg_download
-[STTAL]discovered function getreq
-[STTAL]discovered function mg_stop
-[STTAL]discovered function free_context
-[STTAL]discovered function mg_start
-[STTAL]discovered function cry
-[STTAL]discovered function fc
-[STTAL]discovered function mg_strdup
-[STTAL]discovered function set_gpass_option
-[STTAL]discovered function set_ssl_option
-[STTAL]discovered function set_ports_option
-[STTAL]discovered function set_uid_option
-[STTAL]discovered function set_acl_option
-[STTAL]discovered function master_thread
-[STTAL]discovered function worker_thread
-[STTAL]discovered function consume_socket
-[STTAL]discovered function process_new_connection
-[STTAL]discovered function is_valid_uri
-[STTAL]discovered function mg_get_valid_option_names
-[STTAL]discovered function mg_get_option
-[STTAL]discovered function get_option_index
-[STTAL]discovered function mg_version
-[STTAL]discovered function mg_get_request_info
-[STTAL]discovered function mg_get_header
-[STTAL]discovered function get_header
-[STTAL]discovered function mg_start_thread
-[STTAL]discovered function mg_read
-[STTAL]discovered function pull_all
-[STTAL]discovered function mg_write
-[STTAL]discovered function push
-[STTAL]discovered function mg_vprintf
-[STTAL]discovered function alloc_vprintf
-[STTAL]discovered function mg_printf
-[STTAL]discovered function mg_chunked_printf
-[STTAL]discovered function mg_url_decode
-[STTAL]discovered function handle_file_request
-[STTAL]discovered function mg_get_var
-[STTAL]discovered function mg_strncasecmp
-[STTAL]discovered function mg_get_cookie
-[STTAL]discovered function mg_strcasestr
-[STTAL]discovered function mg_strlcpy
-[STTAL]discovered function mg_get_builtin_mime_type
-[STTAL]discovered function mg_strcasecmp
-[STTAL]discovered function mg_md5
-[STTAL]discovered function MD5Init
-[STTAL]discovered function MD5Update
-[STTAL]discovered function handle_request
-[STTAL]discovered function log_access
-[STTAL]discovered function should_keep_alive
-[STTAL]discovered function sockaddr_to_string
-[STTAL]discovered function log_header
-[STTAL]discovered function check_password
-[STTAL]discovered function open_auth_file
-[STTAL]discovered function parse_net
-[STTAL]discovered function isbyte
-[STTAL]discovered function remove_double_dots_and_double_slashes
-[STTAL]discovered function convert_uri_to_file_name
-[STTAL]discovered function set_throttle
-[STTAL]discovered function get_remote_ip
-[STTAL]discovered function get_first_ssl_listener_index
-[STTAL]discovered function redirect_to_https_port
-[STTAL]discovered function is_put_or_delete_request
-[STTAL]discovered function check_authorization
-[STTAL]discovered function send_authorization_request
-[STTAL]discovered function send_options
-[STTAL]discovered function is_authorized_for_put
-[STTAL]discovered function put_file
-[STTAL]discovered function mkcol
-[STTAL]discovered function remove_directory
-[STTAL]discovered function must_hide_file
-[STTAL]discovered function handle_propfind
-[STTAL]discovered function substitute_index_file
-[STTAL]discovered function handle_directory_request
-[STTAL]discovered function match_prefix
-[STTAL]discovered function handle_cgi_request
-[STTAL]discovered function handle_ssi_file_request
-[STTAL]discovered function is_not_modified
-[STTAL]discovered function construct_etag
-[STTAL]discovered function parse_date_string
-[STTAL]discovered function get_month_index
-[STTAL]discovered function num_leap_years
-[STTAL]discovered function mg_fopen
-[STTAL]discovered function fclose_on_exec
-[STTAL]discovered function get_mime_type
-[STTAL]discovered function send_ssi_file
-[STTAL]discovered function mg_fclose
-[STTAL]discovered function mg_fgetc
-[STTAL]discovered function do_ssi_include
-[STTAL]discovered function do_ssi_exec
-[STTAL]discovered function send_file_data
-[STTAL]discovered function mg_snprintf
-[STTAL]discovered function mg_vsnprintf
-[STTAL]discovered function next_option
-[STTAL]discovered function is_file_in_memory
-[STTAL]discovered function is_file_opened
-[STTAL]discovered function prepare_cgi_environment
-[STTAL]discovered function spawn_process
-[STTAL]discovered function set_close_on_exec
-[STTAL]discovered function forward_body_data
-[STTAL]discovered function read_request
-[STTAL]discovered function parse_http_headers
-[STTAL]discovered function skip_quoted
-[STTAL]discovered function skip
-[STTAL]discovered function pull
-[STTAL]discovered function addenv
-[STTAL]discovered function lowercase
-[STTAL]discovered function scan_directory
-[STTAL]discovered function dir_scan_callback
-[STTAL]discovered function compare_dir_entries
-[STTAL]discovered function print_dir_entry
-[STTAL]discovered function realloc2
-[STTAL]discovered function print_props
-[STTAL]discovered function print_dav_dir_entry
-[STTAL]discovered function gmt_time_string
-[STTAL]discovered function put_dir
-[STTAL]discovered function parse_range_header
-[STTAL]discovered function authorize
-[STTAL]discovered function parse_auth_header
-[STTAL]discovered function mg_fgets
-[STTAL]discovered function accept_new_connection
-[STTAL]discovered function close_all_listening_sockets
-[STTAL]discovered function uninitialize_ssl
-[STTAL]discovered function check_acl
-[STTAL]discovered function set_sock_timeout
-[STTAL]discovered function produce_socket
-[STTAL]discovered function parse_port_string
-[STTAL]discovered function is_valid_port
-[STTAL]discovered function load_dll
-[STTAL]discovered function ssl_error
-[STTAL]discovered function ssl_locking_callback
-[STTAL]discovered function ssl_id_callback
-[STTAL]discovered function mg_strndup
-[STTAL]discovered function reset_per_request_attributes
-[STTAL]discovered function parse_http_message
-[STTAL]discovered function is_valid_http_method
-[STTAL]discovered function close_socket_gracefully
-[STTAL]discovered function set_non_blocking_mode
-[STTAL]discovered function suggest_connection_header
-[STTAL]discovered function byteReverse
-[STTAL]discovered function MD5Transform
-[STTAL]discovered function is_big_endian
++ make -f Makefile.ctaint compile
+/home/noundou/tools/llvm-3.3.src/lib/Analysis/CTaint/CTaintAnalysis.cpp: In member function ‘void {anonymous}::CTaintAnalysis::visitCallInst(llvm::CallInst&)’:
+/home/noundou/tools/llvm-3.3.src/lib/Analysis/CTaint/CTaintAnalysis.cpp:477:53: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+++ /home/noundou/tools/llvm-3.3.src/build/Release+Asserts/bin/opt -stats -load /home/noundou/tools/llvm-3.3.src/build/Release+Asserts/lib/LLVMDataStructure.so -load /home/noundou/tools/llvm-3.3.src/build/Release+Asserts/lib/CTaint.so -debug -debug-only=waint-warnings -calltarget-eqtd -waint
+module identifier is <stdin>
 ## Starting intraprocedural analysis
-[Processing][Function][is_big_endian]
-[Processing][Function][MD5Transform]
-[Processing][Function][byteReverse]
-[Processing][Function][suggest_connection_header]
-[Processing][Function][set_non_blocking_mode]
-[Processing][Function][close_socket_gracefully]
-[Processing][Function][is_valid_http_method]
-[Processing][Function][parse_http_message]
-[Processing][Function][reset_per_request_attributes]
-[Processing][Function][mg_strndup]
-[Processing][Function][ssl_id_callback]
-[Processing][Function][ssl_locking_callback]
-[Processing][Function][ssl_error]
-[Processing][Function][load_dll]
-[Processing][Function][is_valid_port]
-[Processing][Function][parse_port_string]
-[Processing][Function][produce_socket]
-[Processing][Function][set_sock_timeout]
-[Processing][Function][check_acl]
-[Processing][Function][uninitialize_ssl]
-[Processing][Function][close_all_listening_sockets]
-[Processing][Function][accept_new_connection]
-[Processing][Function][mg_fgets]
-[Processing][Function][parse_auth_header]
-[Processing][Function][authorize]
-[Processing][Function][parse_range_header]
-[Processing][Function][put_dir]
-[Processing][Function][gmt_time_string]
-[Processing][Function][print_dav_dir_entry]
-[Processing][Function][print_props]
-[Processing][Function][realloc2]
-[Processing][Function][print_dir_entry]
-[Processing][Function][compare_dir_entries]
-[Processing][Function][dir_scan_callback]
-[Processing][Function][scan_directory]
-[Processing][Function][lowercase]
-[Processing][Function][addenv]
-[Processing][Function][pull]
-[Processing][Function][skip]
-[Processing][Function][skip_quoted]
-[Processing][Function][parse_http_headers]
-[Processing][Function][read_request]
-[Processing][Function][forward_body_data]
-[Processing][Function][set_close_on_exec]
-[Processing][Function][spawn_process]
-[Processing][Function][prepare_cgi_environment]
-[Processing][Function][is_file_opened]
-[Processing][Function][is_file_in_memory]
-[Processing][Function][next_option]
-[Processing][Function][mg_vsnprintf]
-[Processing][Function][mg_snprintf]
-[Processing][Function][send_file_data]
-[Processing][Function][do_ssi_exec]
-[Processing][Function][do_ssi_include]
-[Processing][Function][mg_fgetc]
-[Processing][Function][mg_fclose]
-[Processing][Function][send_ssi_file]
-[Processing][Function][get_mime_type]
-[Processing][Function][fclose_on_exec]
-[Processing][Function][mg_fopen]
-[Processing][Function][num_leap_years]
-[Processing][Function][get_month_index]
-[Processing][Function][parse_date_string]
-[Processing][Function][construct_etag]
-[Processing][Function][is_not_modified]
-[Processing][Function][handle_ssi_file_request]
-[Processing][Function][handle_cgi_request]
-[Processing][Function][match_prefix]
-[Processing][Function][handle_directory_request]
-[Processing][Function][substitute_index_file]
-[Processing][Function][handle_propfind]
-[Processing][Function][must_hide_file]
-[Processing][Function][remove_directory]
-[Processing][Function][mkcol]
-[Processing][Function][put_file]
-[Processing][Function][is_authorized_for_put]
-[Processing][Function][send_options]
-[Processing][Function][send_authorization_request]
-[Processing][Function][check_authorization]
-[Processing][Function][is_put_or_delete_request]
-[Processing][Function][redirect_to_https_port]
-[Processing][Function][get_first_ssl_listener_index]
-[Processing][Function][get_remote_ip]
-[Processing][Function][set_throttle]
-[Processing][Function][convert_uri_to_file_name]
-[Processing][Function][remove_double_dots_and_double_slashes]
-[Processing][Function][isbyte]
-[Processing][Function][parse_net]
-[Processing][Function][open_auth_file]
-[Processing][Function][check_password]
-[Processing][Function][log_header]
-[Processing][Function][sockaddr_to_string]
-[Processing][Function][should_keep_alive]
-[Processing][Function][log_access]
-[Processing][Function][handle_request]
-[Processing][Function][MD5Update]
-[Processing][Function][MD5Init]
-[Processing][Function][mg_md5]
-[Processing][Function][mg_strcasecmp]
-[Processing][Function][mg_get_builtin_mime_type]
-[Processing][Function][mg_strlcpy]
-[Processing][Function][mg_strcasestr]
-[Processing][Function][mg_get_cookie]
-[Processing][Function][mg_strncasecmp]
-[Processing][Function][mg_get_var]
-[Processing][Function][handle_file_request]
-[Processing][Function][mg_url_decode]
-[Processing][Function][mg_chunked_printf]
-[Processing][Function][mg_printf]
-[Processing][Function][alloc_vprintf]
-[Processing][Function][mg_vprintf]
-[Processing][Function][push]
-[Processing][Function][mg_write]
-[Processing][Function][pull_all]
-[Processing][Function][mg_read]
-[Processing][Function][mg_start_thread]
-[Processing][Function][get_header]
-[Processing][Function][mg_get_header]
-[Processing][Function][mg_get_request_info]
-[Processing][Function][mg_version]
-[Processing][Function][get_option_index]
-[Processing][Function][mg_get_option]
-[Processing][Function][mg_get_valid_option_names]
-[Processing][Function][is_valid_uri]
-[Processing][Function][process_new_connection]
-[Processing][Function][consume_socket]
-[Processing][Function][worker_thread]
-[Processing][Function][master_thread]
-[Processing][Function][set_acl_option]
-[Processing][Function][set_uid_option]
-[Processing][Function][set_ports_option]
-[Processing][Function][set_ssl_option]
-[Processing][Function][set_gpass_option]
-[Processing][Function][mg_strdup]
-[Processing][Function][fc]
-[Processing][Function][cry]
-[Processing][Function][mg_start]
-[Processing][Function][free_context]
-[Processing][Function][mg_stop]
-[Processing][Function][getreq]
-[Processing][Function][mg_download]
-[Processing][Function][sslize]
-[Processing][Function][conn2]
-[Processing][Function][mg_connect]
-[Processing][Function][close_connection]
-[Processing][Function][mg_close_connection]
-[Processing][Function][get_request_len]
-[Processing][Function][mg_upload]
-[Processing][Function][send_http_error]
-[Processing][Function][mg_stat]
-[Processing][Function][mg_send_file]
-[Processing][Function][mg_url_encode]
-[Processing][Function][mg_modify_passwords_file]
-[Processing][Function][bin2str]
-[Processing][Function][MD5Final]
 ## Starting interprocedural analysis
 No main function exists
-[Processing][Function][is_big_endian]
-[Processing][Function][MD5Transform]
-[Processing][Function][byteReverse]
-[Processing][Function][suggest_connection_header]
-[Processing][Function][set_non_blocking_mode]
-[Processing][Function][close_socket_gracefully]
-[Processing][Function][is_valid_http_method]
-[Processing][Function][parse_http_message]
-[Processing][Function][reset_per_request_attributes]
-[Processing][Function][mg_strndup]
-[Processing][Function][ssl_id_callback]
-[Processing][Function][ssl_locking_callback]
-[Processing][Function][ssl_error]
-[Processing][Function][load_dll]
-[Processing][Function][is_valid_port]
-[Processing][Function][parse_port_string]
-[Processing][Function][produce_socket]
-[Processing][Function][set_sock_timeout]
-[Processing][Function][check_acl]
-[Processing][Function][uninitialize_ssl]
-[Processing][Function][close_all_listening_sockets]
-[Processing][Function][accept_new_connection]
-[Processing][Function][mg_fgets]
-[Processing][Function][parse_auth_header]
-[Processing][Function][authorize]
-[Processing][Function][parse_range_header]
-[Processing][Function][put_dir]
-[Processing][Function][gmt_time_string]
-[Processing][Function][print_dav_dir_entry]
-[Processing][Function][print_props]
-[Processing][Function][realloc2]
-[Processing][Function][print_dir_entry]
-[Processing][Function][compare_dir_entries]
-[Processing][Function][dir_scan_callback]
-[Processing][Function][scan_directory]
-[Processing][Function][lowercase]
-[Processing][Function][addenv]
-[Processing][Function][pull]
-[Processing][Function][skip]
-[Processing][Function][skip_quoted]
-[Processing][Function][parse_http_headers]
-[Processing][Function][read_request]
-[Processing][Function][forward_body_data]
-[Processing][Function][set_close_on_exec]
-[Processing][Function][spawn_process]
-[Processing][Function][prepare_cgi_environment]
-[Processing][Function][is_file_opened]
-[Processing][Function][is_file_in_memory]
-[Processing][Function][next_option]
-[Processing][Function][mg_vsnprintf]
-[Processing][Function][mg_snprintf]
-[Processing][Function][send_file_data]
-[Processing][Function][do_ssi_exec]
-[Processing][Function][do_ssi_include]
-[Processing][Function][mg_fgetc]
-[Processing][Function][mg_fclose]
-[Processing][Function][send_ssi_file]
-[Processing][Function][get_mime_type]
-[Processing][Function][fclose_on_exec]
-[Processing][Function][mg_fopen]
-[Processing][Function][num_leap_years]
-[Processing][Function][get_month_index]
-[Processing][Function][parse_date_string]
-[Processing][Function][construct_etag]
-[Processing][Function][is_not_modified]
-[Processing][Function][handle_ssi_file_request]
-[Processing][Function][handle_cgi_request]
-[Processing][Function][match_prefix]
-[Processing][Function][handle_directory_request]
-[Processing][Function][substitute_index_file]
-[Processing][Function][handle_propfind]
-[Processing][Function][must_hide_file]
-[Processing][Function][remove_directory]
-[Processing][Function][mkcol]
-[Processing][Function][put_file]
-[Processing][Function][is_authorized_for_put]
-[Processing][Function][send_options]
-[Processing][Function][send_authorization_request]
-[Processing][Function][check_authorization]
-[Processing][Function][is_put_or_delete_request]
-[Processing][Function][redirect_to_https_port]
-[Processing][Function][get_first_ssl_listener_index]
-[Processing][Function][get_remote_ip]
-[Processing][Function][set_throttle]
-[Processing][Function][convert_uri_to_file_name]
-[Processing][Function][remove_double_dots_and_double_slashes]
-[Processing][Function][isbyte]
-[Processing][Function][parse_net]
-[Processing][Function][open_auth_file]
-[Processing][Function][check_password]
-[Processing][Function][log_header]
-[Processing][Function][sockaddr_to_string]
-[Processing][Function][should_keep_alive]
-[Processing][Function][log_access]
-[Processing][Function][handle_request]
-[Processing][Function][MD5Update]
-[Processing][Function][MD5Init]
-[Processing][Function][mg_md5]
-[Processing][Function][mg_strcasecmp]
-[Processing][Function][mg_get_builtin_mime_type]
-[Processing][Function][mg_strlcpy]
-[Processing][Function][mg_strcasestr]
-[Processing][Function][mg_get_cookie]
-[Processing][Function][mg_strncasecmp]
-[Processing][Function][mg_get_var]
-[Processing][Function][handle_file_request]
-[Processing][Function][mg_url_decode]
-[Processing][Function][mg_chunked_printf]
-[Processing][Function][mg_printf]
-[Processing][Function][alloc_vprintf]
-[Processing][Function][mg_vprintf]
-[Processing][Function][push]
-[Processing][Function][mg_write]
-[Processing][Function][pull_all]
-[Processing][Function][mg_read]
-[Processing][Function][mg_start_thread]
-[Processing][Function][get_header]
-[Processing][Function][mg_get_header]
-[Processing][Function][mg_get_request_info]
-[Processing][Function][mg_version]
-[Processing][Function][get_option_index]
-[Processing][Function][mg_get_option]
-[Processing][Function][mg_get_valid_option_names]
-[Processing][Function][is_valid_uri]
-[Processing][Function][process_new_connection]
-[Processing][Function][consume_socket]
-[Processing][Function][worker_thread]
-[Processing][Function][master_thread]
-[Processing][Function][set_acl_option]
-[Processing][Function][set_uid_option]
-[Processing][Function][set_ports_option]
-[Processing][Function][set_ssl_option]
-[Processing][Function][set_gpass_option]
-[Processing][Function][mg_strdup]
-[Processing][Function][fc]
-[Processing][Function][cry]
-[Processing][Function][mg_start]
-[Processing][Function][free_context]
-[Processing][Function][mg_stop]
-[Processing][Function][getreq]
-[Processing][Function][mg_download]
-[Processing][Function][sslize]
-[Processing][Function][conn2]
-[Processing][Function][mg_connect]
-[Processing][Function][close_connection]
-[Processing][Function][mg_close_connection]
-[Processing][Function][get_request_len]
-[Processing][Function][mg_upload]
-[Processing][Function][send_http_error]
-[Processing][Function][mg_stat]
-[Processing][Function][mg_send_file]
-[Processing][Function][mg_url_encode]
-[Processing][Function][mg_modify_passwords_file]
-[Processing][Function][bin2str]
-[Processing][Function][MD5Final]
 ## Starting context-insensitive interprocedural analysis
 No main function exists
-[Processing][Function][is_big_endian]
-[Processing][Function][MD5Transform]
-[Processing][Function][byteReverse]
-[Processing][Function][suggest_connection_header]
-[Processing][Function][set_non_blocking_mode]
-[Processing][Function][close_socket_gracefully]
-[Processing][Function][is_valid_http_method]
-[Processing][Function][parse_http_message]
-[Processing][Function][reset_per_request_attributes]
-[Processing][Function][mg_strndup]
-[Processing][Function][ssl_id_callback]
-[Processing][Function][ssl_locking_callback]
-[Processing][Function][ssl_error]
-[Processing][Function][load_dll]
-[Processing][Function][is_valid_port]
-[Processing][Function][parse_port_string]
-[Processing][Function][produce_socket]
-[Processing][Function][set_sock_timeout]
-[Processing][Function][check_acl]
-[Processing][Function][uninitialize_ssl]
-[Processing][Function][close_all_listening_sockets]
-[Processing][Function][accept_new_connection]
-[Processing][Function][mg_fgets]
-[Processing][Function][parse_auth_header]
-[Processing][Function][authorize]
-[Processing][Function][parse_range_header]
-[Processing][Function][put_dir]
-[Processing][Function][gmt_time_string]
-[Processing][Function][print_dav_dir_entry]
-[Processing][Function][print_props]
-[Processing][Function][realloc2]
-[Processing][Function][print_dir_entry]
-[Processing][Function][compare_dir_entries]
-[Processing][Function][dir_scan_callback]
-[Processing][Function][scan_directory]
-[Processing][Function][lowercase]
-[Processing][Function][addenv]
-[Processing][Function][pull]
-[Processing][Function][skip]
-[Processing][Function][skip_quoted]
-[Processing][Function][parse_http_headers]
-[Processing][Function][read_request]
-[Processing][Function][forward_body_data]
-[Processing][Function][set_close_on_exec]
-[Processing][Function][spawn_process]
-[Processing][Function][prepare_cgi_environment]
-[Processing][Function][is_file_opened]
-[Processing][Function][is_file_in_memory]
-[Processing][Function][next_option]
-[Processing][Function][mg_vsnprintf]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %11 = load i8** %3, align 8, !dbg !571 (0) is used in sink function 'vsnprintf' [line 748]
-[Processing][Function][mg_snprintf]
-[Processing][Function][send_file_data]
-[Processing][Function][do_ssi_exec]
-[Processing][Function][do_ssi_include]
-[Processing][Function][mg_fgetc]
-[Processing][Function][mg_fclose]
-[Processing][Function][send_ssi_file]
-[Processing][Function][get_mime_type]
-[Processing][Function][fclose_on_exec]
-[Processing][Function][mg_fopen]
-[Processing][Function][num_leap_years]
-[Processing][Function][get_month_index]
-[Processing][Function][parse_date_string]
-[Processing][Function][construct_etag]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %4 = load i8** %1, align 8, !dbg !610 (0) is used in sink function 'snprintf' [line 2922]
-[Processing][Function][is_not_modified]
-[Processing][Function][handle_ssi_file_request]
-[Processing][Function][handle_cgi_request]
-[Processing][Function][match_prefix]
-[Processing][Function][handle_directory_request]
-[Processing][Function][substitute_index_file]
-[Processing][Function][handle_propfind]
-[Processing][Function][must_hide_file]
-[Processing][Function][remove_directory]
-[Processing][Function][mkcol]
-[Processing][Function][put_file]
-[Processing][Function][is_authorized_for_put]
-[Processing][Function][send_options]
-[Processing][Function][send_authorization_request]
-[Processing][Function][check_authorization]
-[Processing][Function][is_put_or_delete_request]
-[Processing][Function][redirect_to_https_port]
-[Processing][Function][get_first_ssl_listener_index]
-[Processing][Function][get_remote_ip]
-[Processing][Function][set_throttle]
-[Processing][Function][convert_uri_to_file_name]
-## [WARNING][format string vulnerability]: 
-	Tainted valuei64 4096 (1) is used in sink function 'snprintf' [line 1841]
-[Processing][Function][remove_double_dots_and_double_slashes]
-[Processing][Function][isbyte]
-[Processing][Function][parse_net]
-[Processing][Function][open_auth_file]
-[Processing][Function][check_password]
-[Processing][Function][log_header]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %9 = load %struct._IO_FILE** %3, align 8, !dbg !605 (0) is used in sink function 'fprintf' [line 4654]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %12 = load %struct._IO_FILE** %3, align 8, !dbg !608 (0) is used in sink function 'fprintf' [line 4656]
-[Processing][Function][sockaddr_to_string]
-[Processing][Function][should_keep_alive]
-[Processing][Function][log_access]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %36 = load %struct._IO_FILE** %fp, align 8, !dbg !619 (0) is used in sink function 'fprintf' [line 4678]
-[Processing][Function][handle_request]
-[Processing][Function][MD5Update]
-[Processing][Function][MD5Init]
-[Processing][Function][mg_md5]
-[Processing][Function][mg_strcasecmp]
-[Processing][Function][mg_get_builtin_mime_type]
-[Processing][Function][mg_strlcpy]
-[Processing][Function][mg_strcasestr]
-[Processing][Function][mg_get_cookie]
-[Processing][Function][mg_strncasecmp]
-[Processing][Function][mg_get_var]
-[Processing][Function][handle_file_request]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %20 = getelementptr inbounds [4096 x i8]* %gz_path, i32 0, i32 0, !dbg !655 (0) is used in sink function 'snprintf' [line 2954]
-[Processing][Function][mg_url_decode]
-[Processing][Function][mg_chunked_printf]
-[Processing][Function][mg_printf]
-[Processing][Function][alloc_vprintf]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %9 = load i8** %3, align 8, !dbg !577 (2) is used in sink function 'vsnprintf' [line 1642]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %34 = load i64* %2, align 8, !dbg !585 (1) is used in sink function 'vsnprintf' [line 1650]
-[Processing][Function][mg_vprintf]
-[Processing][Function][push]
-[Processing][Function][mg_write]
-[Processing][Function][pull_all]
-[Processing][Function][mg_read]
-[Processing][Function][mg_start_thread]
-[Processing][Function][get_header]
-[Processing][Function][mg_get_header]
-[Processing][Function][mg_get_request_info]
-[Processing][Function][mg_version]
-[Processing][Function][get_option_index]
-[Processing][Function][mg_get_option]
-[Processing][Function][mg_get_valid_option_names]
-[Processing][Function][is_valid_uri]
-[Processing][Function][process_new_connection]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %34 = getelementptr inbounds [100 x i8]* %ebuf, i32 0, i32 0, !dbg !575 (0) is used in sink function 'snprintf' [line 5077]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %54 = getelementptr inbounds [100 x i8]* %ebuf, i32 0, i32 0, !dbg !581 (0) is used in sink function 'snprintf' [line 5081]
-[Processing][Function][consume_socket]
-[Processing][Function][worker_thread]
-[Processing][Function][master_thread]
-[Processing][Function][set_acl_option]
-[Processing][Function][set_uid_option]
-[Processing][Function][set_ports_option]
-[Processing][Function][set_ssl_option]
-[Processing][Function][set_gpass_option]
-[Processing][Function][mg_strdup]
-[Processing][Function][fc]
-[Processing][Function][cry]
-## [WARNING][format string vulnerability]: 
-	Tainted valuei64 8192 (1) is used in sink function 'vsnprintf' [line 631]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %62 = load %struct._IO_FILE** %fp, align 8, !dbg !641 (0) is used in sink function 'fprintf' [line 647]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %72 = load %struct._IO_FILE** %fp, align 8, !dbg !643 (0) is used in sink function 'fprintf' [line 651]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %83 = load %struct._IO_FILE** %fp, align 8, !dbg !646 (0) is used in sink function 'fprintf' [line 655]
-[Processing][Function][mg_start]
-[Processing][Function][free_context]
-[Processing][Function][mg_stop]
-[Processing][Function][getreq]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %48 = load i8** %2, align 8, !dbg !561 (0) is used in sink function 'snprintf' [line 5018]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %57 = load i8** %2, align 8, !dbg !565 (0) is used in sink function 'snprintf' [line 5020]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %72 = load i8** %2, align 8, !dbg !569 (0) is used in sink function 'snprintf' [line 5023]
-[Processing][Function][mg_download]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %26 = load i8** %4, align 8, !dbg !584 (0) is used in sink function 'snprintf' [line 5049]
-[Processing][Function][sslize]
-[Processing][Function][conn2]
-## [WARNING][format string vulnerability]: 
-	Tainted valuei8* getelementptr inbounds ([3 x i8]* @.str13, i32 0, i32 0) (2) is used in sink function 'snprintf' [line 2592]
-## [WARNING][format string vulnerability]: 
-	Tainted valuei8* getelementptr inbounds ([3 x i8]* @.str13, i32 0, i32 0) (2) is used in sink function 'snprintf' [line 2594]
-[Processing][Function][mg_connect]
-[Processing][Function][close_connection]
-[Processing][Function][mg_close_connection]
-[Processing][Function][get_request_len]
-[Processing][Function][mg_upload]
-## [WARNING][format string vulnerability]: 
-	Tainted valuei64 4096 (1) is used in sink function 'snprintf' [line 4358]
-[Processing][Function][send_http_error]
-[Processing][Function][mg_stat]
-[Processing][Function][mg_send_file]
-[Processing][Function][mg_url_encode]
-[Processing][Function][mg_modify_passwords_file]
-## [WARNING][format string vulnerability]: 
-	Tainted valuei64 4096 (1) is used in sink function 'snprintf' [line 2536]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %79 = load %struct._IO_FILE** %fp2, align 8, !dbg !663 (0) is used in sink function 'fprintf' [line 2564]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %72 = load %struct._IO_FILE** %fp2, align 8, !dbg !660 (0) is used in sink function 'fprintf' [line 2561]
-## [WARNING][format string vulnerability]: 
-	Tainted value  %95 = load %struct._IO_FILE** %fp2, align 8, !dbg !669 (0) is used in sink function 'fprintf' [line 2571]
-[Processing][Function][bin2str]
-[Processing][Function][MD5Final]
+[waint][fmtvul]  Argument at position 3 of function 'snprintf' shall be a format string [line 2922] 
+[waint][fmtvul]  Argument at position 3 of function 'snprintf' shall be a format string [line 1841] 
+[waint][tval]   %9 = load %struct._IO_FILE** %3, align 8, !dbg !605 # [0] used in sink function 'fprintf' [line 4654]
+[waint][tval]   %12 = load %struct._IO_FILE** %3, align 8, !dbg !608 # [0] used in sink function 'fprintf' [line 4656]
+[waint][tval]   %36 = load %struct._IO_FILE** %fp, align 8, !dbg !619 # [0] used in sink function 'fprintf' [line 4678]
+[waint][tval]   %86 = load %struct._IO_FILE** %fp, align 8, !dbg !622 # [1] used in sink function 'fputc' [line 4685]
+[waint][fmtvul]  Argument at position 3 of function 'snprintf' shall be a format string [line 2954] 
+[waint][tval] i64 1 # [1] used in sink function 'fwrite' [line 1495]
+[waint][fmtvul]  Argument at position 3 of function 'snprintf' shall be a format string [line 5077] 
+[waint][fmtvul]  Argument at position 3 of function 'snprintf' shall be a format string [line 5081] 
+[waint][tval]   %62 = load %struct._IO_FILE** %fp, align 8, !dbg !641 # [0] used in sink function 'fprintf' [line 647]
+[waint][tval]   %72 = load %struct._IO_FILE** %fp, align 8, !dbg !643 # [0] used in sink function 'fprintf' [line 651]
+[waint][tval]   %83 = load %struct._IO_FILE** %fp, align 8, !dbg !646 # [0] used in sink function 'fprintf' [line 655]
+[waint][tval]   %86 = load %struct._IO_FILE** %fp, align 8, !dbg !647 # [1] used in sink function 'fputc' [line 656]
+[waint][fmtvul]  Argument at position 3 of function 'snprintf' shall be a format string [line 5018] 
+[waint][fmtvul]  Argument at position 3 of function 'snprintf' shall be a format string [line 5020] 
+[waint][fmtvul]  Argument at position 3 of function 'snprintf' shall be a format string [line 5023] 
+[waint][fmtvul]  Argument at position 3 of function 'snprintf' shall be a format string [line 5049] 
+[waint][fmtvul]  Argument at position 3 of function 'snprintf' shall be a format string [line 2592] 
+[waint][fmtvul]  Argument at position 3 of function 'snprintf' shall be a format string [line 2594] 
+[waint][fmtvul]  Argument at position 3 of function 'snprintf' shall be a format string [line 2597] 
+[waint][fmtvul]  Argument at position 3 of function 'snprintf' shall be a format string [line 2599] 
+[waint][fmtvul]  Argument at position 3 of function 'snprintf' shall be a format string [line 2607] 
+[waint][fmtvul]  Argument at position 3 of function 'snprintf' shall be a format string [line 4971] 
+[waint][fmtvul]  Argument at position 3 of function 'snprintf' shall be a format string [line 4358] 
+[waint][tval] i64 1 # [1] used in sink function 'fwrite' [line 4371]
+[waint][tval] i64 1 # [1] used in sink function 'fwrite' [line 4379]
+[waint][fmtvul]  Argument at position 3 of function 'snprintf' shall be a format string [line 2536] 
+[waint][tval]   %79 = load %struct._IO_FILE** %fp2, align 8, !dbg !663 # [0] used in sink function 'fprintf' [line 2564]
+[waint][tval]   %72 = load %struct._IO_FILE** %fp2, align 8, !dbg !660 # [0] used in sink function 'fprintf' [line 2561]
+[waint][tval]   %95 = load %struct._IO_FILE** %fp2, align 8, !dbg !669 # [0] used in sink function 'fprintf' [line 2571]
+===-------------------------------------------------------------------------===
+                          ... Statistics Collected ...
+===-------------------------------------------------------------------------===
 
-real	0m59.924s
-user	0m58.436s
-sys	0m1.344s
+  317           - Number of call nodes merged
+   90           - Number of calls filtered
+ 1757           - Number of direct calls
+   61           - Number of globals trivially removed
+   40           - Number of indirect calls
+22376           - Number of nodes allocated
+  875           - Number of nodes completely folded
+   75           - Number of nodes folded in std lib
+ 2460           - Number of nodes removed by reachability
+ 1447           - Number of nodes trivially removed
+    5 dsa-bu    - Maximum SCC Size in Call Graph
+ 2948 dsa-bu    - Number of 'actual' call edges
+    6 dsa-bu    - Number of DSGraph recalculations
+ 1016 dsa-bu    - Number of calls we know nothing about
+ 1657 dsa-bu    - Number of graphs inlined
+   24 dsa-bu    - Number of resolved IndCalls
+ 1016 dsa-bu    - Number of unresolved IndCalls
+  943 dsa-local - Number of direct calls added
+   40 dsa-local - Number of indirect calls added
+  814 dsa-local - Number of intrinsics called
+    4 dsa-local - Number of inttoptr used only in cmp
+  866 td_dsa    - Number of graphs inlined
+ 6708 waint     - Number of context-sensitive analysis calls
+   31 waint     - Number of emited warnings
+   58 waint     - Number of found format string vulnerabilities
+   98 waint     - Number of found issues
+   40 waint     - Number of found tainted value usage
+  155 waint     - Number of functions found in the module
+
+
+real	0m4.792s
+user	0m4.744s
+sys	0m0.040s

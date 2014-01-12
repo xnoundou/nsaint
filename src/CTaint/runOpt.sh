@@ -12,12 +12,15 @@ fileflag=
 projectflag=
 optflag=
 statsflag=
+debugflag=
 
-while getopts 'mfo:i:p:s' OPTION
+while getopts 'mfdo:i:p:s' OPTION
 do
   case $OPTION in
     m)	moduleflag=1
 	;;
+    d)	debugflag=1
+        ;;
     s)	statsflag=1
 	;;
     o)	optflag=1
@@ -62,12 +65,18 @@ if [ "$statsflag" ]; then
   STATS="-stats"
 fi
 
-PASSARG="-isstac"
+PASSARG="-waint"
+
+if [ "$debugflag" ]; then
+  #DEBUGFLAG="-debug-only=waint-warnings"
+  DEBUGFLAG="-debug -debug-only=waint-warnings"
+  #DEBUGFLAG="-debug -debug-only=waint-sinks"
+fi
+
+set -x
 
 make -f Makefile.ctaint compile > /dev/null
 
 time $($OPT $STATS -load $LLVM_LIB/LLVMDataStructure.so \
-  	    	   -load $LLVM_LIB/CTaint.so \
-  	    	   -calltarget-eqtd "$PASSARG" < "$INPUTFILE" > /dev/null)
-  	    	   #-debug -debug-only=isstac-warnings -calltarget-eqtd "$PASSARG" < "$INPUTFILE" > /dev/null)
+  	    	   -load $LLVM_LIB/CTaint.so $DEBUGFLAG -calltarget-eqtd "$PASSARG" < "$INPUTFILE" > /dev/null)
 

@@ -1,1333 +1,267 @@
-[ISSTAC]module identifier is <stdin>
-[ISSTAC]discovered function addrcache_create
-[ISSTAC]discovered function addrcache_get_root_folder
-[ISSTAC]discovered function addrcache_get_list_folder
-[ISSTAC]discovered function addrcache_get_list_person
-[ISSTAC]discovered function addrcache_get_dirty
-[ISSTAC]discovered function addrcache_set_dirty
-[ISSTAC]discovered function addrcache_get_name
-[ISSTAC]discovered function addrcache_set_name
-[ISSTAC]discovered function addrcache_refresh
-[ISSTAC]discovered function addrcache_next_id
-[ISSTAC]discovered function addrcache_clear
-[ISSTAC]discovered function addrcache_free_all_folders
-[ISSTAC]discovered function addrcache_free_item_hash
-[ISSTAC]discovered function addrcache_free
-[ISSTAC]discovered function addrcache_check_file
-[ISSTAC]discovered function addrcache_mark_file
-[ISSTAC]discovered function addrcache_print
-[ISSTAC]discovered function addrcache_id_person
-[ISSTAC]discovered function addrcache_add_folder
-[ISSTAC]discovered function addrcache_id_group
-[ISSTAC]discovered function addrcache_id_folder
-[ISSTAC]discovered function addrcache_id_email
-[ISSTAC]discovered function addrcache_id_attribute
-[ISSTAC]discovered function addrcache_hash_add_person
-[ISSTAC]discovered function addritem_parse_first_last
-[ISSTAC]discovered function addritem_folder_path
-[ISSTAC]discovered function addritem_format_email
-[ISSTAC]discovered function qryreq_set_search_type
-[ISSTAC]discovered function qryreq_add_query
-[ISSTAC]discovered function qrymgr_add_request
-[ISSTAC]discovered function qrymgr_find_request
-[ISSTAC]discovered function qrymgr_delete_request
-[ISSTAC]discovered function qryreq_free
-[ISSTAC]discovered function qrymgr_initialize
-[ISSTAC]discovered function qrymgr_teardown
-[ISSTAC]discovered function qrymgr_free_all_request
-[ISSTAC]discovered function qryreq_clear
-[ISSTAC]discovered function get_default_xface
-[ISSTAC]discovered function get_content_for_any_face
-[ISSTAC]discovered function get_account_xface
-[ISSTAC]discovered function get_any_face_filename_for_account
-[ISSTAC]discovered function get_default_face
-[ISSTAC]discovered function get_account_face
-[ISSTAC]discovered function custom_header_get_str
-[ISSTAC]discovered function custom_header_read_str
-[ISSTAC]discovered function custom_header_find
-[ISSTAC]discovered function custom_header_free
-[ISSTAC]discovered function custom_header_is_allowed
-[ISSTAC]discovered function display_header_prop_get_str
-[ISSTAC]discovered function display_header_prop_read_str
-[ISSTAC]discovered function display_header_prop_free
-[ISSTAC]discovered function ertf_parser_new
-[ISSTAC]discovered function ertf_parser_destroy
-[ISSTAC]discovered function ertf_parse
-[ISSTAC]discovered function ertf_read_line
-[ISSTAC]discovered function ertf_parse_tag
-[ISSTAC]discovered function ertf_append_char
-[ISSTAC]discovered function ertf_get_parenthesis
-[ISSTAC]discovered function g_string_append_c_inline
-[ISSTAC]discovered function exporthtml_create
-[ISSTAC]discovered function exporthtml_build_entry
-[ISSTAC]discovered function exporthtml_free
-[ISSTAC]discovered function exporthtml_set_stylesheet
-[ISSTAC]discovered function exporthtml_set_name_format
-[ISSTAC]discovered function exporthtml_set_banding
-[ISSTAC]discovered function exporthtml_set_link_email
-[ISSTAC]discovered function exporthtml_set_attributes
-[ISSTAC]discovered function exporthtml_process
-[ISSTAC]discovered function exporthtml_fmt_header
-[ISSTAC]discovered function exporthtml_fmt_folder
-[ISSTAC]discovered function exporthtml_create_css_files
-[ISSTAC]discovered function exporthtml_parse_filespec
-[ISSTAC]discovered function exporthtml_test_dir
-[ISSTAC]discovered function exporthtml_create_dir
-[ISSTAC]discovered function exporthtml_get_create_msg
-[ISSTAC]discovered function exporthtml_load_settings
-[ISSTAC]discovered function exporthtml_default_values
-[ISSTAC]discovered function exporthtml_build_filespec
-[ISSTAC]discovered function exporthtml_save_settings
-[ISSTAC]discovered function exporthtml_create_css_dfl
-[ISSTAC]discovered function exporthtml_create_css_full
-[ISSTAC]discovered function exporthtml_fmt_folderhead
-[ISSTAC]discovered function exporthtml_fmt_person
-[ISSTAC]discovered function exporthtml_fmt_group
-[ISSTAC]discovered function exporthtml_sort_name
-[ISSTAC]discovered function exporthtml_compare_name
-[ISSTAC]discovered function exporthtml_fmt_email
-[ISSTAC]discovered function exporthtml_sort_email
-[ISSTAC]discovered function exporthtml_compare_email
-[ISSTAC]discovered function exporthtml_fmt_fullname
-[ISSTAC]discovered function exporthtml_fmt_attribs
-[ISSTAC]discovered function exporthtml_sort_attrib
-[ISSTAC]discovered function exporthtml_compare_attrib
-[ISSTAC]discovered function exporthtml_find_stylesheet
-[ISSTAC]discovered function exportldif_create
-[ISSTAC]discovered function exportldif_free
-[ISSTAC]discovered function exportldif_set_suffix
-[ISSTAC]discovered function exportldif_set_rdn
-[ISSTAC]discovered function exportldif_set_use_dn
-[ISSTAC]discovered function exportldif_set_exclude_email
-[ISSTAC]discovered function exportldif_process
-[ISSTAC]discovered function exportldif_fmt_folder
-[ISSTAC]discovered function exportldif_parse_filespec
-[ISSTAC]discovered function exportldif_test_dir
-[ISSTAC]discovered function exportldif_create_dir
-[ISSTAC]discovered function exportldif_get_create_msg
-[ISSTAC]discovered function exportldif_load_settings
-[ISSTAC]discovered function exportldif_default_values
-[ISSTAC]discovered function exportldif_build_filespec
-[ISSTAC]discovered function exportldif_save_settings
-[ISSTAC]discovered function exportldif_fmt_person
-[ISSTAC]discovered function exportldif_test_email
-[ISSTAC]discovered function addrcache_hash_add_group
-[ISSTAC]discovered function addrcache_hash_add_folder
-[ISSTAC]discovered function addrcache_folder_add_person
-[ISSTAC]discovered function addrcache_folder_add_folder
-[ISSTAC]discovered function addrcache_folder_add_group
-[ISSTAC]discovered function addrcache_add_person
-[ISSTAC]discovered function addrcache_person_add_email
-[ISSTAC]discovered function addrcache_hash_add_email
-[ISSTAC]discovered function addrcache_add_group
-[ISSTAC]discovered function addrcache_group_add_email
-[ISSTAC]discovered function addrharvest_free_table
-[ISSTAC]discovered function addrharvest_harvest
-[ISSTAC]discovered function addrcache_folder_move_person
-[ISSTAC]discovered function addrcache_folder_move_group
-[ISSTAC]discovered function addrcache_folder_move_folder
-[ISSTAC]discovered function addrcache_get_object
-[ISSTAC]discovered function addrcache_get_email
-[ISSTAC]discovered function addrcache_remove_group
-[ISSTAC]discovered function addrcache_remove_email
-[ISSTAC]discovered function addrcache_remove_person
-[ISSTAC]discovered function addrcache_allgrp_rem_email_vis
-[ISSTAC]discovered function addrcache_person_remove_email
-[ISSTAC]discovered function addrcache_get_group_for_person
-[ISSTAC]discovered function addrcache_get_grp_person_vis
-[ISSTAC]discovered function addrcache_get_all_persons
-[ISSTAC]discovered function addrcache_get_all_persons_vis
-[ISSTAC]discovered function addrcache_get_all_groups
-[ISSTAC]discovered function addrcache_get_all_groups_vis
-[ISSTAC]discovered function addrcache_remove_folder
-[ISSTAC]discovered function addrcache_remove_folder_delete
-[ISSTAC]discovered function addrcache_add_contact
-[ISSTAC]discovered function addrcache_add_new_folder
-[ISSTAC]discovered function addrcache_free_item_vis
-[ISSTAC]discovered function addrcache_next_cache_id
-[ISSTAC]discovered function addrharvest_create
-[ISSTAC]discovered function addrharvest_build_entry
-[ISSTAC]discovered function addrharvest_set_path
-[ISSTAC]discovered function addrharvest_set_folder_size
-[ISSTAC]discovered function addrharvest_set_recurse
-[ISSTAC]discovered function addrharvest_set_header
-[ISSTAC]discovered function addrharvest_find
-[ISSTAC]discovered function addrharvest_get_count
-[ISSTAC]discovered function addrharvest_free
-[ISSTAC]discovered function addritem_print_item_folder
-[ISSTAC]discovered function addritem_folder_get_person_list
-[ISSTAC]discovered function addritem_folder_get_group_list
-[ISSTAC]discovered function addrharvest_harvest_dir
-[ISSTAC]discovered function addrharvest_harvest_list
-[ISSTAC]discovered function addrharvest_check_header
-[ISSTAC]discovered function addrharvest_readfile
-[ISSTAC]discovered function addrharvest_get_header
-[ISSTAC]discovered function addrharvest_parse_address
-[ISSTAC]discovered function addrharvest_find_at
-[ISSTAC]discovered function addrharvest_find_address
-[ISSTAC]discovered function addrharvest_extract_address
-[ISSTAC]discovered function addrharvest_del_email
-[ISSTAC]discovered function addrharvest_insert_cache
-[ISSTAC]discovered function addrharvest_check_hdr
-[ISSTAC]discovered function addrharvest_free_table_vis
-[ISSTAC]discovered function addritem_create_item_email
-[ISSTAC]discovered function addritem_copy_item_email
-[ISSTAC]discovered function addritem_copyfull_item_email
-[ISSTAC]discovered function addritem_email_set_alias
-[ISSTAC]discovered function addritem_email_set_address
-[ISSTAC]discovered function addritem_email_set_remarks
-[ISSTAC]discovered function addritem_free_item_email
-[ISSTAC]discovered function addritem_create_attribute
-[ISSTAC]discovered function addritem_copy_attribute
-[ISSTAC]discovered function addritem_attrib_set_id
-[ISSTAC]discovered function addritem_attrib_set_name
-[ISSTAC]discovered function addritem_attrib_set_value
-[ISSTAC]discovered function addritem_free_attribute
-[ISSTAC]discovered function addritem_create_item_person
-[ISSTAC]discovered function addritem_copy_item_person
-[ISSTAC]discovered function addritem_person_set_picture
-[ISSTAC]discovered function addritem_person_get_picture
-[ISSTAC]discovered function addritem_person_set_first_name
-[ISSTAC]discovered function addritem_person_set_last_name
-[ISSTAC]discovered function addritem_person_set_nick_name
-[ISSTAC]discovered function addritem_person_set_common_name
-[ISSTAC]discovered function addritem_person_set_external_id
-[ISSTAC]discovered function addritem_person_set_opened
-[ISSTAC]discovered function addritem_free_list_email
-[ISSTAC]discovered function addritem_free_list_attribute
-[ISSTAC]discovered function addritem_free_item_person
-[ISSTAC]discovered function addritem_print_item_email
-[ISSTAC]discovered function addritem_print_item_person
-[ISSTAC]discovered function addritem_print_attribute
-[ISSTAC]discovered function addritem_person_add_email
-[ISSTAC]discovered function addritem_person_remove_email
-[ISSTAC]discovered function addritem_person_add_attribute
-[ISSTAC]discovered function addritem_person_remove_attribute
-[ISSTAC]discovered function addritem_create_item_group
-[ISSTAC]discovered function addritem_copy_item_group
-[ISSTAC]discovered function addritem_group_set_name
-[ISSTAC]discovered function addritem_free_item_group
-[ISSTAC]discovered function addritem_group_add_email
-[ISSTAC]discovered function addritem_folder_remove_person
-[ISSTAC]discovered function addritem_print_item_group
-[ISSTAC]discovered function addritem_create_item_folder
-[ISSTAC]discovered function addritem_copy_item_folder
-[ISSTAC]discovered function addritem_folder_set_name
-[ISSTAC]discovered function addritem_folder_set_remarks
-[ISSTAC]discovered function addritem_folder_set_hidden
-[ISSTAC]discovered function addritem_free_item_folder
-[ISSTAC]discovered function addritem_folder_add_person
-[ISSTAC]discovered function addritem_folder_add_folder
-[ISSTAC]discovered function addritem_folder_add_group
-[ISSTAC]discovered function ldif_field_compare
-[ISSTAC]discovered function ldif_get_line
-[ISSTAC]discovered function ldif_hash_add_list
-[ISSTAC]discovered function ldif_get_tagname
-[ISSTAC]discovered function ldif_create_fieldrec
-[ISSTAC]discovered function exportldif_find_dn
-[ISSTAC]discovered function exportldif_fmt_dn
-[ISSTAC]discovered function exportldif_find_displayName
-[ISSTAC]discovered function exportldif_fmt_email
-[ISSTAC]discovered function exportldif_fmt_other_attributes
-[ISSTAC]discovered function exportldif_fmt_value
-[ISSTAC]discovered function sc_html_parser_new
-[ISSTAC]discovered function sc_html_parser_destroy
-[ISSTAC]discovered function sc_html_parse
-[ISSTAC]discovered function sc_html_read_line
-[ISSTAC]discovered function sc_html_parse_tag
-[ISSTAC]discovered function sc_html_parse_special
-[ISSTAC]discovered function sc_html_append_char
-[ISSTAC]discovered function sc_html_append_str
-[ISSTAC]discovered function g_string_append_c_inline394
-[ISSTAC]discovered function sc_html_get_parenthesis
-[ISSTAC]discovered function sc_html_get_tag
-[ISSTAC]discovered function decode_href
-[ISSTAC]discovered function sc_html_free_tag
-[ISSTAC]discovered function ldif_create
-[ISSTAC]discovered function ldif_set_file
-[ISSTAC]discovered function ldif_set_accessed
-[ISSTAC]discovered function ldif_field_set_name
-[ISSTAC]discovered function ldif_field_set_selected
-[ISSTAC]discovered function ldif_field_toggle
-[ISSTAC]discovered function ldif_free
-[ISSTAC]discovered function ldif_hash_free_vis
-[ISSTAC]discovered function ldif_import_data
-[ISSTAC]discovered function ldif_open_file
-[ISSTAC]discovered function ldif_read_file
-[ISSTAC]discovered function ldif_close_file
-[ISSTAC]discovered function ldif_read_tags
-[ISSTAC]discovered function ldif_read_tag_list
-[ISSTAC]discovered function ldif_get_fieldlist
-[ISSTAC]discovered function ldif_hash2list_vis
-[ISSTAC]discovered function ldif_write_value
-[ISSTAC]discovered function ldif_write_eor
-[ISSTAC]discovered function ldif_clear_rec
-[ISSTAC]discovered function ldif_add_value
-[ISSTAC]discovered function ldif_build_items
-[ISSTAC]discovered function ldif_get_tagvalue
-[ISSTAC]discovered function ldif_add_user_attr
-[ISSTAC]discovered function ldif_free_fieldrec
-[ISSTAC]discovered function mutt_create
-[ISSTAC]discovered function mutt_set_file
-[ISSTAC]discovered function mutt_free
-[ISSTAC]discovered function mutt_free_table_vis
-[ISSTAC]discovered function mutt_import_data
-[ISSTAC]discovered function mutt_open_file
-[ISSTAC]discovered function mutt_read_file
-[ISSTAC]discovered function mutt_close_file
-[ISSTAC]discovered function mutt_find_file
-[ISSTAC]discovered function mutt_get_line
-[ISSTAC]discovered function mutt_build_items
-[ISSTAC]discovered function mutt_parse_rcplist
-[ISSTAC]discovered function mutt_build_address
-[ISSTAC]discovered function mutt_insert_table
-[ISSTAC]discovered function mutt_free_rec
-[ISSTAC]discovered function pine_create
-[ISSTAC]discovered function pine_set_file
-[ISSTAC]discovered function pine_free
-[ISSTAC]discovered function pine_free_table_vis
-[ISSTAC]discovered function pine_import_data
-[ISSTAC]discovered function pine_open_file
-[ISSTAC]discovered function pine_read_file
-[ISSTAC]discovered function pine_close_file
-[ISSTAC]discovered function pine_find_file
-[ISSTAC]discovered function pine_read_line
-[ISSTAC]discovered function pine_build_items
-[ISSTAC]discovered function pine_parse_record
-[ISSTAC]discovered function pine_clean_name
-[ISSTAC]discovered function pine_parse_address
-[ISSTAC]discovered function pine_insert_table
-[ISSTAC]discovered function pine_free_rec
-[ISSTAC]discovered function pine_parse_name
-[ISSTAC]discovered function recv_set_ui_func
-[ISSTAC]discovered function unmime_header
-[ISSTAC]discovered function vcard_create
-[ISSTAC]discovered function vcard_set_name
-[ISSTAC]discovered function vcard_set_file
-[ISSTAC]discovered function vcard_set_accessed
-[ISSTAC]discovered function vcard_get_modified
-[ISSTAC]discovered function vcard_get_accessed
-[ISSTAC]discovered function vcard_get_read_flag
-[ISSTAC]discovered function vcard_get_status
-[ISSTAC]discovered function vcard_get_root_folder
-[ISSTAC]discovered function vcard_get_name
-[ISSTAC]discovered function vcard_free
-[ISSTAC]discovered function vcard_read_data
-[ISSTAC]discovered function vcard_open_file
-[ISSTAC]discovered function vcard_read_file
-[ISSTAC]discovered function vcard_close_file
-[ISSTAC]discovered function vcard_get_list_person
-[ISSTAC]discovered function vcard_get_list_folder
-[ISSTAC]discovered function vcard_get_all_persons
-[ISSTAC]discovered function vcard_find_gnomecard
-[ISSTAC]discovered function vcard_test_read_file
-[ISSTAC]discovered function vcard_create_path
-[ISSTAC]discovered function vcard_get_line
-[ISSTAC]discovered function vcard_get_tagname
-[ISSTAC]discovered function vcard_get_tagvalue
-[ISSTAC]discovered function vcard_read_qp
-[ISSTAC]discovered function vcard_unescape_qp
-[ISSTAC]discovered function vcard_read_line
-[ISSTAC]discovered function vcard_free_lists
-[ISSTAC]discovered function vcard_build_items
++ make -f Makefile.ctaint compile
+++ /home/noundou/tools/llvm-3.3.src/build/Release+Asserts/bin/opt -stats -load /home/noundou/tools/llvm-3.3.src/build/Release+Asserts/lib/LLVMDataStructure.so -load /home/noundou/tools/llvm-3.3.src/build/Release+Asserts/lib/CTaint.so -debug -debug-only=waint-warnings -calltarget-eqtd -waint
+module identifier is <stdin>
 ## Starting intraprocedural analysis
-[Processing][Function][vcard_build_items]
-[Processing][Function][vcard_free_lists]
-[Processing][Function][vcard_read_line]
-[Processing][Function][vcard_unescape_qp]
-[Processing][Function][vcard_read_qp]
-[Processing][Function][vcard_get_tagvalue]
-[Processing][Function][vcard_get_tagname]
-[Processing][Function][vcard_get_line]
-[Processing][Function][vcard_create_path]
-[Processing][Function][vcard_test_read_file]
-[Processing][Function][vcard_find_gnomecard]
-[Processing][Function][vcard_get_all_persons]
-[Processing][Function][vcard_get_list_folder]
-[Processing][Function][vcard_get_list_person]
-[Processing][Function][vcard_close_file]
-[Processing][Function][vcard_read_file]
-[Processing][Function][vcard_open_file]
-[Processing][Function][vcard_read_data]
-[Processing][Function][vcard_free]
-[Processing][Function][vcard_get_name]
-[Processing][Function][vcard_get_root_folder]
-[Processing][Function][vcard_get_status]
-[Processing][Function][vcard_get_read_flag]
-[Processing][Function][vcard_get_accessed]
-[Processing][Function][vcard_get_modified]
-[Processing][Function][vcard_set_accessed]
-[Processing][Function][vcard_set_file]
-[Processing][Function][vcard_set_name]
-[Processing][Function][vcard_create]
-[Processing][Function][unmime_header]
-[Processing][Function][recv_set_ui_func]
-[Processing][Function][pine_parse_name]
-[Processing][Function][pine_free_rec]
-[Processing][Function][pine_insert_table]
-[Processing][Function][pine_parse_address]
-[Processing][Function][pine_clean_name]
-[Processing][Function][pine_parse_record]
-[Processing][Function][pine_build_items]
-[Processing][Function][pine_read_line]
-[Processing][Function][pine_find_file]
-[Processing][Function][pine_close_file]
-[Processing][Function][pine_read_file]
-[Processing][Function][pine_open_file]
-[Processing][Function][pine_import_data]
-[Processing][Function][pine_free_table_vis]
-[Processing][Function][pine_free]
-[Processing][Function][pine_set_file]
-[Processing][Function][pine_create]
-[Processing][Function][mutt_free_rec]
-[Processing][Function][mutt_insert_table]
-[Processing][Function][mutt_build_address]
-[Processing][Function][mutt_parse_rcplist]
-[Processing][Function][mutt_build_items]
-[Processing][Function][mutt_get_line]
-[Processing][Function][mutt_find_file]
-[Processing][Function][mutt_close_file]
-[Processing][Function][mutt_read_file]
-[Processing][Function][mutt_open_file]
-[Processing][Function][mutt_import_data]
-[Processing][Function][mutt_free_table_vis]
-[Processing][Function][mutt_free]
-[Processing][Function][mutt_set_file]
-[Processing][Function][mutt_create]
-[Processing][Function][ldif_free_fieldrec]
-[Processing][Function][ldif_add_user_attr]
-[Processing][Function][ldif_get_tagvalue]
-[Processing][Function][ldif_build_items]
-[Processing][Function][ldif_add_value]
-[Processing][Function][ldif_clear_rec]
-[Processing][Function][ldif_write_eor]
-[Processing][Function][ldif_write_value]
-[Processing][Function][ldif_hash2list_vis]
-[Processing][Function][ldif_get_fieldlist]
-[Processing][Function][ldif_read_tag_list]
-[Processing][Function][ldif_read_tags]
-[Processing][Function][ldif_close_file]
-[Processing][Function][ldif_read_file]
-[Processing][Function][ldif_open_file]
-[Processing][Function][ldif_import_data]
-[Processing][Function][ldif_hash_free_vis]
-[Processing][Function][ldif_free]
-[Processing][Function][ldif_field_toggle]
-[Processing][Function][ldif_field_set_selected]
-[Processing][Function][ldif_field_set_name]
-[Processing][Function][ldif_set_accessed]
-[Processing][Function][ldif_set_file]
-[Processing][Function][ldif_create]
-[Processing][Function][sc_html_free_tag]
-[Processing][Function][decode_href]
-[Processing][Function][sc_html_get_tag]
-[Processing][Function][sc_html_get_parenthesis]
-[Processing][Function][g_string_append_c_inline394]
-[Processing][Function][sc_html_append_str]
-[Processing][Function][sc_html_append_char]
-[Processing][Function][sc_html_parse_special]
-[Processing][Function][sc_html_parse_tag]
-[Processing][Function][sc_html_read_line]
-[Processing][Function][sc_html_parse]
-[Processing][Function][sc_html_parser_destroy]
-[Processing][Function][sc_html_parser_new]
-[Processing][Function][exportldif_fmt_value]
-[Processing][Function][exportldif_fmt_other_attributes]
-[Processing][Function][exportldif_fmt_email]
-[Processing][Function][exportldif_find_displayName]
-[Processing][Function][exportldif_fmt_dn]
-[Processing][Function][exportldif_find_dn]
-[Processing][Function][ldif_create_fieldrec]
-[Processing][Function][ldif_get_tagname]
-[Processing][Function][ldif_hash_add_list]
-[Processing][Function][ldif_get_line]
-[Processing][Function][ldif_field_compare]
-[Processing][Function][addritem_folder_add_group]
-[Processing][Function][addritem_folder_add_folder]
-[Processing][Function][addritem_folder_add_person]
-[Processing][Function][addritem_free_item_folder]
-[Processing][Function][addritem_folder_set_hidden]
-[Processing][Function][addritem_folder_set_remarks]
-[Processing][Function][addritem_folder_set_name]
-[Processing][Function][addritem_copy_item_folder]
-[Processing][Function][addritem_create_item_folder]
-[Processing][Function][addritem_print_item_group]
-[Processing][Function][addritem_folder_remove_person]
-[Processing][Function][addritem_group_add_email]
-[Processing][Function][addritem_free_item_group]
-[Processing][Function][addritem_group_set_name]
-[Processing][Function][addritem_copy_item_group]
-[Processing][Function][addritem_create_item_group]
-[Processing][Function][addritem_person_remove_attribute]
-[Processing][Function][addritem_person_add_attribute]
-[Processing][Function][addritem_person_remove_email]
-[Processing][Function][addritem_person_add_email]
-[Processing][Function][addritem_print_attribute]
-[Processing][Function][addritem_print_item_person]
-[Processing][Function][addritem_print_item_email]
-[Processing][Function][addritem_free_item_person]
-[Processing][Function][addritem_free_list_attribute]
-[Processing][Function][addritem_free_list_email]
-[Processing][Function][addritem_person_set_opened]
-[Processing][Function][addritem_person_set_external_id]
-[Processing][Function][addritem_person_set_common_name]
-[Processing][Function][addritem_person_set_nick_name]
-[Processing][Function][addritem_person_set_last_name]
-[Processing][Function][addritem_person_set_first_name]
-[Processing][Function][addritem_person_get_picture]
-[Processing][Function][addritem_person_set_picture]
-[Processing][Function][addritem_copy_item_person]
-[Processing][Function][addritem_create_item_person]
-[Processing][Function][addritem_free_attribute]
-[Processing][Function][addritem_attrib_set_value]
-[Processing][Function][addritem_attrib_set_name]
-[Processing][Function][addritem_attrib_set_id]
-[Processing][Function][addritem_copy_attribute]
-[Processing][Function][addritem_create_attribute]
-[Processing][Function][addritem_free_item_email]
-[Processing][Function][addritem_email_set_remarks]
-[Processing][Function][addritem_email_set_address]
-[Processing][Function][addritem_email_set_alias]
-[Processing][Function][addritem_copyfull_item_email]
-[Processing][Function][addritem_copy_item_email]
-[Processing][Function][addritem_create_item_email]
-[Processing][Function][addrharvest_free_table_vis]
-[Processing][Function][addrharvest_check_hdr]
-[Processing][Function][addrharvest_insert_cache]
-[Processing][Function][addrharvest_del_email]
-[Processing][Function][addrharvest_extract_address]
-[Processing][Function][addrharvest_find_address]
-[Processing][Function][addrharvest_find_at]
-[Processing][Function][addrharvest_parse_address]
-[Processing][Function][addrharvest_get_header]
-[Processing][Function][addrharvest_readfile]
-[Processing][Function][addrharvest_check_header]
-[Processing][Function][addrharvest_harvest_list]
-[Processing][Function][addrharvest_harvest_dir]
-[Processing][Function][addritem_folder_get_group_list]
-[Processing][Function][addritem_folder_get_person_list]
-[Processing][Function][addritem_print_item_folder]
-[Processing][Function][addrharvest_free]
-[Processing][Function][addrharvest_get_count]
-[Processing][Function][addrharvest_find]
-[Processing][Function][addrharvest_set_header]
-[Processing][Function][addrharvest_set_recurse]
-[Processing][Function][addrharvest_set_folder_size]
-[Processing][Function][addrharvest_set_path]
-[Processing][Function][addrharvest_build_entry]
-[Processing][Function][addrharvest_create]
-[Processing][Function][addrcache_next_cache_id]
-[Processing][Function][addrcache_free_item_vis]
-[Processing][Function][addrcache_add_new_folder]
-[Processing][Function][addrcache_add_contact]
-[Processing][Function][addrcache_remove_folder_delete]
-[Processing][Function][addrcache_remove_folder]
-[Processing][Function][addrcache_get_all_groups_vis]
-[Processing][Function][addrcache_get_all_groups]
-[Processing][Function][addrcache_get_all_persons_vis]
-[Processing][Function][addrcache_get_all_persons]
-[Processing][Function][addrcache_get_grp_person_vis]
-[Processing][Function][addrcache_get_group_for_person]
-[Processing][Function][addrcache_person_remove_email]
-[Processing][Function][addrcache_allgrp_rem_email_vis]
-[Processing][Function][addrcache_remove_person]
-[Processing][Function][addrcache_remove_email]
-[Processing][Function][addrcache_remove_group]
-[Processing][Function][addrcache_get_email]
-[Processing][Function][addrcache_get_object]
-[Processing][Function][addrcache_folder_move_folder]
-[Processing][Function][addrcache_folder_move_group]
-[Processing][Function][addrcache_folder_move_person]
-[Processing][Function][addrharvest_harvest]
-[Processing][Function][addrharvest_free_table]
-[Processing][Function][addrcache_group_add_email]
-[Processing][Function][addrcache_add_group]
-[Processing][Function][addrcache_hash_add_email]
-[Processing][Function][addrcache_person_add_email]
-[Processing][Function][addrcache_add_person]
-[Processing][Function][addrcache_folder_add_group]
-[Processing][Function][addrcache_folder_add_folder]
-[Processing][Function][addrcache_folder_add_person]
-[Processing][Function][addrcache_hash_add_folder]
-[Processing][Function][addrcache_hash_add_group]
-[Processing][Function][exportldif_test_email]
-[Processing][Function][exportldif_fmt_person]
-[Processing][Function][exportldif_save_settings]
-[Processing][Function][exportldif_build_filespec]
-[Processing][Function][exportldif_default_values]
-[Processing][Function][exportldif_load_settings]
-[Processing][Function][exportldif_get_create_msg]
-[Processing][Function][exportldif_create_dir]
-[Processing][Function][exportldif_test_dir]
-[Processing][Function][exportldif_parse_filespec]
-[Processing][Function][exportldif_fmt_folder]
-[Processing][Function][exportldif_process]
-[Processing][Function][exportldif_set_exclude_email]
-[Processing][Function][exportldif_set_use_dn]
-[Processing][Function][exportldif_set_rdn]
-[Processing][Function][exportldif_set_suffix]
-[Processing][Function][exportldif_free]
-[Processing][Function][exportldif_create]
-[Processing][Function][exporthtml_find_stylesheet]
-[Processing][Function][exporthtml_compare_attrib]
-[Processing][Function][exporthtml_sort_attrib]
-[Processing][Function][exporthtml_fmt_attribs]
-[Processing][Function][exporthtml_fmt_fullname]
-[Processing][Function][exporthtml_compare_email]
-[Processing][Function][exporthtml_sort_email]
-[Processing][Function][exporthtml_fmt_email]
-[Processing][Function][exporthtml_compare_name]
-[Processing][Function][exporthtml_sort_name]
-[Processing][Function][exporthtml_fmt_group]
-[Processing][Function][exporthtml_fmt_person]
-[Processing][Function][exporthtml_fmt_folderhead]
-[Processing][Function][exporthtml_create_css_full]
-[Processing][Function][exporthtml_create_css_dfl]
-[Processing][Function][exporthtml_save_settings]
-[Processing][Function][exporthtml_build_filespec]
-[Processing][Function][exporthtml_default_values]
-[Processing][Function][exporthtml_load_settings]
-[Processing][Function][exporthtml_get_create_msg]
-[Processing][Function][exporthtml_create_dir]
-[Processing][Function][exporthtml_test_dir]
-[Processing][Function][exporthtml_parse_filespec]
-[Processing][Function][exporthtml_create_css_files]
-[Processing][Function][exporthtml_fmt_folder]
-[Processing][Function][exporthtml_fmt_header]
-[Processing][Function][exporthtml_process]
-[Processing][Function][exporthtml_set_attributes]
-[Processing][Function][exporthtml_set_link_email]
-[Processing][Function][exporthtml_set_banding]
-[Processing][Function][exporthtml_set_name_format]
-[Processing][Function][exporthtml_set_stylesheet]
-[Processing][Function][exporthtml_free]
-[Processing][Function][exporthtml_build_entry]
-[Processing][Function][exporthtml_create]
-[Processing][Function][g_string_append_c_inline]
-[Processing][Function][ertf_get_parenthesis]
-[Processing][Function][ertf_append_char]
-[Processing][Function][ertf_parse_tag]
-[Processing][Function][ertf_read_line]
-[Processing][Function][ertf_parse]
-[Processing][Function][ertf_parser_destroy]
-[Processing][Function][ertf_parser_new]
-[Processing][Function][display_header_prop_free]
-[Processing][Function][display_header_prop_read_str]
-[Processing][Function][display_header_prop_get_str]
-[Processing][Function][custom_header_is_allowed]
-[Processing][Function][custom_header_free]
-[Processing][Function][custom_header_find]
-[Processing][Function][custom_header_read_str]
-[Processing][Function][custom_header_get_str]
-[Processing][Function][get_account_face]
-[Processing][Function][get_default_face]
-[Processing][Function][get_any_face_filename_for_account]
-[Processing][Function][get_account_xface]
-[Processing][Function][get_content_for_any_face]
-[Processing][Function][get_default_xface]
-[Processing][Function][qryreq_clear]
-[Processing][Function][qrymgr_free_all_request]
-[Processing][Function][qrymgr_teardown]
-[Processing][Function][qrymgr_initialize]
-[Processing][Function][qryreq_free]
-[Processing][Function][qrymgr_delete_request]
-[Processing][Function][qrymgr_find_request]
-[Processing][Function][qrymgr_add_request]
-[Processing][Function][qryreq_add_query]
-[Processing][Function][qryreq_set_search_type]
-[Processing][Function][addritem_format_email]
-[Processing][Function][addritem_folder_path]
-[Processing][Function][addritem_parse_first_last]
-[Processing][Function][addrcache_hash_add_person]
-[Processing][Function][addrcache_id_attribute]
-[Processing][Function][addrcache_id_email]
-[Processing][Function][addrcache_id_folder]
-[Processing][Function][addrcache_id_group]
-[Processing][Function][addrcache_add_folder]
-[Processing][Function][addrcache_id_person]
-[Processing][Function][addrcache_print]
-[Processing][Function][addrcache_mark_file]
-[Processing][Function][addrcache_check_file]
-[Processing][Function][addrcache_free]
-[Processing][Function][addrcache_free_item_hash]
-[Processing][Function][addrcache_free_all_folders]
-[Processing][Function][addrcache_clear]
-[Processing][Function][addrcache_next_id]
-[Processing][Function][addrcache_refresh]
-[Processing][Function][addrcache_set_name]
-[Processing][Function][addrcache_get_name]
-[Processing][Function][addrcache_set_dirty]
-[Processing][Function][addrcache_get_dirty]
-[Processing][Function][addrcache_get_list_person]
-[Processing][Function][addrcache_get_list_folder]
-[Processing][Function][addrcache_get_root_folder]
-[Processing][Function][addrcache_create]
 ## Starting interprocedural analysis
 No main function exists
-[Processing][Function][vcard_build_items]
-[Processing][Function][vcard_free_lists]
-[Processing][Function][vcard_read_line]
-[Processing][Function][vcard_unescape_qp]
-[Processing][Function][vcard_read_qp]
-[Processing][Function][vcard_get_tagvalue]
-[Processing][Function][vcard_get_tagname]
-[Processing][Function][vcard_get_line]
-[Processing][Function][vcard_create_path]
-[Processing][Function][vcard_test_read_file]
-[Processing][Function][vcard_find_gnomecard]
-[Processing][Function][vcard_get_all_persons]
-[Processing][Function][vcard_get_list_folder]
-[Processing][Function][vcard_get_list_person]
-[Processing][Function][vcard_close_file]
-[Processing][Function][vcard_read_file]
-[Processing][Function][vcard_open_file]
-[Processing][Function][vcard_read_data]
-[Processing][Function][vcard_free]
-[Processing][Function][vcard_get_name]
-[Processing][Function][vcard_get_root_folder]
-[Processing][Function][vcard_get_status]
-[Processing][Function][vcard_get_read_flag]
-[Processing][Function][vcard_get_accessed]
-[Processing][Function][vcard_get_modified]
-[Processing][Function][vcard_set_accessed]
-[Processing][Function][vcard_set_file]
-[Processing][Function][vcard_set_name]
-[Processing][Function][vcard_create]
-[Processing][Function][unmime_header]
-[Processing][Function][recv_set_ui_func]
-[Processing][Function][pine_parse_name]
-[Processing][Function][pine_free_rec]
-[Processing][Function][pine_insert_table]
-[Processing][Function][pine_parse_address]
-[Processing][Function][pine_clean_name]
-[Processing][Function][pine_parse_record]
-[Processing][Function][pine_build_items]
-[Processing][Function][pine_read_line]
-[Processing][Function][pine_find_file]
-[Processing][Function][pine_close_file]
-[Processing][Function][pine_read_file]
-[Processing][Function][pine_open_file]
-[Processing][Function][pine_import_data]
-[Processing][Function][pine_free_table_vis]
-[Processing][Function][pine_free]
-[Processing][Function][pine_set_file]
-[Processing][Function][pine_create]
-[Processing][Function][mutt_free_rec]
-[Processing][Function][mutt_insert_table]
-[Processing][Function][mutt_build_address]
-[Processing][Function][mutt_parse_rcplist]
-[Processing][Function][mutt_build_items]
-[Processing][Function][mutt_get_line]
-[Processing][Function][mutt_find_file]
-[Processing][Function][mutt_close_file]
-[Processing][Function][mutt_read_file]
-[Processing][Function][mutt_open_file]
-[Processing][Function][mutt_import_data]
-[Processing][Function][mutt_free_table_vis]
-[Processing][Function][mutt_free]
-[Processing][Function][mutt_set_file]
-[Processing][Function][mutt_create]
-[Processing][Function][ldif_free_fieldrec]
-[Processing][Function][ldif_add_user_attr]
-[Processing][Function][ldif_get_tagvalue]
-[Processing][Function][ldif_build_items]
-[Processing][Function][ldif_add_value]
-[Processing][Function][ldif_clear_rec]
-[Processing][Function][ldif_write_eor]
-[Processing][Function][ldif_write_value]
-[Processing][Function][ldif_hash2list_vis]
-[Processing][Function][ldif_get_fieldlist]
-[Processing][Function][ldif_read_tag_list]
-[Processing][Function][ldif_read_tags]
-[Processing][Function][ldif_close_file]
-[Processing][Function][ldif_read_file]
-[Processing][Function][ldif_open_file]
-[Processing][Function][ldif_import_data]
-[Processing][Function][ldif_hash_free_vis]
-[Processing][Function][ldif_free]
-[Processing][Function][ldif_field_toggle]
-[Processing][Function][ldif_field_set_selected]
-[Processing][Function][ldif_field_set_name]
-[Processing][Function][ldif_set_accessed]
-[Processing][Function][ldif_set_file]
-[Processing][Function][ldif_create]
-[Processing][Function][sc_html_free_tag]
-[Processing][Function][decode_href]
-[Processing][Function][sc_html_get_tag]
-[Processing][Function][sc_html_get_parenthesis]
-[Processing][Function][g_string_append_c_inline394]
-[Processing][Function][sc_html_append_str]
-[Processing][Function][sc_html_append_char]
-[Processing][Function][sc_html_parse_special]
-[Processing][Function][sc_html_parse_tag]
-[Processing][Function][sc_html_read_line]
-[Processing][Function][sc_html_parse]
-[Processing][Function][sc_html_parser_destroy]
-[Processing][Function][sc_html_parser_new]
-[Processing][Function][exportldif_fmt_value]
-[Processing][Function][exportldif_fmt_other_attributes]
-[Processing][Function][exportldif_fmt_email]
-[Processing][Function][exportldif_find_displayName]
-[Processing][Function][exportldif_fmt_dn]
-[Processing][Function][exportldif_find_dn]
-[Processing][Function][ldif_create_fieldrec]
-[Processing][Function][ldif_get_tagname]
-[Processing][Function][ldif_hash_add_list]
-[Processing][Function][ldif_get_line]
-[Processing][Function][ldif_field_compare]
-[Processing][Function][addritem_folder_add_group]
-[Processing][Function][addritem_folder_add_folder]
-[Processing][Function][addritem_folder_add_person]
-[Processing][Function][addritem_free_item_folder]
-[Processing][Function][addritem_folder_set_hidden]
-[Processing][Function][addritem_folder_set_remarks]
-[Processing][Function][addritem_folder_set_name]
-[Processing][Function][addritem_copy_item_folder]
-[Processing][Function][addritem_create_item_folder]
-[Processing][Function][addritem_print_item_group]
-[Processing][Function][addritem_folder_remove_person]
-[Processing][Function][addritem_group_add_email]
-[Processing][Function][addritem_free_item_group]
-[Processing][Function][addritem_group_set_name]
-[Processing][Function][addritem_copy_item_group]
-[Processing][Function][addritem_create_item_group]
-[Processing][Function][addritem_person_remove_attribute]
-[Processing][Function][addritem_person_add_attribute]
-[Processing][Function][addritem_person_remove_email]
-[Processing][Function][addritem_person_add_email]
-[Processing][Function][addritem_print_attribute]
-[Processing][Function][addritem_print_item_person]
-[Processing][Function][addritem_print_item_email]
-[Processing][Function][addritem_free_item_person]
-[Processing][Function][addritem_free_list_attribute]
-[Processing][Function][addritem_free_list_email]
-[Processing][Function][addritem_person_set_opened]
-[Processing][Function][addritem_person_set_external_id]
-[Processing][Function][addritem_person_set_common_name]
-[Processing][Function][addritem_person_set_nick_name]
-[Processing][Function][addritem_person_set_last_name]
-[Processing][Function][addritem_person_set_first_name]
-[Processing][Function][addritem_person_get_picture]
-[Processing][Function][addritem_person_set_picture]
-[Processing][Function][addritem_copy_item_person]
-[Processing][Function][addritem_create_item_person]
-[Processing][Function][addritem_free_attribute]
-[Processing][Function][addritem_attrib_set_value]
-[Processing][Function][addritem_attrib_set_name]
-[Processing][Function][addritem_attrib_set_id]
-[Processing][Function][addritem_copy_attribute]
-[Processing][Function][addritem_create_attribute]
-[Processing][Function][addritem_free_item_email]
-[Processing][Function][addritem_email_set_remarks]
-[Processing][Function][addritem_email_set_address]
-[Processing][Function][addritem_email_set_alias]
-[Processing][Function][addritem_copyfull_item_email]
-[Processing][Function][addritem_copy_item_email]
-[Processing][Function][addritem_create_item_email]
-[Processing][Function][addrharvest_free_table_vis]
-[Processing][Function][addrharvest_check_hdr]
-[Processing][Function][addrharvest_insert_cache]
-[Processing][Function][addrharvest_del_email]
-[Processing][Function][addrharvest_extract_address]
-[Processing][Function][addrharvest_find_address]
-[Processing][Function][addrharvest_find_at]
-[Processing][Function][addrharvest_parse_address]
-[Processing][Function][addrharvest_get_header]
-[Processing][Function][addrharvest_readfile]
-[Processing][Function][addrharvest_check_header]
-[Processing][Function][addrharvest_harvest_list]
-[Processing][Function][addrharvest_harvest_dir]
-[Processing][Function][addritem_folder_get_group_list]
-[Processing][Function][addritem_folder_get_person_list]
-[Processing][Function][addritem_print_item_folder]
-[Processing][Function][addrharvest_free]
-[Processing][Function][addrharvest_get_count]
-[Processing][Function][addrharvest_find]
-[Processing][Function][addrharvest_set_header]
-[Processing][Function][addrharvest_set_recurse]
-[Processing][Function][addrharvest_set_folder_size]
-[Processing][Function][addrharvest_set_path]
-[Processing][Function][addrharvest_build_entry]
-[Processing][Function][addrharvest_create]
-[Processing][Function][addrcache_next_cache_id]
-[Processing][Function][addrcache_free_item_vis]
-[Processing][Function][addrcache_add_new_folder]
-[Processing][Function][addrcache_add_contact]
-[Processing][Function][addrcache_remove_folder_delete]
-[Processing][Function][addrcache_remove_folder]
-[Processing][Function][addrcache_get_all_groups_vis]
-[Processing][Function][addrcache_get_all_groups]
-[Processing][Function][addrcache_get_all_persons_vis]
-[Processing][Function][addrcache_get_all_persons]
-[Processing][Function][addrcache_get_grp_person_vis]
-[Processing][Function][addrcache_get_group_for_person]
-[Processing][Function][addrcache_person_remove_email]
-[Processing][Function][addrcache_allgrp_rem_email_vis]
-[Processing][Function][addrcache_remove_person]
-[Processing][Function][addrcache_remove_email]
-[Processing][Function][addrcache_remove_group]
-[Processing][Function][addrcache_get_email]
-[Processing][Function][addrcache_get_object]
-[Processing][Function][addrcache_folder_move_folder]
-[Processing][Function][addrcache_folder_move_group]
-[Processing][Function][addrcache_folder_move_person]
-[Processing][Function][addrharvest_harvest]
-[Processing][Function][addrharvest_free_table]
-[Processing][Function][addrcache_group_add_email]
-[Processing][Function][addrcache_add_group]
-[Processing][Function][addrcache_hash_add_email]
-[Processing][Function][addrcache_person_add_email]
-[Processing][Function][addrcache_add_person]
-[Processing][Function][addrcache_folder_add_group]
-[Processing][Function][addrcache_folder_add_folder]
-[Processing][Function][addrcache_folder_add_person]
-[Processing][Function][addrcache_hash_add_folder]
-[Processing][Function][addrcache_hash_add_group]
-[Processing][Function][exportldif_test_email]
-[Processing][Function][exportldif_fmt_person]
-[Processing][Function][exportldif_save_settings]
-[Processing][Function][exportldif_build_filespec]
-[Processing][Function][exportldif_default_values]
-[Processing][Function][exportldif_load_settings]
-[Processing][Function][exportldif_get_create_msg]
-[Processing][Function][exportldif_create_dir]
-[Processing][Function][exportldif_test_dir]
-[Processing][Function][exportldif_parse_filespec]
-[Processing][Function][exportldif_fmt_folder]
-[Processing][Function][exportldif_process]
-[Processing][Function][exportldif_set_exclude_email]
-[Processing][Function][exportldif_set_use_dn]
-[Processing][Function][exportldif_set_rdn]
-[Processing][Function][exportldif_set_suffix]
-[Processing][Function][exportldif_free]
-[Processing][Function][exportldif_create]
-[Processing][Function][exporthtml_find_stylesheet]
-[Processing][Function][exporthtml_compare_attrib]
-[Processing][Function][exporthtml_sort_attrib]
-[Processing][Function][exporthtml_fmt_attribs]
-[Processing][Function][exporthtml_fmt_fullname]
-[Processing][Function][exporthtml_compare_email]
-[Processing][Function][exporthtml_sort_email]
-[Processing][Function][exporthtml_fmt_email]
-[Processing][Function][exporthtml_compare_name]
-[Processing][Function][exporthtml_sort_name]
-[Processing][Function][exporthtml_fmt_group]
-[Processing][Function][exporthtml_fmt_person]
-[Processing][Function][exporthtml_fmt_folderhead]
-[Processing][Function][exporthtml_create_css_full]
-[Processing][Function][exporthtml_create_css_dfl]
-[Processing][Function][exporthtml_save_settings]
-[Processing][Function][exporthtml_build_filespec]
-[Processing][Function][exporthtml_default_values]
-[Processing][Function][exporthtml_load_settings]
-[Processing][Function][exporthtml_get_create_msg]
-[Processing][Function][exporthtml_create_dir]
-[Processing][Function][exporthtml_test_dir]
-[Processing][Function][exporthtml_parse_filespec]
-[Processing][Function][exporthtml_create_css_files]
-[Processing][Function][exporthtml_fmt_folder]
-[Processing][Function][exporthtml_fmt_header]
-[Processing][Function][exporthtml_process]
-[Processing][Function][exporthtml_set_attributes]
-[Processing][Function][exporthtml_set_link_email]
-[Processing][Function][exporthtml_set_banding]
-[Processing][Function][exporthtml_set_name_format]
-[Processing][Function][exporthtml_set_stylesheet]
-[Processing][Function][exporthtml_free]
-[Processing][Function][exporthtml_build_entry]
-[Processing][Function][exporthtml_create]
-[Processing][Function][g_string_append_c_inline]
-[Processing][Function][ertf_get_parenthesis]
-[Processing][Function][ertf_append_char]
-[Processing][Function][ertf_parse_tag]
-[Processing][Function][ertf_read_line]
-[Processing][Function][ertf_parse]
-[Processing][Function][ertf_parser_destroy]
-[Processing][Function][ertf_parser_new]
-[Processing][Function][display_header_prop_free]
-[Processing][Function][display_header_prop_read_str]
-[Processing][Function][display_header_prop_get_str]
-[Processing][Function][custom_header_is_allowed]
-[Processing][Function][custom_header_free]
-[Processing][Function][custom_header_find]
-[Processing][Function][custom_header_read_str]
-[Processing][Function][custom_header_get_str]
-[Processing][Function][get_account_face]
-[Processing][Function][get_default_face]
-[Processing][Function][get_any_face_filename_for_account]
-[Processing][Function][get_account_xface]
-[Processing][Function][get_content_for_any_face]
-[Processing][Function][get_default_xface]
-[Processing][Function][qryreq_clear]
-[Processing][Function][qrymgr_free_all_request]
-[Processing][Function][qrymgr_teardown]
-[Processing][Function][qrymgr_initialize]
-[Processing][Function][qryreq_free]
-[Processing][Function][qrymgr_delete_request]
-[Processing][Function][qrymgr_find_request]
-[Processing][Function][qrymgr_add_request]
-[Processing][Function][qryreq_add_query]
-[Processing][Function][qryreq_set_search_type]
-[Processing][Function][addritem_format_email]
-[Processing][Function][addritem_folder_path]
-[Processing][Function][addritem_parse_first_last]
-[Processing][Function][addrcache_hash_add_person]
-[Processing][Function][addrcache_id_attribute]
-[Processing][Function][addrcache_id_email]
-[Processing][Function][addrcache_id_folder]
-[Processing][Function][addrcache_id_group]
-[Processing][Function][addrcache_add_folder]
-[Processing][Function][addrcache_id_person]
-[Processing][Function][addrcache_print]
-[Processing][Function][addrcache_mark_file]
-[Processing][Function][addrcache_check_file]
-[Processing][Function][addrcache_free]
-[Processing][Function][addrcache_free_item_hash]
-[Processing][Function][addrcache_free_all_folders]
-[Processing][Function][addrcache_clear]
-[Processing][Function][addrcache_next_id]
-[Processing][Function][addrcache_refresh]
-[Processing][Function][addrcache_set_name]
-[Processing][Function][addrcache_get_name]
-[Processing][Function][addrcache_set_dirty]
-[Processing][Function][addrcache_get_dirty]
-[Processing][Function][addrcache_get_list_person]
-[Processing][Function][addrcache_get_list_folder]
-[Processing][Function][addrcache_get_root_folder]
-[Processing][Function][addrcache_create]
 ## Starting context-insensitive interprocedural analysis
 No main function exists
-[Processing][Function][vcard_build_items]
-[Processing][Function][vcard_free_lists]
-[Processing][Function][vcard_read_line]
-[Processing][Function][vcard_unescape_qp]
-[Processing][Function][vcard_read_qp]
-[Processing][Function][vcard_get_tagvalue]
-[Processing][Function][vcard_get_tagname]
-[Processing][Function][vcard_get_line]
-[Processing][Function][vcard_create_path]
-[Processing][Function][vcard_test_read_file]
-[Processing][Function][vcard_find_gnomecard]
-[Processing][Function][vcard_get_all_persons]
-[Processing][Function][vcard_get_list_folder]
-[Processing][Function][vcard_get_list_person]
-[Processing][Function][vcard_close_file]
-[Processing][Function][vcard_read_file]
-[Processing][Function][vcard_open_file]
-[Processing][Function][vcard_read_data]
-[Processing][Function][vcard_free]
-[Processing][Function][vcard_get_name]
-[Processing][Function][vcard_get_root_folder]
-[Processing][Function][vcard_get_status]
-[Processing][Function][vcard_get_read_flag]
-[Processing][Function][vcard_get_accessed]
-[Processing][Function][vcard_get_modified]
-[Processing][Function][vcard_set_accessed]
-[Processing][Function][vcard_set_file]
-[Processing][Function][vcard_set_name]
-[Processing][Function][vcard_create]
-[Processing][Function][unmime_header]
-[Processing][Function][recv_set_ui_func]
-[Processing][Function][pine_parse_name]
-[Processing][Function][pine_free_rec]
-[Processing][Function][pine_insert_table]
-[Processing][Function][pine_parse_address]
-[Processing][Function][pine_clean_name]
-[Processing][Function][pine_parse_record]
-[Processing][Function][pine_build_items]
-[Processing][Function][pine_read_line]
-[Processing][Function][pine_find_file]
-[Processing][Function][pine_close_file]
-[Processing][Function][pine_read_file]
-[Processing][Function][pine_open_file]
-[Processing][Function][pine_import_data]
-[Processing][Function][pine_free_table_vis]
-[Processing][Function][pine_free]
-[Processing][Function][pine_set_file]
-[Processing][Function][pine_create]
-[Processing][Function][mutt_free_rec]
-[Processing][Function][mutt_insert_table]
-[Processing][Function][mutt_build_address]
-[Processing][Function][mutt_parse_rcplist]
-[Processing][Function][mutt_build_items]
-[Processing][Function][mutt_get_line]
-[Processing][Function][mutt_find_file]
-[Processing][Function][mutt_close_file]
-[Processing][Function][mutt_read_file]
-[Processing][Function][mutt_open_file]
-[Processing][Function][mutt_import_data]
-[Processing][Function][mutt_free_table_vis]
-[Processing][Function][mutt_free]
-[Processing][Function][mutt_set_file]
-[Processing][Function][mutt_create]
-[Processing][Function][ldif_free_fieldrec]
-[Processing][Function][ldif_add_user_attr]
-[Processing][Function][ldif_get_tagvalue]
-[Processing][Function][ldif_build_items]
-[Processing][Function][ldif_add_value]
-[Processing][Function][ldif_clear_rec]
-[Processing][Function][ldif_write_eor]
-[Processing][Function][ldif_write_value]
-[Processing][Function][ldif_hash2list_vis]
-[Processing][Function][ldif_get_fieldlist]
-[Processing][Function][ldif_read_tag_list]
-[Processing][Function][ldif_read_tags]
-[Processing][Function][ldif_close_file]
-[Processing][Function][ldif_read_file]
-[Processing][Function][ldif_open_file]
-[Processing][Function][ldif_import_data]
-[Processing][Function][ldif_hash_free_vis]
-[Processing][Function][ldif_free]
-[Processing][Function][ldif_field_toggle]
-[Processing][Function][ldif_field_set_selected]
-[Processing][Function][ldif_field_set_name]
-[Processing][Function][ldif_set_accessed]
-[Processing][Function][ldif_set_file]
-[Processing][Function][ldif_create]
-[Processing][Function][sc_html_free_tag]
-[Processing][Function][decode_href]
-[Processing][Function][sc_html_get_tag]
-[Processing][Function][sc_html_get_parenthesis]
-[Processing][Function][g_string_append_c_inline394]
-[Processing][Function][sc_html_append_str]
-[Processing][Function][sc_html_append_char]
-[Processing][Function][sc_html_parse_special]
-[Processing][Function][sc_html_parse_tag]
-[Processing][Function][sc_html_read_line]
-[Processing][Function][sc_html_parse]
-[Processing][Function][sc_html_parser_destroy]
-[Processing][Function][sc_html_parser_new]
-[Processing][Function][exportldif_fmt_value]
-[Processing][Function][exportldif_fmt_other_attributes]
-[Processing][Function][exportldif_fmt_email]
-[Processing][Function][exportldif_find_displayName]
-[Processing][Function][exportldif_fmt_dn]
-[Processing][Function][exportldif_find_dn]
-[Processing][Function][ldif_create_fieldrec]
-[Processing][Function][ldif_get_tagname]
-[Processing][Function][ldif_hash_add_list]
-[Processing][Function][ldif_get_line]
-[Processing][Function][ldif_field_compare]
-[Processing][Function][addritem_folder_add_group]
-[Processing][Function][addritem_folder_add_folder]
-[Processing][Function][addritem_folder_add_person]
-[Processing][Function][addritem_free_item_folder]
-[Processing][Function][addritem_folder_set_hidden]
-[Processing][Function][addritem_folder_set_remarks]
-[Processing][Function][addritem_folder_set_name]
-[Processing][Function][addritem_copy_item_folder]
-[Processing][Function][addritem_create_item_folder]
-[Processing][Function][addritem_print_item_group]
-[Processing][Function][addritem_folder_remove_person]
-[Processing][Function][addritem_group_add_email]
-[Processing][Function][addritem_free_item_group]
-[Processing][Function][addritem_group_set_name]
-[Processing][Function][addritem_copy_item_group]
-[Processing][Function][addritem_create_item_group]
-[Processing][Function][addritem_person_remove_attribute]
-[Processing][Function][addritem_person_add_attribute]
-[Processing][Function][addritem_person_remove_email]
-[Processing][Function][addritem_person_add_email]
-[Processing][Function][addritem_print_attribute]
-[Processing][Function][addritem_print_item_person]
-[Processing][Function][addritem_print_item_email]
-[Processing][Function][addritem_free_item_person]
-[Processing][Function][addritem_free_list_attribute]
-[Processing][Function][addritem_free_list_email]
-[Processing][Function][addritem_person_set_opened]
-[Processing][Function][addritem_person_set_external_id]
-[Processing][Function][addritem_person_set_common_name]
-[Processing][Function][addritem_person_set_nick_name]
-[Processing][Function][addritem_person_set_last_name]
-[Processing][Function][addritem_person_set_first_name]
-[Processing][Function][addritem_person_get_picture]
-[Processing][Function][addritem_person_set_picture]
-[Processing][Function][addritem_copy_item_person]
-[Processing][Function][addritem_create_item_person]
-[Processing][Function][addritem_free_attribute]
-[Processing][Function][addritem_attrib_set_value]
-[Processing][Function][addritem_attrib_set_name]
-[Processing][Function][addritem_attrib_set_id]
-[Processing][Function][addritem_copy_attribute]
-[Processing][Function][addritem_create_attribute]
-[Processing][Function][addritem_free_item_email]
-[Processing][Function][addritem_email_set_remarks]
-[Processing][Function][addritem_email_set_address]
-[Processing][Function][addritem_email_set_alias]
-[Processing][Function][addritem_copyfull_item_email]
-[Processing][Function][addritem_copy_item_email]
-[Processing][Function][addritem_create_item_email]
-[Processing][Function][addrharvest_free_table_vis]
-[Processing][Function][addrharvest_check_hdr]
-[Processing][Function][addrharvest_insert_cache]
-[Processing][Function][addrharvest_del_email]
-[Processing][Function][addrharvest_extract_address]
-[Processing][Function][addrharvest_find_address]
-[Processing][Function][addrharvest_find_at]
-[Processing][Function][addrharvest_parse_address]
-[Processing][Function][addrharvest_get_header]
-[Processing][Function][addrharvest_readfile]
-[Processing][Function][addrharvest_check_header]
-[Processing][Function][addrharvest_harvest_list]
-[Processing][Function][addrharvest_harvest_dir]
-[Processing][Function][addritem_folder_get_group_list]
-[Processing][Function][addritem_folder_get_person_list]
-[Processing][Function][addritem_print_item_folder]
-[Processing][Function][addrharvest_free]
-[Processing][Function][addrharvest_get_count]
-[Processing][Function][addrharvest_find]
-[Processing][Function][addrharvest_set_header]
-[Processing][Function][addrharvest_set_recurse]
-[Processing][Function][addrharvest_set_folder_size]
-[Processing][Function][addrharvest_set_path]
-[Processing][Function][addrharvest_build_entry]
-[Processing][Function][addrharvest_create]
-[Processing][Function][addrcache_next_cache_id]
-[Processing][Function][addrcache_free_item_vis]
-[Processing][Function][addrcache_add_new_folder]
-[Processing][Function][addrcache_add_contact]
-[Processing][Function][addrcache_remove_folder_delete]
-[Processing][Function][addrcache_remove_folder]
-[Processing][Function][addrcache_get_all_groups_vis]
-[Processing][Function][addrcache_get_all_groups]
-[Processing][Function][addrcache_get_all_persons_vis]
-[Processing][Function][addrcache_get_all_persons]
-[Processing][Function][addrcache_get_grp_person_vis]
-[Processing][Function][addrcache_get_group_for_person]
-[Processing][Function][addrcache_person_remove_email]
-[Processing][Function][addrcache_allgrp_rem_email_vis]
-[Processing][Function][addrcache_remove_person]
-[Processing][Function][addrcache_remove_email]
-[Processing][Function][addrcache_remove_group]
-[Processing][Function][addrcache_get_email]
-[Processing][Function][addrcache_get_object]
-[Processing][Function][addrcache_folder_move_folder]
-[Processing][Function][addrcache_folder_move_group]
-[Processing][Function][addrcache_folder_move_person]
-[Processing][Function][addrharvest_harvest]
-[Processing][Function][addrharvest_free_table]
-[Processing][Function][addrcache_group_add_email]
-[Processing][Function][addrcache_add_group]
-[Processing][Function][addrcache_hash_add_email]
-[Processing][Function][addrcache_person_add_email]
-[Processing][Function][addrcache_add_person]
-[Processing][Function][addrcache_folder_add_group]
-[Processing][Function][addrcache_folder_add_folder]
-[Processing][Function][addrcache_folder_add_person]
-[Processing][Function][addrcache_hash_add_folder]
-[Processing][Function][addrcache_hash_add_group]
-[Processing][Function][exportldif_test_email]
-[Processing][Function][exportldif_fmt_person]
-[Processing][Function][exportldif_save_settings]
-[Processing][Function][exportldif_build_filespec]
-[Processing][Function][exportldif_default_values]
-[Processing][Function][exportldif_load_settings]
-[Processing][Function][exportldif_get_create_msg]
-[Processing][Function][exportldif_create_dir]
-[Processing][Function][exportldif_test_dir]
-[Processing][Function][exportldif_parse_filespec]
-[Processing][Function][exportldif_fmt_folder]
-[Processing][Function][exportldif_process]
-[Processing][Function][exportldif_set_exclude_email]
-[Processing][Function][exportldif_set_use_dn]
-[Processing][Function][exportldif_set_rdn]
-[Processing][Function][exportldif_set_suffix]
-[Processing][Function][exportldif_free]
-[Processing][Function][exportldif_create]
-[Processing][Function][exporthtml_find_stylesheet]
-[Processing][Function][exporthtml_compare_attrib]
-[Processing][Function][exporthtml_sort_attrib]
-[Processing][Function][exporthtml_fmt_attribs]
-[Processing][Function][exporthtml_fmt_fullname]
-[Processing][Function][exporthtml_compare_email]
-[Processing][Function][exporthtml_sort_email]
-[Processing][Function][exporthtml_fmt_email]
-[Processing][Function][exporthtml_compare_name]
-[Processing][Function][exporthtml_sort_name]
-[Processing][Function][exporthtml_fmt_group]
-[Processing][Function][exporthtml_fmt_person]
-[Processing][Function][exporthtml_fmt_folderhead]
-[Processing][Function][exporthtml_create_css_full]
-[Processing][Function][exporthtml_create_css_dfl]
-[Processing][Function][exporthtml_save_settings]
-[Processing][Function][exporthtml_build_filespec]
-[Processing][Function][exporthtml_default_values]
-[Processing][Function][exporthtml_load_settings]
-[Processing][Function][exporthtml_get_create_msg]
-[Processing][Function][exporthtml_create_dir]
-[Processing][Function][exporthtml_test_dir]
-[Processing][Function][exporthtml_parse_filespec]
-[Processing][Function][exporthtml_create_css_files]
-[Processing][Function][exporthtml_fmt_folder]
-[Processing][Function][exporthtml_fmt_header]
-[Processing][Function][exporthtml_process]
-[Processing][Function][exporthtml_set_attributes]
-[Processing][Function][exporthtml_set_link_email]
-[Processing][Function][exporthtml_set_banding]
-[Processing][Function][exporthtml_set_name_format]
-[Processing][Function][exporthtml_set_stylesheet]
-[Processing][Function][exporthtml_free]
-[Processing][Function][exporthtml_build_entry]
-[Processing][Function][exporthtml_create]
-[Processing][Function][g_string_append_c_inline]
-[Processing][Function][ertf_get_parenthesis]
-[Processing][Function][ertf_append_char]
-[Processing][Function][ertf_parse_tag]
-[Processing][Function][ertf_read_line]
-[Processing][Function][ertf_parse]
-[Processing][Function][ertf_parser_destroy]
-[Processing][Function][ertf_parser_new]
-[Processing][Function][display_header_prop_free]
-[Processing][Function][display_header_prop_read_str]
-[Processing][Function][display_header_prop_get_str]
-[Processing][Function][custom_header_is_allowed]
-[Processing][Function][custom_header_free]
-[Processing][Function][custom_header_find]
-[Processing][Function][custom_header_read_str]
-[Processing][Function][custom_header_get_str]
-[Processing][Function][get_account_face]
-[Processing][Function][get_default_face]
-[Processing][Function][get_any_face_filename_for_account]
-[Processing][Function][get_account_xface]
-[Processing][Function][get_content_for_any_face]
-[Processing][Function][get_default_xface]
-[Processing][Function][qryreq_clear]
-[Processing][Function][qrymgr_free_all_request]
-[Processing][Function][qrymgr_teardown]
-[Processing][Function][qrymgr_initialize]
-[Processing][Function][qryreq_free]
-[Processing][Function][qrymgr_delete_request]
-[Processing][Function][qrymgr_find_request]
-[Processing][Function][qrymgr_add_request]
-[Processing][Function][qryreq_add_query]
-[Processing][Function][qryreq_set_search_type]
-[Processing][Function][addritem_format_email]
-[Processing][Function][addritem_folder_path]
-[Processing][Function][addritem_parse_first_last]
-[Processing][Function][addrcache_hash_add_person]
-[Processing][Function][addrcache_id_attribute]
-[Processing][Function][addrcache_id_email]
-[Processing][Function][addrcache_id_folder]
-[Processing][Function][addrcache_id_group]
-[Processing][Function][addrcache_add_folder]
-[Processing][Function][addrcache_id_person]
-[Processing][Function][addrcache_print]
-[Processing][Function][addrcache_mark_file]
-[Processing][Function][addrcache_check_file]
-[Processing][Function][addrcache_free]
-[Processing][Function][addrcache_free_item_hash]
-[Processing][Function][addrcache_free_all_folders]
-[Processing][Function][addrcache_clear]
-[Processing][Function][addrcache_next_id]
-[Processing][Function][addrcache_refresh]
-[Processing][Function][addrcache_set_name]
-[Processing][Function][addrcache_get_name]
-[Processing][Function][addrcache_set_dirty]
-[Processing][Function][addrcache_get_dirty]
-[Processing][Function][addrcache_get_list_person]
-[Processing][Function][addrcache_get_list_folder]
-[Processing][Function][addrcache_get_root_folder]
-[Processing][Function][addrcache_create]
+[waint][tval]   %2 = load %struct._IO_FILE** %1, align 8, !dbg !1963 # [0] used in sink function 'fprintf' [line 1009]
+[waint][tval]   %23 = load %struct._IO_FILE** %2, align 8, !dbg !1978 # [0] used in sink function 'fprintf' [line 997]
+[waint][tval]   %26 = load %struct._IO_FILE** %2, align 8, !dbg !1979 # [0] used in sink function 'fprintf' [line 998]
+## Type   %17 = load i32* %16, align 4, !dbg !2020
+[waint][fmtvul]  Argument at position 2 of function 'fprintf' shall be a format string [line 733] 
+## Type   %27 = load i32* %26, align 4, !dbg !2021
+[waint][fmtvul]  Argument at position 2 of function 'fprintf' shall be a format string [line 734] 
+## Type   %33 = load i8** %32, align 8, !dbg !2022
+[waint][fmtvul]  Argument at position 2 of function 'fprintf' shall be a format string [line 735] 
+## Type   %38 = load i8** %37, align 8, !dbg !2023
+[waint][fmtvul]  Argument at position 2 of function 'fprintf' shall be a format string [line 736] 
+## Type   %65 = load i8** %64, align 8, !dbg !2031
+[waint][fmtvul]  Argument at position 2 of function 'fprintf' shall be a format string [line 743] 
+## Type   %71 = load i8** %70, align 8, !dbg !2033
+[waint][fmtvul]  Argument at position 2 of function 'fprintf' shall be a format string [line 744] 
+## Type   %14 = load i8** %13, align 8, !dbg !2013
+[waint][fmtvul]  Argument at position 2 of function 'fprintf' shall be a format string [line 464] 
+## Type   %19 = load i8** %18, align 8, !dbg !2014
+[waint][fmtvul]  Argument at position 2 of function 'fprintf' shall be a format string [line 465] 
+## Type   %24 = load i8** %23, align 8, !dbg !2015
+[waint][fmtvul]  Argument at position 2 of function 'fprintf' shall be a format string [line 466] 
+## Type   %17 = load i32* %16, align 4, !dbg !2016
+[waint][fmtvul]  Argument at position 2 of function 'fprintf' shall be a format string [line 479] 
+## Type   %27 = load i32* %26, align 4, !dbg !2017
+[waint][fmtvul]  Argument at position 2 of function 'fprintf' shall be a format string [line 480] 
+## Type   %33 = load i8** %32, align 8, !dbg !2018
+[waint][fmtvul]  Argument at position 2 of function 'fprintf' shall be a format string [line 481] 
+## Type   %38 = load i8** %37, align 8, !dbg !2019
+[waint][fmtvul]  Argument at position 2 of function 'fprintf' shall be a format string [line 482] 
+## Type   %43 = load i8** %42, align 8, !dbg !2020
+[waint][fmtvul]  Argument at position 2 of function 'fprintf' shall be a format string [line 483] 
+## Type   %48 = load i8** %47, align 8, !dbg !2021
+[waint][fmtvul]  Argument at position 2 of function 'fprintf' shall be a format string [line 484] 
+## Type   %53 = load i8** %52, align 8, !dbg !2022
+[waint][fmtvul]  Argument at position 2 of function 'fprintf' shall be a format string [line 485] 
+## Type   %58 = load i8** %57, align 8, !dbg !2023
+[waint][fmtvul]  Argument at position 2 of function 'fprintf' shall be a format string [line 486] 
+## Type   %127 = load i8** %current_status, align 8, !dbg !2054
+[waint][fmtvul]  Argument at position 2 of function 'fprintf' shall be a format string [line 509] 
+## Type   %15 = load i32* %14, align 4, !dbg !2013
+[waint][fmtvul]  Argument at position 2 of function 'fprintf' shall be a format string [line 449] 
+## Type   %25 = load i32* %24, align 4, !dbg !2014
+[waint][fmtvul]  Argument at position 2 of function 'fprintf' shall be a format string [line 450] 
+## Type   %31 = load i8** %30, align 8, !dbg !2015
+[waint][fmtvul]  Argument at position 2 of function 'fprintf' shall be a format string [line 451] 
+## Type   %36 = load i8** %35, align 8, !dbg !2016
+[waint][fmtvul]  Argument at position 2 of function 'fprintf' shall be a format string [line 452] 
+## Type   %41 = load i8** %40, align 8, !dbg !2017
+[waint][fmtvul]  Argument at position 2 of function 'fprintf' shall be a format string [line 453] 
+## Type   %37 = load i32* %num, align 4, !dbg !2015
+[waint][fmtvul]  Argument at position 2 of function 'sprintf' shall be a format string [line 829] 
+## Type   %17 = load i32* %16, align 4, !dbg !2018
+[waint][fmtvul]  Argument at position 2 of function 'fprintf' shall be a format string [line 917] 
+## Type   %27 = load i32* %26, align 4, !dbg !2019
+[waint][fmtvul]  Argument at position 2 of function 'fprintf' shall be a format string [line 918] 
+## Type   %33 = load i8** %32, align 8, !dbg !2020
+[waint][fmtvul]  Argument at position 2 of function 'fprintf' shall be a format string [line 919] 
+## Type   %38 = load i8** %37, align 8, !dbg !2021
+[waint][fmtvul]  Argument at position 2 of function 'fprintf' shall be a format string [line 920] 
+## Type   %43 = load i32* %42, align 4, !dbg !2022
+[waint][fmtvul]  Argument at position 2 of function 'fprintf' shall be a format string [line 921] 
+## Type   %50 = select i1 %49, i8* getelementptr inbounds ([7 x i8]* @.str49, i32 0, i32 0), i8* getelementptr inbounds ([8 x i8]* @.str50, i32 0, i32 0), !dbg !2023
+[waint][fmtvul]  Argument at position 2 of function 'fprintf' shall be a format string [line 922] 
+## Type   %66 = load i8** %65, align 8, !dbg !2027
+[waint][fmtvul]  Argument at position 2 of function 'fprintf' shall be a format string [line 926] 
+[waint][tval]   %7 = load %struct._IO_FILE** %2, align 8, !dbg !2015 # [0] used in sink function 'fprintf' [line 655]
+[waint][tval]   %10 = load %struct._IO_FILE** %2, align 8, !dbg !2018 # [0] used in sink function 'fprintf' [line 659]
+[waint][tval]   %47 = load %struct._IO_FILE** %2, align 8, !dbg !2039 # [0] used in sink function 'fprintf' [line 671]
+[waint][tval]   %31 = load %struct._IO_FILE** %2, align 8, !dbg !2033 # [0] used in sink function 'fprintf' [line 664]
+[waint][tval]   %33 = load %struct._IO_FILE** %2, align 8, !dbg !2034 # [0] used in sink function 'fprintf' [line 665]
+[waint][tval]   %38 = load %struct._IO_FILE** %2, align 8, !dbg !2035 # [0] used in sink function 'fprintf' [line 666]
+[waint][tval]   %43 = load %struct._IO_FILE** %2, align 8, !dbg !2036 # [0] used in sink function 'fprintf' [line 667]
+[waint][tval]   %8 = load %struct._IO_FILE** %2, align 8, !dbg !2019 # [0] used in sink function 'fprintf' [line 524]
+[waint][tval]   %43 = load %struct._IO_FILE** %2, align 8, !dbg !2053 # [0] used in sink function 'fprintf' [line 542]
+[waint][tval]   %52 = load %struct._IO_FILE** %2, align 8, !dbg !2057 # [0] used in sink function 'fprintf' [line 545]
+[waint][tval]   %58 = load %struct._IO_FILE** %2, align 8, !dbg !2060 # [0] used in sink function 'fprintf' [line 548]
+[waint][tval]   %60 = load %struct._IO_FILE** %2, align 8, !dbg !2061 # [0] used in sink function 'fprintf' [line 549]
+[waint][tval]   %65 = load %struct._IO_FILE** %2, align 8, !dbg !2062 # [0] used in sink function 'fprintf' [line 550]
+[waint][tval]   %72 = load %struct._IO_FILE** %2, align 8, !dbg !2064 # [0] used in sink function 'fprintf' [line 552]
+[waint][tval]   %93 = load %struct._IO_FILE** %2, align 8, !dbg !2074 # [0] used in sink function 'fprintf' [line 559]
+[waint][tval]   %86 = load %struct._IO_FILE** %2, align 8, !dbg !2070 # [0] used in sink function 'fprintf' [line 556]
+[waint][tval]   %19 = load %struct._IO_FILE** %3, align 8, !dbg !2053 # [0] used in sink function 'fprintf' [line 589]
+[waint][tval]   %21 = load %struct._IO_FILE** %3, align 8, !dbg !2054 # [0] used in sink function 'fprintf' [line 590]
+[waint][tval]   %23 = load %struct._IO_FILE** %3, align 8, !dbg !2055 # [0] used in sink function 'fprintf' [line 591]
+[waint][tval]   %25 = load %struct._IO_FILE** %3, align 8, !dbg !2056 # [0] used in sink function 'fprintf' [line 592]
+[waint][tval]   %27 = load %struct._IO_FILE** %3, align 8, !dbg !2057 # [0] used in sink function 'fprintf' [line 593]
+[waint][tval]   %29 = load %struct._IO_FILE** %3, align 8, !dbg !2058 # [0] used in sink function 'fprintf' [line 595]
+[waint][tval]   %31 = load %struct._IO_FILE** %3, align 8, !dbg !2059 # [0] used in sink function 'fprintf' [line 596]
+[waint][tval]   %33 = load %struct._IO_FILE** %3, align 8, !dbg !2060 # [0] used in sink function 'fprintf' [line 597]
+[waint][tval]   %36 = load %struct._IO_FILE** %3, align 8, !dbg !2062 # [0] used in sink function 'fprintf' [line 598]
+[waint][tval]   %38 = load %struct._IO_FILE** %3, align 8, !dbg !2063 # [0] used in sink function 'fprintf' [line 599]
+[waint][tval]   %40 = load %struct._IO_FILE** %3, align 8, !dbg !2064 # [0] used in sink function 'fprintf' [line 600]
+[waint][tval]   %43 = load %struct._IO_FILE** %3, align 8, !dbg !2066 # [0] used in sink function 'fprintf' [line 601]
+[waint][tval]   %45 = load %struct._IO_FILE** %3, align 8, !dbg !2067 # [0] used in sink function 'fprintf' [line 602]
+[waint][tval]   %16 = load %struct._IO_FILE** %3, align 8, !dbg !2050 # [0] used in sink function 'fprintf' [line 585]
+[waint][tval]   %127 = load %struct._IO_FILE** %3, align 8, !dbg !2113 # [0] used in sink function 'fprintf' [line 638]
+[waint][tval]   %70 = load %struct._IO_FILE** %3, align 8, !dbg !2088 # [0] used in sink function 'fprintf' [line 612]
+[waint][tval]   %92 = load %struct._IO_FILE** %3, align 8, !dbg !2100 # [0] used in sink function 'fprintf' [line 623]
+[waint][tval]   %94 = load %struct._IO_FILE** %3, align 8, !dbg !2101 # [0] used in sink function 'fprintf' [line 625]
+[waint][tval]   %96 = load %struct._IO_FILE** %3, align 8, !dbg !2102 # [0] used in sink function 'fprintf' [line 626]
+[waint][tval]   %102 = load %struct._IO_FILE** %3, align 8, !dbg !2103 # [0] used in sink function 'fprintf' [line 627]
+[waint][tval]   %104 = load %struct._IO_FILE** %3, align 8, !dbg !2104 # [0] used in sink function 'fprintf' [line 628]
+[waint][tval]   %111 = load %struct._IO_FILE** %3, align 8, !dbg !2106 # [0] used in sink function 'fprintf' [line 630]
+[waint][tval]   %113 = load %struct._IO_FILE** %3, align 8, !dbg !2107 # [0] used in sink function 'fprintf' [line 631]
+[waint][tval]   %84 = load %struct._IO_FILE** %3, align 8, !dbg !2097 # [0] used in sink function 'fprintf' [line 620]
+[waint][tval]   %12 = load %struct._IO_FILE** %3, align 8, !dbg !2052 # [0] used in sink function 'fprintf' [line 753]
+[waint][tval]   %14 = load %struct._IO_FILE** %3, align 8, !dbg !2053 # [0] used in sink function 'fprintf' [line 754]
+[waint][tval]   %16 = load %struct._IO_FILE** %3, align 8, !dbg !2054 # [0] used in sink function 'fprintf' [line 755]
+[waint][tval]   %18 = load %struct._IO_FILE** %3, align 8, !dbg !2055 # [0] used in sink function 'fprintf' [line 756]
+[waint][tval]   %20 = load %struct._IO_FILE** %3, align 8, !dbg !2056 # [0] used in sink function 'fprintf' [line 757]
+[waint][tval]   %22 = load %struct._IO_FILE** %3, align 8, !dbg !2057 # [0] used in sink function 'fprintf' [line 759]
+[waint][tval]   %24 = load %struct._IO_FILE** %3, align 8, !dbg !2058 # [0] used in sink function 'fprintf' [line 760]
+[waint][tval]   %26 = load %struct._IO_FILE** %3, align 8, !dbg !2059 # [0] used in sink function 'fprintf' [line 761]
+[waint][tval]   %29 = load %struct._IO_FILE** %3, align 8, !dbg !2061 # [0] used in sink function 'fprintf' [line 762]
+[waint][tval]   %31 = load %struct._IO_FILE** %3, align 8, !dbg !2062 # [0] used in sink function 'fprintf' [line 763]
+[waint][tval]   %33 = load %struct._IO_FILE** %3, align 8, !dbg !2063 # [0] used in sink function 'fprintf' [line 764]
+[waint][tval]   %36 = load %struct._IO_FILE** %3, align 8, !dbg !2065 # [0] used in sink function 'fprintf' [line 765]
+[waint][tval]   %38 = load %struct._IO_FILE** %3, align 8, !dbg !2066 # [0] used in sink function 'fprintf' [line 766]
+[waint][tval]   %40 = load %struct._IO_FILE** %3, align 8, !dbg !2067 # [0] used in sink function 'fprintf' [line 767]
+[waint][tval]   %43 = load %struct._IO_FILE** %3, align 8, !dbg !2069 # [0] used in sink function 'fprintf' [line 768]
+[waint][tval]   %50 = load %struct._IO_FILE** %3, align 8, !dbg !2071 # [0] used in sink function 'fprintf' [line 770]
+[waint][tval]   %52 = load %struct._IO_FILE** %3, align 8, !dbg !2073 # [0] used in sink function 'fprintf' [line 771]
+[waint][tval]   %55 = load %struct._IO_FILE** %3, align 8, !dbg !2075 # [0] used in sink function 'fprintf' [line 772]
+[waint][tval]   %58 = load %struct._IO_FILE** %3, align 8, !dbg !2077 # [0] used in sink function 'fprintf' [line 774]
+[waint][tval]   %173 = load %struct._IO_FILE** %3, align 8, !dbg !2145 # [0] used in sink function 'fprintf' [line 831]
+[waint][tval]   %86 = load %struct._IO_FILE** %3, align 8, !dbg !2106 # [0] used in sink function 'fprintf' [line 787]
+[waint][tval]   %108 = load %struct._IO_FILE** %3, align 8, !dbg !2118 # [0] used in sink function 'fprintf' [line 798]
+[waint][tval]   %110 = load %struct._IO_FILE** %3, align 8, !dbg !2119 # [0] used in sink function 'fprintf' [line 800]
+[waint][tval]   %112 = load %struct._IO_FILE** %3, align 8, !dbg !2120 # [0] used in sink function 'fprintf' [line 801]
+[waint][tval]   %118 = load %struct._IO_FILE** %3, align 8, !dbg !2121 # [0] used in sink function 'fprintf' [line 802]
+[waint][tval]   %120 = load %struct._IO_FILE** %3, align 8, !dbg !2122 # [0] used in sink function 'fprintf' [line 804]
+[waint][tval]   %127 = load %struct._IO_FILE** %3, align 8, !dbg !2124 # [0] used in sink function 'fprintf' [line 806]
+[waint][tval]   %129 = load %struct._IO_FILE** %3, align 8, !dbg !2125 # [0] used in sink function 'fprintf' [line 808]
+[waint][tval]   %100 = load %struct._IO_FILE** %3, align 8, !dbg !2115 # [0] used in sink function 'fprintf' [line 795]
+[waint][tval]   %135 = load %struct._IO_FILE** %3, align 8, !dbg !2127 # [0] used in sink function 'fprintf' [line 810]
+[waint][tval]   %139 = load %struct._IO_FILE** %3, align 8, !dbg !2130 # [0] used in sink function 'fprintf' [line 813]
+[waint][tval]   %142 = load %struct._IO_FILE** %3, align 8, !dbg !2132 # [0] used in sink function 'fprintf' [line 815]
+[waint][tval]   %149 = load %struct._IO_FILE** %3, align 8, !dbg !2134 # [0] used in sink function 'fprintf' [line 818]
+[waint][tval]   %156 = load %struct._IO_FILE** %3, align 8, !dbg !2137 # [0] used in sink function 'fprintf' [line 821]
+[waint][tval]   %159 = load %struct._IO_FILE** %3, align 8, !dbg !2139 # [0] used in sink function 'fprintf' [line 823]
+[waint][tval]   %32 = load %struct._IO_FILE** %1, align 8, !dbg !2053 # [0] used in sink function 'fprintf' [line 855]
+[waint][tval]   %35 = load %struct._IO_FILE** %1, align 8, !dbg !2056 # [0] used in sink function 'fprintf' [line 857]
+[waint][tval]   %17 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2017 # [0] used in sink function 'fprintf' [line 326]
+[waint][tval]   %19 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2018 # [0] used in sink function 'fprintf' [line 327]
+[waint][tval]   %21 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2019 # [0] used in sink function 'fprintf' [line 328]
+[waint][tval]   %23 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2020 # [0] used in sink function 'fprintf' [line 329]
+[waint][tval]   %25 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2021 # [0] used in sink function 'fprintf' [line 330]
+[waint][tval]   %27 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2022 # [0] used in sink function 'fprintf' [line 331]
+[waint][tval]   %29 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2023 # [0] used in sink function 'fprintf' [line 332]
+[waint][tval]   %31 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2024 # [0] used in sink function 'fprintf' [line 333]
+[waint][tval]   %33 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2025 # [0] used in sink function 'fprintf' [line 334]
+[waint][tval]   %35 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2026 # [0] used in sink function 'fprintf' [line 335]
+[waint][tval]   %37 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2027 # [0] used in sink function 'fprintf' [line 336]
+[waint][tval]   %39 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2028 # [0] used in sink function 'fprintf' [line 337]
+[waint][tval]   %41 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2029 # [0] used in sink function 'fprintf' [line 338]
+[waint][tval]   %43 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2030 # [0] used in sink function 'fprintf' [line 339]
+[waint][tval]   %45 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2031 # [0] used in sink function 'fprintf' [line 340]
+[waint][tval]   %47 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2032 # [0] used in sink function 'fprintf' [line 341]
+[waint][tval]   %49 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2033 # [0] used in sink function 'fprintf' [line 342]
+[waint][tval]   %51 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2034 # [0] used in sink function 'fprintf' [line 343]
+[waint][tval]   %53 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2035 # [0] used in sink function 'fprintf' [line 344]
+[waint][tval]   %55 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2036 # [0] used in sink function 'fprintf' [line 345]
+[waint][tval]   %57 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2037 # [0] used in sink function 'fprintf' [line 346]
+[waint][tval]   %59 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2038 # [0] used in sink function 'fprintf' [line 347]
+[waint][tval]   %61 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2039 # [0] used in sink function 'fprintf' [line 348]
+[waint][tval]   %63 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2040 # [0] used in sink function 'fprintf' [line 349]
+[waint][tval]   %65 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2041 # [0] used in sink function 'fprintf' [line 350]
+[waint][tval]   %67 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2042 # [0] used in sink function 'fprintf' [line 351]
+[waint][tval]   %69 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2043 # [0] used in sink function 'fprintf' [line 352]
+[waint][tval]   %71 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2044 # [0] used in sink function 'fprintf' [line 353]
+[waint][tval]   %73 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2045 # [0] used in sink function 'fprintf' [line 354]
+[waint][tval]   %75 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2046 # [0] used in sink function 'fprintf' [line 355]
+[waint][tval]   %77 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2047 # [0] used in sink function 'fprintf' [line 356]
+[waint][tval]   %79 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2048 # [0] used in sink function 'fprintf' [line 357]
+[waint][tval]   %81 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2049 # [0] used in sink function 'fprintf' [line 358]
+[waint][tval]   %83 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2050 # [0] used in sink function 'fprintf' [line 359]
+[waint][tval]   %85 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2051 # [0] used in sink function 'fprintf' [line 360]
+[waint][tval]   %87 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2052 # [0] used in sink function 'fprintf' [line 361]
+[waint][tval]   %89 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2053 # [0] used in sink function 'fprintf' [line 362]
+[waint][tval]   %91 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2054 # [0] used in sink function 'fprintf' [line 363]
+[waint][tval]   %93 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2055 # [0] used in sink function 'fprintf' [line 364]
+[waint][tval]   %95 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2056 # [0] used in sink function 'fprintf' [line 365]
+[waint][tval]   %97 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2057 # [0] used in sink function 'fprintf' [line 366]
+[waint][tval]   %17 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2017 # [0] used in sink function 'fprintf' [line 268]
+[waint][tval]   %19 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2018 # [0] used in sink function 'fprintf' [line 269]
+[waint][tval]   %21 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2019 # [0] used in sink function 'fprintf' [line 270]
+[waint][tval]   %23 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2020 # [0] used in sink function 'fprintf' [line 271]
+[waint][tval]   %25 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2021 # [0] used in sink function 'fprintf' [line 272]
+[waint][tval]   %27 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2022 # [0] used in sink function 'fprintf' [line 273]
+[waint][tval]   %29 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2023 # [0] used in sink function 'fprintf' [line 274]
+[waint][tval]   %31 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2024 # [0] used in sink function 'fprintf' [line 275]
+[waint][tval]   %33 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2025 # [0] used in sink function 'fprintf' [line 276]
+[waint][tval]   %35 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2026 # [0] used in sink function 'fprintf' [line 277]
+[waint][tval]   %37 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2027 # [0] used in sink function 'fprintf' [line 278]
+[waint][tval]   %39 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2028 # [0] used in sink function 'fprintf' [line 279]
+[waint][tval]   %41 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2029 # [0] used in sink function 'fprintf' [line 280]
+[waint][tval]   %43 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2030 # [0] used in sink function 'fprintf' [line 281]
+[waint][tval]   %45 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2031 # [0] used in sink function 'fprintf' [line 282]
+[waint][tval]   %47 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2032 # [0] used in sink function 'fprintf' [line 283]
+[waint][tval]   %49 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2033 # [0] used in sink function 'fprintf' [line 284]
+[waint][tval]   %51 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2034 # [0] used in sink function 'fprintf' [line 285]
+[waint][tval]   %53 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2035 # [0] used in sink function 'fprintf' [line 286]
+[waint][tval]   %55 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2036 # [0] used in sink function 'fprintf' [line 287]
+[waint][tval]   %57 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2037 # [0] used in sink function 'fprintf' [line 288]
+[waint][tval]   %59 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2038 # [0] used in sink function 'fprintf' [line 289]
+[waint][tval]   %61 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2039 # [0] used in sink function 'fprintf' [line 290]
+[waint][tval]   %63 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2040 # [0] used in sink function 'fprintf' [line 291]
+[waint][tval]   %65 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2041 # [0] used in sink function 'fprintf' [line 292]
+[waint][tval]   %67 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2042 # [0] used in sink function 'fprintf' [line 293]
+[waint][tval]   %69 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2043 # [0] used in sink function 'fprintf' [line 294]
+[waint][tval]   %71 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2044 # [0] used in sink function 'fprintf' [line 295]
+[waint][tval]   %73 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2045 # [0] used in sink function 'fprintf' [line 296]
+[waint][tval]   %75 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2046 # [0] used in sink function 'fprintf' [line 297]
+[waint][tval]   %77 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2047 # [0] used in sink function 'fprintf' [line 298]
+[waint][tval]   %79 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2048 # [0] used in sink function 'fprintf' [line 299]
+[waint][tval]   %81 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2049 # [0] used in sink function 'fprintf' [line 300]
+[waint][tval]   %83 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2050 # [0] used in sink function 'fprintf' [line 301]
+[waint][tval]   %85 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2051 # [0] used in sink function 'fprintf' [line 302]
+[waint][tval]   %16 = load %struct._IO_FILE** %2, align 8, !dbg !2051 # [0] used in sink function 'fprintf' [line 883]
+[waint][tval]   %18 = load %struct._IO_FILE** %2, align 8, !dbg !2053 # [0] used in sink function 'fprintf' [line 884]
+[waint][tval]   %23 = load %struct._IO_FILE** %2, align 8, !dbg !2056 # [0] used in sink function 'fprintf' [line 886]
+[waint][tval]   %6 = load %struct._IO_FILE** %2, align 8, !dbg !2011 # [0] used in sink function 'fprintf' [line 921]
+[waint][tval]   %8 = load %struct._IO_FILE** %2, align 8, !dbg !2012 # [0] used in sink function 'fprintf' [line 923]
+[waint][tval]   %10 = load %struct._IO_FILE** %2, align 8, !dbg !2013 # [0] used in sink function 'fprintf' [line 925]
+[waint][tval]   %12 = load %struct._IO_FILE** %2, align 8, !dbg !2014 # [0] used in sink function 'fprintf' [line 926]
+[waint][tval]   %35 = load %struct._IO_FILE** %2, align 8, !dbg !2022 # [0] used in sink function 'fprintf' [line 935]
+[waint][tval]   %25 = load %struct._IO_FILE** %2, align 8, !dbg !2017 # [0] used in sink function 'fprintf' [line 929]
+[waint][tval]   %27 = load %struct._IO_FILE** %2, align 8, !dbg !2019 # [0] used in sink function 'fprintf' [line 930]
+[waint][tval]   %29 = load %struct._IO_FILE** %2, align 8, !dbg !2020 # [0] used in sink function 'fprintf' [line 931]
+[waint][tval]   %65 = load %struct._IO_FILE** %2, align 8, !dbg !2034 # [0] used in sink function 'fprintf' [line 945]
+[waint][tval]   %52 = load %struct._IO_FILE** %2, align 8, !dbg !2027 # [0] used in sink function 'fprintf' [line 939]
+[waint][tval]   %54 = load %struct._IO_FILE** %2, align 8, !dbg !2029 # [0] used in sink function 'fprintf' [line 940]
+[waint][tval]   %56 = load %struct._IO_FILE** %2, align 8, !dbg !2030 # [0] used in sink function 'fprintf' [line 941]
+[waint][tval]   %58 = load %struct._IO_FILE** %2, align 8, !dbg !2031 # [0] used in sink function 'fprintf' [line 942]
+[waint][tval]   %23 = load %struct._IO_FILE** %htmlFile, align 8, !dbg !2067 # [0] used in sink function 'fprintf' [line 980]
+[waint][tval]   %25 = load %struct._IO_FILE** %htmlFile, align 8, !dbg !2068 # [0] used in sink function 'fprintf' [line 981]
+[waint][tval]   %28 = load %struct._IO_FILE** %htmlFile, align 8, !dbg !2069 # [0] used in sink function 'fprintf' [line 983]
+[waint][tval]   %30 = load %struct._IO_FILE** %htmlFile, align 8, !dbg !2070 # [0] used in sink function 'fprintf' [line 984]
+[waint][tval]   %33 = load %struct._IO_FILE** %htmlFile, align 8, !dbg !2072 # [0] used in sink function 'fprintf' [line 985]
+[waint][tval]   %36 = load %struct._IO_FILE** %htmlFile, align 8, !dbg !2073 # [0] used in sink function 'fprintf' [line 986]
+[waint][tval]   %42 = load %struct._IO_FILE** %htmlFile, align 8, !dbg !2076 # [0] used in sink function 'fprintf' [line 991]
+[waint][tval]   %46 = load %struct._IO_FILE** %htmlFile, align 8, !dbg !2078 # [0] used in sink function 'fprintf' [line 992]
+[waint][tval]   %48 = load %struct._IO_FILE** %htmlFile, align 8, !dbg !2079 # [0] used in sink function 'fprintf' [line 994]
+[waint][tval]   %50 = load %struct._IO_FILE** %htmlFile, align 8, !dbg !2080 # [0] used in sink function 'fprintf' [line 995]
+## Type   %16 = load i8** %15, align 8, !dbg !2018
+[waint][fmtvul]  Argument at position 2 of function 'fprintf' shall be a format string [line 277] 
+## Type   %21 = load i32* %20, align 4, !dbg !2019
+[waint][fmtvul]  Argument at position 2 of function 'fprintf' shall be a format string [line 278] 
+## Type   %26 = load i8** %25, align 8, !dbg !2020
+[waint][fmtvul]  Argument at position 2 of function 'fprintf' shall be a format string [line 279] 
+## Type   %31 = load i64* %30, align 8, !dbg !2021
+[waint][fmtvul]  Argument at position 2 of function 'fprintf' shall be a format string [line 280] 
+## Type   %38 = select i1 %37, i8* getelementptr inbounds ([4 x i8]* @.str11, i32 0, i32 0), i8* getelementptr inbounds ([3 x i8]* @.str12, i32 0, i32 0), !dbg !2022
+[waint][fmtvul]  Argument at position 2 of function 'fprintf' shall be a format string [line 281] 
+## Type   %45 = select i1 %44, i8* getelementptr inbounds ([4 x i8]* @.str11, i32 0, i32 0), i8* getelementptr inbounds ([3 x i8]* @.str12, i32 0, i32 0), !dbg !2023
+[waint][fmtvul]  Argument at position 2 of function 'fprintf' shall be a format string [line 282] 
 ===-------------------------------------------------------------------------===
                           ... Statistics Collected ...
 ===-------------------------------------------------------------------------===
@@ -1350,12 +284,15 @@ No main function exists
     4 dsa-local - Number of indirect calls added
  1210 dsa-local - Number of intrinsics called
     6 dsa-local - Number of inttoptr used only in cmp
- 2169 isstac    - Number of context-sensitive analysis calls
-  183 isstac    - Number of emited warnings
-  406 isstac    - Number of found issues
   330 td_dsa    - Number of graphs inlined
+ 2169 waint     - Number of context-sensitive analysis calls
+  219 waint     - Number of emited warnings
+  163 waint     - Number of found format string vulnerabilities
+  568 waint     - Number of found issues
+  405 waint     - Number of found tainted value usage
+  331 waint     - Number of functions found in the module
 
 
-real	0m11.698s
-user	0m11.285s
-sys	0m0.396s
+real	0m10.983s
+user	0m10.609s
+sys	0m0.360s

@@ -106,12 +106,12 @@ bool CForwardFlowAnalysis::updateAnalyzedFunction(BasicBlock *bb) {
 	Function *f = bb->getParent();
 	if ( 0 == _curAnalyzedFunction ){
 		_curAnalyzedFunction = f;
-		errs() << "[Processing][Function][" << _curAnalyzedFunction->getName() << "]\n";
+		//errs() << "[Processing][Function][" << _curAnalyzedFunction->getName() << "]\n";
 		return true;
 	}
 	else if (!f->getName().equals(_curAnalyzedFunction->getName())) {
 		_curAnalyzedFunction = f;
-		errs() << "[Processing][Function][" << _curAnalyzedFunction->getName() << "]\n";
+		//errs() << "[Processing][Function][" << _curAnalyzedFunction->getName() << "]\n";
 		return true;
 	}
 

@@ -35,15 +35,22 @@ namespace {
 
 #define ENTRY_POINT "main"
 #define SOURCE_ARG_DELIM ","
+#define SINK_ARG_DELIM ","
+
+typedef enum {
+  TAINTED_VALUE_USE,
+  FORMAT_STRING_VUL
+} WarningType;
 
 typedef struct {
+  WarningType warnType;
 
 } AnalysisIssue;
 
 typedef struct {
 	vector<unsigned> *_currentLines;
 
-	bool addIssue(unsigned line) {
+	bool addIssue(unsigned line, WarningType aWarnType) {
 		vector<unsigned>::iterator findIter =
 				std::find(_currentLines->begin(), _currentLines->end(), line);
 
@@ -101,7 +108,7 @@ public:
 	void visitReturnInst(ReturnInst &I);
 
 	void handleContextCall(CallInst &I, Function &callee);
-	void handleSinks(CallInst &I, Function &callee);
+	void handleSinks(CallInst &I, Function &callee, unsigned formatPos = 10000);
 
 	void setDiff(set<Value *> &A, set<Value *> &B, set<Value *> &AMinusB);
 	virtual bool merge(BasicBlock *curBB, BasicBlock *succBB);
@@ -131,11 +138,12 @@ private:
 	const static string _taintId;
 	const static string _taintSourceFile;
 	const static string _taintSinkFile;
-	const static int _SOURCE_ARG_RET;
-	const static int _SOURCE_ARG_INVALID_MIN;
-	const static int _FUNCTION_NOT_SOURCE;
-	static map<string, int> _taintSources;
+	const static unsigned _SOURCE_ARG_RET;
+	const static unsigned _FUNCTION_NOT_SOURCE;
+	const static unsigned _FUNCTION_NOT_FORMAT;
+	static map<string, unsigned> _taintSources;
 	static vector<string> _taintSinks;
+	static map<string, unsigned> _formatSinks;
 
 	map<Function *, AnalysisWarnings * > _allWarnings;
 
@@ -144,7 +152,8 @@ private:
 	 * specifies that its parameter at position 'taintedPos' gets
 	 * tainted.
 	 */
-	static void addTaintSource(string &source, unsigned taintedPos);
+	//static void addTaintSource(string &source, unsigned taintedPos);
+	static void addTaintInfo(map<string, unsigned> *target, string &source, unsigned taintedPos);
 
 	/**
 	 * Reads the configuration file where functions considered
@@ -161,7 +170,8 @@ private:
 	 * 'p' has the value '-1' in case function 'F' is not a
 	 * taint source.
 	 */
-	int isTaintSource(string &F);
+	unsigned isTaintSource(string &F);
+	unsigned isFormatSink(string &F);
 
 	/** Has the intraprocedural analysis been run */
 	bool _intraWasRun;
