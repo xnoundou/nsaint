@@ -1,12 +1,12 @@
-default: ece750.pdf
+default: waint.pdf
 
-ece750.pdf: clean ece750.tex ece750.bib
-	pdflatex ece750
-	bibtex ece750
-	pdflatex ece750
-	pdflatex ece750
-	evince ece750.pdf
+waint.pdf: clean waint.tex waint.bib
+	pdflatex waint
+	bibtex waint
+	pdflatex waint
+	pdflatex waint
+	evince waint.pdf
 
 clean:
 	rm -f *~ *.glo *.aux *.bbl *.brf *.idx *.bak *.ilg *.ind *.lof *.log \
-	   *.lot *.out *.thm *.toc *.blg ece750.pdf ece750.synctex.gz
+	   *.lot *.out *.thm *.toc *.blg waint.pdf waint.synctex.gz

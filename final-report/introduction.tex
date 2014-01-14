@@ -5,12 +5,13 @@ unauthorized  control of the application through supplied input.
 Such unauthorized control are classified in different
 categories depending on how the user gains control of
 the application: buffer overflow, format string attacks,
-SQL injection, cross site scripting, etc.
+SQL injection, cross-site scripting, etc.
 Researchers have worked both on dynamic \cite{Clause:2007:Dytan,
-Kiezun:2009:Ardilla} and static techniques 
-\cite{Jovanovic:2006:Pixy, Shankar:2001:DFS, livshits05finding, 
-Avots:2005:ISS, Dimitru:2009:STAC, Tripp:2009:TET} to find 
-security vulnerabilities in software. 
+Kiezun:2009:Ardilla}, static\cite{Tripp:2009:TAJ, Kiezun:2009:Ardilla,
+Chang:2009:ICS, Parfait:2008, Jovanovic:2006:Pixy, livshits05finding,
+Avots:2005:ISS, Shankar:2001:DFS}, and hybrid
+techniques\cite{Trip:2011:HAJSA} to find  security
+vulnerabilities in software. 
 
 This paper presents a static taint analysis to detect software
 vulnerabilities in C programs. The analysis is implemented
@@ -19,7 +20,8 @@ not require any developer annotations. Our analysis
 is interprocedural, and developers can choose between a
 context-insensitive and a context-sensitive version. 
 
-Taint analysis searches program external inputs usage that
+Taint analysis is also know as \textit{user-input dependence analysis}.
+A taint analysis searches for program external inputs usage that
 may allow users to gain unauthorized control over the program. 
 In taint analysis, a \textit{source} is a program location
 or statement that may produce a \textit{tainted value}, i.e,

@@ -1,65 +1,201 @@
 \newcommand{\parfait}{\texttt{Parfait}\xspace}
 \newcommand{\cqual}{\texttt{CQual}\xspace}
+\newcommand{\dytan}{\texttt{Dytan}\xspace}
+\newcommand{\pixy}{\texttt{Pixy}\xspace}
+\newcommand{\ardilla}{\texttt{ARDILLA}\xspace}
+
+\newcommand{\datalog}{\texttt{Datalog}\xspace}
+\newcommand{\bddbddb}{\texttt{bddbddb}\xspace}
+\newcommand{\pql}{\texttt{PQL}\xspace}
 
 \begin{table*}[!htbp]
 \centering
 \begin{tabular}{|c|c|c|c|c|c|}
 \hline
-{\bf Name} & {\bf Language}	& {\bf Technique } &	{\bf Annotation}	& {\bf Context-Sensitive} & {\bf Input}  \\ \hline
-Parfait	    &	C, C++		&	DD,	static		&						&	Yes					&							\\
-CQual	 	&	C			&	TS, static		&	Yes					&						&   						\\
-Archer	 	&	C			&	SA				&						&						&   						\\
-Splint		&	C			&					&	Yes					&						&							\\
-Jlint		&	Java		&	DF, AI			&						&						&							\\
-Safer		&				&					&	Yes					&						&							\\
-Coverity	& C, C++, Java  &					&						&						&							\\
-VeraCode	& C, C++, Java  &					&						&						&	Binaries				\\
-Klocwork	& C, C++, Java  &	IDF				&						&						&							\\
-Pixy		&				&					&						&						&							\\ \hline
+{\bf Name} & {\bf Language}	& {\bf Technique } &	{\bf Annotation}	& {\bf Interprocedural} & {\bf Input}  \\ \hline
+Parfait	    &	C, C++		&	DD,	static		&						&	Context-sensitive	&				\\
+CQual	 	&	C			&	TS, static		&	Yes					&						&   			\\
+Coverity	& C, C++, Java  &					&						&						&				\\
+VeraCode	& C, C++, Java  &					&						&						&	Binaries	\\
+Klocwork	& C, C++, Java  &	IDF				&						&						&				\\
+TAJ			& Java  		&	IDF				&						&						&				\\
+Dytan		&				&	dynamic			&						&						&	Binaries	\\
+Pixy		&	PHP			&	dynamic			&						&						&				\\
+Archer	 	&	C			&	SA				&						&						&   			\\
+Splint		&	C			&					&	Yes					&						&				\\
+Jlint		&	Java		&	DF, AI			&						&						&				\\
+Safer		&				&					&	Yes					&						&				\\ \hline
 \end{tabular}\caption{Program Analysis Tool for Security}
 \end{table*}
 
 \section{Related Work}\label{sec:related}
 
-\subsection{Static Analysis}
+\begin{comment}
+The tremendous amount of program analysis tools for software
+security\cite{Tripp:2009:TAJ, Kiezun:2009:Ardilla,
+Chang:2009:ICS, Parfait:2008, Jovanovic:2006:Pixy,
+livshits05finding, Avots:2005:ISS, Shankar:2001:DFS, Engler:2000:CSR,
+KMPS2011, Clause:2007:Dytan, Balzarotti:2008:SCS4} is an indication of
+the importance of the subject.
+%Each work can generally be classified within three main categories:
+%static tools\cite{Tripp:2009:TAJ, Kiezun:2009:Ardilla, Chang:2009:ICS,
+%Parfait:2008, Jovanovic:2006:Pixy, livshits05finding, Avots:2005:ISS,
+%Shankar:2001:DFS,  Engler:2000:CSR}, 
+%dynamic tools\cite{KMPS2011, Clause:2007:Dytan}, and
+%hybrid tools\cite{Balzarotti:2008:SCS4}.
+Each work can generally be characterized based on four main elements:
+\begin{itemize}
+  \item \textit{Technique}: static (interprocedural, context-sensitivity), dynamic, hybrid
+  \item \textit{Input}: source code, binaries, annotations
+  \item \textit{Language}: typed/untyped, managed/unmanaged
+  \item \textit{Vulnerability Type}: user-dependent input, internal
+\end{itemize}
 
-\cite{Engler:2000:CSR}
+The remainder of this section  focuses on taint analysis
+(also called user-input dependence analysis) for finding
+security vulnerabilities.
+
+\subsection{Static Analysis}
+Static analysis techniques are widely used for finding
+security vulnerabilities in \cite{Tripp:2009:TAJ,
+Kiezun:2009:Ardilla, Chang:2009:ICS, Parfait:2008,
+Jovanovic:2006:Pixy, livshits05finding, Avots:2005:ISS,
+Shankar:2001:DFS,  Engler:2000:CSR}. Tools in this category
+suffer from the well known problems of static analysis:
+\textit{undecidability} and \textit{scalability}.
+
+Common techniques used to mitigate scalability issues
+include the use of \textit{program slicing} and
+\textit{demand-driven analysis}\cite{Reps:1995:PIC, Parfait:2008, Tripp:2009:TAJ},
+and \textit{modular decomposition}\cite{Shankar:2001:DFS}.
+
+\paragraph{Interprocedural Analysis}
+
+\paragraph{Context-Sensitivity}
 
 \subsection{Dynamic Analysis}
+Dynamic analysis performs on running programs, and in general
+do not need access to the source code of the program under analysis
+\cite{Kiezun:2009:Ardilla, Clause:2007:Dytan, Balzarotti:2008:SCS4}.
+A dynamic analysis is interprocedural and context-sensitive in
+nature because it runs along with the analyzed program. 
+
+A dynamic taint analysis instrument program memory locations
+that correspond to taint sources, taint sinks, and where taint
+propagation shall occur. For managed languages (e.g. Java, C\#),
+developers may also choose to instrument programs at the level
+of the virtual machine or runtime system. \cite{Livshits:2012:DTTMR}
+provides a taxonomy on the topic. 
+The major bottleneck of dynamic analysis lies in the execution
+overhead that incurs the program instrumentation.
+
+\textit{Forward symbolic execution} is a technique that builds
+a logical formula to represent a program execution. The logical
+formula enables developers to reason about different program input.
+It is common to combine forward symbolic execution and dynamic
+taint analysis. \cite{Schwartz:2010:YEW} discusses
+this combination and possible implementation choices.
+\end{comment}
+
+\subsection{Dynamic Analysis for Vulnerability Detection}
+\paragraph{\dytan}\cite{Clause:2007:Dytan} presents a framework
+that generates dynamic taint analyzes for x$86$ binaries.
+\dytan does not need the source code of the application under analysis.
+Developers specify an analysis by giving taint sources, taint sinks,
+and a propagation policy. Taint sources can be variable names,
+function-return values, and data read from I/O stream (e.g. file, 
+network connection, etc.). Taint sinks are specified by memory or code
+location. Sinks can also be based on usage scenarios (e.g. 
+perform a check before execution of \texttt{jump} instructions).
+
+\paragraph{\ardilla}\cite{Kiezun:2009:Ardilla} uses concolic
+execution to automatically create SQL injection and
+cross-site scripting attacks for web applications written in PHP.
+\ardilla does not require any annotations. Developers
+define a time limit within which \ardilla attempts to
+create input data that exercise security vulnerabilities
+present in the application. For that, \ardilla uses an input
+generator to create new input for the application.
+During application execution, the input generator records path
+constraints that capture the control-flow paths taken by
+that specific execution. The input generator then automatically
+and iteratively creates new input data by negating the
+obtained path constraints.
+The web application then runs with the newly created
+input data and flows along program paths different from
+previous executions. The input data generation continues
+until all program paths are covered or the time limit set
+by the developer exceeds.
+During program executions triggered by the input generator,
+\ardilla tracks tainted values. More importantly, \ardilla
+also tracks tainted values that are stored into the database.
+That is, tainted values stored into the database are also
+marked as tainted at their retrieval.
 
 \subsection{Static Analysis for Vulnerability Detection}
 
-\parfait\cite{Parfait:2008} is a tool for finding bugs in
-C programs. \parfait is built on top of LLVM and employs
-demand-driven algorithms to mitigate scalability issues
-inherent to standard forward dataflow analysis techniques
-and to static analysis in general.	
+\paragraph{\parfait}\cite{Parfait:2008} checks for bugs
+in C programs. \parfait is built on top of LLVM and uses
+a demand driven analysis to mitigate scalability issues
+inherent to standard forward dataflow analysis techniques.	
 \parfait does not require annotations from developers and
 is advertised to scale to millions of lines of code. 
-Specifically for security vulnerabilities, \parfait implements
-a user-input dependence analysis\cite{Scholz:2008:UDA} (i.e taint analysis) that
-is linear in the number of statements and dependencies. \parfait's
-user-input dependence analysis is formulated as a graph
-reachability problem. It implements both a context-insensitive and
-a context-sensitive approach. The authors of \parfait added 
-a may-function alias analysis to LLVM to better support
-the accuracy of the user-dependence analysis.\\
+For security vulnerabilities, \parfait implements a taint
+analysis\cite{Scholz:2008:UDA} as pre-processing filter.
+that is linear in the number of statements and dependencies.
+\parfait's taint analysis is formulated as a graph reachability
+problem. \parfait implements both a context-insensitive and
+a context-sensitive solution for its taint-analysis, and 
+adds a may-function alias analysis to LLVM to better support
+the accuracy of the taint analysis.
+Similarly to \parfait, \waint may also perform either a
+context-insensitive or a context-sensitive analysis. \waint
+is also based on LLVM, and do not require any annotations
+from developers.
+On the other hand, it is not possible to try different pointer
+analysis with \parfait, while \waint may potentially switch
+its pointer analysis library.
 
-\cqual\cite{Shankar:2001:DFS} detects format string vulnerabilities
-in C programs. \cqual's analysis is based on type
+\paragraph{\pixy}\cite{Jovanovic:2006:Pixy} statically scans
+for cross site scripting vulnerabilities in PHP scripts. \pixy
+implements a flow-sensitive, context-sensitive dataflow analysis.
+\pixy also creates and uses an alias and literal analysis for PHP.
+
+\paragraph{}Livshits et al. presents a tool for finding
+security vulnerabilities in web applications written in Java~\cite{livshits05finding}.
+The tool is based on \bddbddb\footnote{http://suif.stanford.edu/bddbddb},
+which automatically generates context-sensitive program analyzes
+for specifications written in \datalog\cite{Ullman:1988:datalog}.
+\bddbddb uses binary decisions diagrams to represent and manipulate
+points-to results for different contexts in a Java program. The authors
+implement taint propagation on top of the points-to results generated
+by \bddbddb.
+In fact, developers specify vulnerabilities in the \pql
+language\cite{Martin:2005:PQL}, which is a syntactic sugar for \datalog. 
+That is, each vulnerability specification corresponds to a set of
+\pql queries.
+
+\paragraph{\cqual}\cite{Shankar:2001:DFS} detects format string
+vulnerabilities in C programs. \cqual's analysis is based on type
 qualifiers\cite{Foster:1999:TTQ} and type inference. Given a C program,
 an initial subset of the program is annotated with the type qualifiers
 \texttt{tainted} and \texttt{untainted}. \cqual then uses a set of
 inference rules to generate type (qualifier) constraints over the program.
+Pointer reasoning is done via some rules of the type system.
 The analysis then warns the user of a format string vulnerability
 whenever the program does not type checks due to an unsatisfiable
 constraint. According to results published in \cite{Shankar:2001:DFS},
-\cqual performs on average $85$s for a code base of $20$k lines of code.
-It took $268$s to analyze the biggest program of $43$k.
+\cqual performs on average $85$s for a code base of $20$k lines of code,
+and takes $268$s to analyze the largest program of $43$k.
+In contrast to \cqual, users of \waint may experiment with different pointer
+analysis libraries and choose among them. \waint also do not require
+any annotations.
 
-\subsection{Dynamic Analysis for Vulnerability Detection}
 
-\subsection{Type System Based Vulnerability Detection}
+\subsection{Hybrid Analysis for Vulnerability Detection}
+ \cite{Trip:2011:HAJSA}
+
+\subsection{Symbolic Execution for Vulnerability Detection}
 
 \subsection{Comparison}
 
