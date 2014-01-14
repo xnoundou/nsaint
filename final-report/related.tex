@@ -3,6 +3,7 @@
 \newcommand{\dytan}{\texttt{Dytan}\xspace}
 \newcommand{\pixy}{\texttt{Pixy}\xspace}
 \newcommand{\ardilla}{\texttt{ARDILLA}\xspace}
+\newcommand{\taintcheck}{\texttt{TaintCheck}\xspace}
 
 \newcommand{\datalog}{\texttt{Datalog}\xspace}
 \newcommand{\bddbddb}{\texttt{bddbddb}\xspace}
@@ -108,6 +109,17 @@ network connection, etc.). Taint sinks are specified by memory or code
 location. Sinks can also be based on usage scenarios (e.g. 
 perform a check before execution of \texttt{jump} instructions).
 
+\paragraph{}Newsome et al. propose a mechanism to automatically detect
+overwrite attacks and defend programs accordingly~\cite{Newsome:2005:taintcheck}.
+The proposed mechanism works on commodity software, and does
+not require access or special compilation of application source code.
+The paper also proposes a technique to automatically detect previously
+unknown exploit attacks, and automatically create signatures for
+discovered exploit attacks. The paper also introduces \taintcheck,
+a prototype that implements several of their proposed ideas.
+\waint aims at finding bug in software during the development phase,
+while \taintcheck is to be used during program execution.
+
 \paragraph{\ardilla}\cite{Kiezun:2009:Ardilla} uses concolic
 execution to automatically create SQL injection and
 cross-site scripting attacks for web applications written in PHP.
@@ -141,7 +153,7 @@ inherent to standard forward dataflow analysis techniques.
 \parfait does not require annotations from developers and
 is advertised to scale to millions of lines of code. 
 For security vulnerabilities, \parfait implements a taint
-analysis\cite{Scholz:2008:UDA} as pre-processing filter.
+analysis~\cite{Scholz:2008:UDA} as pre-processing filter.
 that is linear in the number of statements and dependencies.
 \parfait's taint analysis is formulated as a graph reachability
 problem. \parfait implements both a context-insensitive and
@@ -163,15 +175,15 @@ implements a flow-sensitive, context-sensitive dataflow analysis.
 
 \paragraph{}Livshits et al. presents a tool for finding
 security vulnerabilities in web applications written in Java~\cite{livshits05finding}.
-The tool is based on \bddbddb\footnote{http://suif.stanford.edu/bddbddb},
+The tool is based on \bddbddb~\footnote{http://suif.stanford.edu/bddbddb},
 which automatically generates context-sensitive program analyzes
-for specifications written in \datalog\cite{Ullman:1988:datalog}.
+for specifications written in \datalog~\cite{Ullman:1988:datalog}.
 \bddbddb uses binary decisions diagrams to represent and manipulate
 points-to results for different contexts in a Java program. The authors
 implement taint propagation on top of the points-to results generated
 by \bddbddb.
 In fact, developers specify vulnerabilities in the \pql
-language\cite{Martin:2005:PQL}, which is a syntactic sugar for \datalog. 
+language~\cite{Martin:2005:PQL}, which is a syntactic sugar for \datalog. 
 That is, each vulnerability specification corresponds to a set of
 \pql queries.
 
@@ -184,7 +196,7 @@ inference rules to generate type (qualifier) constraints over the program.
 Pointer reasoning is done via some rules of the type system.
 The analysis then warns the user of a format string vulnerability
 whenever the program does not type checks due to an unsatisfiable
-constraint. According to results published in \cite{Shankar:2001:DFS},
+constraint. According to results published in~\cite{Shankar:2001:DFS},
 \cqual performs on average $85$s for a code base of $20$k lines of code,
 and takes $268$s to analyze the largest program of $43$k.
 In contrast to \cqual, users of \waint may experiment with different pointer
