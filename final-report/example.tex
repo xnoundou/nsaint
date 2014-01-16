@@ -36,7 +36,7 @@ taint propagation \cite{Chang:2009:ICS}}.
 
 Functions \even{} and \odd{} have one formal parameter
 \texttt{x}. Both do not taint \texttt{x} in their code.
-Thus \texttt{x} may be tainted within their body iff it was
-passed as tainted at calling sites. This is the case
+Thus \texttt{x} is tainted within their body iff it is
+passed as tainted value at calling sites. This is the case
 for \even{} at line $4$ in \main{}. Thus implying a tainted
 parameter for \odd{} at line $32$ in \even{}.

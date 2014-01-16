@@ -70,9 +70,9 @@ assigned in both branches of the statement becomes tainted because
 their value depend on tainted variable $x$.
 
 \paragraph{Formalisms}
-The analysis dataflow set is $\varset \times 2^\instset$,
-where $\varset$ is the set of all program variables and
-$\instset$ the set of all program statements. 
+The analysis dataflow set is $\instset \times 2^\varset$,
+where $\instset$ the set of all program instructions
+and $\varset$ is the set of all program variables. 
 At a statement labelled $s$, the incoming dataflow set $\myinflow[s]$
 is the set of program variables that are tainted before statement $s$.
 If a variable $v$ is not tainted before statement $s$, then
@@ -166,7 +166,7 @@ of Algorithm~\ref{fig:csInterFlow} in Appendix~\ref{app:algo}.
 \SetKwData{stmtF}{f}
 \SetKwData{stmtR}{r}
 \SetKwData{VarK}{k}
-\SetKwData{summaryTable}{sumTable}
+\SetKwData{summaryTable}{summary}
 \SetKwData{Input}{IN}
 \SetKwData{Output}{OUT}
 \SetKwFunction{LCALL}{CALL}
@@ -183,7 +183,7 @@ of Algorithm~\ref{fig:csInterFlow} in Appendix~\ref{app:algo}.
 \Switch{$\Type(\stmt)$}{	
 	\Case{$\LCALL\ [\stmtR = \mathit{call}\ \Source(\VarA_0, \VarA_1, ..., \VarA_n)]$}{
 		\ForEach{$\VarK \in \set{0, 1, ..., n}$}{
-			\If{$\Taint(\VarK)$}{			
+			\If{$\summaryTable[\Source][\VarK]$}{			
 				$\FlowInsert(\stmt, \VarA_k)$\;
 			}			
 		}
@@ -228,7 +228,7 @@ illustrates the context-insensitive flow function for \callt statements.
 \SetKwData{stmtF}{f}
 \SetKwData{VarK}{k}
 \SetKwData{ValueR}{r}
-\SetKwData{summaryTable}{sumTable}
+\SetKwData{summaryTable}{summary}
 \SetKwData{Input}{IN}
 \SetKwData{Output}{OUT}
 \SetKwFunction{LCALL}{CALL}
@@ -270,7 +270,7 @@ statements}\label{fig:contextIF}
 \SetKwData{False}{false}
 \SetKwData{Input}{IN}
 \SetKwData{Output}{OUT}
-\SetKwData{summaryTable}{sumTable}
+\SetKwData{summaryTable}{summary}
 \SetKwFunction{LCALL}{CALL}
 \SetKwFunction{Type}{TypeOf}
 \SetKwFunction{InterFlow}{csInterFlow}
