@@ -31,6 +31,7 @@ InterProcedural::InterProcedural(CTaintAnalysis *analysis)
   errs() << "## Starting context-insensitive interprocedural analysis\n";
   _analysis->setInterRunning(true);
   analyze();
+  _analysis->printSummaryTable();
   _analysis->setInterRunning(false);
 }
 

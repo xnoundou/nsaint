@@ -7,12 +7,12 @@ int *testIt(int *y) {
   return y;
 }
 
-int main(int argc, char *argv[])
+int t2(int argc, char *argv[])
 {
   int x;
   int y;
   int c;
-  printf("Enter an integer now: ");
+  printf("Enter an integer now: %d", 98);
   scanf("%d", &x);
   //scanf("%s", &c);
   int *px = &x;

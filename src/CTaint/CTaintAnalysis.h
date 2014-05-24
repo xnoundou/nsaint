@@ -12,9 +12,15 @@
 #include <llvm/Support/Debug.h>
 #include <llvm/Pass.h>
 #include <llvm/Analysis/CallGraph.h>
+#include <llvm/InstVisitor.h>
+
 #include <dsa/DSGraph.h>
 #include <dsa/DataStructure.h>
-#include <llvm/InstVisitor.h>
+
+//#include <boost/regex.hpp>
+
+#include <list>
+using std::list;
 
 #include <vector>
 #include <string>
@@ -43,32 +49,43 @@ typedef enum {
 } WarningType;
 
 typedef struct {
-  WarningType warnType;
-
+	WarningType warnType;
+	Value *_taintedVal;
 } AnalysisIssue;
 
 typedef struct {
-	vector<unsigned> *_currentLines;
+	map<unsigned, vector<AnalysisIssue *> *> *_lineToIssues;
 
-	bool addIssue(unsigned line, WarningType aWarnType) {
-		vector<unsigned>::iterator findIter =
-				std::find(_currentLines->begin(), _currentLines->end(), line);
+	bool addIssue(unsigned line, WarningType aWarnType, Value *taintedVal = 0) {
+		bool ret = false;
 
-		if (findIter == _currentLines->end())
-		{
-			_currentLines->push_back(line);
-			//TODO: Add a new issue
-			return true;
+		if (!(*_lineToIssues)[line]) {
+			(*_lineToIssues)[line] = new vector<AnalysisIssue *>();
+			ret = true;
 		}
-		else {
-			//TODO: Add a new issue
-			return false;
-		}
+
+		AnalysisIssue *issue = new AnalysisIssue;
+		issue->warnType = aWarnType;
+		if (taintedVal)	issue->_taintedVal = taintedVal;
+
+		(*_lineToIssues)[line]->push_back(issue);
+		return ret;
 	}
 
 } AnalysisWarnings;
 
-//typedef map<Value *, vector<Instruction &> >  ValueTaintingTable;
+typedef map<unsigned, vector<AnalysisIssue *> *>::iterator MLineToIssueIterator;
+
+typedef enum {
+  EMPTY_FORMAT_STRING,
+  WRONG_FORMAT_SPEC,
+  MISSING_FORMAT_SPEC,
+  CORRECT_FORMAT_SPEC
+} FormatStringType;
+
+typedef struct {
+	FormatStringType fmtStrType;
+} FormatStringSpec;
 
 /**
  * (taintInfo, argNo)
@@ -88,12 +105,23 @@ typedef struct {
 class CTaintAnalysis : public ModulePass, public InstVisitor<CTaintAnalysis> {
 public:
 	static char ID;
+	static const unsigned INDENT_LENGTH;
+
+	static const char PERCENT;
+	/*static const boost::regex FS_FLAGS;
+	static const boost::regex FS_WIDTH;
+	static const boost::regex FS_PRECISION;
+	static const boost::regex FS_LENGTH;
+	static const boost::regex FS_SPECIFIER;*/
 
 	void getAnalysisUsage(AnalysisUsage & AU) const;
 	virtual bool runOnModule(Module & F);
 
 	CTaintAnalysis();
 	~CTaintAnalysis();
+	void printSummaryTable();
+	void printSummaryTableInfo(Function *f);
+	void printSummaryTableInfo(Function *f, unsigned param);
 
 	inline vector<Function *> *getAllProcsTPOrder() { return &_allProcsTPOrder; }
 	inline vector<Function *> *getAllProcsRTPOrder() { return &_allProcsRTPOrder; }
@@ -108,9 +136,11 @@ public:
 	void visitReturnInst(ReturnInst &I);
 
 	void handleContextCall(CallInst &I, Function &callee);
-	void handleSinks(CallInst &I, Function &callee, unsigned formatPos = 10000);
+	void checkTaintedValueUse(CallInst &I, Function &callee);
+	bool checkFormatStr(Value *curArg, vector<string::size_type> &result);
+	void handleFormatSink(CallInst &I, Function &callee, unsigned formatPos);
 
-	void setDiff(set<Value *> &A, set<Value *> &B, set<Value *> &AMinusB);
+	void set_diff(set<Value *> &A, set<Value *> &B, set<Value *> &AMinusB);
 	virtual bool merge(BasicBlock *curBB, BasicBlock *succBB);
 	void mergeCopyPredOutFlowToInFlow(Instruction &predInst, Instruction &curInst);
 
@@ -138,12 +168,17 @@ private:
 	const static string _taintId;
 	const static string _taintSourceFile;
 	const static string _taintSinkFile;
+
+	const static unsigned _INVALID_FORMAT_POS;
 	const static unsigned _SOURCE_ARG_RET;
 	const static unsigned _FUNCTION_NOT_SOURCE;
 	const static unsigned _FUNCTION_NOT_FORMAT;
+
 	static map<string, unsigned> _taintSources;
 	static vector<string> _taintSinks;
 	static map<string, unsigned> _formatSinks;
+
+	map<Value *, vector<Instruction *> * > _valueToTaintInst;
 
 	map<Function *, AnalysisWarnings * > _allWarnings;
 
@@ -152,7 +187,6 @@ private:
 	 * specifies that its parameter at position 'taintedPos' gets
 	 * tainted.
 	 */
-	//static void addTaintSource(string &source, unsigned taintedPos);
 	static void addTaintInfo(map<string, unsigned> *target, string &source, unsigned taintedPos);
 
 	/**
@@ -172,6 +206,7 @@ private:
 	 */
 	unsigned isTaintSource(string &F);
 	unsigned isFormatSink(string &F);
+	unsigned getLineNumber(Instruction &I);
 
 	/** Has the intraprocedural analysis been run */
 	bool _intraWasRun;
@@ -219,15 +254,29 @@ private:
 	//TODO: use StringMap from llvm
 	map<Instruction *, set<Value *> > _IN;
 	map<Instruction *, set<Value *> > _OUT;
-	//ValueTaintingTable _valTaintInfo;
 
 	void insertToOutFlow(Instruction *I, Value *v);
 	void insertToOutFlow(Instruction *I, Value *v, DSGraph *dsg);
+	inline void vectorUniqueInsert(Instruction *I, vector<Instruction *> &v);
+	inline void vectorUniqueInsert2(Value *v, vector<Value *> &instV);
+	template<typename T>
+	bool vectorContains(vector<T> &v, T &aValue);
 
 	static void log(const string &msg);
 	static AnalysisWarnings *createAnalysisWarning();
 	static void deleteAnalysisWarning(AnalysisWarnings *a);
+
 };
+
+typedef map<Function *, vector<bool> *>::iterator MFuncSumIterator;
+typedef vector<bool>::iterator VBoolIterator;
+
+template<typename T>
+bool CTaintAnalysis::vectorContains(vector<T> &v, T &aValue)
+{
+	vector<Instruction *>::iterator it = std::find(v.begin(), v.end(), aValue);
+	return (v.end() != it);
+}
 
 }
 

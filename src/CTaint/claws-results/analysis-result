@@ -6,262 +6,1236 @@ module identifier is <stdin>
 No main function exists
 ## Starting context-insensitive interprocedural analysis
 No main function exists
-[waint][tval]   %2 = load %struct._IO_FILE** %1, align 8, !dbg !1963 # [0] used in sink function 'fprintf' [line 1009]
-[waint][tval]   %23 = load %struct._IO_FILE** %2, align 8, !dbg !1978 # [0] used in sink function 'fprintf' [line 997]
-[waint][tval]   %26 = load %struct._IO_FILE** %2, align 8, !dbg !1979 # [0] used in sink function 'fprintf' [line 998]
-## Type   %17 = load i32* %16, align 4, !dbg !2020
-[waint][fmtvul]  Argument at position 2 of function 'fprintf' shall be a format string [line 733] 
-## Type   %27 = load i32* %26, align 4, !dbg !2021
-[waint][fmtvul]  Argument at position 2 of function 'fprintf' shall be a format string [line 734] 
-## Type   %33 = load i8** %32, align 8, !dbg !2022
-[waint][fmtvul]  Argument at position 2 of function 'fprintf' shall be a format string [line 735] 
-## Type   %38 = load i8** %37, align 8, !dbg !2023
-[waint][fmtvul]  Argument at position 2 of function 'fprintf' shall be a format string [line 736] 
-## Type   %65 = load i8** %64, align 8, !dbg !2031
-[waint][fmtvul]  Argument at position 2 of function 'fprintf' shall be a format string [line 743] 
-## Type   %71 = load i8** %70, align 8, !dbg !2033
-[waint][fmtvul]  Argument at position 2 of function 'fprintf' shall be a format string [line 744] 
-## Type   %14 = load i8** %13, align 8, !dbg !2013
-[waint][fmtvul]  Argument at position 2 of function 'fprintf' shall be a format string [line 464] 
-## Type   %19 = load i8** %18, align 8, !dbg !2014
-[waint][fmtvul]  Argument at position 2 of function 'fprintf' shall be a format string [line 465] 
-## Type   %24 = load i8** %23, align 8, !dbg !2015
-[waint][fmtvul]  Argument at position 2 of function 'fprintf' shall be a format string [line 466] 
-## Type   %17 = load i32* %16, align 4, !dbg !2016
-[waint][fmtvul]  Argument at position 2 of function 'fprintf' shall be a format string [line 479] 
-## Type   %27 = load i32* %26, align 4, !dbg !2017
-[waint][fmtvul]  Argument at position 2 of function 'fprintf' shall be a format string [line 480] 
-## Type   %33 = load i8** %32, align 8, !dbg !2018
-[waint][fmtvul]  Argument at position 2 of function 'fprintf' shall be a format string [line 481] 
-## Type   %38 = load i8** %37, align 8, !dbg !2019
-[waint][fmtvul]  Argument at position 2 of function 'fprintf' shall be a format string [line 482] 
-## Type   %43 = load i8** %42, align 8, !dbg !2020
-[waint][fmtvul]  Argument at position 2 of function 'fprintf' shall be a format string [line 483] 
-## Type   %48 = load i8** %47, align 8, !dbg !2021
-[waint][fmtvul]  Argument at position 2 of function 'fprintf' shall be a format string [line 484] 
-## Type   %53 = load i8** %52, align 8, !dbg !2022
-[waint][fmtvul]  Argument at position 2 of function 'fprintf' shall be a format string [line 485] 
-## Type   %58 = load i8** %57, align 8, !dbg !2023
-[waint][fmtvul]  Argument at position 2 of function 'fprintf' shall be a format string [line 486] 
-## Type   %127 = load i8** %current_status, align 8, !dbg !2054
-[waint][fmtvul]  Argument at position 2 of function 'fprintf' shall be a format string [line 509] 
-## Type   %15 = load i32* %14, align 4, !dbg !2013
-[waint][fmtvul]  Argument at position 2 of function 'fprintf' shall be a format string [line 449] 
-## Type   %25 = load i32* %24, align 4, !dbg !2014
-[waint][fmtvul]  Argument at position 2 of function 'fprintf' shall be a format string [line 450] 
-## Type   %31 = load i8** %30, align 8, !dbg !2015
-[waint][fmtvul]  Argument at position 2 of function 'fprintf' shall be a format string [line 451] 
-## Type   %36 = load i8** %35, align 8, !dbg !2016
-[waint][fmtvul]  Argument at position 2 of function 'fprintf' shall be a format string [line 452] 
-## Type   %41 = load i8** %40, align 8, !dbg !2017
-[waint][fmtvul]  Argument at position 2 of function 'fprintf' shall be a format string [line 453] 
-## Type   %37 = load i32* %num, align 4, !dbg !2015
-[waint][fmtvul]  Argument at position 2 of function 'sprintf' shall be a format string [line 829] 
-## Type   %17 = load i32* %16, align 4, !dbg !2018
-[waint][fmtvul]  Argument at position 2 of function 'fprintf' shall be a format string [line 917] 
-## Type   %27 = load i32* %26, align 4, !dbg !2019
-[waint][fmtvul]  Argument at position 2 of function 'fprintf' shall be a format string [line 918] 
-## Type   %33 = load i8** %32, align 8, !dbg !2020
-[waint][fmtvul]  Argument at position 2 of function 'fprintf' shall be a format string [line 919] 
-## Type   %38 = load i8** %37, align 8, !dbg !2021
-[waint][fmtvul]  Argument at position 2 of function 'fprintf' shall be a format string [line 920] 
-## Type   %43 = load i32* %42, align 4, !dbg !2022
-[waint][fmtvul]  Argument at position 2 of function 'fprintf' shall be a format string [line 921] 
-## Type   %50 = select i1 %49, i8* getelementptr inbounds ([7 x i8]* @.str49, i32 0, i32 0), i8* getelementptr inbounds ([8 x i8]* @.str50, i32 0, i32 0), !dbg !2023
-[waint][fmtvul]  Argument at position 2 of function 'fprintf' shall be a format string [line 922] 
-## Type   %66 = load i8** %65, align 8, !dbg !2027
-[waint][fmtvul]  Argument at position 2 of function 'fprintf' shall be a format string [line 926] 
-[waint][tval]   %7 = load %struct._IO_FILE** %2, align 8, !dbg !2015 # [0] used in sink function 'fprintf' [line 655]
-[waint][tval]   %10 = load %struct._IO_FILE** %2, align 8, !dbg !2018 # [0] used in sink function 'fprintf' [line 659]
-[waint][tval]   %47 = load %struct._IO_FILE** %2, align 8, !dbg !2039 # [0] used in sink function 'fprintf' [line 671]
-[waint][tval]   %31 = load %struct._IO_FILE** %2, align 8, !dbg !2033 # [0] used in sink function 'fprintf' [line 664]
-[waint][tval]   %33 = load %struct._IO_FILE** %2, align 8, !dbg !2034 # [0] used in sink function 'fprintf' [line 665]
-[waint][tval]   %38 = load %struct._IO_FILE** %2, align 8, !dbg !2035 # [0] used in sink function 'fprintf' [line 666]
-[waint][tval]   %43 = load %struct._IO_FILE** %2, align 8, !dbg !2036 # [0] used in sink function 'fprintf' [line 667]
-[waint][tval]   %8 = load %struct._IO_FILE** %2, align 8, !dbg !2019 # [0] used in sink function 'fprintf' [line 524]
-[waint][tval]   %43 = load %struct._IO_FILE** %2, align 8, !dbg !2053 # [0] used in sink function 'fprintf' [line 542]
-[waint][tval]   %52 = load %struct._IO_FILE** %2, align 8, !dbg !2057 # [0] used in sink function 'fprintf' [line 545]
-[waint][tval]   %58 = load %struct._IO_FILE** %2, align 8, !dbg !2060 # [0] used in sink function 'fprintf' [line 548]
-[waint][tval]   %60 = load %struct._IO_FILE** %2, align 8, !dbg !2061 # [0] used in sink function 'fprintf' [line 549]
-[waint][tval]   %65 = load %struct._IO_FILE** %2, align 8, !dbg !2062 # [0] used in sink function 'fprintf' [line 550]
-[waint][tval]   %72 = load %struct._IO_FILE** %2, align 8, !dbg !2064 # [0] used in sink function 'fprintf' [line 552]
-[waint][tval]   %93 = load %struct._IO_FILE** %2, align 8, !dbg !2074 # [0] used in sink function 'fprintf' [line 559]
-[waint][tval]   %86 = load %struct._IO_FILE** %2, align 8, !dbg !2070 # [0] used in sink function 'fprintf' [line 556]
-[waint][tval]   %19 = load %struct._IO_FILE** %3, align 8, !dbg !2053 # [0] used in sink function 'fprintf' [line 589]
-[waint][tval]   %21 = load %struct._IO_FILE** %3, align 8, !dbg !2054 # [0] used in sink function 'fprintf' [line 590]
-[waint][tval]   %23 = load %struct._IO_FILE** %3, align 8, !dbg !2055 # [0] used in sink function 'fprintf' [line 591]
-[waint][tval]   %25 = load %struct._IO_FILE** %3, align 8, !dbg !2056 # [0] used in sink function 'fprintf' [line 592]
-[waint][tval]   %27 = load %struct._IO_FILE** %3, align 8, !dbg !2057 # [0] used in sink function 'fprintf' [line 593]
-[waint][tval]   %29 = load %struct._IO_FILE** %3, align 8, !dbg !2058 # [0] used in sink function 'fprintf' [line 595]
-[waint][tval]   %31 = load %struct._IO_FILE** %3, align 8, !dbg !2059 # [0] used in sink function 'fprintf' [line 596]
-[waint][tval]   %33 = load %struct._IO_FILE** %3, align 8, !dbg !2060 # [0] used in sink function 'fprintf' [line 597]
-[waint][tval]   %36 = load %struct._IO_FILE** %3, align 8, !dbg !2062 # [0] used in sink function 'fprintf' [line 598]
-[waint][tval]   %38 = load %struct._IO_FILE** %3, align 8, !dbg !2063 # [0] used in sink function 'fprintf' [line 599]
-[waint][tval]   %40 = load %struct._IO_FILE** %3, align 8, !dbg !2064 # [0] used in sink function 'fprintf' [line 600]
-[waint][tval]   %43 = load %struct._IO_FILE** %3, align 8, !dbg !2066 # [0] used in sink function 'fprintf' [line 601]
-[waint][tval]   %45 = load %struct._IO_FILE** %3, align 8, !dbg !2067 # [0] used in sink function 'fprintf' [line 602]
-[waint][tval]   %16 = load %struct._IO_FILE** %3, align 8, !dbg !2050 # [0] used in sink function 'fprintf' [line 585]
-[waint][tval]   %127 = load %struct._IO_FILE** %3, align 8, !dbg !2113 # [0] used in sink function 'fprintf' [line 638]
-[waint][tval]   %70 = load %struct._IO_FILE** %3, align 8, !dbg !2088 # [0] used in sink function 'fprintf' [line 612]
-[waint][tval]   %92 = load %struct._IO_FILE** %3, align 8, !dbg !2100 # [0] used in sink function 'fprintf' [line 623]
-[waint][tval]   %94 = load %struct._IO_FILE** %3, align 8, !dbg !2101 # [0] used in sink function 'fprintf' [line 625]
-[waint][tval]   %96 = load %struct._IO_FILE** %3, align 8, !dbg !2102 # [0] used in sink function 'fprintf' [line 626]
-[waint][tval]   %102 = load %struct._IO_FILE** %3, align 8, !dbg !2103 # [0] used in sink function 'fprintf' [line 627]
-[waint][tval]   %104 = load %struct._IO_FILE** %3, align 8, !dbg !2104 # [0] used in sink function 'fprintf' [line 628]
-[waint][tval]   %111 = load %struct._IO_FILE** %3, align 8, !dbg !2106 # [0] used in sink function 'fprintf' [line 630]
-[waint][tval]   %113 = load %struct._IO_FILE** %3, align 8, !dbg !2107 # [0] used in sink function 'fprintf' [line 631]
-[waint][tval]   %84 = load %struct._IO_FILE** %3, align 8, !dbg !2097 # [0] used in sink function 'fprintf' [line 620]
-[waint][tval]   %12 = load %struct._IO_FILE** %3, align 8, !dbg !2052 # [0] used in sink function 'fprintf' [line 753]
-[waint][tval]   %14 = load %struct._IO_FILE** %3, align 8, !dbg !2053 # [0] used in sink function 'fprintf' [line 754]
-[waint][tval]   %16 = load %struct._IO_FILE** %3, align 8, !dbg !2054 # [0] used in sink function 'fprintf' [line 755]
-[waint][tval]   %18 = load %struct._IO_FILE** %3, align 8, !dbg !2055 # [0] used in sink function 'fprintf' [line 756]
-[waint][tval]   %20 = load %struct._IO_FILE** %3, align 8, !dbg !2056 # [0] used in sink function 'fprintf' [line 757]
-[waint][tval]   %22 = load %struct._IO_FILE** %3, align 8, !dbg !2057 # [0] used in sink function 'fprintf' [line 759]
-[waint][tval]   %24 = load %struct._IO_FILE** %3, align 8, !dbg !2058 # [0] used in sink function 'fprintf' [line 760]
-[waint][tval]   %26 = load %struct._IO_FILE** %3, align 8, !dbg !2059 # [0] used in sink function 'fprintf' [line 761]
-[waint][tval]   %29 = load %struct._IO_FILE** %3, align 8, !dbg !2061 # [0] used in sink function 'fprintf' [line 762]
-[waint][tval]   %31 = load %struct._IO_FILE** %3, align 8, !dbg !2062 # [0] used in sink function 'fprintf' [line 763]
-[waint][tval]   %33 = load %struct._IO_FILE** %3, align 8, !dbg !2063 # [0] used in sink function 'fprintf' [line 764]
-[waint][tval]   %36 = load %struct._IO_FILE** %3, align 8, !dbg !2065 # [0] used in sink function 'fprintf' [line 765]
-[waint][tval]   %38 = load %struct._IO_FILE** %3, align 8, !dbg !2066 # [0] used in sink function 'fprintf' [line 766]
-[waint][tval]   %40 = load %struct._IO_FILE** %3, align 8, !dbg !2067 # [0] used in sink function 'fprintf' [line 767]
-[waint][tval]   %43 = load %struct._IO_FILE** %3, align 8, !dbg !2069 # [0] used in sink function 'fprintf' [line 768]
-[waint][tval]   %50 = load %struct._IO_FILE** %3, align 8, !dbg !2071 # [0] used in sink function 'fprintf' [line 770]
-[waint][tval]   %52 = load %struct._IO_FILE** %3, align 8, !dbg !2073 # [0] used in sink function 'fprintf' [line 771]
-[waint][tval]   %55 = load %struct._IO_FILE** %3, align 8, !dbg !2075 # [0] used in sink function 'fprintf' [line 772]
-[waint][tval]   %58 = load %struct._IO_FILE** %3, align 8, !dbg !2077 # [0] used in sink function 'fprintf' [line 774]
-[waint][tval]   %173 = load %struct._IO_FILE** %3, align 8, !dbg !2145 # [0] used in sink function 'fprintf' [line 831]
-[waint][tval]   %86 = load %struct._IO_FILE** %3, align 8, !dbg !2106 # [0] used in sink function 'fprintf' [line 787]
-[waint][tval]   %108 = load %struct._IO_FILE** %3, align 8, !dbg !2118 # [0] used in sink function 'fprintf' [line 798]
-[waint][tval]   %110 = load %struct._IO_FILE** %3, align 8, !dbg !2119 # [0] used in sink function 'fprintf' [line 800]
-[waint][tval]   %112 = load %struct._IO_FILE** %3, align 8, !dbg !2120 # [0] used in sink function 'fprintf' [line 801]
-[waint][tval]   %118 = load %struct._IO_FILE** %3, align 8, !dbg !2121 # [0] used in sink function 'fprintf' [line 802]
-[waint][tval]   %120 = load %struct._IO_FILE** %3, align 8, !dbg !2122 # [0] used in sink function 'fprintf' [line 804]
-[waint][tval]   %127 = load %struct._IO_FILE** %3, align 8, !dbg !2124 # [0] used in sink function 'fprintf' [line 806]
-[waint][tval]   %129 = load %struct._IO_FILE** %3, align 8, !dbg !2125 # [0] used in sink function 'fprintf' [line 808]
-[waint][tval]   %100 = load %struct._IO_FILE** %3, align 8, !dbg !2115 # [0] used in sink function 'fprintf' [line 795]
-[waint][tval]   %135 = load %struct._IO_FILE** %3, align 8, !dbg !2127 # [0] used in sink function 'fprintf' [line 810]
-[waint][tval]   %139 = load %struct._IO_FILE** %3, align 8, !dbg !2130 # [0] used in sink function 'fprintf' [line 813]
-[waint][tval]   %142 = load %struct._IO_FILE** %3, align 8, !dbg !2132 # [0] used in sink function 'fprintf' [line 815]
-[waint][tval]   %149 = load %struct._IO_FILE** %3, align 8, !dbg !2134 # [0] used in sink function 'fprintf' [line 818]
-[waint][tval]   %156 = load %struct._IO_FILE** %3, align 8, !dbg !2137 # [0] used in sink function 'fprintf' [line 821]
-[waint][tval]   %159 = load %struct._IO_FILE** %3, align 8, !dbg !2139 # [0] used in sink function 'fprintf' [line 823]
-[waint][tval]   %32 = load %struct._IO_FILE** %1, align 8, !dbg !2053 # [0] used in sink function 'fprintf' [line 855]
-[waint][tval]   %35 = load %struct._IO_FILE** %1, align 8, !dbg !2056 # [0] used in sink function 'fprintf' [line 857]
-[waint][tval]   %17 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2017 # [0] used in sink function 'fprintf' [line 326]
-[waint][tval]   %19 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2018 # [0] used in sink function 'fprintf' [line 327]
-[waint][tval]   %21 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2019 # [0] used in sink function 'fprintf' [line 328]
-[waint][tval]   %23 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2020 # [0] used in sink function 'fprintf' [line 329]
-[waint][tval]   %25 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2021 # [0] used in sink function 'fprintf' [line 330]
-[waint][tval]   %27 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2022 # [0] used in sink function 'fprintf' [line 331]
-[waint][tval]   %29 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2023 # [0] used in sink function 'fprintf' [line 332]
-[waint][tval]   %31 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2024 # [0] used in sink function 'fprintf' [line 333]
-[waint][tval]   %33 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2025 # [0] used in sink function 'fprintf' [line 334]
-[waint][tval]   %35 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2026 # [0] used in sink function 'fprintf' [line 335]
-[waint][tval]   %37 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2027 # [0] used in sink function 'fprintf' [line 336]
-[waint][tval]   %39 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2028 # [0] used in sink function 'fprintf' [line 337]
-[waint][tval]   %41 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2029 # [0] used in sink function 'fprintf' [line 338]
-[waint][tval]   %43 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2030 # [0] used in sink function 'fprintf' [line 339]
-[waint][tval]   %45 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2031 # [0] used in sink function 'fprintf' [line 340]
-[waint][tval]   %47 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2032 # [0] used in sink function 'fprintf' [line 341]
-[waint][tval]   %49 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2033 # [0] used in sink function 'fprintf' [line 342]
-[waint][tval]   %51 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2034 # [0] used in sink function 'fprintf' [line 343]
-[waint][tval]   %53 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2035 # [0] used in sink function 'fprintf' [line 344]
-[waint][tval]   %55 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2036 # [0] used in sink function 'fprintf' [line 345]
-[waint][tval]   %57 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2037 # [0] used in sink function 'fprintf' [line 346]
-[waint][tval]   %59 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2038 # [0] used in sink function 'fprintf' [line 347]
-[waint][tval]   %61 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2039 # [0] used in sink function 'fprintf' [line 348]
-[waint][tval]   %63 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2040 # [0] used in sink function 'fprintf' [line 349]
-[waint][tval]   %65 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2041 # [0] used in sink function 'fprintf' [line 350]
-[waint][tval]   %67 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2042 # [0] used in sink function 'fprintf' [line 351]
-[waint][tval]   %69 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2043 # [0] used in sink function 'fprintf' [line 352]
-[waint][tval]   %71 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2044 # [0] used in sink function 'fprintf' [line 353]
-[waint][tval]   %73 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2045 # [0] used in sink function 'fprintf' [line 354]
-[waint][tval]   %75 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2046 # [0] used in sink function 'fprintf' [line 355]
-[waint][tval]   %77 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2047 # [0] used in sink function 'fprintf' [line 356]
-[waint][tval]   %79 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2048 # [0] used in sink function 'fprintf' [line 357]
-[waint][tval]   %81 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2049 # [0] used in sink function 'fprintf' [line 358]
-[waint][tval]   %83 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2050 # [0] used in sink function 'fprintf' [line 359]
-[waint][tval]   %85 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2051 # [0] used in sink function 'fprintf' [line 360]
-[waint][tval]   %87 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2052 # [0] used in sink function 'fprintf' [line 361]
-[waint][tval]   %89 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2053 # [0] used in sink function 'fprintf' [line 362]
-[waint][tval]   %91 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2054 # [0] used in sink function 'fprintf' [line 363]
-[waint][tval]   %93 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2055 # [0] used in sink function 'fprintf' [line 364]
-[waint][tval]   %95 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2056 # [0] used in sink function 'fprintf' [line 365]
-[waint][tval]   %97 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2057 # [0] used in sink function 'fprintf' [line 366]
-[waint][tval]   %17 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2017 # [0] used in sink function 'fprintf' [line 268]
-[waint][tval]   %19 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2018 # [0] used in sink function 'fprintf' [line 269]
-[waint][tval]   %21 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2019 # [0] used in sink function 'fprintf' [line 270]
-[waint][tval]   %23 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2020 # [0] used in sink function 'fprintf' [line 271]
-[waint][tval]   %25 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2021 # [0] used in sink function 'fprintf' [line 272]
-[waint][tval]   %27 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2022 # [0] used in sink function 'fprintf' [line 273]
-[waint][tval]   %29 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2023 # [0] used in sink function 'fprintf' [line 274]
-[waint][tval]   %31 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2024 # [0] used in sink function 'fprintf' [line 275]
-[waint][tval]   %33 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2025 # [0] used in sink function 'fprintf' [line 276]
-[waint][tval]   %35 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2026 # [0] used in sink function 'fprintf' [line 277]
-[waint][tval]   %37 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2027 # [0] used in sink function 'fprintf' [line 278]
-[waint][tval]   %39 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2028 # [0] used in sink function 'fprintf' [line 279]
-[waint][tval]   %41 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2029 # [0] used in sink function 'fprintf' [line 280]
-[waint][tval]   %43 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2030 # [0] used in sink function 'fprintf' [line 281]
-[waint][tval]   %45 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2031 # [0] used in sink function 'fprintf' [line 282]
-[waint][tval]   %47 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2032 # [0] used in sink function 'fprintf' [line 283]
-[waint][tval]   %49 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2033 # [0] used in sink function 'fprintf' [line 284]
-[waint][tval]   %51 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2034 # [0] used in sink function 'fprintf' [line 285]
-[waint][tval]   %53 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2035 # [0] used in sink function 'fprintf' [line 286]
-[waint][tval]   %55 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2036 # [0] used in sink function 'fprintf' [line 287]
-[waint][tval]   %57 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2037 # [0] used in sink function 'fprintf' [line 288]
-[waint][tval]   %59 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2038 # [0] used in sink function 'fprintf' [line 289]
-[waint][tval]   %61 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2039 # [0] used in sink function 'fprintf' [line 290]
-[waint][tval]   %63 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2040 # [0] used in sink function 'fprintf' [line 291]
-[waint][tval]   %65 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2041 # [0] used in sink function 'fprintf' [line 292]
-[waint][tval]   %67 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2042 # [0] used in sink function 'fprintf' [line 293]
-[waint][tval]   %69 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2043 # [0] used in sink function 'fprintf' [line 294]
-[waint][tval]   %71 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2044 # [0] used in sink function 'fprintf' [line 295]
-[waint][tval]   %73 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2045 # [0] used in sink function 'fprintf' [line 296]
-[waint][tval]   %75 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2046 # [0] used in sink function 'fprintf' [line 297]
-[waint][tval]   %77 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2047 # [0] used in sink function 'fprintf' [line 298]
-[waint][tval]   %79 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2048 # [0] used in sink function 'fprintf' [line 299]
-[waint][tval]   %81 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2049 # [0] used in sink function 'fprintf' [line 300]
-[waint][tval]   %83 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2050 # [0] used in sink function 'fprintf' [line 301]
-[waint][tval]   %85 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2051 # [0] used in sink function 'fprintf' [line 302]
-[waint][tval]   %16 = load %struct._IO_FILE** %2, align 8, !dbg !2051 # [0] used in sink function 'fprintf' [line 883]
-[waint][tval]   %18 = load %struct._IO_FILE** %2, align 8, !dbg !2053 # [0] used in sink function 'fprintf' [line 884]
-[waint][tval]   %23 = load %struct._IO_FILE** %2, align 8, !dbg !2056 # [0] used in sink function 'fprintf' [line 886]
-[waint][tval]   %6 = load %struct._IO_FILE** %2, align 8, !dbg !2011 # [0] used in sink function 'fprintf' [line 921]
-[waint][tval]   %8 = load %struct._IO_FILE** %2, align 8, !dbg !2012 # [0] used in sink function 'fprintf' [line 923]
-[waint][tval]   %10 = load %struct._IO_FILE** %2, align 8, !dbg !2013 # [0] used in sink function 'fprintf' [line 925]
-[waint][tval]   %12 = load %struct._IO_FILE** %2, align 8, !dbg !2014 # [0] used in sink function 'fprintf' [line 926]
-[waint][tval]   %35 = load %struct._IO_FILE** %2, align 8, !dbg !2022 # [0] used in sink function 'fprintf' [line 935]
-[waint][tval]   %25 = load %struct._IO_FILE** %2, align 8, !dbg !2017 # [0] used in sink function 'fprintf' [line 929]
-[waint][tval]   %27 = load %struct._IO_FILE** %2, align 8, !dbg !2019 # [0] used in sink function 'fprintf' [line 930]
-[waint][tval]   %29 = load %struct._IO_FILE** %2, align 8, !dbg !2020 # [0] used in sink function 'fprintf' [line 931]
-[waint][tval]   %65 = load %struct._IO_FILE** %2, align 8, !dbg !2034 # [0] used in sink function 'fprintf' [line 945]
-[waint][tval]   %52 = load %struct._IO_FILE** %2, align 8, !dbg !2027 # [0] used in sink function 'fprintf' [line 939]
-[waint][tval]   %54 = load %struct._IO_FILE** %2, align 8, !dbg !2029 # [0] used in sink function 'fprintf' [line 940]
-[waint][tval]   %56 = load %struct._IO_FILE** %2, align 8, !dbg !2030 # [0] used in sink function 'fprintf' [line 941]
-[waint][tval]   %58 = load %struct._IO_FILE** %2, align 8, !dbg !2031 # [0] used in sink function 'fprintf' [line 942]
-[waint][tval]   %23 = load %struct._IO_FILE** %htmlFile, align 8, !dbg !2067 # [0] used in sink function 'fprintf' [line 980]
-[waint][tval]   %25 = load %struct._IO_FILE** %htmlFile, align 8, !dbg !2068 # [0] used in sink function 'fprintf' [line 981]
-[waint][tval]   %28 = load %struct._IO_FILE** %htmlFile, align 8, !dbg !2069 # [0] used in sink function 'fprintf' [line 983]
-[waint][tval]   %30 = load %struct._IO_FILE** %htmlFile, align 8, !dbg !2070 # [0] used in sink function 'fprintf' [line 984]
-[waint][tval]   %33 = load %struct._IO_FILE** %htmlFile, align 8, !dbg !2072 # [0] used in sink function 'fprintf' [line 985]
-[waint][tval]   %36 = load %struct._IO_FILE** %htmlFile, align 8, !dbg !2073 # [0] used in sink function 'fprintf' [line 986]
-[waint][tval]   %42 = load %struct._IO_FILE** %htmlFile, align 8, !dbg !2076 # [0] used in sink function 'fprintf' [line 991]
-[waint][tval]   %46 = load %struct._IO_FILE** %htmlFile, align 8, !dbg !2078 # [0] used in sink function 'fprintf' [line 992]
-[waint][tval]   %48 = load %struct._IO_FILE** %htmlFile, align 8, !dbg !2079 # [0] used in sink function 'fprintf' [line 994]
-[waint][tval]   %50 = load %struct._IO_FILE** %htmlFile, align 8, !dbg !2080 # [0] used in sink function 'fprintf' [line 995]
-## Type   %16 = load i8** %15, align 8, !dbg !2018
-[waint][fmtvul]  Argument at position 2 of function 'fprintf' shall be a format string [line 277] 
-## Type   %21 = load i32* %20, align 4, !dbg !2019
-[waint][fmtvul]  Argument at position 2 of function 'fprintf' shall be a format string [line 278] 
-## Type   %26 = load i8** %25, align 8, !dbg !2020
-[waint][fmtvul]  Argument at position 2 of function 'fprintf' shall be a format string [line 279] 
-## Type   %31 = load i64* %30, align 8, !dbg !2021
-[waint][fmtvul]  Argument at position 2 of function 'fprintf' shall be a format string [line 280] 
-## Type   %38 = select i1 %37, i8* getelementptr inbounds ([4 x i8]* @.str11, i32 0, i32 0), i8* getelementptr inbounds ([3 x i8]* @.str12, i32 0, i32 0), !dbg !2022
-[waint][fmtvul]  Argument at position 2 of function 'fprintf' shall be a format string [line 281] 
-## Type   %45 = select i1 %44, i8* getelementptr inbounds ([4 x i8]* @.str11, i32 0, i32 0), i8* getelementptr inbounds ([3 x i8]* @.str12, i32 0, i32 0), !dbg !2023
-[waint][fmtvul]  Argument at position 2 of function 'fprintf' shall be a format string [line 282] 
+[waint][tval] tainted value used in sink function 'ldif_write_eor'
+	  %2 = load %struct._IO_FILE** %1, align 8, !dbg !1963 # [0] 'fprintf' [line 1009]
+    Taint History (1)
+      %2 = load %struct._IO_FILE** %1, align 8, !dbg !1963 [1009] 
+[waint][tval] tainted value used in sink function 'ldif_write_value'
+	  %23 = load %struct._IO_FILE** %2, align 8, !dbg !1978 # [0] 'fprintf' [line 997]
+    Taint History (1)
+      %23 = load %struct._IO_FILE** %2, align 8, !dbg !1978 [997] 
+       ## TEST   %24 = load i8** %3, align 8, !dbg !1978
+       ## TEST +++++++++++++++++++[waint][tval] tainted value used in sink function 'ldif_write_value'
+	  %26 = load %struct._IO_FILE** %2, align 8, !dbg !1979 # [0] 'fprintf' [line 998]
+    Taint History (1)
+      %23 = load %struct._IO_FILE** %2, align 8, !dbg !1978 [997] 
+       ## TEST   %27 = load i8** %4, align 8, !dbg !1979
+       ## TEST +++++++++++++++++++       ## TEST   %24 = load i8** %3, align 8, !dbg !1978
+       ## TEST +++++++++++++++++++       ## TEST   %27 = load i8** %4, align 8, !dbg !1979
+       ## TEST +++++++++++++++++++       ## TEST   %17 = load i32* %16, align 4, !dbg !2020
+       ## TEST +++++++++++++++++++       ## TEST   %27 = load i32* %26, align 4, !dbg !2021
+       ## TEST +++++++++++++++++++       ## TEST   %33 = load i8** %32, align 8, !dbg !2022
+       ## TEST +++++++++++++++++++       ## TEST   %38 = load i8** %37, align 8, !dbg !2023
+       ## TEST +++++++++++++++++++       ## TEST   %17 = load i32* %16, align 4, !dbg !2020
+       ## TEST +++++++++++++++++++       ## TEST   %27 = load i32* %26, align 4, !dbg !2021
+       ## TEST +++++++++++++++++++       ## TEST   %33 = load i8** %32, align 8, !dbg !2022
+       ## TEST +++++++++++++++++++       ## TEST   %38 = load i8** %37, align 8, !dbg !2023
+       ## TEST +++++++++++++++++++       ## TEST   %65 = load i8** %64, align 8, !dbg !2031
+       ## TEST +++++++++++++++++++       ## TEST   %71 = load i8** %70, align 8, !dbg !2033
+       ## TEST +++++++++++++++++++       ## TEST   %65 = load i8** %64, align 8, !dbg !2031
+       ## TEST +++++++++++++++++++       ## TEST   %71 = load i8** %70, align 8, !dbg !2033
+       ## TEST +++++++++++++++++++       ## TEST   %14 = load i8** %13, align 8, !dbg !2013
+       ## TEST +++++++++++++++++++       ## TEST   %19 = load i8** %18, align 8, !dbg !2014
+       ## TEST +++++++++++++++++++       ## TEST   %24 = load i8** %23, align 8, !dbg !2015
+       ## TEST +++++++++++++++++++       ## TEST   %14 = load i8** %13, align 8, !dbg !2013
+       ## TEST +++++++++++++++++++       ## TEST   %19 = load i8** %18, align 8, !dbg !2014
+       ## TEST +++++++++++++++++++       ## TEST   %24 = load i8** %23, align 8, !dbg !2015
+       ## TEST +++++++++++++++++++       ## TEST   %17 = load i32* %16, align 4, !dbg !2016
+       ## TEST +++++++++++++++++++       ## TEST   %27 = load i32* %26, align 4, !dbg !2017
+       ## TEST +++++++++++++++++++       ## TEST   %33 = load i8** %32, align 8, !dbg !2018
+       ## TEST +++++++++++++++++++       ## TEST   %38 = load i8** %37, align 8, !dbg !2019
+       ## TEST +++++++++++++++++++       ## TEST   %43 = load i8** %42, align 8, !dbg !2020
+       ## TEST +++++++++++++++++++       ## TEST   %48 = load i8** %47, align 8, !dbg !2021
+       ## TEST +++++++++++++++++++       ## TEST   %53 = load i8** %52, align 8, !dbg !2022
+       ## TEST +++++++++++++++++++       ## TEST   %58 = load i8** %57, align 8, !dbg !2023
+       ## TEST +++++++++++++++++++       ## TEST   %17 = load i32* %16, align 4, !dbg !2016
+       ## TEST +++++++++++++++++++       ## TEST   %27 = load i32* %26, align 4, !dbg !2017
+       ## TEST +++++++++++++++++++       ## TEST   %33 = load i8** %32, align 8, !dbg !2018
+       ## TEST +++++++++++++++++++       ## TEST   %38 = load i8** %37, align 8, !dbg !2019
+       ## TEST +++++++++++++++++++       ## TEST   %43 = load i8** %42, align 8, !dbg !2020
+       ## TEST +++++++++++++++++++       ## TEST   %48 = load i8** %47, align 8, !dbg !2021
+       ## TEST +++++++++++++++++++       ## TEST   %53 = load i8** %52, align 8, !dbg !2022
+       ## TEST +++++++++++++++++++       ## TEST   %58 = load i8** %57, align 8, !dbg !2023
+       ## TEST +++++++++++++++++++       ## TEST   %127 = load i8** %current_status, align 8, !dbg !2054
+       ## TEST +++++++++++++++++++       ## TEST   %127 = load i8** %current_status, align 8, !dbg !2054
+       ## TEST +++++++++++++++++++       ## TEST   %127 = load i8** %current_status, align 8, !dbg !2054
+       ## TEST +++++++++++++++++++       ## TEST   %127 = load i8** %current_status, align 8, !dbg !2054
+       ## TEST +++++++++++++++++++       ## TEST   %127 = load i8** %current_status, align 8, !dbg !2054
+       ## TEST +++++++++++++++++++       ## TEST   %127 = load i8** %current_status, align 8, !dbg !2054
+       ## TEST +++++++++++++++++++       ## TEST   %15 = load i32* %14, align 4, !dbg !2013
+       ## TEST +++++++++++++++++++       ## TEST   %25 = load i32* %24, align 4, !dbg !2014
+       ## TEST +++++++++++++++++++       ## TEST   %31 = load i8** %30, align 8, !dbg !2015
+       ## TEST +++++++++++++++++++       ## TEST   %36 = load i8** %35, align 8, !dbg !2016
+       ## TEST +++++++++++++++++++       ## TEST   %41 = load i8** %40, align 8, !dbg !2017
+       ## TEST +++++++++++++++++++       ## TEST   %15 = load i32* %14, align 4, !dbg !2013
+       ## TEST +++++++++++++++++++       ## TEST   %25 = load i32* %24, align 4, !dbg !2014
+       ## TEST +++++++++++++++++++       ## TEST   %31 = load i8** %30, align 8, !dbg !2015
+       ## TEST +++++++++++++++++++       ## TEST   %36 = load i8** %35, align 8, !dbg !2016
+       ## TEST +++++++++++++++++++       ## TEST   %41 = load i8** %40, align 8, !dbg !2017
+       ## TEST +++++++++++++++++++       ## TEST   %37 = load i32* %num, align 4, !dbg !2015
+       ## TEST +++++++++++++++++++       ## TEST   %37 = load i32* %num, align 4, !dbg !2015
+       ## TEST +++++++++++++++++++       ## TEST   %17 = load i32* %16, align 4, !dbg !2018
+       ## TEST +++++++++++++++++++       ## TEST   %27 = load i32* %26, align 4, !dbg !2019
+       ## TEST +++++++++++++++++++       ## TEST   %33 = load i8** %32, align 8, !dbg !2020
+       ## TEST +++++++++++++++++++       ## TEST   %38 = load i8** %37, align 8, !dbg !2021
+       ## TEST +++++++++++++++++++       ## TEST   %43 = load i32* %42, align 4, !dbg !2022
+       ## TEST +++++++++++++++++++       ## TEST   %50 = select i1 %49, i8* getelementptr inbounds ([7 x i8]* @.str49, i32 0, i32 0), i8* getelementptr inbounds ([8 x i8]* @.str50, i32 0, i32 0), !dbg !2023
+       ## TEST +++++++++++++++++++       ## TEST   %17 = load i32* %16, align 4, !dbg !2018
+       ## TEST +++++++++++++++++++       ## TEST   %27 = load i32* %26, align 4, !dbg !2019
+       ## TEST +++++++++++++++++++       ## TEST   %33 = load i8** %32, align 8, !dbg !2020
+       ## TEST +++++++++++++++++++       ## TEST   %38 = load i8** %37, align 8, !dbg !2021
+       ## TEST +++++++++++++++++++       ## TEST   %43 = load i32* %42, align 4, !dbg !2022
+       ## TEST +++++++++++++++++++       ## TEST   %50 = select i1 %49, i8* getelementptr inbounds ([7 x i8]* @.str49, i32 0, i32 0), i8* getelementptr inbounds ([8 x i8]* @.str50, i32 0, i32 0), !dbg !2023
+       ## TEST +++++++++++++++++++       ## TEST   %66 = load i8** %65, align 8, !dbg !2027
+       ## TEST +++++++++++++++++++       ## TEST   %66 = load i8** %65, align 8, !dbg !2027
+       ## TEST +++++++++++++++++++[waint][tval] tainted value used in sink function 'exporthtml_fmt_attribs'
+	  %7 = load %struct._IO_FILE** %2, align 8, !dbg !2015 # [0] 'fprintf' [line 655]
+    Taint History (1)
+      %7 = load %struct._IO_FILE** %2, align 8, !dbg !2015 [655] 
+[waint][tval] tainted value used in sink function 'exporthtml_fmt_attribs'
+	  %10 = load %struct._IO_FILE** %2, align 8, !dbg !2018 # [0] 'fprintf' [line 659]
+    Taint History (1)
+      %7 = load %struct._IO_FILE** %2, align 8, !dbg !2015 [655] 
+[waint][tval] tainted value used in sink function 'exporthtml_fmt_attribs'
+	  %47 = load %struct._IO_FILE** %2, align 8, !dbg !2039 # [0] 'fprintf' [line 671]
+    Taint History (1)
+      %7 = load %struct._IO_FILE** %2, align 8, !dbg !2015 [655] 
+[waint][tval] tainted value used in sink function 'exporthtml_fmt_attribs'
+	  %31 = load %struct._IO_FILE** %2, align 8, !dbg !2033 # [0] 'fprintf' [line 664]
+    Taint History (1)
+      %7 = load %struct._IO_FILE** %2, align 8, !dbg !2015 [655] 
+[waint][tval] tainted value used in sink function 'exporthtml_fmt_attribs'
+	  %33 = load %struct._IO_FILE** %2, align 8, !dbg !2034 # [0] 'fprintf' [line 665]
+    Taint History (1)
+      %7 = load %struct._IO_FILE** %2, align 8, !dbg !2015 [655] 
+       ## TEST   %36 = load i8** %35, align 8, !dbg !2034
+       ## TEST +++++++++++++++++++[waint][tval] tainted value used in sink function 'exporthtml_fmt_attribs'
+	  %38 = load %struct._IO_FILE** %2, align 8, !dbg !2035 # [0] 'fprintf' [line 666]
+    Taint History (1)
+      %7 = load %struct._IO_FILE** %2, align 8, !dbg !2015 [655] 
+       ## TEST   %41 = load i8** %40, align 8, !dbg !2035
+       ## TEST +++++++++++++++++++[waint][tval] tainted value used in sink function 'exporthtml_fmt_attribs'
+	  %43 = load %struct._IO_FILE** %2, align 8, !dbg !2036 # [0] 'fprintf' [line 667]
+    Taint History (1)
+      %7 = load %struct._IO_FILE** %2, align 8, !dbg !2015 [655] 
+       ## TEST   %36 = load i8** %35, align 8, !dbg !2034
+       ## TEST +++++++++++++++++++       ## TEST   %41 = load i8** %40, align 8, !dbg !2035
+       ## TEST +++++++++++++++++++       ## TEST   %36 = load i8** %35, align 8, !dbg !2034
+       ## TEST +++++++++++++++++++       ## TEST   %41 = load i8** %40, align 8, !dbg !2035
+       ## TEST +++++++++++++++++++[waint][tval] tainted value used in sink function 'exporthtml_fmt_email'
+	  %8 = load %struct._IO_FILE** %2, align 8, !dbg !2019 # [0] 'fprintf' [line 524]
+    Taint History (1)
+      %8 = load %struct._IO_FILE** %2, align 8, !dbg !2019 [524] 
+[waint][tval] tainted value used in sink function 'exporthtml_fmt_email'
+	  %43 = load %struct._IO_FILE** %2, align 8, !dbg !2053 # [0] 'fprintf' [line 542]
+    Taint History (1)
+      %8 = load %struct._IO_FILE** %2, align 8, !dbg !2019 [524] 
+       ## TEST   %44 = load i8** %name, align 8, !dbg !2053
+       ## TEST +++++++++++++++++++       ## TEST   %44 = load i8** %name, align 8, !dbg !2053
+       ## TEST +++++++++++++++++++[waint][tval] tainted value used in sink function 'exporthtml_fmt_email'
+	  %52 = load %struct._IO_FILE** %2, align 8, !dbg !2057 # [0] 'fprintf' [line 545]
+    Taint History (1)
+      %8 = load %struct._IO_FILE** %2, align 8, !dbg !2019 [524] 
+       ## TEST   %55 = load i8** %54, align 8, !dbg !2057
+       ## TEST +++++++++++++++++++[waint][tval] tainted value used in sink function 'exporthtml_fmt_email'
+	  %58 = load %struct._IO_FILE** %2, align 8, !dbg !2060 # [0] 'fprintf' [line 548]
+    Taint History (1)
+      %8 = load %struct._IO_FILE** %2, align 8, !dbg !2019 [524] 
+[waint][tval] tainted value used in sink function 'exporthtml_fmt_email'
+	  %60 = load %struct._IO_FILE** %2, align 8, !dbg !2061 # [0] 'fprintf' [line 549]
+    Taint History (1)
+      %8 = load %struct._IO_FILE** %2, align 8, !dbg !2019 [524] 
+       ## TEST   %63 = load i8** %62, align 8, !dbg !2061
+       ## TEST +++++++++++++++++++[waint][tval] tainted value used in sink function 'exporthtml_fmt_email'
+	  %65 = load %struct._IO_FILE** %2, align 8, !dbg !2062 # [0] 'fprintf' [line 550]
+    Taint History (1)
+      %8 = load %struct._IO_FILE** %2, align 8, !dbg !2019 [524] 
+       ## TEST   %55 = load i8** %54, align 8, !dbg !2057
+       ## TEST +++++++++++++++++++       ## TEST   %63 = load i8** %62, align 8, !dbg !2061
+       ## TEST +++++++++++++++++++       ## TEST   %63 = load i8** %62, align 8, !dbg !2061
+       ## TEST +++++++++++++++++++[waint][tval] tainted value used in sink function 'exporthtml_fmt_email'
+	  %72 = load %struct._IO_FILE** %2, align 8, !dbg !2064 # [0] 'fprintf' [line 552]
+    Taint History (1)
+      %8 = load %struct._IO_FILE** %2, align 8, !dbg !2019 [524] 
+[waint][tval] tainted value used in sink function 'exporthtml_fmt_email'
+	  %93 = load %struct._IO_FILE** %2, align 8, !dbg !2074 # [0] 'fprintf' [line 559]
+    Taint History (1)
+      %8 = load %struct._IO_FILE** %2, align 8, !dbg !2019 [524] 
+[waint][tval] tainted value used in sink function 'exporthtml_fmt_email'
+	  %86 = load %struct._IO_FILE** %2, align 8, !dbg !2070 # [0] 'fprintf' [line 556]
+    Taint History (1)
+      %8 = load %struct._IO_FILE** %2, align 8, !dbg !2019 [524] 
+       ## TEST   %89 = load i8** %88, align 8, !dbg !2070
+       ## TEST +++++++++++++++++++       ## TEST   %89 = load i8** %88, align 8, !dbg !2070
+       ## TEST +++++++++++++++++++[waint][tval] tainted value used in sink function 'exporthtml_fmt_group'
+	  %19 = load %struct._IO_FILE** %3, align 8, !dbg !2053 # [0] 'fprintf' [line 589]
+    Taint History (1)
+      %16 = load %struct._IO_FILE** %3, align 8, !dbg !2050 [585] 
+[waint][tval] tainted value used in sink function 'exporthtml_fmt_group'
+	  %21 = load %struct._IO_FILE** %3, align 8, !dbg !2054 # [0] 'fprintf' [line 590]
+    Taint History (1)
+      %16 = load %struct._IO_FILE** %3, align 8, !dbg !2050 [585] 
+       ## TEST i32 2
+       ## TEST +++++++++++++++++++[waint][tval] tainted value used in sink function 'exporthtml_fmt_group'
+	  %23 = load %struct._IO_FILE** %3, align 8, !dbg !2055 # [0] 'fprintf' [line 591]
+    Taint History (1)
+      %16 = load %struct._IO_FILE** %3, align 8, !dbg !2050 [585] 
+       ## TEST i32 2
+       ## TEST +++++++++++++++++++[waint][tval] tainted value used in sink function 'exporthtml_fmt_group'
+	  %25 = load %struct._IO_FILE** %3, align 8, !dbg !2056 # [0] 'fprintf' [line 592]
+    Taint History (1)
+      %16 = load %struct._IO_FILE** %3, align 8, !dbg !2050 [585] 
+       ## TEST i32 2
+       ## TEST +++++++++++++++++++[waint][tval] tainted value used in sink function 'exporthtml_fmt_group'
+	  %27 = load %struct._IO_FILE** %3, align 8, !dbg !2057 # [0] 'fprintf' [line 593]
+    Taint History (1)
+      %16 = load %struct._IO_FILE** %3, align 8, !dbg !2050 [585] 
+[waint][tval] tainted value used in sink function 'exporthtml_fmt_group'
+	  %29 = load %struct._IO_FILE** %3, align 8, !dbg !2058 # [0] 'fprintf' [line 595]
+    Taint History (1)
+      %16 = load %struct._IO_FILE** %3, align 8, !dbg !2050 [585] 
+[waint][tval] tainted value used in sink function 'exporthtml_fmt_group'
+	  %31 = load %struct._IO_FILE** %3, align 8, !dbg !2059 # [0] 'fprintf' [line 596]
+    Taint History (1)
+      %16 = load %struct._IO_FILE** %3, align 8, !dbg !2050 [585] 
+[waint][tval] tainted value used in sink function 'exporthtml_fmt_group'
+	  %33 = load %struct._IO_FILE** %3, align 8, !dbg !2060 # [0] 'fprintf' [line 597]
+    Taint History (1)
+      %16 = load %struct._IO_FILE** %3, align 8, !dbg !2050 [585] 
+       ## TEST   %34 = call i8* @gettext(i8* getelementptr inbounds ([11 x i8]* @.str77, i32 0, i32 0)) #2, !dbg !2061
+       ## TEST +++++++++++++++++++[waint][tval] tainted value used in sink function 'exporthtml_fmt_group'
+	  %36 = load %struct._IO_FILE** %3, align 8, !dbg !2062 # [0] 'fprintf' [line 598]
+    Taint History (1)
+      %16 = load %struct._IO_FILE** %3, align 8, !dbg !2050 [585] 
+[waint][tval] tainted value used in sink function 'exporthtml_fmt_group'
+	  %38 = load %struct._IO_FILE** %3, align 8, !dbg !2063 # [0] 'fprintf' [line 599]
+    Taint History (1)
+      %16 = load %struct._IO_FILE** %3, align 8, !dbg !2050 [585] 
+[waint][tval] tainted value used in sink function 'exporthtml_fmt_group'
+	  %40 = load %struct._IO_FILE** %3, align 8, !dbg !2064 # [0] 'fprintf' [line 600]
+    Taint History (1)
+      %16 = load %struct._IO_FILE** %3, align 8, !dbg !2050 [585] 
+       ## TEST   %41 = call i8* @gettext(i8* getelementptr inbounds ([14 x i8]* @.str80, i32 0, i32 0)) #2, !dbg !2065
+       ## TEST +++++++++++++++++++[waint][tval] tainted value used in sink function 'exporthtml_fmt_group'
+	  %43 = load %struct._IO_FILE** %3, align 8, !dbg !2066 # [0] 'fprintf' [line 601]
+    Taint History (1)
+      %16 = load %struct._IO_FILE** %3, align 8, !dbg !2050 [585] 
+[waint][tval] tainted value used in sink function 'exporthtml_fmt_group'
+	  %45 = load %struct._IO_FILE** %3, align 8, !dbg !2067 # [0] 'fprintf' [line 602]
+    Taint History (1)
+      %16 = load %struct._IO_FILE** %3, align 8, !dbg !2050 [585] 
+[waint][tval] tainted value used in sink function 'exporthtml_fmt_group'
+	  %16 = load %struct._IO_FILE** %3, align 8, !dbg !2050 # [0] 'fprintf' [line 585]
+    Taint History (1)
+      %16 = load %struct._IO_FILE** %3, align 8, !dbg !2050 [585] 
+       ## TEST i32 2
+       ## TEST +++++++++++++++++++       ## TEST i32 2
+       ## TEST +++++++++++++++++++       ## TEST i32 2
+       ## TEST +++++++++++++++++++       ## TEST   %34 = call i8* @gettext(i8* getelementptr inbounds ([11 x i8]* @.str77, i32 0, i32 0)) #2, !dbg !2061
+       ## TEST +++++++++++++++++++       ## TEST   %41 = call i8* @gettext(i8* getelementptr inbounds ([14 x i8]* @.str80, i32 0, i32 0)) #2, !dbg !2065
+       ## TEST +++++++++++++++++++       ## TEST i32 2
+       ## TEST +++++++++++++++++++       ## TEST i32 2
+       ## TEST +++++++++++++++++++       ## TEST i32 2
+       ## TEST +++++++++++++++++++       ## TEST   %34 = call i8* @gettext(i8* getelementptr inbounds ([11 x i8]* @.str77, i32 0, i32 0)) #2, !dbg !2061
+       ## TEST +++++++++++++++++++       ## TEST   %41 = call i8* @gettext(i8* getelementptr inbounds ([14 x i8]* @.str80, i32 0, i32 0)) #2, !dbg !2065
+       ## TEST +++++++++++++++++++[waint][tval] tainted value used in sink function 'exporthtml_fmt_group'
+	  %127 = load %struct._IO_FILE** %3, align 8, !dbg !2113 # [0] 'fprintf' [line 638]
+    Taint History (1)
+      %16 = load %struct._IO_FILE** %3, align 8, !dbg !2050 [585] 
+[waint][tval] tainted value used in sink function 'exporthtml_fmt_group'
+	  %70 = load %struct._IO_FILE** %3, align 8, !dbg !2088 # [0] 'fprintf' [line 612]
+    Taint History (1)
+      %16 = load %struct._IO_FILE** %3, align 8, !dbg !2050 [585] 
+[waint][tval] tainted value used in sink function 'exporthtml_fmt_group'
+	  %92 = load %struct._IO_FILE** %3, align 8, !dbg !2100 # [0] 'fprintf' [line 623]
+    Taint History (1)
+      %16 = load %struct._IO_FILE** %3, align 8, !dbg !2050 [585] 
+[waint][tval] tainted value used in sink function 'exporthtml_fmt_group'
+	  %94 = load %struct._IO_FILE** %3, align 8, !dbg !2101 # [0] 'fprintf' [line 625]
+    Taint History (1)
+      %16 = load %struct._IO_FILE** %3, align 8, !dbg !2050 [585] 
+[waint][tval] tainted value used in sink function 'exporthtml_fmt_group'
+	  %96 = load %struct._IO_FILE** %3, align 8, !dbg !2102 # [0] 'fprintf' [line 626]
+    Taint History (1)
+      %16 = load %struct._IO_FILE** %3, align 8, !dbg !2050 [585] 
+       ## TEST   %100 = load i8** %99, align 8, !dbg !2102
+       ## TEST +++++++++++++++++++[waint][tval] tainted value used in sink function 'exporthtml_fmt_group'
+	  %102 = load %struct._IO_FILE** %3, align 8, !dbg !2103 # [0] 'fprintf' [line 627]
+    Taint History (1)
+      %16 = load %struct._IO_FILE** %3, align 8, !dbg !2050 [585] 
+[waint][tval] tainted value used in sink function 'exporthtml_fmt_group'
+	  %104 = load %struct._IO_FILE** %3, align 8, !dbg !2104 # [0] 'fprintf' [line 628]
+    Taint History (1)
+      %16 = load %struct._IO_FILE** %3, align 8, !dbg !2050 [585] 
+[waint][tval] tainted value used in sink function 'exporthtml_fmt_group'
+	  %111 = load %struct._IO_FILE** %3, align 8, !dbg !2106 # [0] 'fprintf' [line 630]
+    Taint History (1)
+      %16 = load %struct._IO_FILE** %3, align 8, !dbg !2050 [585] 
+[waint][tval] tainted value used in sink function 'exporthtml_fmt_group'
+	  %113 = load %struct._IO_FILE** %3, align 8, !dbg !2107 # [0] 'fprintf' [line 631]
+    Taint History (1)
+      %16 = load %struct._IO_FILE** %3, align 8, !dbg !2050 [585] 
+[waint][tval] tainted value used in sink function 'exporthtml_fmt_group'
+	  %84 = load %struct._IO_FILE** %3, align 8, !dbg !2097 # [0] 'fprintf' [line 620]
+    Taint History (1)
+      %16 = load %struct._IO_FILE** %3, align 8, !dbg !2050 [585] 
+       ## TEST   %85 = load i8** %tagName, align 8, !dbg !2097
+       ## TEST +++++++++++++++++++       ## TEST   %85 = load i8** %tagName, align 8, !dbg !2097
+       ## TEST +++++++++++++++++++       ## TEST   %85 = load i8** %tagName, align 8, !dbg !2097
+       ## TEST +++++++++++++++++++       ## TEST   %100 = load i8** %99, align 8, !dbg !2102
+       ## TEST +++++++++++++++++++       ## TEST   %100 = load i8** %99, align 8, !dbg !2102
+       ## TEST +++++++++++++++++++[waint][tval] tainted value used in sink function 'exporthtml_fmt_person'
+	  %12 = load %struct._IO_FILE** %3, align 8, !dbg !2052 # [0] 'fprintf' [line 753]
+    Taint History (1)
+      %12 = load %struct._IO_FILE** %3, align 8, !dbg !2052 [753] 
+[waint][tval] tainted value used in sink function 'exporthtml_fmt_person'
+	  %14 = load %struct._IO_FILE** %3, align 8, !dbg !2053 # [0] 'fprintf' [line 754]
+    Taint History (1)
+      %12 = load %struct._IO_FILE** %3, align 8, !dbg !2052 [753] 
+       ## TEST i32 2
+       ## TEST +++++++++++++++++++[waint][tval] tainted value used in sink function 'exporthtml_fmt_person'
+	  %16 = load %struct._IO_FILE** %3, align 8, !dbg !2054 # [0] 'fprintf' [line 755]
+    Taint History (1)
+      %12 = load %struct._IO_FILE** %3, align 8, !dbg !2052 [753] 
+       ## TEST i32 2
+       ## TEST +++++++++++++++++++[waint][tval] tainted value used in sink function 'exporthtml_fmt_person'
+	  %18 = load %struct._IO_FILE** %3, align 8, !dbg !2055 # [0] 'fprintf' [line 756]
+    Taint History (1)
+      %12 = load %struct._IO_FILE** %3, align 8, !dbg !2052 [753] 
+       ## TEST i32 2
+       ## TEST +++++++++++++++++++[waint][tval] tainted value used in sink function 'exporthtml_fmt_person'
+	  %20 = load %struct._IO_FILE** %3, align 8, !dbg !2056 # [0] 'fprintf' [line 757]
+    Taint History (1)
+      %12 = load %struct._IO_FILE** %3, align 8, !dbg !2052 [753] 
+[waint][tval] tainted value used in sink function 'exporthtml_fmt_person'
+	  %22 = load %struct._IO_FILE** %3, align 8, !dbg !2057 # [0] 'fprintf' [line 759]
+    Taint History (1)
+      %12 = load %struct._IO_FILE** %3, align 8, !dbg !2052 [753] 
+[waint][tval] tainted value used in sink function 'exporthtml_fmt_person'
+	  %24 = load %struct._IO_FILE** %3, align 8, !dbg !2058 # [0] 'fprintf' [line 760]
+    Taint History (1)
+      %12 = load %struct._IO_FILE** %3, align 8, !dbg !2052 [753] 
+[waint][tval] tainted value used in sink function 'exporthtml_fmt_person'
+	  %26 = load %struct._IO_FILE** %3, align 8, !dbg !2059 # [0] 'fprintf' [line 761]
+    Taint History (1)
+      %12 = load %struct._IO_FILE** %3, align 8, !dbg !2052 [753] 
+       ## TEST   %27 = call i8* @gettext(i8* getelementptr inbounds ([13 x i8]* @.str98, i32 0, i32 0)) #2, !dbg !2060
+       ## TEST +++++++++++++++++++[waint][tval] tainted value used in sink function 'exporthtml_fmt_person'
+	  %29 = load %struct._IO_FILE** %3, align 8, !dbg !2061 # [0] 'fprintf' [line 762]
+    Taint History (1)
+      %12 = load %struct._IO_FILE** %3, align 8, !dbg !2052 [753] 
+[waint][tval] tainted value used in sink function 'exporthtml_fmt_person'
+	  %31 = load %struct._IO_FILE** %3, align 8, !dbg !2062 # [0] 'fprintf' [line 763]
+    Taint History (1)
+      %12 = load %struct._IO_FILE** %3, align 8, !dbg !2052 [753] 
+[waint][tval] tainted value used in sink function 'exporthtml_fmt_person'
+	  %33 = load %struct._IO_FILE** %3, align 8, !dbg !2063 # [0] 'fprintf' [line 764]
+    Taint History (1)
+      %12 = load %struct._IO_FILE** %3, align 8, !dbg !2052 [753] 
+       ## TEST   %34 = call i8* @gettext(i8* getelementptr inbounds ([14 x i8]* @.str80, i32 0, i32 0)) #2, !dbg !2064
+       ## TEST +++++++++++++++++++[waint][tval] tainted value used in sink function 'exporthtml_fmt_person'
+	  %36 = load %struct._IO_FILE** %3, align 8, !dbg !2065 # [0] 'fprintf' [line 765]
+    Taint History (1)
+      %12 = load %struct._IO_FILE** %3, align 8, !dbg !2052 [753] 
+[waint][tval] tainted value used in sink function 'exporthtml_fmt_person'
+	  %38 = load %struct._IO_FILE** %3, align 8, !dbg !2066 # [0] 'fprintf' [line 766]
+    Taint History (1)
+      %12 = load %struct._IO_FILE** %3, align 8, !dbg !2052 [753] 
+[waint][tval] tainted value used in sink function 'exporthtml_fmt_person'
+	  %40 = load %struct._IO_FILE** %3, align 8, !dbg !2067 # [0] 'fprintf' [line 767]
+    Taint History (1)
+      %12 = load %struct._IO_FILE** %3, align 8, !dbg !2052 [753] 
+       ## TEST   %41 = call i8* @gettext(i8* getelementptr inbounds ([10 x i8]* @.str99, i32 0, i32 0)) #2, !dbg !2068
+       ## TEST +++++++++++++++++++[waint][tval] tainted value used in sink function 'exporthtml_fmt_person'
+	  %43 = load %struct._IO_FILE** %3, align 8, !dbg !2069 # [0] 'fprintf' [line 768]
+    Taint History (1)
+      %12 = load %struct._IO_FILE** %3, align 8, !dbg !2052 [753] 
+       ## TEST i32 2
+       ## TEST +++++++++++++++++++       ## TEST i32 2
+       ## TEST +++++++++++++++++++       ## TEST i32 2
+       ## TEST +++++++++++++++++++       ## TEST   %27 = call i8* @gettext(i8* getelementptr inbounds ([13 x i8]* @.str98, i32 0, i32 0)) #2, !dbg !2060
+       ## TEST +++++++++++++++++++       ## TEST   %34 = call i8* @gettext(i8* getelementptr inbounds ([14 x i8]* @.str80, i32 0, i32 0)) #2, !dbg !2064
+       ## TEST +++++++++++++++++++       ## TEST   %41 = call i8* @gettext(i8* getelementptr inbounds ([10 x i8]* @.str99, i32 0, i32 0)) #2, !dbg !2068
+       ## TEST +++++++++++++++++++[waint][tval] tainted value used in sink function 'exporthtml_fmt_person'
+	  %50 = load %struct._IO_FILE** %3, align 8, !dbg !2071 # [0] 'fprintf' [line 770]
+    Taint History (1)
+      %12 = load %struct._IO_FILE** %3, align 8, !dbg !2052 [753] 
+[waint][tval] tainted value used in sink function 'exporthtml_fmt_person'
+	  %52 = load %struct._IO_FILE** %3, align 8, !dbg !2073 # [0] 'fprintf' [line 771]
+    Taint History (1)
+      %12 = load %struct._IO_FILE** %3, align 8, !dbg !2052 [753] 
+       ## TEST   %53 = call i8* @gettext(i8* getelementptr inbounds ([11 x i8]* @.str101, i32 0, i32 0)) #2, !dbg !2074
+       ## TEST +++++++++++++++++++[waint][tval] tainted value used in sink function 'exporthtml_fmt_person'
+	  %55 = load %struct._IO_FILE** %3, align 8, !dbg !2075 # [0] 'fprintf' [line 772]
+    Taint History (1)
+      %12 = load %struct._IO_FILE** %3, align 8, !dbg !2052 [753] 
+[waint][tval] tainted value used in sink function 'exporthtml_fmt_person'
+	  %58 = load %struct._IO_FILE** %3, align 8, !dbg !2077 # [0] 'fprintf' [line 774]
+    Taint History (1)
+      %12 = load %struct._IO_FILE** %3, align 8, !dbg !2052 [753] 
+       ## TEST   %53 = call i8* @gettext(i8* getelementptr inbounds ([11 x i8]* @.str101, i32 0, i32 0)) #2, !dbg !2074
+       ## TEST +++++++++++++++++++[waint][tval] tainted value used in sink function 'exporthtml_fmt_person'
+	  %173 = load %struct._IO_FILE** %3, align 8, !dbg !2145 # [0] 'fprintf' [line 831]
+    Taint History (1)
+      %12 = load %struct._IO_FILE** %3, align 8, !dbg !2052 [753] 
+[waint][tval] tainted value used in sink function 'exporthtml_fmt_person'
+	  %86 = load %struct._IO_FILE** %3, align 8, !dbg !2106 # [0] 'fprintf' [line 787]
+    Taint History (1)
+      %12 = load %struct._IO_FILE** %3, align 8, !dbg !2052 [753] 
+[waint][tval] tainted value used in sink function 'exporthtml_fmt_person'
+	  %108 = load %struct._IO_FILE** %3, align 8, !dbg !2118 # [0] 'fprintf' [line 798]
+    Taint History (1)
+      %12 = load %struct._IO_FILE** %3, align 8, !dbg !2052 [753] 
+[waint][tval] tainted value used in sink function 'exporthtml_fmt_person'
+	  %110 = load %struct._IO_FILE** %3, align 8, !dbg !2119 # [0] 'fprintf' [line 800]
+    Taint History (1)
+      %12 = load %struct._IO_FILE** %3, align 8, !dbg !2052 [753] 
+[waint][tval] tainted value used in sink function 'exporthtml_fmt_person'
+	  %112 = load %struct._IO_FILE** %3, align 8, !dbg !2120 # [0] 'fprintf' [line 801]
+    Taint History (1)
+      %12 = load %struct._IO_FILE** %3, align 8, !dbg !2052 [753] 
+       ## TEST   %116 = load i8** %115, align 8, !dbg !2120
+       ## TEST +++++++++++++++++++[waint][tval] tainted value used in sink function 'exporthtml_fmt_person'
+	  %118 = load %struct._IO_FILE** %3, align 8, !dbg !2121 # [0] 'fprintf' [line 802]
+    Taint History (1)
+      %12 = load %struct._IO_FILE** %3, align 8, !dbg !2052 [753] 
+[waint][tval] tainted value used in sink function 'exporthtml_fmt_person'
+	  %120 = load %struct._IO_FILE** %3, align 8, !dbg !2122 # [0] 'fprintf' [line 804]
+    Taint History (1)
+      %12 = load %struct._IO_FILE** %3, align 8, !dbg !2052 [753] 
+[waint][tval] tainted value used in sink function 'exporthtml_fmt_person'
+	  %127 = load %struct._IO_FILE** %3, align 8, !dbg !2124 # [0] 'fprintf' [line 806]
+    Taint History (1)
+      %12 = load %struct._IO_FILE** %3, align 8, !dbg !2052 [753] 
+[waint][tval] tainted value used in sink function 'exporthtml_fmt_person'
+	  %129 = load %struct._IO_FILE** %3, align 8, !dbg !2125 # [0] 'fprintf' [line 808]
+    Taint History (1)
+      %12 = load %struct._IO_FILE** %3, align 8, !dbg !2052 [753] 
+[waint][tval] tainted value used in sink function 'exporthtml_fmt_person'
+	  %100 = load %struct._IO_FILE** %3, align 8, !dbg !2115 # [0] 'fprintf' [line 795]
+    Taint History (1)
+      %12 = load %struct._IO_FILE** %3, align 8, !dbg !2052 [753] 
+       ## TEST   %101 = load i8** %tagName, align 8, !dbg !2115
+       ## TEST +++++++++++++++++++       ## TEST   %101 = load i8** %tagName, align 8, !dbg !2115
+       ## TEST +++++++++++++++++++       ## TEST   %101 = load i8** %tagName, align 8, !dbg !2115
+       ## TEST +++++++++++++++++++       ## TEST   %116 = load i8** %115, align 8, !dbg !2120
+       ## TEST +++++++++++++++++++       ## TEST   %116 = load i8** %115, align 8, !dbg !2120
+       ## TEST +++++++++++++++++++[waint][tval] tainted value used in sink function 'exporthtml_fmt_person'
+	  %135 = load %struct._IO_FILE** %3, align 8, !dbg !2127 # [0] 'fprintf' [line 810]
+    Taint History (1)
+      %12 = load %struct._IO_FILE** %3, align 8, !dbg !2052 [753] 
+       ## TEST   %136 = getelementptr inbounds [2048 x i8]* %buf, i32 0, i32 0, !dbg !2127
+       ## TEST +++++++++++++++++++[waint][tval] tainted value used in sink function 'exporthtml_fmt_person'
+	  %139 = load %struct._IO_FILE** %3, align 8, !dbg !2130 # [0] 'fprintf' [line 813]
+    Taint History (1)
+      %12 = load %struct._IO_FILE** %3, align 8, !dbg !2052 [753] 
+       ## TEST i8* getelementptr inbounds ([7 x i8]* @.str89, i32 0, i32 0)
+       ## TEST +++++++++++++++++++       ## TEST   %136 = getelementptr inbounds [2048 x i8]* %buf, i32 0, i32 0, !dbg !2127
+       ## TEST +++++++++++++++++++[waint][tval] tainted value used in sink function 'exporthtml_fmt_person'
+	  %142 = load %struct._IO_FILE** %3, align 8, !dbg !2132 # [0] 'fprintf' [line 815]
+    Taint History (1)
+      %12 = load %struct._IO_FILE** %3, align 8, !dbg !2052 [753] 
+       ## TEST i8* getelementptr inbounds ([7 x i8]* @.str89, i32 0, i32 0)
+       ## TEST +++++++++++++++++++[waint][tval] tainted value used in sink function 'exporthtml_fmt_person'
+	  %149 = load %struct._IO_FILE** %3, align 8, !dbg !2134 # [0] 'fprintf' [line 818]
+    Taint History (1)
+      %12 = load %struct._IO_FILE** %3, align 8, !dbg !2052 [753] 
+[waint][tval] tainted value used in sink function 'exporthtml_fmt_person'
+	  %156 = load %struct._IO_FILE** %3, align 8, !dbg !2137 # [0] 'fprintf' [line 821]
+    Taint History (1)
+      %12 = load %struct._IO_FILE** %3, align 8, !dbg !2052 [753] 
+[waint][tval] tainted value used in sink function 'exporthtml_fmt_person'
+	  %159 = load %struct._IO_FILE** %3, align 8, !dbg !2139 # [0] 'fprintf' [line 823]
+    Taint History (1)
+      %12 = load %struct._IO_FILE** %3, align 8, !dbg !2052 [753] 
+[waint][tval] tainted value used in sink function 'exporthtml_fmt_folderhead'
+	  %32 = load %struct._IO_FILE** %1, align 8, !dbg !2053 # [0] 'fprintf' [line 855]
+    Taint History (1)
+      %32 = load %struct._IO_FILE** %1, align 8, !dbg !2053 [855] 
+[waint][tval] tainted value used in sink function 'exporthtml_fmt_folderhead'
+	  %35 = load %struct._IO_FILE** %1, align 8, !dbg !2056 # [0] 'fprintf' [line 857]
+    Taint History (1)
+      %32 = load %struct._IO_FILE** %1, align 8, !dbg !2053 [855] 
+       ## TEST   %36 = load i8** %name, align 8, !dbg !2056
+       ## TEST +++++++++++++++++++       ## TEST   %36 = load i8** %name, align 8, !dbg !2056
+       ## TEST +++++++++++++++++++       ## TEST   %36 = load i8** %name, align 8, !dbg !2056
+       ## TEST +++++++++++++++++++[waint][tval] tainted value used in sink function 'exporthtml_create_css_full'
+	  %17 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2017 # [0] 'fprintf' [line 326]
+    Taint History (1)
+      %4 = call %struct._IO_FILE* @fopen(i8* %3, i8* getelementptr inbounds ([3 x i8]* @.str42194, i32 0, i32 0)), !dbg !2008 [316] 
+ ## function fopen param: 0[waint][tval] tainted value used in sink function 'exporthtml_create_css_full'
+	  %19 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2018 # [0] 'fprintf' [line 327]
+    Taint History (1)
+      %4 = call %struct._IO_FILE* @fopen(i8* %3, i8* getelementptr inbounds ([3 x i8]* @.str42194, i32 0, i32 0)), !dbg !2008 [316] 
+ ## function fopen param: 0[waint][tval] tainted value used in sink function 'exporthtml_create_css_full'
+	  %21 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2019 # [0] 'fprintf' [line 328]
+    Taint History (1)
+      %4 = call %struct._IO_FILE* @fopen(i8* %3, i8* getelementptr inbounds ([3 x i8]* @.str42194, i32 0, i32 0)), !dbg !2008 [316] 
+ ## function fopen param: 0[waint][tval] tainted value used in sink function 'exporthtml_create_css_full'
+	  %23 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2020 # [0] 'fprintf' [line 329]
+    Taint History (1)
+      %4 = call %struct._IO_FILE* @fopen(i8* %3, i8* getelementptr inbounds ([3 x i8]* @.str42194, i32 0, i32 0)), !dbg !2008 [316] 
+ ## function fopen param: 0[waint][tval] tainted value used in sink function 'exporthtml_create_css_full'
+	  %25 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2021 # [0] 'fprintf' [line 330]
+    Taint History (1)
+      %4 = call %struct._IO_FILE* @fopen(i8* %3, i8* getelementptr inbounds ([3 x i8]* @.str42194, i32 0, i32 0)), !dbg !2008 [316] 
+ ## function fopen param: 0[waint][tval] tainted value used in sink function 'exporthtml_create_css_full'
+	  %27 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2022 # [0] 'fprintf' [line 331]
+    Taint History (1)
+      %4 = call %struct._IO_FILE* @fopen(i8* %3, i8* getelementptr inbounds ([3 x i8]* @.str42194, i32 0, i32 0)), !dbg !2008 [316] 
+ ## function fopen param: 0[waint][tval] tainted value used in sink function 'exporthtml_create_css_full'
+	  %29 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2023 # [0] 'fprintf' [line 332]
+    Taint History (1)
+      %4 = call %struct._IO_FILE* @fopen(i8* %3, i8* getelementptr inbounds ([3 x i8]* @.str42194, i32 0, i32 0)), !dbg !2008 [316] 
+ ## function fopen param: 0[waint][tval] tainted value used in sink function 'exporthtml_create_css_full'
+	  %31 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2024 # [0] 'fprintf' [line 333]
+    Taint History (1)
+      %4 = call %struct._IO_FILE* @fopen(i8* %3, i8* getelementptr inbounds ([3 x i8]* @.str42194, i32 0, i32 0)), !dbg !2008 [316] 
+ ## function fopen param: 0[waint][tval] tainted value used in sink function 'exporthtml_create_css_full'
+	  %33 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2025 # [0] 'fprintf' [line 334]
+    Taint History (1)
+      %4 = call %struct._IO_FILE* @fopen(i8* %3, i8* getelementptr inbounds ([3 x i8]* @.str42194, i32 0, i32 0)), !dbg !2008 [316] 
+ ## function fopen param: 0[waint][tval] tainted value used in sink function 'exporthtml_create_css_full'
+	  %35 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2026 # [0] 'fprintf' [line 335]
+    Taint History (1)
+      %4 = call %struct._IO_FILE* @fopen(i8* %3, i8* getelementptr inbounds ([3 x i8]* @.str42194, i32 0, i32 0)), !dbg !2008 [316] 
+ ## function fopen param: 0[waint][tval] tainted value used in sink function 'exporthtml_create_css_full'
+	  %37 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2027 # [0] 'fprintf' [line 336]
+    Taint History (1)
+      %4 = call %struct._IO_FILE* @fopen(i8* %3, i8* getelementptr inbounds ([3 x i8]* @.str42194, i32 0, i32 0)), !dbg !2008 [316] 
+ ## function fopen param: 0[waint][tval] tainted value used in sink function 'exporthtml_create_css_full'
+	  %39 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2028 # [0] 'fprintf' [line 337]
+    Taint History (1)
+      %4 = call %struct._IO_FILE* @fopen(i8* %3, i8* getelementptr inbounds ([3 x i8]* @.str42194, i32 0, i32 0)), !dbg !2008 [316] 
+ ## function fopen param: 0[waint][tval] tainted value used in sink function 'exporthtml_create_css_full'
+	  %41 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2029 # [0] 'fprintf' [line 338]
+    Taint History (1)
+      %4 = call %struct._IO_FILE* @fopen(i8* %3, i8* getelementptr inbounds ([3 x i8]* @.str42194, i32 0, i32 0)), !dbg !2008 [316] 
+ ## function fopen param: 0[waint][tval] tainted value used in sink function 'exporthtml_create_css_full'
+	  %43 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2030 # [0] 'fprintf' [line 339]
+    Taint History (1)
+      %4 = call %struct._IO_FILE* @fopen(i8* %3, i8* getelementptr inbounds ([3 x i8]* @.str42194, i32 0, i32 0)), !dbg !2008 [316] 
+ ## function fopen param: 0[waint][tval] tainted value used in sink function 'exporthtml_create_css_full'
+	  %45 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2031 # [0] 'fprintf' [line 340]
+    Taint History (1)
+      %4 = call %struct._IO_FILE* @fopen(i8* %3, i8* getelementptr inbounds ([3 x i8]* @.str42194, i32 0, i32 0)), !dbg !2008 [316] 
+ ## function fopen param: 0[waint][tval] tainted value used in sink function 'exporthtml_create_css_full'
+	  %47 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2032 # [0] 'fprintf' [line 341]
+    Taint History (1)
+      %4 = call %struct._IO_FILE* @fopen(i8* %3, i8* getelementptr inbounds ([3 x i8]* @.str42194, i32 0, i32 0)), !dbg !2008 [316] 
+ ## function fopen param: 0[waint][tval] tainted value used in sink function 'exporthtml_create_css_full'
+	  %49 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2033 # [0] 'fprintf' [line 342]
+    Taint History (1)
+      %4 = call %struct._IO_FILE* @fopen(i8* %3, i8* getelementptr inbounds ([3 x i8]* @.str42194, i32 0, i32 0)), !dbg !2008 [316] 
+ ## function fopen param: 0[waint][tval] tainted value used in sink function 'exporthtml_create_css_full'
+	  %51 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2034 # [0] 'fprintf' [line 343]
+    Taint History (1)
+      %4 = call %struct._IO_FILE* @fopen(i8* %3, i8* getelementptr inbounds ([3 x i8]* @.str42194, i32 0, i32 0)), !dbg !2008 [316] 
+ ## function fopen param: 0[waint][tval] tainted value used in sink function 'exporthtml_create_css_full'
+	  %53 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2035 # [0] 'fprintf' [line 344]
+    Taint History (1)
+      %4 = call %struct._IO_FILE* @fopen(i8* %3, i8* getelementptr inbounds ([3 x i8]* @.str42194, i32 0, i32 0)), !dbg !2008 [316] 
+ ## function fopen param: 0[waint][tval] tainted value used in sink function 'exporthtml_create_css_full'
+	  %55 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2036 # [0] 'fprintf' [line 345]
+    Taint History (1)
+      %4 = call %struct._IO_FILE* @fopen(i8* %3, i8* getelementptr inbounds ([3 x i8]* @.str42194, i32 0, i32 0)), !dbg !2008 [316] 
+ ## function fopen param: 0[waint][tval] tainted value used in sink function 'exporthtml_create_css_full'
+	  %57 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2037 # [0] 'fprintf' [line 346]
+    Taint History (1)
+      %4 = call %struct._IO_FILE* @fopen(i8* %3, i8* getelementptr inbounds ([3 x i8]* @.str42194, i32 0, i32 0)), !dbg !2008 [316] 
+ ## function fopen param: 0[waint][tval] tainted value used in sink function 'exporthtml_create_css_full'
+	  %59 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2038 # [0] 'fprintf' [line 347]
+    Taint History (1)
+      %4 = call %struct._IO_FILE* @fopen(i8* %3, i8* getelementptr inbounds ([3 x i8]* @.str42194, i32 0, i32 0)), !dbg !2008 [316] 
+ ## function fopen param: 0[waint][tval] tainted value used in sink function 'exporthtml_create_css_full'
+	  %61 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2039 # [0] 'fprintf' [line 348]
+    Taint History (1)
+      %4 = call %struct._IO_FILE* @fopen(i8* %3, i8* getelementptr inbounds ([3 x i8]* @.str42194, i32 0, i32 0)), !dbg !2008 [316] 
+ ## function fopen param: 0[waint][tval] tainted value used in sink function 'exporthtml_create_css_full'
+	  %63 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2040 # [0] 'fprintf' [line 349]
+    Taint History (1)
+      %4 = call %struct._IO_FILE* @fopen(i8* %3, i8* getelementptr inbounds ([3 x i8]* @.str42194, i32 0, i32 0)), !dbg !2008 [316] 
+ ## function fopen param: 0[waint][tval] tainted value used in sink function 'exporthtml_create_css_full'
+	  %65 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2041 # [0] 'fprintf' [line 350]
+    Taint History (1)
+      %4 = call %struct._IO_FILE* @fopen(i8* %3, i8* getelementptr inbounds ([3 x i8]* @.str42194, i32 0, i32 0)), !dbg !2008 [316] 
+ ## function fopen param: 0[waint][tval] tainted value used in sink function 'exporthtml_create_css_full'
+	  %67 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2042 # [0] 'fprintf' [line 351]
+    Taint History (1)
+      %4 = call %struct._IO_FILE* @fopen(i8* %3, i8* getelementptr inbounds ([3 x i8]* @.str42194, i32 0, i32 0)), !dbg !2008 [316] 
+ ## function fopen param: 0[waint][tval] tainted value used in sink function 'exporthtml_create_css_full'
+	  %69 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2043 # [0] 'fprintf' [line 352]
+    Taint History (1)
+      %4 = call %struct._IO_FILE* @fopen(i8* %3, i8* getelementptr inbounds ([3 x i8]* @.str42194, i32 0, i32 0)), !dbg !2008 [316] 
+ ## function fopen param: 0[waint][tval] tainted value used in sink function 'exporthtml_create_css_full'
+	  %71 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2044 # [0] 'fprintf' [line 353]
+    Taint History (1)
+      %4 = call %struct._IO_FILE* @fopen(i8* %3, i8* getelementptr inbounds ([3 x i8]* @.str42194, i32 0, i32 0)), !dbg !2008 [316] 
+ ## function fopen param: 0[waint][tval] tainted value used in sink function 'exporthtml_create_css_full'
+	  %73 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2045 # [0] 'fprintf' [line 354]
+    Taint History (1)
+      %4 = call %struct._IO_FILE* @fopen(i8* %3, i8* getelementptr inbounds ([3 x i8]* @.str42194, i32 0, i32 0)), !dbg !2008 [316] 
+ ## function fopen param: 0[waint][tval] tainted value used in sink function 'exporthtml_create_css_full'
+	  %75 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2046 # [0] 'fprintf' [line 355]
+    Taint History (1)
+      %4 = call %struct._IO_FILE* @fopen(i8* %3, i8* getelementptr inbounds ([3 x i8]* @.str42194, i32 0, i32 0)), !dbg !2008 [316] 
+ ## function fopen param: 0[waint][tval] tainted value used in sink function 'exporthtml_create_css_full'
+	  %77 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2047 # [0] 'fprintf' [line 356]
+    Taint History (1)
+      %4 = call %struct._IO_FILE* @fopen(i8* %3, i8* getelementptr inbounds ([3 x i8]* @.str42194, i32 0, i32 0)), !dbg !2008 [316] 
+ ## function fopen param: 0[waint][tval] tainted value used in sink function 'exporthtml_create_css_full'
+	  %79 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2048 # [0] 'fprintf' [line 357]
+    Taint History (1)
+      %4 = call %struct._IO_FILE* @fopen(i8* %3, i8* getelementptr inbounds ([3 x i8]* @.str42194, i32 0, i32 0)), !dbg !2008 [316] 
+ ## function fopen param: 0[waint][tval] tainted value used in sink function 'exporthtml_create_css_full'
+	  %81 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2049 # [0] 'fprintf' [line 358]
+    Taint History (1)
+      %4 = call %struct._IO_FILE* @fopen(i8* %3, i8* getelementptr inbounds ([3 x i8]* @.str42194, i32 0, i32 0)), !dbg !2008 [316] 
+ ## function fopen param: 0[waint][tval] tainted value used in sink function 'exporthtml_create_css_full'
+	  %83 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2050 # [0] 'fprintf' [line 359]
+    Taint History (1)
+      %4 = call %struct._IO_FILE* @fopen(i8* %3, i8* getelementptr inbounds ([3 x i8]* @.str42194, i32 0, i32 0)), !dbg !2008 [316] 
+ ## function fopen param: 0[waint][tval] tainted value used in sink function 'exporthtml_create_css_full'
+	  %85 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2051 # [0] 'fprintf' [line 360]
+    Taint History (1)
+      %4 = call %struct._IO_FILE* @fopen(i8* %3, i8* getelementptr inbounds ([3 x i8]* @.str42194, i32 0, i32 0)), !dbg !2008 [316] 
+ ## function fopen param: 0[waint][tval] tainted value used in sink function 'exporthtml_create_css_full'
+	  %87 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2052 # [0] 'fprintf' [line 361]
+    Taint History (1)
+      %4 = call %struct._IO_FILE* @fopen(i8* %3, i8* getelementptr inbounds ([3 x i8]* @.str42194, i32 0, i32 0)), !dbg !2008 [316] 
+ ## function fopen param: 0[waint][tval] tainted value used in sink function 'exporthtml_create_css_full'
+	  %89 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2053 # [0] 'fprintf' [line 362]
+    Taint History (1)
+      %4 = call %struct._IO_FILE* @fopen(i8* %3, i8* getelementptr inbounds ([3 x i8]* @.str42194, i32 0, i32 0)), !dbg !2008 [316] 
+ ## function fopen param: 0[waint][tval] tainted value used in sink function 'exporthtml_create_css_full'
+	  %91 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2054 # [0] 'fprintf' [line 363]
+    Taint History (1)
+      %4 = call %struct._IO_FILE* @fopen(i8* %3, i8* getelementptr inbounds ([3 x i8]* @.str42194, i32 0, i32 0)), !dbg !2008 [316] 
+ ## function fopen param: 0[waint][tval] tainted value used in sink function 'exporthtml_create_css_full'
+	  %93 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2055 # [0] 'fprintf' [line 364]
+    Taint History (1)
+      %4 = call %struct._IO_FILE* @fopen(i8* %3, i8* getelementptr inbounds ([3 x i8]* @.str42194, i32 0, i32 0)), !dbg !2008 [316] 
+ ## function fopen param: 0[waint][tval] tainted value used in sink function 'exporthtml_create_css_full'
+	  %95 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2056 # [0] 'fprintf' [line 365]
+    Taint History (1)
+      %4 = call %struct._IO_FILE* @fopen(i8* %3, i8* getelementptr inbounds ([3 x i8]* @.str42194, i32 0, i32 0)), !dbg !2008 [316] 
+ ## function fopen param: 0[waint][tval] tainted value used in sink function 'exporthtml_create_css_full'
+	  %97 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2057 # [0] 'fprintf' [line 366]
+    Taint History (1)
+      %4 = call %struct._IO_FILE* @fopen(i8* %3, i8* getelementptr inbounds ([3 x i8]* @.str42194, i32 0, i32 0)), !dbg !2008 [316] 
+ ## function fopen param: 0[waint][tval] tainted value used in sink function 'exporthtml_create_css_dfl'
+	  %17 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2017 # [0] 'fprintf' [line 268]
+    Taint History (1)
+      %4 = call %struct._IO_FILE* @fopen(i8* %3, i8* getelementptr inbounds ([3 x i8]* @.str42194, i32 0, i32 0)), !dbg !2008 [258] 
+ ## function fopen param: 0[waint][tval] tainted value used in sink function 'exporthtml_create_css_dfl'
+	  %19 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2018 # [0] 'fprintf' [line 269]
+    Taint History (1)
+      %4 = call %struct._IO_FILE* @fopen(i8* %3, i8* getelementptr inbounds ([3 x i8]* @.str42194, i32 0, i32 0)), !dbg !2008 [258] 
+ ## function fopen param: 0[waint][tval] tainted value used in sink function 'exporthtml_create_css_dfl'
+	  %21 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2019 # [0] 'fprintf' [line 270]
+    Taint History (1)
+      %4 = call %struct._IO_FILE* @fopen(i8* %3, i8* getelementptr inbounds ([3 x i8]* @.str42194, i32 0, i32 0)), !dbg !2008 [258] 
+ ## function fopen param: 0[waint][tval] tainted value used in sink function 'exporthtml_create_css_dfl'
+	  %23 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2020 # [0] 'fprintf' [line 271]
+    Taint History (1)
+      %4 = call %struct._IO_FILE* @fopen(i8* %3, i8* getelementptr inbounds ([3 x i8]* @.str42194, i32 0, i32 0)), !dbg !2008 [258] 
+ ## function fopen param: 0[waint][tval] tainted value used in sink function 'exporthtml_create_css_dfl'
+	  %25 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2021 # [0] 'fprintf' [line 272]
+    Taint History (1)
+      %4 = call %struct._IO_FILE* @fopen(i8* %3, i8* getelementptr inbounds ([3 x i8]* @.str42194, i32 0, i32 0)), !dbg !2008 [258] 
+ ## function fopen param: 0[waint][tval] tainted value used in sink function 'exporthtml_create_css_dfl'
+	  %27 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2022 # [0] 'fprintf' [line 273]
+    Taint History (1)
+      %4 = call %struct._IO_FILE* @fopen(i8* %3, i8* getelementptr inbounds ([3 x i8]* @.str42194, i32 0, i32 0)), !dbg !2008 [258] 
+ ## function fopen param: 0[waint][tval] tainted value used in sink function 'exporthtml_create_css_dfl'
+	  %29 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2023 # [0] 'fprintf' [line 274]
+    Taint History (1)
+      %4 = call %struct._IO_FILE* @fopen(i8* %3, i8* getelementptr inbounds ([3 x i8]* @.str42194, i32 0, i32 0)), !dbg !2008 [258] 
+ ## function fopen param: 0[waint][tval] tainted value used in sink function 'exporthtml_create_css_dfl'
+	  %31 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2024 # [0] 'fprintf' [line 275]
+    Taint History (1)
+      %4 = call %struct._IO_FILE* @fopen(i8* %3, i8* getelementptr inbounds ([3 x i8]* @.str42194, i32 0, i32 0)), !dbg !2008 [258] 
+ ## function fopen param: 0[waint][tval] tainted value used in sink function 'exporthtml_create_css_dfl'
+	  %33 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2025 # [0] 'fprintf' [line 276]
+    Taint History (1)
+      %4 = call %struct._IO_FILE* @fopen(i8* %3, i8* getelementptr inbounds ([3 x i8]* @.str42194, i32 0, i32 0)), !dbg !2008 [258] 
+ ## function fopen param: 0[waint][tval] tainted value used in sink function 'exporthtml_create_css_dfl'
+	  %35 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2026 # [0] 'fprintf' [line 277]
+    Taint History (1)
+      %4 = call %struct._IO_FILE* @fopen(i8* %3, i8* getelementptr inbounds ([3 x i8]* @.str42194, i32 0, i32 0)), !dbg !2008 [258] 
+ ## function fopen param: 0[waint][tval] tainted value used in sink function 'exporthtml_create_css_dfl'
+	  %37 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2027 # [0] 'fprintf' [line 278]
+    Taint History (1)
+      %4 = call %struct._IO_FILE* @fopen(i8* %3, i8* getelementptr inbounds ([3 x i8]* @.str42194, i32 0, i32 0)), !dbg !2008 [258] 
+ ## function fopen param: 0[waint][tval] tainted value used in sink function 'exporthtml_create_css_dfl'
+	  %39 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2028 # [0] 'fprintf' [line 279]
+    Taint History (1)
+      %4 = call %struct._IO_FILE* @fopen(i8* %3, i8* getelementptr inbounds ([3 x i8]* @.str42194, i32 0, i32 0)), !dbg !2008 [258] 
+ ## function fopen param: 0[waint][tval] tainted value used in sink function 'exporthtml_create_css_dfl'
+	  %41 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2029 # [0] 'fprintf' [line 280]
+    Taint History (1)
+      %4 = call %struct._IO_FILE* @fopen(i8* %3, i8* getelementptr inbounds ([3 x i8]* @.str42194, i32 0, i32 0)), !dbg !2008 [258] 
+ ## function fopen param: 0[waint][tval] tainted value used in sink function 'exporthtml_create_css_dfl'
+	  %43 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2030 # [0] 'fprintf' [line 281]
+    Taint History (1)
+      %4 = call %struct._IO_FILE* @fopen(i8* %3, i8* getelementptr inbounds ([3 x i8]* @.str42194, i32 0, i32 0)), !dbg !2008 [258] 
+ ## function fopen param: 0[waint][tval] tainted value used in sink function 'exporthtml_create_css_dfl'
+	  %45 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2031 # [0] 'fprintf' [line 282]
+    Taint History (1)
+      %4 = call %struct._IO_FILE* @fopen(i8* %3, i8* getelementptr inbounds ([3 x i8]* @.str42194, i32 0, i32 0)), !dbg !2008 [258] 
+ ## function fopen param: 0[waint][tval] tainted value used in sink function 'exporthtml_create_css_dfl'
+	  %47 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2032 # [0] 'fprintf' [line 283]
+    Taint History (1)
+      %4 = call %struct._IO_FILE* @fopen(i8* %3, i8* getelementptr inbounds ([3 x i8]* @.str42194, i32 0, i32 0)), !dbg !2008 [258] 
+ ## function fopen param: 0[waint][tval] tainted value used in sink function 'exporthtml_create_css_dfl'
+	  %49 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2033 # [0] 'fprintf' [line 284]
+    Taint History (1)
+      %4 = call %struct._IO_FILE* @fopen(i8* %3, i8* getelementptr inbounds ([3 x i8]* @.str42194, i32 0, i32 0)), !dbg !2008 [258] 
+ ## function fopen param: 0[waint][tval] tainted value used in sink function 'exporthtml_create_css_dfl'
+	  %51 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2034 # [0] 'fprintf' [line 285]
+    Taint History (1)
+      %4 = call %struct._IO_FILE* @fopen(i8* %3, i8* getelementptr inbounds ([3 x i8]* @.str42194, i32 0, i32 0)), !dbg !2008 [258] 
+ ## function fopen param: 0[waint][tval] tainted value used in sink function 'exporthtml_create_css_dfl'
+	  %53 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2035 # [0] 'fprintf' [line 286]
+    Taint History (1)
+      %4 = call %struct._IO_FILE* @fopen(i8* %3, i8* getelementptr inbounds ([3 x i8]* @.str42194, i32 0, i32 0)), !dbg !2008 [258] 
+ ## function fopen param: 0[waint][tval] tainted value used in sink function 'exporthtml_create_css_dfl'
+	  %55 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2036 # [0] 'fprintf' [line 287]
+    Taint History (1)
+      %4 = call %struct._IO_FILE* @fopen(i8* %3, i8* getelementptr inbounds ([3 x i8]* @.str42194, i32 0, i32 0)), !dbg !2008 [258] 
+ ## function fopen param: 0[waint][tval] tainted value used in sink function 'exporthtml_create_css_dfl'
+	  %57 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2037 # [0] 'fprintf' [line 288]
+    Taint History (1)
+      %4 = call %struct._IO_FILE* @fopen(i8* %3, i8* getelementptr inbounds ([3 x i8]* @.str42194, i32 0, i32 0)), !dbg !2008 [258] 
+ ## function fopen param: 0[waint][tval] tainted value used in sink function 'exporthtml_create_css_dfl'
+	  %59 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2038 # [0] 'fprintf' [line 289]
+    Taint History (1)
+      %4 = call %struct._IO_FILE* @fopen(i8* %3, i8* getelementptr inbounds ([3 x i8]* @.str42194, i32 0, i32 0)), !dbg !2008 [258] 
+ ## function fopen param: 0[waint][tval] tainted value used in sink function 'exporthtml_create_css_dfl'
+	  %61 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2039 # [0] 'fprintf' [line 290]
+    Taint History (1)
+      %4 = call %struct._IO_FILE* @fopen(i8* %3, i8* getelementptr inbounds ([3 x i8]* @.str42194, i32 0, i32 0)), !dbg !2008 [258] 
+ ## function fopen param: 0[waint][tval] tainted value used in sink function 'exporthtml_create_css_dfl'
+	  %63 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2040 # [0] 'fprintf' [line 291]
+    Taint History (1)
+      %4 = call %struct._IO_FILE* @fopen(i8* %3, i8* getelementptr inbounds ([3 x i8]* @.str42194, i32 0, i32 0)), !dbg !2008 [258] 
+ ## function fopen param: 0[waint][tval] tainted value used in sink function 'exporthtml_create_css_dfl'
+	  %65 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2041 # [0] 'fprintf' [line 292]
+    Taint History (1)
+      %4 = call %struct._IO_FILE* @fopen(i8* %3, i8* getelementptr inbounds ([3 x i8]* @.str42194, i32 0, i32 0)), !dbg !2008 [258] 
+ ## function fopen param: 0[waint][tval] tainted value used in sink function 'exporthtml_create_css_dfl'
+	  %67 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2042 # [0] 'fprintf' [line 293]
+    Taint History (1)
+      %4 = call %struct._IO_FILE* @fopen(i8* %3, i8* getelementptr inbounds ([3 x i8]* @.str42194, i32 0, i32 0)), !dbg !2008 [258] 
+ ## function fopen param: 0[waint][tval] tainted value used in sink function 'exporthtml_create_css_dfl'
+	  %69 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2043 # [0] 'fprintf' [line 294]
+    Taint History (1)
+      %4 = call %struct._IO_FILE* @fopen(i8* %3, i8* getelementptr inbounds ([3 x i8]* @.str42194, i32 0, i32 0)), !dbg !2008 [258] 
+ ## function fopen param: 0[waint][tval] tainted value used in sink function 'exporthtml_create_css_dfl'
+	  %71 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2044 # [0] 'fprintf' [line 295]
+    Taint History (1)
+      %4 = call %struct._IO_FILE* @fopen(i8* %3, i8* getelementptr inbounds ([3 x i8]* @.str42194, i32 0, i32 0)), !dbg !2008 [258] 
+ ## function fopen param: 0[waint][tval] tainted value used in sink function 'exporthtml_create_css_dfl'
+	  %73 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2045 # [0] 'fprintf' [line 296]
+    Taint History (1)
+      %4 = call %struct._IO_FILE* @fopen(i8* %3, i8* getelementptr inbounds ([3 x i8]* @.str42194, i32 0, i32 0)), !dbg !2008 [258] 
+ ## function fopen param: 0[waint][tval] tainted value used in sink function 'exporthtml_create_css_dfl'
+	  %75 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2046 # [0] 'fprintf' [line 297]
+    Taint History (1)
+      %4 = call %struct._IO_FILE* @fopen(i8* %3, i8* getelementptr inbounds ([3 x i8]* @.str42194, i32 0, i32 0)), !dbg !2008 [258] 
+ ## function fopen param: 0[waint][tval] tainted value used in sink function 'exporthtml_create_css_dfl'
+	  %77 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2047 # [0] 'fprintf' [line 298]
+    Taint History (1)
+      %4 = call %struct._IO_FILE* @fopen(i8* %3, i8* getelementptr inbounds ([3 x i8]* @.str42194, i32 0, i32 0)), !dbg !2008 [258] 
+ ## function fopen param: 0[waint][tval] tainted value used in sink function 'exporthtml_create_css_dfl'
+	  %79 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2048 # [0] 'fprintf' [line 299]
+    Taint History (1)
+      %4 = call %struct._IO_FILE* @fopen(i8* %3, i8* getelementptr inbounds ([3 x i8]* @.str42194, i32 0, i32 0)), !dbg !2008 [258] 
+ ## function fopen param: 0[waint][tval] tainted value used in sink function 'exporthtml_create_css_dfl'
+	  %81 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2049 # [0] 'fprintf' [line 300]
+    Taint History (1)
+      %4 = call %struct._IO_FILE* @fopen(i8* %3, i8* getelementptr inbounds ([3 x i8]* @.str42194, i32 0, i32 0)), !dbg !2008 [258] 
+ ## function fopen param: 0[waint][tval] tainted value used in sink function 'exporthtml_create_css_dfl'
+	  %83 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2050 # [0] 'fprintf' [line 301]
+    Taint History (1)
+      %4 = call %struct._IO_FILE* @fopen(i8* %3, i8* getelementptr inbounds ([3 x i8]* @.str42194, i32 0, i32 0)), !dbg !2008 [258] 
+ ## function fopen param: 0[waint][tval] tainted value used in sink function 'exporthtml_create_css_dfl'
+	  %85 = load %struct._IO_FILE** %cssFile, align 8, !dbg !2051 # [0] 'fprintf' [line 302]
+    Taint History (1)
+      %4 = call %struct._IO_FILE* @fopen(i8* %3, i8* getelementptr inbounds ([3 x i8]* @.str42194, i32 0, i32 0)), !dbg !2008 [258] 
+ ## function fopen param: 0[waint][tval] tainted value used in sink function 'exporthtml_fmt_folder'
+	  %16 = load %struct._IO_FILE** %2, align 8, !dbg !2051 # [0] 'fprintf' [line 883]
+    Taint History (1)
+      %16 = load %struct._IO_FILE** %2, align 8, !dbg !2051 [883] 
+[waint][tval] tainted value used in sink function 'exporthtml_fmt_folder'
+	  %18 = load %struct._IO_FILE** %2, align 8, !dbg !2053 # [0] 'fprintf' [line 884]
+    Taint History (1)
+      %16 = load %struct._IO_FILE** %2, align 8, !dbg !2051 [883] 
+       ## TEST   %19 = call i8* @gettext(i8* getelementptr inbounds ([7 x i8]* @.str68, i32 0, i32 0)) #2, !dbg !2054
+       ## TEST +++++++++++++++++++[waint][tval] tainted value used in sink function 'exporthtml_fmt_folder'
+	  %23 = load %struct._IO_FILE** %2, align 8, !dbg !2056 # [0] 'fprintf' [line 886]
+    Taint History (1)
+      %16 = load %struct._IO_FILE** %2, align 8, !dbg !2051 [883] 
+       ## TEST   %19 = call i8* @gettext(i8* getelementptr inbounds ([7 x i8]* @.str68, i32 0, i32 0)) #2, !dbg !2054
+       ## TEST +++++++++++++++++++[waint][tval] tainted value used in sink function 'exporthtml_fmt_header'
+	  %6 = load %struct._IO_FILE** %2, align 8, !dbg !2011 # [0] 'fprintf' [line 921]
+    Taint History (1)
+      %6 = load %struct._IO_FILE** %2, align 8, !dbg !2011 [921] 
+[waint][tval] tainted value used in sink function 'exporthtml_fmt_header'
+	  %8 = load %struct._IO_FILE** %2, align 8, !dbg !2012 # [0] 'fprintf' [line 923]
+    Taint History (1)
+      %6 = load %struct._IO_FILE** %2, align 8, !dbg !2011 [921] 
+[waint][tval] tainted value used in sink function 'exporthtml_fmt_header'
+	  %10 = load %struct._IO_FILE** %2, align 8, !dbg !2013 # [0] 'fprintf' [line 925]
+    Taint History (1)
+      %6 = load %struct._IO_FILE** %2, align 8, !dbg !2011 [921] 
+[waint][tval] tainted value used in sink function 'exporthtml_fmt_header'
+	  %12 = load %struct._IO_FILE** %2, align 8, !dbg !2014 # [0] 'fprintf' [line 926]
+    Taint History (1)
+      %6 = load %struct._IO_FILE** %2, align 8, !dbg !2011 [921] 
+[waint][tval] tainted value used in sink function 'exporthtml_fmt_header'
+	  %35 = load %struct._IO_FILE** %2, align 8, !dbg !2022 # [0] 'fprintf' [line 935]
+    Taint History (1)
+      %6 = load %struct._IO_FILE** %2, align 8, !dbg !2011 [921] 
+       ## TEST   %36 = load i8** %3, align 8, !dbg !2022
+       ## TEST +++++++++++++++++++[waint][tval] tainted value used in sink function 'exporthtml_fmt_header'
+	  %25 = load %struct._IO_FILE** %2, align 8, !dbg !2017 # [0] 'fprintf' [line 929]
+    Taint History (1)
+      %6 = load %struct._IO_FILE** %2, align 8, !dbg !2011 [921] 
+[waint][tval] tainted value used in sink function 'exporthtml_fmt_header'
+	  %27 = load %struct._IO_FILE** %2, align 8, !dbg !2019 # [0] 'fprintf' [line 930]
+    Taint History (1)
+      %6 = load %struct._IO_FILE** %2, align 8, !dbg !2011 [921] 
+[waint][tval] tainted value used in sink function 'exporthtml_fmt_header'
+	  %29 = load %struct._IO_FILE** %2, align 8, !dbg !2020 # [0] 'fprintf' [line 931]
+    Taint History (1)
+      %6 = load %struct._IO_FILE** %2, align 8, !dbg !2011 [921] 
+       ## TEST   %32 = load i8** %31, align 8, !dbg !2020
+       ## TEST +++++++++++++++++++       ## TEST   %36 = load i8** %3, align 8, !dbg !2022
+       ## TEST +++++++++++++++++++       ## TEST   %32 = load i8** %31, align 8, !dbg !2020
+       ## TEST +++++++++++++++++++       ## TEST   %36 = load i8** %3, align 8, !dbg !2022
+       ## TEST +++++++++++++++++++       ## TEST   %36 = load i8** %3, align 8, !dbg !2022
+       ## TEST +++++++++++++++++++[waint][tval] tainted value used in sink function 'exporthtml_fmt_header'
+	  %65 = load %struct._IO_FILE** %2, align 8, !dbg !2034 # [0] 'fprintf' [line 945]
+    Taint History (1)
+      %6 = load %struct._IO_FILE** %2, align 8, !dbg !2011 [921] 
+[waint][tval] tainted value used in sink function 'exporthtml_fmt_header'
+	  %52 = load %struct._IO_FILE** %2, align 8, !dbg !2027 # [0] 'fprintf' [line 939]
+    Taint History (1)
+      %6 = load %struct._IO_FILE** %2, align 8, !dbg !2011 [921] 
+[waint][tval] tainted value used in sink function 'exporthtml_fmt_header'
+	  %54 = load %struct._IO_FILE** %2, align 8, !dbg !2029 # [0] 'fprintf' [line 940]
+    Taint History (1)
+      %6 = load %struct._IO_FILE** %2, align 8, !dbg !2011 [921] 
+[waint][tval] tainted value used in sink function 'exporthtml_fmt_header'
+	  %56 = load %struct._IO_FILE** %2, align 8, !dbg !2030 # [0] 'fprintf' [line 941]
+    Taint History (1)
+      %6 = load %struct._IO_FILE** %2, align 8, !dbg !2011 [921] 
+[waint][tval] tainted value used in sink function 'exporthtml_fmt_header'
+	  %58 = load %struct._IO_FILE** %2, align 8, !dbg !2031 # [0] 'fprintf' [line 942]
+    Taint History (1)
+      %6 = load %struct._IO_FILE** %2, align 8, !dbg !2011 [921] 
+       ## TEST   %61 = load i8** %60, align 8, !dbg !2031
+       ## TEST +++++++++++++++++++       ## TEST   %61 = load i8** %60, align 8, !dbg !2031
+       ## TEST +++++++++++++++++++[waint][tval] tainted value used in sink function 'exporthtml_process'
+	  %23 = load %struct._IO_FILE** %htmlFile, align 8, !dbg !2067 # [0] 'fprintf' [line 980]
+    Taint History (1)
+      %6 = call %struct._IO_FILE* @fopen(i8* %5, i8* getelementptr inbounds ([3 x i8]* @.str14166, i32 0, i32 0)), !dbg !2057 [966] 
+ ## function fopen param: 0[waint][tval] tainted value used in sink function 'exporthtml_process'
+	  %25 = load %struct._IO_FILE** %htmlFile, align 8, !dbg !2068 # [0] 'fprintf' [line 981]
+    Taint History (1)
+      %6 = call %struct._IO_FILE* @fopen(i8* %5, i8* getelementptr inbounds ([3 x i8]* @.str14166, i32 0, i32 0)), !dbg !2057 [966] 
+ ## function fopen param: 0       ## TEST   %26 = load i8** @exporthtml_process.title, align 8, !dbg !2068
+       ## TEST +++++++++++++++++++[waint][tval] tainted value used in sink function 'exporthtml_process'
+	  %28 = load %struct._IO_FILE** %htmlFile, align 8, !dbg !2069 # [0] 'fprintf' [line 983]
+    Taint History (1)
+      %6 = call %struct._IO_FILE* @fopen(i8* %5, i8* getelementptr inbounds ([3 x i8]* @.str14166, i32 0, i32 0)), !dbg !2057 [966] 
+ ## function fopen param: 0[waint][tval] tainted value used in sink function 'exporthtml_process'
+	  %30 = load %struct._IO_FILE** %htmlFile, align 8, !dbg !2070 # [0] 'fprintf' [line 984]
+    Taint History (1)
+      %6 = call %struct._IO_FILE* @fopen(i8* %5, i8* getelementptr inbounds ([3 x i8]* @.str14166, i32 0, i32 0)), !dbg !2057 [966] 
+ ## function fopen param: 0       ## TEST   %31 = call i8* @gettext(i8* getelementptr inbounds ([13 x i8]* @.str21173, i32 0, i32 0)) #2, !dbg !2071
+       ## TEST +++++++++++++++++++[waint][tval] tainted value used in sink function 'exporthtml_process'
+	  %33 = load %struct._IO_FILE** %htmlFile, align 8, !dbg !2072 # [0] 'fprintf' [line 985]
+    Taint History (1)
+      %6 = call %struct._IO_FILE* @fopen(i8* %5, i8* getelementptr inbounds ([3 x i8]* @.str14166, i32 0, i32 0)), !dbg !2057 [966] 
+ ## function fopen param: 0       ## TEST   %34 = load i8** %dsName, align 8, !dbg !2072
+       ## TEST +++++++++++++++++++[waint][tval] tainted value used in sink function 'exporthtml_process'
+	  %36 = load %struct._IO_FILE** %htmlFile, align 8, !dbg !2073 # [0] 'fprintf' [line 986]
+    Taint History (1)
+      %6 = call %struct._IO_FILE* @fopen(i8* %5, i8* getelementptr inbounds ([3 x i8]* @.str14166, i32 0, i32 0)), !dbg !2057 [966] 
+ ## function fopen param: 0[waint][tval] tainted value used in sink function 'exporthtml_process'
+	  %42 = load %struct._IO_FILE** %htmlFile, align 8, !dbg !2076 # [0] 'fprintf' [line 991]
+    Taint History (1)
+      %6 = call %struct._IO_FILE* @fopen(i8* %5, i8* getelementptr inbounds ([3 x i8]* @.str14166, i32 0, i32 0)), !dbg !2057 [966] 
+ ## function fopen param: 0       ## TEST   %44 = call i8* @ctime_r(i64* %tt, i8* %43) #2, !dbg !2077
+       ## TEST +++++++++++++++++++[waint][tval] tainted value used in sink function 'exporthtml_process'
+	  %46 = load %struct._IO_FILE** %htmlFile, align 8, !dbg !2078 # [0] 'fprintf' [line 992]
+    Taint History (1)
+      %6 = call %struct._IO_FILE* @fopen(i8* %5, i8* getelementptr inbounds ([3 x i8]* @.str14166, i32 0, i32 0)), !dbg !2057 [966] 
+ ## function fopen param: 0[waint][tval] tainted value used in sink function 'exporthtml_process'
+	  %48 = load %struct._IO_FILE** %htmlFile, align 8, !dbg !2079 # [0] 'fprintf' [line 994]
+    Taint History (1)
+      %6 = call %struct._IO_FILE* @fopen(i8* %5, i8* getelementptr inbounds ([3 x i8]* @.str14166, i32 0, i32 0)), !dbg !2057 [966] 
+ ## function fopen param: 0[waint][tval] tainted value used in sink function 'exporthtml_process'
+	  %50 = load %struct._IO_FILE** %htmlFile, align 8, !dbg !2080 # [0] 'fprintf' [line 995]
+    Taint History (1)
+      %6 = call %struct._IO_FILE* @fopen(i8* %5, i8* getelementptr inbounds ([3 x i8]* @.str14166, i32 0, i32 0)), !dbg !2057 [966] 
+ ## function fopen param: 0       ## TEST   %26 = load i8** @exporthtml_process.title, align 8, !dbg !2068
+       ## TEST +++++++++++++++++++       ## TEST   %31 = call i8* @gettext(i8* getelementptr inbounds ([13 x i8]* @.str21173, i32 0, i32 0)) #2, !dbg !2071
+       ## TEST +++++++++++++++++++       ## TEST   %34 = load i8** %dsName, align 8, !dbg !2072
+       ## TEST +++++++++++++++++++       ## TEST   %44 = call i8* @ctime_r(i64* %tt, i8* %43) #2, !dbg !2077
+       ## TEST +++++++++++++++++++       ## TEST   %16 = load i8** %15, align 8, !dbg !2018
+       ## TEST +++++++++++++++++++       ## TEST   %21 = load i32* %20, align 4, !dbg !2019
+       ## TEST +++++++++++++++++++       ## TEST   %26 = load i8** %25, align 8, !dbg !2020
+       ## TEST +++++++++++++++++++       ## TEST   %31 = load i64* %30, align 8, !dbg !2021
+       ## TEST +++++++++++++++++++       ## TEST   %38 = select i1 %37, i8* getelementptr inbounds ([4 x i8]* @.str11, i32 0, i32 0), i8* getelementptr inbounds ([3 x i8]* @.str12, i32 0, i32 0), !dbg !2022
+       ## TEST +++++++++++++++++++       ## TEST   %45 = select i1 %44, i8* getelementptr inbounds ([4 x i8]* @.str11, i32 0, i32 0), i8* getelementptr inbounds ([3 x i8]* @.str12, i32 0, i32 0), !dbg !2023
+       ## TEST +++++++++++++++++++       ## TEST   %16 = load i8** %15, align 8, !dbg !2018
+       ## TEST +++++++++++++++++++       ## TEST   %21 = load i32* %20, align 4, !dbg !2019
+       ## TEST +++++++++++++++++++       ## TEST   %26 = load i8** %25, align 8, !dbg !2020
+       ## TEST +++++++++++++++++++       ## TEST   %31 = load i64* %30, align 8, !dbg !2021
+       ## TEST +++++++++++++++++++       ## TEST   %38 = select i1 %37, i8* getelementptr inbounds ([4 x i8]* @.str11, i32 0, i32 0), i8* getelementptr inbounds ([3 x i8]* @.str12, i32 0, i32 0), !dbg !2022
+       ## TEST +++++++++++++++++++       ## TEST   %45 = select i1 %44, i8* getelementptr inbounds ([4 x i8]* @.str11, i32 0, i32 0), i8* getelementptr inbounds ([3 x i8]* @.str12, i32 0, i32 0), !dbg !2023
+       ## TEST +++++++++++++++++++Summary Table Information ++++++++++++++
+Function addrcache_create
+Function addrcache_get_root_folder
+Function addrcache_get_list_folder
+Function addrcache_get_list_person
+Function addrcache_get_dirty
+Function addrcache_set_dirty
+Function addrcache_get_name
+Function addrcache_set_name
+Function addrcache_refresh
+Function addrcache_next_id
+Function addrcache_clear
+Function addrcache_free_all_folders
+Function addrcache_free_item_hash
+Function addrcache_free
+Function addrcache_check_file
+Function addrcache_mark_file
+Function addrcache_print
+Function addrcache_id_person
+Function addrcache_add_folder
+Function addrcache_id_group
+Function addrcache_id_folder
+Function addrcache_id_email
+Function addrcache_id_attribute
+Function addrcache_hash_add_person
+Function addritem_parse_first_last
+Function addritem_folder_path
+Function addritem_format_email
+Function qryreq_set_search_type
+Function qryreq_add_query
+Function qrymgr_add_request
+Function qrymgr_find_request
+Function qrymgr_delete_request
+Function qryreq_free
+Function qrymgr_initialize
+Function qrymgr_teardown
+Function qrymgr_free_all_request
+Function qryreq_clear
+Function get_default_xface
+Function get_content_for_any_face
+Function get_account_xface
+Function get_any_face_filename_for_account
+Function get_default_face
+Function get_account_face
+Function custom_header_get_str
+Function custom_header_read_str
+Function custom_header_find
+Function custom_header_free
+Function custom_header_is_allowed
+Function display_header_prop_get_str
+Function display_header_prop_read_str
+Function display_header_prop_free
+Function ertf_parser_new
+Function ertf_parser_destroy
+Function ertf_parse
+Function ertf_read_line
+Function ertf_parse_tag
+Function ertf_append_char
+Function ertf_get_parenthesis
+Function g_string_append_c_inline
+Function exporthtml_create
+Function exporthtml_build_entry
+Function exporthtml_free
+Function exporthtml_set_stylesheet
+Function exporthtml_set_name_format
+Function exporthtml_set_banding
+Function exporthtml_set_link_email
+Function exporthtml_set_attributes
+Function exporthtml_process
+Function exporthtml_fmt_header
+Function exporthtml_fmt_folder
+Function exporthtml_create_css_files
+Function exporthtml_parse_filespec
+Function exporthtml_test_dir
+Function exporthtml_create_dir
+Function exporthtml_get_create_msg
+Function exporthtml_load_settings
+Function exporthtml_default_values
+Function exporthtml_build_filespec
+Function exporthtml_save_settings
+Function exporthtml_create_css_dfl
+Function exporthtml_create_css_full
+Function exporthtml_fmt_folderhead
+    Parameter 1 is tainted
+Function exporthtml_fmt_person
+Function exporthtml_fmt_group
+Function exporthtml_sort_name
+Function exporthtml_compare_name
+Function exporthtml_fmt_email
+Function exporthtml_sort_email
+Function exporthtml_compare_email
+Function exporthtml_fmt_fullname
+Function exporthtml_fmt_attribs
+Function exporthtml_sort_attrib
+Function exporthtml_compare_attrib
+Function exporthtml_find_stylesheet
+Function exportldif_create
+Function exportldif_free
+Function exportldif_set_suffix
+Function exportldif_set_rdn
+Function exportldif_set_use_dn
+Function exportldif_set_exclude_email
+Function exportldif_process
+Function exportldif_fmt_folder
+Function exportldif_parse_filespec
+Function exportldif_test_dir
+Function exportldif_create_dir
+Function exportldif_get_create_msg
+Function exportldif_load_settings
+Function exportldif_default_values
+Function exportldif_build_filespec
+Function exportldif_save_settings
+Function exportldif_fmt_person
+Function exportldif_test_email
+Function addrcache_hash_add_group
+Function addrcache_hash_add_folder
+Function addrcache_folder_add_person
+Function addrcache_folder_add_folder
+Function addrcache_folder_add_group
+Function addrcache_add_person
+Function addrcache_person_add_email
+Function addrcache_hash_add_email
+Function addrcache_add_group
+Function addrcache_group_add_email
+Function addrharvest_free_table
+Function addrharvest_harvest
+Function addrcache_folder_move_person
+Function addrcache_folder_move_group
+Function addrcache_folder_move_folder
+Function addrcache_get_object
+Function addrcache_get_email
+Function addrcache_remove_group
+Function addrcache_remove_email
+Function addrcache_remove_person
+Function addrcache_allgrp_rem_email_vis
+Function addrcache_person_remove_email
+Function addrcache_get_group_for_person
+Function addrcache_get_grp_person_vis
+Function addrcache_get_all_persons
+Function addrcache_get_all_persons_vis
+Function addrcache_get_all_groups
+Function addrcache_get_all_groups_vis
+Function addrcache_remove_folder
+Function addrcache_remove_folder_delete
+Function addrcache_add_contact
+Function addrcache_add_new_folder
+Function addrcache_free_item_vis
+Function addrcache_next_cache_id
+Function addrharvest_create
+Function addrharvest_build_entry
+Function addrharvest_set_path
+Function addrharvest_set_folder_size
+Function addrharvest_set_recurse
+Function addrharvest_set_header
+Function addrharvest_find
+Function addrharvest_get_count
+Function addrharvest_free
+Function addritem_print_item_folder
+Function addritem_folder_get_person_list
+Function addritem_folder_get_group_list
+Function addrharvest_harvest_dir
+Function addrharvest_harvest_list
+Function addrharvest_check_header
+Function addrharvest_readfile
+Function addrharvest_get_header
+    Parameter 1 is tainted
+    Parameter 2 is tainted
+Function addrharvest_parse_address
+Function addrharvest_find_at
+Function addrharvest_find_address
+Function addrharvest_extract_address
+Function addrharvest_del_email
+Function addrharvest_insert_cache
+Function addrharvest_check_hdr
+Function addrharvest_free_table_vis
+Function addritem_create_item_email
+Function addritem_copy_item_email
+Function addritem_copyfull_item_email
+Function addritem_email_set_alias
+Function addritem_email_set_address
+Function addritem_email_set_remarks
+Function addritem_free_item_email
+Function addritem_create_attribute
+Function addritem_copy_attribute
+Function addritem_attrib_set_id
+Function addritem_attrib_set_name
+Function addritem_attrib_set_value
+Function addritem_free_attribute
+Function addritem_create_item_person
+Function addritem_copy_item_person
+Function addritem_person_set_picture
+Function addritem_person_get_picture
+Function addritem_person_set_first_name
+Function addritem_person_set_last_name
+Function addritem_person_set_nick_name
+Function addritem_person_set_common_name
+Function addritem_person_set_external_id
+Function addritem_person_set_opened
+Function addritem_free_list_email
+Function addritem_free_list_attribute
+Function addritem_free_item_person
+Function addritem_print_item_email
+Function addritem_print_item_person
+Function addritem_print_attribute
+Function addritem_person_add_email
+Function addritem_person_remove_email
+Function addritem_person_add_attribute
+Function addritem_person_remove_attribute
+Function addritem_create_item_group
+Function addritem_copy_item_group
+Function addritem_group_set_name
+Function addritem_free_item_group
+Function addritem_group_add_email
+Function addritem_folder_remove_person
+Function addritem_print_item_group
+Function addritem_create_item_folder
+Function addritem_copy_item_folder
+Function addritem_folder_set_name
+Function addritem_folder_set_remarks
+Function addritem_folder_set_hidden
+Function addritem_free_item_folder
+Function addritem_folder_add_person
+Function addritem_folder_add_folder
+Function addritem_folder_add_group
+Function ldif_field_compare
+Function ldif_get_line
+Function ldif_hash_add_list
+Function ldif_get_tagname
+Function ldif_create_fieldrec
+Function exportldif_find_dn
+Function exportldif_fmt_dn
+Function exportldif_find_displayName
+Function exportldif_fmt_email
+Function exportldif_fmt_other_attributes
+Function exportldif_fmt_value
+Function sc_html_parser_new
+Function sc_html_parser_destroy
+Function sc_html_parse
+Function sc_html_read_line
+Function sc_html_parse_tag
+Function sc_html_parse_special
+Function sc_html_append_char
+Function sc_html_append_str
+Function g_string_append_c_inline394
+Function sc_html_get_parenthesis
+Function sc_html_get_tag
+Function decode_href
+Function sc_html_free_tag
+Function ldif_create
+Function ldif_set_file
+Function ldif_set_accessed
+Function ldif_field_set_name
+Function ldif_field_set_selected
+Function ldif_field_toggle
+Function ldif_free
+Function ldif_hash_free_vis
+Function ldif_import_data
+Function ldif_open_file
+Function ldif_read_file
+Function ldif_close_file
+Function ldif_read_tags
+Function ldif_read_tag_list
+Function ldif_get_fieldlist
+Function ldif_hash2list_vis
+Function ldif_write_value
+    Parameter 1 is tainted
+    Parameter 2 is tainted
+Function ldif_write_eor
+Function ldif_clear_rec
+Function ldif_add_value
+Function ldif_build_items
+Function ldif_get_tagvalue
+Function ldif_add_user_attr
+Function ldif_free_fieldrec
+Function mutt_create
+Function mutt_set_file
+Function mutt_free
+Function mutt_free_table_vis
+Function mutt_import_data
+Function mutt_open_file
+Function mutt_read_file
+Function mutt_close_file
+Function mutt_find_file
+Function mutt_get_line
+Function mutt_build_items
+Function mutt_parse_rcplist
+Function mutt_build_address
+Function mutt_insert_table
+Function mutt_free_rec
+Function pine_create
+Function pine_set_file
+Function pine_free
+Function pine_free_table_vis
+Function pine_import_data
+Function pine_open_file
+Function pine_read_file
+Function pine_close_file
+Function pine_find_file
+Function pine_read_line
+Function pine_build_items
+Function pine_parse_record
+Function pine_clean_name
+Function pine_parse_address
+Function pine_insert_table
+Function pine_free_rec
+Function pine_parse_name
+Function recv_set_ui_func
+Function unmime_header
+Function vcard_create
+Function vcard_set_name
+Function vcard_set_file
+Function vcard_set_accessed
+Function vcard_get_modified
+Function vcard_get_accessed
+Function vcard_get_read_flag
+Function vcard_get_status
+Function vcard_get_root_folder
+Function vcard_get_name
+Function vcard_free
+Function vcard_read_data
+Function vcard_open_file
+    Parameter 1 is tainted
+Function vcard_read_file
+Function vcard_close_file
+Function vcard_get_list_person
+Function vcard_get_list_folder
+Function vcard_get_all_persons
+Function vcard_find_gnomecard
+Function vcard_test_read_file
+Function vcard_create_path
+Function vcard_get_line
+Function vcard_get_tagname
+Function vcard_get_tagvalue
+Function vcard_read_qp
+Function vcard_unescape_qp
+Function vcard_read_line
+    Parameter 1 is tainted
+Function vcard_free_lists
+Function vcard_build_items
 ===-------------------------------------------------------------------------===
                           ... Statistics Collected ...
 ===-------------------------------------------------------------------------===
@@ -288,11 +1262,11 @@ No main function exists
  2169 waint     - Number of context-sensitive analysis calls
   219 waint     - Number of emited warnings
   163 waint     - Number of found format string vulnerabilities
-  568 waint     - Number of found issues
-  405 waint     - Number of found tainted value usage
+  566 waint     - Number of found issues
+  403 waint     - Number of found tainted value usage
   331 waint     - Number of functions found in the module
 
 
-real	0m10.983s
-user	0m10.609s
-sys	0m0.360s
+real	0m8.961s
+user	0m8.685s
+sys	0m0.256s

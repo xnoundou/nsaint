@@ -1,10 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int compute(int *);
-int odd(int);
-int even(int);
-int main();
+//int compute(int *);
+//int odd(int);
+//int even(int);
+//int main();
 
 int compute(int *x)
 {
@@ -43,8 +43,9 @@ int main()
   char *d = malloc(sizeof(char)*25);
   atof(str);
   free(d);
-  printf("Enter an integer now: ");
-  scanf("%d", &x);
+  //printf("Enter an integer now: ");
+  printf("Wow: %d%%f", 4, 4.5);
+  scanf("%%d", &x);
   b1 = even(x);
   b2 = odd(3);
   y = compute(&x);

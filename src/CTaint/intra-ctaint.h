@@ -73,27 +73,23 @@ void CTaintIntraProcedural::handleFormals() {
 	Function *F = 0;
 	Value *aUse = 0;
 
-	for(vector<Function *>::iterator pf = _allProcs->begin(), Epf = _allProcs->end();
-			pf != Epf; ++pf) {
+	for(vector<Function *>::iterator pf = _allProcs->begin(), Epf = _allProcs->end(); pf != Epf; ++pf) {
 		F = *pf;
 		Instruction &I = F->back().back();
-		//ReturnInst *retInst = dyn_cast<ReturnInst>(&I);
-		//errs() << "## What? "; I.print(errs()); errs() << "\n";
-		//assert(retInst && "Expecting a return instruction here!");
 
 		for(Function::arg_iterator pa = F->arg_begin(), Epa = F->arg_end(); pa != Epa; ++pa) {
-			Argument &A = *pa;
+			Argument &aFormal = *pa;
 
-			//errs() << "Analyzing formal parameter " << A.getName()
-						   //<< " of function " << F->getName() << "\n";
+			DEBUG_WITH_TYPE("waint-summary", errs() << "Analyzing formal parameter "
+								<< aFormal.getName() << " of function " << F->getName() << "\n");
 
 			//Check if any use of the formal parameter is tainted
-			for(Value::use_iterator pu = A.use_begin(), Epu = A.use_end(); pu!=Epu; ++pu) {
+			for(Value::use_iterator pu = aFormal.use_begin(), Epu = aFormal.use_end(); pu!=Epu; ++pu) {
 				aUse = *pu;
-				//TODO: Check this is valid in the case I is not the return instruction
-				//if (_analysis->isValueTainted(retInst, aUse)) {
 				if (_analysis->isValueTainted(&I, aUse)) {
-					//errs() << "\tis tainted from: "; aUse->print(errs()); errs() << "\n";
+					DEBUG_WITH_TYPE("waint-summary", errs() << "\tis tainted from: ";
+									aUse->print(errs()); errs() << "\n");
+					_analysis->setProcArgTaint(F, aFormal.getArgNo(), true);
 				}
 			}
 		}
