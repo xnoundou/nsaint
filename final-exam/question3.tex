@@ -1,0 +1,83 @@
+\section*{Question 3: Paper Summary of \cite{Pradel:2013:ATS}}
+
+\newcommand{\mysub}{substitutability}
+\newcommand{\mySub}{Substitutability}
+
+\paragraph{Key Ideas.}
+The paper addresses the problem of \textit{\mysub} in 
+object-oriented programming languages. \textit{\mySub} is relevant
+for languages featuring \textit{polymorphism} and \textit{inheritance}.
+The \mysub{} principle stipulates that a subclass of an upper
+class shall be safely used whenever it is accessed from a
+pointer that has the type of the upper class. That is, it is
+semantically safe to use a subclass instance everywhere an
+upper class instance could be used.
+
+The authors present a testing technique that helps checking
+that code preserves the \mysub{} principle. Their technique
+can be used for both sequential and concurrent programs.
+Given a class \textit{Super} and its subclass \textit{Sub}, the
+presented analysis generates test cases that can test both
+\textit{Super} and \textit{Sub} instances. Then, the analysis
+uses \textit{Super}'s behavior as an oracle for \textit{Sub}.
+The analysis reports a warning whenever \textit{Sub} behaves
+differently from \textit{Super}. The analysis comes in two
+flavors: it can report any observed divergence between \textit{Super}
+and \textit{Sub} or can report only cases when the divergence 
+leads to a crash of the application.
+
+The generated tests consist in a sequence of method calls,
+specified by their name, their input parameter, and their
+output variable if any. The tests are randomly created by
+a test generator that can produce both sequential and
+concurrent tests. The authors use the Java Pathfinder
+model checker to explore all interleavings when running
+tests to find unsafe \mysub{} in concurrent programs.
+
+\paragraph{Two Strengths of the paper.}
+\begin{enumerate}
+\item The paper addresses the important problem of \mysub{} and
+gives specific and precise tools to identify \mysub{} problems
+in real code. Their technique also finds \mysub{} problems
+that might occur during concurrent execution.
+
+\item The paper provides a specific method to distinguish
+between \textit{crashing substitute} and \textit{output diverging
+substitute}. This might reduce false positives, and help developers
+under time pressure to focus on more severe problems.
+\end{enumerate}
+
+\paragraph{Two Weaknesses of the paper.}
+\begin{enumerate}
+\item The technique misses cases where undesired behaviors
+might come from the upper class because it uses the super class'
+behavior as test oracle.
+
+For instance in Question 2, the upper class \texttt{A} throws
+an exception when a call to method \texttt{add} is made. On the
+other hand, the behavior of \texttt{A}'s subclass \texttt{B}
+is correct since it does not throw an exception after a call
+to \texttt{add} (adding an element to the array \texttt{data}).
+
+\item The paper does not have an example showing a test generation,
+including input parameters of their method. 
+it does not also show an example where class fields are the source
+of a divergent behavior.
+This might make it difficult for the reader to evaluate the correctness
+of their approach just by reading the paper. The reader might have
+to manually generates the tests, and run the
+\textit{Superclass oracle} himself.
+
+\end{enumerate}
+
+\paragraph{Our opinion.}
+The respect of \mysub{} is important for building correct
+object-oriented systems. The technique presented by the paper
+is therefore very useful to check semantic consistency of
+object-oriented software.
+
+Also, the handling of concurrency is very relevant and of great
+importance given the current ubiquitousness of multi-core
+architectures.
+
+We would recommend this paper for publication.

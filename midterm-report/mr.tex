@@ -1,0 +1,126 @@
+\documentclass[10pt]{article}
+\usepackage[pdftex]{graphicx}
+\usepackage{url}
+\usepackage{listings}
+\usepackage{pgf}
+\usepackage{hyperref}
+\usepackage{verbatim}
+\usepackage{paralist}
+\usepackage{color}
+
+%For plots
+\usepackage{pgfplots}
+
+%\usepackage{algpseudocode} %for using the algorithmicx package
+
+\usepackage[lined,boxed,resetcount,longend]{algorithm2e}
+
+\usepackage{proof}
+\usepackage{amsmath,amsthm,amssymb}
+
+\newcommand\amp{\mathop{\&}}
+
+\newcommand\pimp{\mathop{\supset}}
+\newcommand\pand{\mathop{\wedge}}
+\newcommand\por{\mathop{\vee}}
+\newcommand\ptrue{\top}
+\newcommand\pfalse{\bot}
+\newcommand\peq{\Leftrightarrow}
+
+\newcommand\true{\;\textit{true}}
+\newcommand\ddd{\raisebox{0.2em}[1.3em]{$\vdots$}}
+\newcommand\com{\raisebox{0.3em}{$\ ,\ \ $}}
+\newcommand\hyp[2]{\infer[#1]{#2}{}}
+
+\newcommand{\DD}{\mathcal{D}}
+\newcommand{\EE}{\mathcal{E}}
+\newcommand{\FF}{\mathcal{F}}
+
+\newcommand{\COPY}{\text{\textbf{[COPY]}}}
+\newcommand{\LOAD}{\text{\textbf{[LOAD]}}}
+\newcommand{\ADDROF}{\text{\textbf{[ADDROF]}}}
+\newcommand{\STORE}{\text{\textbf{[STORE]}}}
+\newcommand{\CALL}{\text{\textbf{[CALL]}}}
+
+\newcommand{\set}[1]{\{#1\}}
+
+\newcommand{\pointsto}[2]{\mathcal{P}_{[#1]}(#2)}
+
+%for algorithm2e -within figure
+\renewcommand\topfraction{0.85}
+\renewcommand\bottomfraction{0.85}
+\renewcommand\textfraction{0.1}
+\renewcommand\floatpagefraction{0.85}
+
+\newcommand{\myvar}[1]{\texttt{\$#1}}
+
+\newcommand{\EmbedCode}[3]{
+	\lstset{language=#1}
+	\lstset{backgroundcolor=\color{white},rulecolor=}
+	\lstset{linewidth=\textwidth}
+	\lstset{commentstyle=\textit, stringstyle=\upshape,showspaces=false}
+	\lstset{frame=shadowbox,
+			showstringspaces=false,
+			numbers=#3,
+			numberblanklines=false}
+	\lstinputlisting[]{#2} 
+}
+
+\newcommand{\main}{\texttt{main}}
+\newcommand{\even}{\texttt{even}}
+\newcommand{\odd}{\texttt{odd}}
+\newcommand{\compute}{\texttt{compute}}
+
+\topmargin -0.1pt
+\advance \topmargin by -\headheight
+\advance \topmargin by -\headsep
+\textheight 9.2in
+\oddsidemargin -0.1pt
+\evensidemargin \oddsidemargin
+\marginparwidth 1in
+\textwidth 6.3in
+
+\parindent 0in
+\parskip 1.5ex
+
+\title{Static Analysis for Software Engineering\\
+		Midterm Report \\
+		Project: Static Taint Analysis for C}
+\author{Xavier Noumbissi}
+\date{}
+
+\lstset{ %
+language=c,
+basicstyle=\scriptsize,commentstyle=\scriptsize\itshape,showstringspaces=false,breaklines=true}
+
+
+\begin{document}
+\maketitle
+
+\section{Introduction}
+
+We proposed to develop a static taint analysis in our
+project proposal.
+This paper presents the design of our taint analysis.
+We first present a motivating example in Section~\ref{example},
+then explain in Section~\ref{sec:sampleSummary} how our analysis
+would perform on the example. We finally give a detailed
+description of our analysis in Section~\ref{analysis}.
+
+\input{mr-example}
+
+\input{mr-approach}
+
+\bibliographystyle{plain}
+\bibliography{mr}
+
+\end{document}
+
+
+
+
+
+
+
+
+

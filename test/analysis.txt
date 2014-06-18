@@ -1,0 +1,76 @@
+1- Problem
+We want to find out which program locations
+potentially use tainted data.
+
+For that, we compute at each program point the
+set of tainted variables used in the previous
+statements.
+
+2- This is a forward flow analysis
+
+3- Dataflow set
+The set of pairs (v_t, Sv) such that v_t is
+a tainted variable, and was used in the statement
+set Sv = {s_1, s_2, ..., s_n}. That is, each
+statement s_n in Sv, used the tainted variable v_t
+
+4- Merge: union. This is a may-analaysis
+
+5- Transfer functions
+
+ASSIGN
+{ (rv, Sv) }
+  (assign) lv := rv
+{ (rv, Sv U {assign}), (lv, {assign} }
+
+
+###########################################################
+
+Goal: Find which globals and which formal parameters get
+tainted in a procedure.
+
+tainted, untainted, input
+
+INPUT: Procedure f
+
+OUTPUT: Integ
+
+WORKLIST: List of Stmts
+
+SUMMARY: Set of integers
+
+WORKLIST := {first stmt}
+
+SUMMARY := {}
+
+while (WORKLIST != EMPTY) {
+  next = WORKLIST.removeNext()
+  switch (next) {
+    case TAINT: if (tainted local is formal f_i) then
+		  SUMMARY U= i
+		else if (tainted local is global g_j) then
+		  SUMMARY U= j
+		else
+    default: break
+  }
+  WORKLIST U= sucessors(next)
+}
+
+
+
+File envtest.c
+--------------
+
+Variable 'unclean' becomes a tainted at 'Point 0'
+since it is initialized with the result from 
+function 'getenv'.
+
+Variable 'unclean' is passed tainted as argument
+'s' to function 'f1' at 'Point 3'.
+
+Parameter 's' in function 'f1' is passed tainted
+to function 'f2' at 'Point 3'.
+
+Parameter 's' in function 'f3' is returned tainted
+at 'Point 1' to function 'f2'.
+

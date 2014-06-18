@@ -1,0 +1,117 @@
++ make -f Makefile.ctaint compile
++ BOOST_LIB=/home/noundou/tools/boost/stage/lib
+++ /home/noundou/tools/llvm-3.3.src/build/Release+Asserts/bin/opt -stats -load /home/noundou/tools/llvm-3.3.src/build/Release+Asserts/lib/LLVMDataStructure.so -load /home/noundou/tools/boost/stage/lib/libboost_regex.so -load /home/noundou/tools/llvm-3.3.src/build/Release+Asserts/lib/CTaint.so -debug -debug-only=waint-warnings -calltarget-eqtd -waint -time-passes
+module identifier is <stdin>
+## Starting intraprocedural analysis
+## Starting context-insensitive interprocedural analysis
+## Starting interprocedural analysis
+No main function exists
+## Starting format string checking pass
+[waint][tval] In 'mg_modify_passwords_file', tainted value used in sink function 'snprintf' [line 2536]
+                    i64 4096                    Taint History (2)
+                      call void @convert_uri_to_file_name(%struct.mg_connection* %40, i8* %41, i64 4096, %struct.file* %file), !dbg !628 [4442] 
+                    From function convert_uri_to_file_name                    : parameter 1 is tainted
+                      call void @mg_url_encode(i8* %90, i8* %91, i64 4096), !dbg !643 [2660] 
+                    From function mg_url_encode                    : parameter 1 is tainted
+[waint][tval] In 'mg_upload', tainted value used in sink function 'snprintf' [line 4358]
+                    i64 4096                    Taint History (2)
+                      call void @convert_uri_to_file_name(%struct.mg_connection* %40, i8* %41, i64 4096, %struct.file* %file), !dbg !628 [4442] 
+                    From function convert_uri_to_file_name                    : parameter 1 is tainted
+                      call void @mg_url_encode(i8* %90, i8* %91, i64 4096), !dbg !643 [2660] 
+                    From function mg_url_encode                    : parameter 1 is tainted
+[waint][tval] In 'cry', tainted value used in sink function 'vsnprintf' [line 631]
+                    i64 8192                    Taint History (2)
+                      %6 = call i32 @parse_auth_header(%struct.mg_connection* %4, i8* %5, i64 8192, %struct.ah* %ah), !dbg !638 [2446] 
+                    From function parse_auth_header                    : parameter 1 is tainted
+                      %22 = call i32 (%struct.mg_connection*, i8*, i64, i8*, ...)* @mg_snprintf(%struct.mg_connection* %18, i8* %19, i64 8192, i8* getelementptr inbounds ([13 x i8]* @.str309, i32 0, i32 0), i32 %20, i8* %21), !dbg !583 [963] 
+                    From function mg_snprintf                    : parameter 1 is tainted
+[waint][tval] In 'cry', tainted value used in sink function 'fputc' [line 656]
+                      %86 = load %struct._IO_FILE** %fp, align 8, !dbg !647                     [Parameter #2] of 'fputc' gets tainted
+                    Taint History (1)
+                      %50 = call %struct._IO_FILE* @fopen(i8* %49, i8* getelementptr inbounds ([3 x i8]* @.str7, i32 0, i32 0)), !dbg !635 [640] 
+[waint][fmtvul]  Argument at position 3 of function 'vsnprintf' shall be a format string [line 1642] 
+                    # Not =>   %9 = load i8** %3, align 8, !dbg !577
+[waint][fmtvul]  Argument at position 3 of function 'vsnprintf' shall be a format string [line 1650] 
+                    # Not =>   %35 = load i8** %3, align 8, !dbg !585
+[waint][tval] In 'log_access', tainted value used in sink function 'fputc' [line 4685]
+                      %86 = load %struct._IO_FILE** %fp, align 8, !dbg !622                     [Parameter #2] of 'fputc' gets tainted
+                    Taint History (1)
+                      %17 = call %struct._IO_FILE* @fopen(i8* %16, i8* getelementptr inbounds ([3 x i8]* @.str7, i32 0, i32 0)), !dbg !611 [4666] 
+[waint][tval] In 'convert_uri_to_file_name', tainted value used in sink function 'snprintf' [line 1841]
+                    i64 4096                    Taint History (2)
+                      call void @convert_uri_to_file_name(%struct.mg_connection* %40, i8* %41, i64 4096, %struct.file* %file), !dbg !628 [4442] 
+                    From function convert_uri_to_file_name                    : parameter 1 is tainted
+                      call void @mg_url_encode(i8* %90, i8* %91, i64 4096), !dbg !643 [2660] 
+                    From function mg_url_encode                    : parameter 1 is tainted
+	 has initializer at line 2922 : "%lx.%ld"
+[waint][fmtvul]  Argument at position 3 of function 'vsnprintf' shall be a format string [line 748] 
+                    # Not =>   %13 = load i8** %5, align 8, !dbg !571
+===-------------------------------------------------------------------------===
+                          ... Statistics Collected ...
+===-------------------------------------------------------------------------===
+
+  317           - Number of call nodes merged
+   90           - Number of calls filtered
+ 1757           - Number of direct calls
+   61           - Number of globals trivially removed
+   40           - Number of indirect calls
+22367           - Number of nodes allocated
+  875           - Number of nodes completely folded
+   75           - Number of nodes folded in std lib
+ 2460           - Number of nodes removed by reachability
+ 1447           - Number of nodes trivially removed
+    5 dsa-bu    - Maximum SCC Size in Call Graph
+ 2948 dsa-bu    - Number of 'actual' call edges
+    6 dsa-bu    - Number of DSGraph recalculations
+ 1016 dsa-bu    - Number of calls we know nothing about
+ 1657 dsa-bu    - Number of graphs inlined
+   24 dsa-bu    - Number of resolved IndCalls
+ 1016 dsa-bu    - Number of unresolved IndCalls
+  943 dsa-local - Number of direct calls added
+   40 dsa-local - Number of indirect calls added
+  814 dsa-local - Number of intrinsics called
+    4 dsa-local - Number of inttoptr used only in cmp
+  866 td_dsa    - Number of graphs inlined
+ 6708 waint     - Number of context-sensitive analysis calls
+    9 waint     - Number of emited warnings
+    7 waint     - Number of found format string vulnerabilities
+   13 waint     - Number of found issues
+    6 waint     - Number of found tainted value usage
+  155 waint     - Number of functions found in the module
+
+===-------------------------------------------------------------------------===
+                      ... Pass execution timing report ...
+===-------------------------------------------------------------------------===
+  Total Execution Time: 117.0513 seconds (117.1614 wall clock)
+
+   ---User Time---   --System Time--   --User+System--   ---Wall Time---  --- Name ---
+  116.1033 ( 99.9%)   0.8601 ( 99.1%)  116.9633 ( 99.9%)  117.0689 ( 99.9%)  CTaint Module Pass
+   0.0120 (  0.0%)   0.0040 (  0.5%)   0.0160 (  0.0%)   0.0180 (  0.0%)  Bottom-up Data Structure Analysis
+   0.0120 (  0.0%)   0.0040 (  0.5%)   0.0160 (  0.0%)   0.0162 (  0.0%)  Equivalence-class Bottom-up Data Structure Analysis
+   0.0160 (  0.0%)   0.0000 (  0.0%)   0.0160 (  0.0%)   0.0149 (  0.0%)  EQ Top-down Data Structure Analysis
+   0.0160 (  0.0%)   0.0000 (  0.0%)   0.0160 (  0.0%)   0.0128 (  0.0%)  'Complete' Bottom-up Data Structure Analysis
+   0.0080 (  0.0%)   0.0000 (  0.0%)   0.0080 (  0.0%)   0.0101 (  0.0%)  Local Data Structure Analysis
+   0.0080 (  0.0%)   0.0000 (  0.0%)   0.0080 (  0.0%)   0.0087 (  0.0%)  Bitcode Writer
+   0.0040 (  0.0%)   0.0000 (  0.0%)   0.0040 (  0.0%)   0.0044 (  0.0%)  Standard Library Local Data Structure Analysis
+   0.0000 (  0.0%)   0.0000 (  0.0%)   0.0000 (  0.0%)   0.0027 (  0.0%)  Basic CallGraph Construction
+   0.0000 (  0.0%)   0.0000 (  0.0%)   0.0000 (  0.0%)   0.0026 (  0.0%)  Module Verifier
+   0.0040 (  0.0%)   0.0000 (  0.0%)   0.0040 (  0.0%)   0.0011 (  0.0%)  Dominator Tree Construction
+   0.0000 (  0.0%)   0.0000 (  0.0%)   0.0000 (  0.0%)   0.0009 (  0.0%)  Find Call Targets (uses DSA-EQTD)
+   0.0000 (  0.0%)   0.0000 (  0.0%)   0.0000 (  0.0%)   0.0001 (  0.0%)  Preliminary module verification
+   0.0000 (  0.0%)   0.0000 (  0.0%)   0.0000 (  0.0%)   0.0000 (  0.0%)  Identify Address Taken Functions
+   0.0000 (  0.0%)   0.0000 (  0.0%)   0.0000 (  0.0%)   0.0000 (  0.0%)  Allocator Identification Analysis (find malloc/free wrappers)
+  116.1833 (100.0%)   0.8681 (100.0%)  117.0513 (100.0%)  117.1614 (100.0%)  Total
+
+===-------------------------------------------------------------------------===
+                                LLVM IR Parsing
+===-------------------------------------------------------------------------===
+  Total Execution Time: 0.0200 seconds (0.0176 wall clock)
+
+   ---User Time---   --User+System--   ---Wall Time---  --- Name ---
+   0.0200 (100.0%)   0.0200 (100.0%)   0.0176 (100.0%)  Parse IR
+   0.0200 (100.0%)   0.0200 (100.0%)   0.0176 (100.0%)  Total
+
+
+real	2m0.403s
+user	1m59.267s
+sys	0m1.008s

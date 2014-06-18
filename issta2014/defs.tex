@@ -1,0 +1,72 @@
+
+\usepackage{amsmath}
+\usepackage{verbatim}
+%\usepackage[pdftex]{graphicx}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\hypersetup{
+  filebordercolor=white,
+  urlbordercolor=white %Remove boxes around link for url
+  }
+  
+\usepackage{paralist}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{xspace}
+\usepackage{url}
+\usepackage{listings}
+\usepackage{color}
+\usepackage[lined,resetcount]{algorithm2e}
+\usepackage{proof}
+\usepackage{relsize}
+\usepackage{appendix}
+\usepackage{tabularx}
+\usepackage[justification=centering]{caption}
+
+\newcommand{\EmbedCode}[3]{
+	\lstset{language=#1, frame=none, backgroundcolor=\color{white},
+			rulecolor=, xleftmargin=5.0ex}
+	%\lstset{linewidth=\columnwidth}
+	\lstset{commentstyle=\textit, stringstyle=\upshape,showspaces=false}
+	\lstset{frame=none, showstringspaces=false, numbers=#3,
+			numberblanklines=false}
+	\lstinputlisting[]{#2} 
+}
+
+\newcommand{\set}[1]{\{#1\}}
+
+\newcommand{\main}{\texttt{main}\xspace}
+\newcommand{\even}{\texttt{even}\xspace}
+\newcommand{\odd}{\texttt{odd}\xspace}
+\newcommand{\compute}{\texttt{compute}\xspace}
+
+\newcommand{\Aset}{\mathcal{A}\xspace}
+\newcommand{\Pset}{\mathcal{T}\xspace}
+
+\newcommand{\mathbold}[1]{\text{\textbf{#1}}}
+
+\newcommand{\copydef}{\mathbold{COPY}\ [p = q]\xspace}
+\newcommand{\loaddef}{\mathbold{LOAD}\ [p = *q]\xspace}
+\newcommand{\addrofdef}{\mathbold{ADDROF}\ [p = \&a]\xspace}
+\newcommand{\storedef}{\mathbold{STORE}\ [*p = q]\xspace}
+\newcommand{\sourcedef}{\mathbold{SOURCE}\ [r = \text{call}\ \text{source}(f_0, f_1, ..., f_n)]\xspace}
+\newcommand{\calldef}{\mathbold{CALL}\ [r = \text{call}\ \text{func}(a_0, a_1, ..., a_n)]}
+\newcommand{\callinsdef}{\mathbold{CALL-INS}\ [r = \text{call}\ \text{func}(a_0, a_1, ..., a_n)]}
+\newcommand{\sinkdef}{\mathbold{SINK}\ [r = \text{call}\ \text{sink}]}
+
+\newcommand{\ALLOC}{\text{\textbf{[ALLOC]}}\xspace}
+\newcommand{\COPY}{\text{\textbf{[COPY]}}\xspace}
+\newcommand{\LOAD}{\text{\textbf{[LOAD]}}\xspace}
+\newcommand{\ADDROF}{\text{\textbf{[ADDROF]}}\xspace}
+\newcommand{\STORE}{\text{\textbf{[STORE]}}\xspace}
+\newcommand{\CALL}{\text{\textbf{[CALL]}}\xspace}
+\newcommand{\SOURCE}{\text{\textbf{[SOURCE]}}\xspace}
+
+\newcommand{\alloct}{\texttt{ALLOC}\xspace}
+\newcommand{\copyt}{\texttt{COPY}\xspace}
+\newcommand{\loadt}{\texttt{LOAD}\xspace}
+\newcommand{\storet}{\texttt{STORE}\xspace}
+\newcommand{\callt}{\texttt{CALL}\xspace}
+
+\newcommand{\DSA}{\texttt{DSA}\xspace}
+\newcommand{\waint}{\textsc{Waint}\xspace}

@@ -1,0 +1,40 @@
+
+LLVM_BUILD=/home/noundou/tools/llvm-3.3.src/build
+
+LLVM_INC=-I. -I${LLVM_HOME}/include \
+	 -I/home/noundou/tools/poolalloc/include
+
+MACROS=-D __STDC_LIMIT_MACROS \
+       -D__STDC_CONSTANT_MACROS
+
+CTAINT=${LLVM_HOME}/lib/Analysis/CTaint
+
+CTAINT_BUILD=${LLVM_BUILD}/lib/Analysis/CTaint/Release+Asserts
+
+SRC=${CTAINT}/CTaintAnalysis.cpp
+
+OBJ=${CTAINT_BUILD}/CTaintAnalysis.o
+
+all: compile
+
+
+#echo "MYFILE: ${MYFILE}"
+#echo "AFILE: ${AFILE}"
+
+#${OBJ}: ${SRC}
+
+compile: ${OBJ} 
+	make -C ${LLVM_BUILD} ${LLVM_INC} > /dev/null
+
+clean:
+	make -C ${LLVM_BUILD} clean
+
+bc:
+	clang -emit-llvm ${MYFILE}.c -c -o ${MYFILE}.bc
+
+opt: compile
+	opt -load $(LLVM_LIB)/CTaint.so $(PASSARG) < tests/test.bc > /dev/null
+
+ir:
+	clang ${MACROS} ${LLVM_INC} -S -emit-llvm ${MYFILE}
+

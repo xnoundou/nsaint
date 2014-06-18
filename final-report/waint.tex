@@ -1,0 +1,172 @@
+%-----------------------------------------------------------------------------
+%
+%               Template for sigplanconf LaTeX Class
+%
+% Name:         sigplanconf-template.tex
+%
+% Purpose:      A template for sigplanconf.cls, which is a LaTeX 2e class
+%               file for SIGPLAN conference proceedings.
+%
+% Author:       Paul C. Anagnostopoulos
+%               Windfall Software
+%               978 371-2316
+%               paul@windfall.com
+%
+% Created:      15 February 2005
+%
+%-----------------------------------------------------------------------------
+
+
+\documentclass{sigplanconf}
+
+% The following \documentclass options may be useful:
+%
+% 10pt          To set in 10-point type instead of 9-point.
+% 11pt          To set in 11-point type instead of 9-point.
+% authoryear    To obtain author/year citation style instead of numeric.
+
+\usepackage{amsmath}
+\usepackage{verbatim}
+\usepackage[pdftex]{graphicx}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\hypersetup{
+  filebordercolor=white,
+  urlbordercolor=white %Remove boxes around link for url
+  }
+  
+\usepackage{paralist}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{xspace}
+\usepackage{url}
+\usepackage{listings}
+\usepackage{color}
+\usepackage[lined,resetcount]{algorithm2e}
+\usepackage{proof}
+\usepackage{relsize}
+\usepackage{appendix}
+\usepackage{tabularx,caption}
+
+\newcommand{\set}[1]{\{#1\}}
+
+\newcommand{\EmbedCode}[3]{
+	\lstset{language=#1, frame=none, backgroundcolor=\color{white},
+			rulecolor=, xleftmargin=5.0ex}
+	%\lstset{linewidth=\columnwidth}
+	\lstset{commentstyle=\textit, stringstyle=\upshape,showspaces=false}
+	\lstset{frame=none, showstringspaces=false, numbers=#3,
+			numberblanklines=false}
+	\lstinputlisting[]{#2} 
+}
+
+\newcommand{\main}{\texttt{main}\xspace}
+\newcommand{\even}{\texttt{even}\xspace}
+\newcommand{\odd}{\texttt{odd}\xspace}
+\newcommand{\compute}{\texttt{compute}\xspace}
+
+\newcommand{\lothak}{Lhot\'{a}k}
+
+
+\newcommand{\Aset}{\mathcal{A}\xspace}
+\newcommand{\Pset}{\mathcal{T}\xspace}
+
+\newcommand{\mathbold}[1]{\text{\textbf{#1}}}
+
+\newcommand{\copydef}{\mathbold{COPY}\ [p = q]\xspace}
+\newcommand{\loaddef}{\mathbold{LOAD}\ [p = *q]\xspace}
+\newcommand{\addrofdef}{\mathbold{ADDROF}\ [p = \&a]\xspace}
+\newcommand{\storedef}{\mathbold{STORE}\ [*p = q]\xspace}
+\newcommand{\sourcedef}{\mathbold{SOURCE}\ [r = \text{call}\ \text{source}(f_0, f_1, ..., f_n)]\xspace}
+\newcommand{\calldef}{\mathbold{CALL}\ [r = \text{call}\ \text{func}(a_0, a_1, ..., a_n)]}
+\newcommand{\callinsdef}{\mathbold{CALL-INS}\ [r = \text{call}\ \text{func}(a_0, a_1, ..., a_n)]}
+\newcommand{\sinkdef}{\mathbold{SINK}\ [r = \text{call}\ \text{sink}]}
+
+\newcommand{\ALLOC}{\text{\textbf{[ALLOC]}}\xspace}
+\newcommand{\COPY}{\text{\textbf{[COPY]}}\xspace}
+\newcommand{\LOAD}{\text{\textbf{[LOAD]}}\xspace}
+\newcommand{\ADDROF}{\text{\textbf{[ADDROF]}}\xspace}
+\newcommand{\STORE}{\text{\textbf{[STORE]}}\xspace}
+\newcommand{\CALL}{\text{\textbf{[CALL]}}\xspace}
+\newcommand{\SOURCE}{\text{\textbf{[SOURCE]}}\xspace}
+
+\newcommand{\alloct}{\texttt{ALLOC}\xspace}
+\newcommand{\copyt}{\texttt{COPY}\xspace}
+\newcommand{\loadt}{\texttt{LOAD}\xspace}
+\newcommand{\storet}{\texttt{STORE}\xspace}
+\newcommand{\callt}{\texttt{CALL}\xspace}
+
+\newcommand{\DSA}{\texttt{DSA}\xspace}
+\newcommand{\waint}{\textsc{Waint}\xspace}
+
+\begin{document}
+
+%\conferenceinfo{WXYZ '05}{date, City.} 
+%\copyrightyear{2005} 
+%\copyrightdata{[to be supplied]} 
+
+%\titlebanner{banner above paper title}        % These are ignored unless
+%\preprintfooter{short description of paper}   % 'preprint' option specified.
+
+\title{Context-Sensitive Staged Static Taint Analysis for C with LLVM}
+%\subtitle{Subtitle Text, if any}
+
+\date{}
+
+\authorinfo{Xavier N. Noumbissi, Vijay Ganesh, Patrick Lam}
+           {University of Waterloo}
+           {\{xnoumbis,vganesh,plam@uwaterloo.ca\}}
+%\authorinfo{Name2\and Name3}
+%           {Affiliation2/3}
+%           {Email2/3}
+
+\maketitle
+
+\input{abstract}
+
+\category{CR-number}{subcategory}{third-level}
+
+\terms
+Software Vulnerabilities, Static Analysis
+
+\keywords
+taint analysis, static analysis
+
+\input{introduction}
+
+\input{example}
+
+\input{llvm}
+
+\input{analysis}
+
+\input{evaluation}
+
+\input{related}
+
+\input{conclusion}
+
+\appendix
+\input{appendix}
+
+%\acks
+
+%Acknowledgments, if needed.
+
+% We recommend abbrvnat bibliography style.
+
+\bibliographystyle{abbrvnat}
+
+% The bibliography should be embedded for final submission.
+
+%\begin{thebibliography}{}
+%\softraggedright
+
+\bibliography{waint}
+
+%\bibitem[Smith et~al.(2009)Smith, Jones]{smith02}
+%P. Q. Smith, and X. Y. Jones. ...reference text...
+
+%\end{thebibliography}
+
+\end{document}

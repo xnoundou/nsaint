@@ -1,0 +1,547 @@
+[STTAL]module identifier is <stdin>
+[STTAL]discovered function gnc_plugin_page_report_get_type
+[STTAL]discovered function gnc_plugin_page_report_class_init
+[STTAL]discovered function gnc_plugin_page_report_init
+[STTAL]discovered function gnc_plugin_page_report_destroy
+[STTAL]discovered function SWIG_Guile_MustGetPtr
+[STTAL]discovered function SWIG_TypeQuery
+[STTAL]discovered function gnc_plugin_page_report_new
+[STTAL]discovered function gnc_plugin_page_report_remove_edited_report
+[STTAL]discovered function gnc_plugin_page_report_add_edited_report
+[STTAL]discovered function gnc_plugin_page_report_raise_editor
+[STTAL]discovered function gnc_main_window_open_report
+[STTAL]discovered function gnc_main_window_open_report_url
+[STTAL]discovered function gnc_plugin_page_report_history_destroy_cb
+[STTAL]discovered function close_handler
+[STTAL]discovered function gnc_plugin_page_report_check_urltype
+[STTAL]discovered function gnc_plugin_page_report_load_cb
+[STTAL]discovered function gnc_plugin_page_report_expose_event_cb
+[STTAL]discovered function gnc_plugin_page_report_refresh
+[STTAL]discovered function gnc_plugin_page_report_set_fwd_button
+[STTAL]discovered function gnc_plugin_page_report_set_back_button
+[STTAL]discovered function gnc_plugin_page_report_constr_init
+[STTAL]discovered function gnc_plugin_page_report_setup
+[STTAL]discovered function SWIG_Guile_GetModule
+[STTAL]discovered function SWIG_TypeQueryModule
+[STTAL]discovered function SWIG_MangledTypeQueryModule
+[STTAL]discovered function SWIG_TypeEquiv
+[STTAL]discovered function SWIG_TypeNameComp
+[STTAL]discovered function gnc_plugin_page_report_set_property
+[STTAL]discovered function SWIG_Guile_Init
+[STTAL]discovered function ensure_smob_tag
+[STTAL]discovered function print_swig
+[STTAL]discovered function equalp_swig
+[STTAL]discovered function print_collectable_swig
+[STTAL]discovered function free_swig
+[STTAL]discovered function print_destroyed_swig
+[STTAL]discovered function print_member_function_swig
+[STTAL]discovered function free_swig_member_function
+[STTAL]discovered function SWIG_TypePrettyName
+[STTAL]discovered function print_swig_aux
+[STTAL]discovered function SWIG_Guile_ConvertPtr
+[STTAL]discovered function SWIG_TypeCheckStruct
+[STTAL]discovered function SWIG_TypeCast
+[STTAL]discovered function gnc_plugin_page_report_constructor
+[STTAL]discovered function gnc_plugin_page_report_finalize
+[STTAL]discovered function gnc_plugin_page_report_get_property
+[STTAL]discovered function gnc_plugin_page_report_create_widget
+[STTAL]discovered function gnc_plugin_page_report_destroy_widget
+[STTAL]discovered function gnc_plugin_page_report_save_page
+[STTAL]discovered function gnc_plugin_page_report_recreate_page
+[STTAL]discovered function gnc_plugin_page_report_name_changed
+[STTAL]discovered function gnc_plugin_page_report_update_edit_menu
+[STTAL]discovered function gnc_plugin_page_report_finish_pending
+[STTAL]discovered function gnc_plugin_page_report_option_change_cb
+[STTAL]discovered function gnc_plugin_page_report_print_cb
+[STTAL]discovered function gnc_plugin_page_report_copy_cb
+[STTAL]discovered function gnc_plugin_page_report_reload_cb
+[STTAL]discovered function gnc_plugin_page_report_save_cb
+[STTAL]discovered function gnc_plugin_page_report_export_cb
+[STTAL]discovered function gnc_plugin_page_report_options_cb
+[STTAL]discovered function gnc_plugin_page_report_back_cb
+[STTAL]discovered function gnc_plugin_page_report_forw_cb
+[STTAL]discovered function gnc_plugin_page_report_stop_cb
+[STTAL]discovered function error_handler
+[STTAL]discovered function gnc_get_export_type_choice
+[STTAL]discovered function gnc_get_export_filename
+[STTAL]discovered function scm_init_sw_report_gnome_module
+[STTAL]discovered function SWIG_init_helper
+[STTAL]discovered function SWIG_init
+[STTAL]discovered function SWIG_InitializeModule
+[STTAL]discovered function SWIG_PropagateClientData
+[STTAL]discovered function _wrap_gnc_report_raise_editor
+[STTAL]discovered function _wrap_gnc_main_window_open_report
+[STTAL]discovered function _wrap_gnc_report_window_default_params_editor
+[STTAL]discovered function _wrap_gnc_column_view_edit_options
+[STTAL]discovered function _wrap_gnc_ui_custom_report
+[STTAL]discovered function SWIG_Guile_MustGetPtr260
+[STTAL]discovered function SWIG_Guile_ConvertPtr261
+[STTAL]discovered function SWIG_TypeCheckStruct262
+[STTAL]discovered function SWIG_TypeCast263
+[STTAL]discovered function SWIG_Guile_NewPointerObj
+[STTAL]discovered function SWIG_TypeClientData
+[STTAL]discovered function SWIG_Guile_GetModule264
+[STTAL]discovered function SWIG_Guile_SetModule
+[STTAL]discovered function SWIG_MangledTypeQueryModule265
+[STTAL]discovered function SWIG_TypeCheck
+[STTAL]discovered function SWIG_Guile_Init266
+[STTAL]discovered function ensure_smob_tag267
+[STTAL]discovered function print_swig268
+[STTAL]discovered function equalp_swig269
+[STTAL]discovered function print_collectable_swig270
+[STTAL]discovered function free_swig271
+[STTAL]discovered function print_destroyed_swig272
+[STTAL]discovered function print_member_function_swig273
+[STTAL]discovered function free_swig_member_function274
+[STTAL]discovered function SWIG_TypePrettyName275
+[STTAL]discovered function print_swig_aux276
+[STTAL]discovered function reportWindow
+[STTAL]discovered function gnc_report_window_default_params_editor
+[STTAL]discovered function SWIG_Guile_MustGetPtr341
+[STTAL]discovered function SWIG_TypeQuery342
+[STTAL]discovered function gnc_options_dialog_apply_cb
+[STTAL]discovered function gnc_options_dialog_help_cb
+[STTAL]discovered function gnc_options_dialog_close_cb
+[STTAL]discovered function gnc_report_raise_editor
+[STTAL]discovered function gnc_report_init
+[STTAL]discovered function gnc_html_file_stream_cb
+[STTAL]discovered function gnc_html_report_stream_cb
+[STTAL]discovered function gnc_html_options_url_cb
+[STTAL]discovered function gnc_html_report_url_cb
+[STTAL]discovered function gnc_html_help_url_cb
+[STTAL]discovered function SWIG_Guile_GetModule345
+[STTAL]discovered function SWIG_TypeQueryModule346
+[STTAL]discovered function SWIG_MangledTypeQueryModule347
+[STTAL]discovered function SWIG_TypeEquiv348
+[STTAL]discovered function SWIG_TypeNameComp349
+[STTAL]discovered function SWIG_Guile_Init350
+[STTAL]discovered function ensure_smob_tag351
+[STTAL]discovered function print_swig352
+[STTAL]discovered function equalp_swig353
+[STTAL]discovered function print_collectable_swig354
+[STTAL]discovered function free_swig355
+[STTAL]discovered function print_destroyed_swig356
+[STTAL]discovered function print_member_function_swig357
+[STTAL]discovered function free_swig_member_function358
+[STTAL]discovered function SWIG_TypePrettyName359
+[STTAL]discovered function print_swig_aux360
+[STTAL]discovered function SWIG_Guile_ConvertPtr361
+[STTAL]discovered function SWIG_TypeCheckStruct362
+[STTAL]discovered function SWIG_TypeCast363
+## Starting intraprocedural analysis
+[Processing][Function][SWIG_TypeCast363]
+[Processing][Function][SWIG_TypeCheckStruct362]
+[Processing][Function][SWIG_Guile_ConvertPtr361]
+[Processing][Function][print_swig_aux360]
+[Processing][Function][SWIG_TypePrettyName359]
+[Processing][Function][free_swig_member_function358]
+[Processing][Function][print_member_function_swig357]
+[Processing][Function][print_destroyed_swig356]
+[Processing][Function][free_swig355]
+[Processing][Function][print_collectable_swig354]
+[Processing][Function][equalp_swig353]
+[Processing][Function][print_swig352]
+[Processing][Function][ensure_smob_tag351]
+[Processing][Function][SWIG_Guile_Init350]
+[Processing][Function][SWIG_TypeNameComp349]
+[Processing][Function][SWIG_TypeEquiv348]
+[Processing][Function][SWIG_MangledTypeQueryModule347]
+[Processing][Function][SWIG_TypeQueryModule346]
+[Processing][Function][SWIG_Guile_GetModule345]
+[Processing][Function][gnc_html_help_url_cb]
+[Processing][Function][gnc_html_report_url_cb]
+[Processing][Function][gnc_html_options_url_cb]
+i8* getelementptr inbounds ([3 x i8]* @.str15292, i32 0, i32 0) gets tainted
+@.str15292 = private unnamed_addr constant [3 x i8] c"%d\00", align 1Found a source sscanf with arg_pos 1
+Found a source sscanf with arg_pos 1
+[Processing][Function][gnc_html_report_stream_cb]
+[Processing][Function][gnc_html_file_stream_cb]
+[Processing][Function][gnc_report_init]
+[Processing][Function][gnc_report_raise_editor]
+[Processing][Function][gnc_options_dialog_close_cb]
+[Processing][Function][gnc_options_dialog_help_cb]
+[Processing][Function][gnc_options_dialog_apply_cb]
+[Processing][Function][SWIG_TypeQuery342]
+[Processing][Function][SWIG_Guile_MustGetPtr341]
+[Processing][Function][gnc_report_window_default_params_editor]
+[Processing][Function][reportWindow]
+[Processing][Function][print_swig_aux276]
+[Processing][Function][SWIG_TypePrettyName275]
+[Processing][Function][free_swig_member_function274]
+[Processing][Function][print_member_function_swig273]
+[Processing][Function][print_destroyed_swig272]
+[Processing][Function][free_swig271]
+[Processing][Function][print_collectable_swig270]
+[Processing][Function][equalp_swig269]
+[Processing][Function][print_swig268]
+[Processing][Function][ensure_smob_tag267]
+[Processing][Function][SWIG_Guile_Init266]
+[Processing][Function][SWIG_TypeCheck]
+[Processing][Function][SWIG_MangledTypeQueryModule265]
+[Processing][Function][SWIG_Guile_SetModule]
+[Processing][Function][SWIG_Guile_GetModule264]
+[Processing][Function][SWIG_TypeClientData]
+[Processing][Function][SWIG_Guile_NewPointerObj]
+[Processing][Function][SWIG_TypeCast263]
+[Processing][Function][SWIG_TypeCheckStruct262]
+[Processing][Function][SWIG_Guile_ConvertPtr261]
+[Processing][Function][SWIG_Guile_MustGetPtr260]
+[Processing][Function][_wrap_gnc_ui_custom_report]
+[Processing][Function][_wrap_gnc_column_view_edit_options]
+[Processing][Function][_wrap_gnc_report_window_default_params_editor]
+[Processing][Function][_wrap_gnc_main_window_open_report]
+[Processing][Function][_wrap_gnc_report_raise_editor]
+[Processing][Function][SWIG_PropagateClientData]
+[Processing][Function][SWIG_InitializeModule]
+[Processing][Function][SWIG_init]
+[Processing][Function][SWIG_init_helper]
+[Processing][Function][scm_init_sw_report_gnome_module]
+[Processing][Function][gnc_get_export_filename]
+[Processing][Function][gnc_get_export_type_choice]
+[Processing][Function][error_handler]
+[Processing][Function][gnc_plugin_page_report_stop_cb]
+[Processing][Function][gnc_plugin_page_report_forw_cb]
+[Processing][Function][gnc_plugin_page_report_back_cb]
+[Processing][Function][gnc_plugin_page_report_options_cb]
+[Processing][Function][gnc_plugin_page_report_export_cb]
+[Processing][Function][gnc_plugin_page_report_save_cb]
+[Processing][Function][gnc_plugin_page_report_reload_cb]
+[Processing][Function][gnc_plugin_page_report_copy_cb]
+[Processing][Function][gnc_plugin_page_report_print_cb]
+[Processing][Function][gnc_plugin_page_report_option_change_cb]
+[Processing][Function][gnc_plugin_page_report_finish_pending]
+[Processing][Function][gnc_plugin_page_report_update_edit_menu]
+[Processing][Function][gnc_plugin_page_report_name_changed]
+[Processing][Function][gnc_plugin_page_report_recreate_page]
+[Processing][Function][gnc_plugin_page_report_save_page]
+[Processing][Function][gnc_plugin_page_report_destroy_widget]
+[Processing][Function][gnc_plugin_page_report_create_widget]
+[Processing][Function][gnc_plugin_page_report_get_property]
+[Processing][Function][gnc_plugin_page_report_finalize]
+[Processing][Function][gnc_plugin_page_report_constructor]
+[Processing][Function][SWIG_TypeCast]
+[Processing][Function][SWIG_TypeCheckStruct]
+[Processing][Function][SWIG_Guile_ConvertPtr]
+[Processing][Function][print_swig_aux]
+[Processing][Function][SWIG_TypePrettyName]
+[Processing][Function][free_swig_member_function]
+[Processing][Function][print_member_function_swig]
+[Processing][Function][print_destroyed_swig]
+[Processing][Function][free_swig]
+[Processing][Function][print_collectable_swig]
+[Processing][Function][equalp_swig]
+[Processing][Function][print_swig]
+[Processing][Function][ensure_smob_tag]
+[Processing][Function][SWIG_Guile_Init]
+[Processing][Function][gnc_plugin_page_report_set_property]
+[Processing][Function][SWIG_TypeNameComp]
+[Processing][Function][SWIG_TypeEquiv]
+[Processing][Function][SWIG_MangledTypeQueryModule]
+[Processing][Function][SWIG_TypeQueryModule]
+[Processing][Function][SWIG_Guile_GetModule]
+[Processing][Function][gnc_plugin_page_report_setup]
+[Processing][Function][gnc_plugin_page_report_constr_init]
+[Processing][Function][gnc_plugin_page_report_set_back_button]
+[Processing][Function][gnc_plugin_page_report_set_fwd_button]
+[Processing][Function][gnc_plugin_page_report_refresh]
+[Processing][Function][gnc_plugin_page_report_expose_event_cb]
+[Processing][Function][gnc_plugin_page_report_load_cb]
+[Processing][Function][gnc_plugin_page_report_check_urltype]
+[Processing][Function][close_handler]
+[Processing][Function][gnc_plugin_page_report_history_destroy_cb]
+[Processing][Function][gnc_main_window_open_report_url]
+[Processing][Function][gnc_main_window_open_report]
+[Processing][Function][gnc_plugin_page_report_raise_editor]
+[Processing][Function][gnc_plugin_page_report_add_edited_report]
+[Processing][Function][gnc_plugin_page_report_remove_edited_report]
+[Processing][Function][gnc_plugin_page_report_new]
+[Processing][Function][SWIG_TypeQuery]
+[Processing][Function][SWIG_Guile_MustGetPtr]
+[Processing][Function][gnc_plugin_page_report_destroy]
+[Processing][Function][gnc_plugin_page_report_init]
+[Processing][Function][gnc_plugin_page_report_class_init]
+[Processing][Function][gnc_plugin_page_report_get_type]
+## Starting interprocedural analysis
+No main function exists
+[Processing][Function][SWIG_TypeCast363]
+[Processing][Function][SWIG_TypeCheckStruct362]
+[Processing][Function][SWIG_Guile_ConvertPtr361]
+[Processing][Function][print_swig_aux360]
+[Processing][Function][SWIG_TypePrettyName359]
+[Processing][Function][free_swig_member_function358]
+[Processing][Function][print_member_function_swig357]
+[Processing][Function][print_destroyed_swig356]
+[Processing][Function][free_swig355]
+[Processing][Function][print_collectable_swig354]
+[Processing][Function][equalp_swig353]
+[Processing][Function][print_swig352]
+[Processing][Function][ensure_smob_tag351]
+[Processing][Function][SWIG_Guile_Init350]
+[Processing][Function][SWIG_TypeNameComp349]
+[Processing][Function][SWIG_TypeEquiv348]
+[Processing][Function][SWIG_MangledTypeQueryModule347]
+[Processing][Function][SWIG_TypeQueryModule346]
+[Processing][Function][SWIG_Guile_GetModule345]
+[Processing][Function][gnc_html_help_url_cb]
+[Processing][Function][gnc_html_report_url_cb]
+[Processing][Function][gnc_html_options_url_cb]
+[Processing][Function][gnc_html_report_stream_cb]
+[Processing][Function][gnc_html_file_stream_cb]
+[Processing][Function][gnc_report_init]
+[Processing][Function][gnc_report_raise_editor]
+[Processing][Function][gnc_options_dialog_close_cb]
+[Processing][Function][gnc_options_dialog_help_cb]
+[Processing][Function][gnc_options_dialog_apply_cb]
+[Processing][Function][SWIG_TypeQuery342]
+[Processing][Function][SWIG_Guile_MustGetPtr341]
+[Processing][Function][gnc_report_window_default_params_editor]
+[Processing][Function][reportWindow]
+[Processing][Function][print_swig_aux276]
+[Processing][Function][SWIG_TypePrettyName275]
+[Processing][Function][free_swig_member_function274]
+[Processing][Function][print_member_function_swig273]
+[Processing][Function][print_destroyed_swig272]
+[Processing][Function][free_swig271]
+[Processing][Function][print_collectable_swig270]
+[Processing][Function][equalp_swig269]
+[Processing][Function][print_swig268]
+[Processing][Function][ensure_smob_tag267]
+[Processing][Function][SWIG_Guile_Init266]
+[Processing][Function][SWIG_TypeCheck]
+[Processing][Function][SWIG_MangledTypeQueryModule265]
+[Processing][Function][SWIG_Guile_SetModule]
+[Processing][Function][SWIG_Guile_GetModule264]
+[Processing][Function][SWIG_TypeClientData]
+[Processing][Function][SWIG_Guile_NewPointerObj]
+[Processing][Function][SWIG_TypeCast263]
+[Processing][Function][SWIG_TypeCheckStruct262]
+[Processing][Function][SWIG_Guile_ConvertPtr261]
+[Processing][Function][SWIG_Guile_MustGetPtr260]
+[Processing][Function][_wrap_gnc_ui_custom_report]
+[Processing][Function][_wrap_gnc_column_view_edit_options]
+[Processing][Function][_wrap_gnc_report_window_default_params_editor]
+[Processing][Function][_wrap_gnc_main_window_open_report]
+[Processing][Function][_wrap_gnc_report_raise_editor]
+[Processing][Function][SWIG_PropagateClientData]
+[Processing][Function][SWIG_InitializeModule]
+[Processing][Function][SWIG_init]
+[Processing][Function][SWIG_init_helper]
+[Processing][Function][scm_init_sw_report_gnome_module]
+[Processing][Function][gnc_get_export_filename]
+[Processing][Function][gnc_get_export_type_choice]
+[Processing][Function][error_handler]
+[Processing][Function][gnc_plugin_page_report_stop_cb]
+[Processing][Function][gnc_plugin_page_report_forw_cb]
+[Processing][Function][gnc_plugin_page_report_back_cb]
+[Processing][Function][gnc_plugin_page_report_options_cb]
+[Processing][Function][gnc_plugin_page_report_export_cb]
+[Processing][Function][gnc_plugin_page_report_save_cb]
+[Processing][Function][gnc_plugin_page_report_reload_cb]
+[Processing][Function][gnc_plugin_page_report_copy_cb]
+[Processing][Function][gnc_plugin_page_report_print_cb]
+[Processing][Function][gnc_plugin_page_report_option_change_cb]
+[Processing][Function][gnc_plugin_page_report_finish_pending]
+[Processing][Function][gnc_plugin_page_report_update_edit_menu]
+[Processing][Function][gnc_plugin_page_report_name_changed]
+[Processing][Function][gnc_plugin_page_report_recreate_page]
+[Processing][Function][gnc_plugin_page_report_save_page]
+[Processing][Function][gnc_plugin_page_report_destroy_widget]
+[Processing][Function][gnc_plugin_page_report_create_widget]
+[Processing][Function][gnc_plugin_page_report_get_property]
+[Processing][Function][gnc_plugin_page_report_finalize]
+[Processing][Function][gnc_plugin_page_report_constructor]
+[Processing][Function][SWIG_TypeCast]
+[Processing][Function][SWIG_TypeCheckStruct]
+[Processing][Function][SWIG_Guile_ConvertPtr]
+[Processing][Function][print_swig_aux]
+[Processing][Function][SWIG_TypePrettyName]
+[Processing][Function][free_swig_member_function]
+[Processing][Function][print_member_function_swig]
+[Processing][Function][print_destroyed_swig]
+[Processing][Function][free_swig]
+[Processing][Function][print_collectable_swig]
+[Processing][Function][equalp_swig]
+[Processing][Function][print_swig]
+[Processing][Function][ensure_smob_tag]
+[Processing][Function][SWIG_Guile_Init]
+[Processing][Function][gnc_plugin_page_report_set_property]
+[Processing][Function][SWIG_TypeNameComp]
+[Processing][Function][SWIG_TypeEquiv]
+[Processing][Function][SWIG_MangledTypeQueryModule]
+[Processing][Function][SWIG_TypeQueryModule]
+[Processing][Function][SWIG_Guile_GetModule]
+[Processing][Function][gnc_plugin_page_report_setup]
+[Processing][Function][gnc_plugin_page_report_constr_init]
+[Processing][Function][gnc_plugin_page_report_set_back_button]
+[Processing][Function][gnc_plugin_page_report_set_fwd_button]
+[Processing][Function][gnc_plugin_page_report_refresh]
+[Processing][Function][gnc_plugin_page_report_expose_event_cb]
+[Processing][Function][gnc_plugin_page_report_load_cb]
+[Processing][Function][gnc_plugin_page_report_check_urltype]
+[Processing][Function][close_handler]
+[Processing][Function][gnc_plugin_page_report_history_destroy_cb]
+[Processing][Function][gnc_main_window_open_report_url]
+[Processing][Function][gnc_main_window_open_report]
+[Processing][Function][gnc_plugin_page_report_raise_editor]
+[Processing][Function][gnc_plugin_page_report_add_edited_report]
+[Processing][Function][gnc_plugin_page_report_remove_edited_report]
+[Processing][Function][gnc_plugin_page_report_new]
+[Processing][Function][SWIG_TypeQuery]
+[Processing][Function][SWIG_Guile_MustGetPtr]
+[Processing][Function][gnc_plugin_page_report_destroy]
+[Processing][Function][gnc_plugin_page_report_init]
+[Processing][Function][gnc_plugin_page_report_class_init]
+[Processing][Function][gnc_plugin_page_report_get_type]
+## Starting context-insensitive interprocedural analysis
+No main function exists
+[Processing][Function][SWIG_TypeCast363]
+[Processing][Function][SWIG_TypeCheckStruct362]
+[Processing][Function][SWIG_Guile_ConvertPtr361]
+[Processing][Function][print_swig_aux360]
+[Processing][Function][SWIG_TypePrettyName359]
+[Processing][Function][free_swig_member_function358]
+[Processing][Function][print_member_function_swig357]
+[Processing][Function][print_destroyed_swig356]
+[Processing][Function][free_swig355]
+[Processing][Function][print_collectable_swig354]
+[Processing][Function][equalp_swig353]
+[Processing][Function][print_swig352]
+[Processing][Function][ensure_smob_tag351]
+[Processing][Function][SWIG_Guile_Init350]
+[Processing][Function][SWIG_TypeNameComp349]
+[Processing][Function][SWIG_TypeEquiv348]
+[Processing][Function][SWIG_MangledTypeQueryModule347]
+[Processing][Function][SWIG_TypeQueryModule346]
+[Processing][Function][SWIG_Guile_GetModule345]
+[Processing][Function][gnc_html_help_url_cb]
+[Processing][Function][gnc_html_report_url_cb]
+[Processing][Function][gnc_html_options_url_cb]
+Found sink function g_strdup_printf
+Found sink function g_strdup_printf
+Found sink function g_strdup_printf
+Found sink function g_strdup_printf
+Found sink function g_strdup_printf
+Found sink function g_strdup_printf
+Found sink function g_strdup_printf
+[Processing][Function][gnc_html_report_stream_cb]
+Found sink function g_strdup_printf
+Found sink function g_strdup_printf
+[Processing][Function][gnc_html_file_stream_cb]
+[Processing][Function][gnc_report_init]
+[Processing][Function][gnc_report_raise_editor]
+[Processing][Function][gnc_options_dialog_close_cb]
+[Processing][Function][gnc_options_dialog_help_cb]
+[Processing][Function][gnc_options_dialog_apply_cb]
+[Processing][Function][SWIG_TypeQuery342]
+[Processing][Function][SWIG_Guile_MustGetPtr341]
+[Processing][Function][gnc_report_window_default_params_editor]
+[Processing][Function][reportWindow]
+[Processing][Function][print_swig_aux276]
+[Processing][Function][SWIG_TypePrettyName275]
+[Processing][Function][free_swig_member_function274]
+[Processing][Function][print_member_function_swig273]
+[Processing][Function][print_destroyed_swig272]
+[Processing][Function][free_swig271]
+[Processing][Function][print_collectable_swig270]
+[Processing][Function][equalp_swig269]
+[Processing][Function][print_swig268]
+[Processing][Function][ensure_smob_tag267]
+[Processing][Function][SWIG_Guile_Init266]
+[Processing][Function][SWIG_TypeCheck]
+[Processing][Function][SWIG_MangledTypeQueryModule265]
+[Processing][Function][SWIG_Guile_SetModule]
+[Processing][Function][SWIG_Guile_GetModule264]
+[Processing][Function][SWIG_TypeClientData]
+[Processing][Function][SWIG_Guile_NewPointerObj]
+[Processing][Function][SWIG_TypeCast263]
+[Processing][Function][SWIG_TypeCheckStruct262]
+[Processing][Function][SWIG_Guile_ConvertPtr261]
+[Processing][Function][SWIG_Guile_MustGetPtr260]
+[Processing][Function][_wrap_gnc_ui_custom_report]
+[Processing][Function][_wrap_gnc_column_view_edit_options]
+[Processing][Function][_wrap_gnc_report_window_default_params_editor]
+[Processing][Function][_wrap_gnc_main_window_open_report]
+[Processing][Function][_wrap_gnc_report_raise_editor]
+[Processing][Function][SWIG_PropagateClientData]
+[Processing][Function][SWIG_InitializeModule]
+[Processing][Function][SWIG_init]
+[Processing][Function][SWIG_init_helper]
+[Processing][Function][scm_init_sw_report_gnome_module]
+[Processing][Function][gnc_get_export_filename]
+Found sink function g_strdup_printf
+Found sink function g_strdup_printf
+Found sink function g_strdup_printf
+[Processing][Function][gnc_get_export_type_choice]
+[Processing][Function][error_handler]
+[Processing][Function][gnc_plugin_page_report_stop_cb]
+[Processing][Function][gnc_plugin_page_report_forw_cb]
+[Processing][Function][gnc_plugin_page_report_back_cb]
+[Processing][Function][gnc_plugin_page_report_options_cb]
+[Processing][Function][gnc_plugin_page_report_export_cb]
+[Processing][Function][gnc_plugin_page_report_save_cb]
+[Processing][Function][gnc_plugin_page_report_reload_cb]
+[Processing][Function][gnc_plugin_page_report_copy_cb]
+[Processing][Function][gnc_plugin_page_report_print_cb]
+Found sink function g_strdup_printf
+Found sink function g_strdup_printf
+[Processing][Function][gnc_plugin_page_report_option_change_cb]
+[Processing][Function][gnc_plugin_page_report_finish_pending]
+[Processing][Function][gnc_plugin_page_report_update_edit_menu]
+[Processing][Function][gnc_plugin_page_report_name_changed]
+[Processing][Function][gnc_plugin_page_report_recreate_page]
+[Processing][Function][gnc_plugin_page_report_save_page]
+Found sink function g_strdup_printf
+Found sink function g_strdup_printf
+[Processing][Function][gnc_plugin_page_report_destroy_widget]
+[Processing][Function][gnc_plugin_page_report_create_widget]
+Found sink function g_strdup_printf
+Found sink function g_strdup_printf
+[Processing][Function][gnc_plugin_page_report_get_property]
+[Processing][Function][gnc_plugin_page_report_finalize]
+[Processing][Function][gnc_plugin_page_report_constructor]
+[Processing][Function][SWIG_TypeCast]
+[Processing][Function][SWIG_TypeCheckStruct]
+[Processing][Function][SWIG_Guile_ConvertPtr]
+[Processing][Function][print_swig_aux]
+[Processing][Function][SWIG_TypePrettyName]
+[Processing][Function][free_swig_member_function]
+[Processing][Function][print_member_function_swig]
+[Processing][Function][print_destroyed_swig]
+[Processing][Function][free_swig]
+[Processing][Function][print_collectable_swig]
+[Processing][Function][equalp_swig]
+[Processing][Function][print_swig]
+[Processing][Function][ensure_smob_tag]
+[Processing][Function][SWIG_Guile_Init]
+[Processing][Function][gnc_plugin_page_report_set_property]
+[Processing][Function][SWIG_TypeNameComp]
+[Processing][Function][SWIG_TypeEquiv]
+[Processing][Function][SWIG_MangledTypeQueryModule]
+[Processing][Function][SWIG_TypeQueryModule]
+[Processing][Function][SWIG_Guile_GetModule]
+[Processing][Function][gnc_plugin_page_report_setup]
+[Processing][Function][gnc_plugin_page_report_constr_init]
+[Processing][Function][gnc_plugin_page_report_set_back_button]
+[Processing][Function][gnc_plugin_page_report_set_fwd_button]
+[Processing][Function][gnc_plugin_page_report_refresh]
+[Processing][Function][gnc_plugin_page_report_expose_event_cb]
+[Processing][Function][gnc_plugin_page_report_load_cb]
+[Processing][Function][gnc_plugin_page_report_check_urltype]
+[Processing][Function][close_handler]
+[Processing][Function][gnc_plugin_page_report_history_destroy_cb]
+[Processing][Function][gnc_main_window_open_report_url]
+[Processing][Function][gnc_main_window_open_report]
+[Processing][Function][gnc_plugin_page_report_raise_editor]
+[Processing][Function][gnc_plugin_page_report_add_edited_report]
+[Processing][Function][gnc_plugin_page_report_remove_edited_report]
+[Processing][Function][gnc_plugin_page_report_new]
+[Processing][Function][SWIG_TypeQuery]
+[Processing][Function][SWIG_Guile_MustGetPtr]
+[Processing][Function][gnc_plugin_page_report_destroy]
+[Processing][Function][gnc_plugin_page_report_init]
+[Processing][Function][gnc_plugin_page_report_class_init]
+[Processing][Function][gnc_plugin_page_report_get_type]
+
+real	0m0.143s
+user	0m0.132s
+sys	0m0.008s
