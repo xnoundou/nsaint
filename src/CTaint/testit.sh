@@ -13,5 +13,5 @@ set -x
 
 ./ctainthelp.sh -s $RESULT -o $RESULT -c m -t "$IRTYPE"
 
-./runOpt.sh -o "$OPT" -s -d -p "TESTS" -i $RESULT/one.bc 2> $RESULT/analysis-result
+./runOpt.sh -o "$OPT" -s -d -t -p "TESTS" -i $RESULT/one.bc 2> $RESULT/analysis-result
 

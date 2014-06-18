@@ -1,7 +1,7 @@
 #!/bin/bash
 
-OPT=/home/noundou/tools/llvm-3.3.src/build/Release+Asserts/bin/opt
-CLAWS="/home/noundou/ece750-project/benchmarks/claws"
+OPT=$HOME/tools/llvm-3.3.src/build/Release+Asserts/bin/opt
+CLAWS="$HOME/ece750-project/benchmarks/claws"
 RESULT="claws-results"
 IRTYPE="b"
 

@@ -10,5 +10,5 @@ set -x
 ./ctainthelp.sh -s $MONGOOSE -i $MONGOOSE -o $RESULT -c g -t "$IRTYPE"
 ./ctainthelp.sh -s $RESULT -o $RESULT -c m -t "$IRTYPE"
 
-./runOpt.sh -o "$OPT" -s -d -p "MONGOOSE" -i $RESULT/one.bc 2> $RESULT/analysis-result
+./runOpt.sh -o "$OPT" -s -d -t -p "MONGOOSE" -i $RESULT/one.bc 2> $RESULT/analysis-result
 

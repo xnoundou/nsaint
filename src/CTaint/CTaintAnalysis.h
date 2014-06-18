@@ -119,6 +119,11 @@ public:
 
 	CTaintAnalysis();
 	~CTaintAnalysis();
+
+	inline map<Function *, vector<bool> *> &getSummaryTable() {
+		return _summaryTable;
+	}
+
 	void printSummaryTable();
 	void printSummaryTableInfo(Function *f);
 	void printSummaryTableInfo(Function *f, unsigned param);
@@ -133,11 +138,13 @@ public:
 	void visitLoadInst(LoadInst &I);
 	void visitStoreInst(StoreInst &I);
 	void visitCallInst(CallInst &I);
+	void visitCallInstSink(CallInst & I);
 	void visitReturnInst(ReturnInst &I);
 
 	void handleContextCall(CallInst &I, Function &callee);
-	void checkTaintedValueUse(CallInst &I, Function &callee);
-	bool checkFormatStr(Value *curArg, vector<string::size_type> &result);
+	void checkTaintedValueUse(CallInst &I, Function &callee, unsigned formatPos = _FUNCTION_NOT_FORMAT);
+	StringRef getFormatStr(Value *curArg, DSGraph *dsg);
+	bool checkFormatStr(Function &caller, Value *curArg, vector<string::size_type> &result, unsigned line = -1);
 	void handleFormatSink(CallInst &I, Function &callee, unsigned formatPos);
 
 	void set_diff(set<Value *> &A, set<Value *> &B, set<Value *> &AMinusB);
@@ -168,6 +175,7 @@ private:
 	const static string _taintId;
 	const static string _taintSourceFile;
 	const static string _taintSinkFile;
+	const static string _formatStrFile;
 
 	const static unsigned _INVALID_FORMAT_POS;
 	const static unsigned _SOURCE_ARG_RET;
@@ -175,8 +183,8 @@ private:
 	const static unsigned _FUNCTION_NOT_FORMAT;
 
 	static map<string, unsigned> _taintSources;
-	static vector<string> _taintSinks;
 	static map<string, unsigned> _formatSinks;
+	static map<string, unsigned> _formatStrPos;
 
 	map<Value *, vector<Instruction *> * > _valueToTaintInst;
 
@@ -195,6 +203,7 @@ private:
 	 */
 	static void readTaintSourceConfig();
 	static void readTaintSinkConfig();
+	static void readFormatStrConfig();
 
 	/**
 	 * Returns an integer p (p > 0) whenever function with

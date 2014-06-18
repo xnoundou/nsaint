@@ -1,6 +1,6 @@
 #!/bin/bash
 
-USAGE="Usage: $(basename $0) <-e llvm-opt> <-i bc files> [-s|-d|-p project]"
+USAGE="Usage: $(basename $0) <-e llvm-opt> <-i bc files> [-s|-d|-t|-p project]"
 
 if [ $# -lt 1 ]; then
   echo "$USAGE"
@@ -13,13 +13,16 @@ projectflag=
 optflag=
 statsflag=
 debugflag=
+timingflag=
 
-while getopts 'mfdo:i:p:s' OPTION
+while getopts 'mfdto:i:p:s' OPTION
 do
   case $OPTION in
     m)	moduleflag=1
 	;;
     d)	debugflag=1
+        ;;
+    t)	timingflag=1
         ;;
     s)	statsflag=1
 	;;
@@ -75,6 +78,10 @@ if [ "$debugflag" ]; then
   #DEBUGFLAG="-debug -debug-only=waint-sinks"
 fi
 
+if [ "$timingflag" ]; then
+  TIMING="-time-passes"
+fi
+
 set -x
 
 make -f Makefile.ctaint compile > /dev/null
@@ -83,5 +90,5 @@ BOOST_LIB=/home/noundou/tools/boost/stage/lib
 
 time $($OPT $STATS -load $LLVM_LIB/LLVMDataStructure.so \
   		   -load $BOOST_LIB/libboost_regex.so \
-  	    	   -load $LLVM_LIB/CTaint.so $DEBUGFLAG -calltarget-eqtd "$PASSARG" < "$INPUTFILE" > /dev/null)
+  	    	   -load $LLVM_LIB/CTaint.so $DEBUGFLAG -calltarget-eqtd "$PASSARG" $TIMING < "$INPUTFILE" > /dev/null)
 
