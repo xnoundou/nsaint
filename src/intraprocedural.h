@@ -1,15 +1,17 @@
 /*
- * CTaintIntraProcedural.h
+ * intraprocedural.h
+ *
+ * Intraprocedural Analysis
  *
  *  Created on: 2013-11-10
- *      Author: noundou
+ *      Author: Xavier N. Noumbissi
  */
 
 #ifndef CTAINTINTRAPROCEDURAL_H_
 #define CTAINTINTRAPROCEDURAL_H_
 
-#include "CForwardFlowAnalysis.h"
-#include "CTaintAnalysis.h"
+#include "forwardanalysis.h"
+#include "ctaintanalysis.h"
 
 namespace {
 class CTaintIntraProcedural : public CForwardFlowAnalysis {

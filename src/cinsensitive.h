@@ -1,20 +1,21 @@
 /*
- * int-ctaint.h
+ * cinsensitive.h
+ *
+ *  Context Insensitive Analysis
  *
  *  Created on: 2013-12-23
- *      Author: noundou
+ *  Author: Xavier N. Noumbissi
  */
 
-#ifndef INT_CTAINT_H_
-#define INT_CTAINT_H_
+#ifndef CINSENSITIVE_H_
+#define CINSENSITIVE_H_
 
-#include "context-inter-ctaint.h"
-#include "CTaintAnalysis.h"
+#include "csensitive.h"
+#include "ctaintanalysis.h"
 
 using namespace llvm;
 
 namespace {
-//class InterProcedural : public CTaintContextInterProcedural {
 class InterProcedural : public CForwardFlowAnalysis {
 
 public:
@@ -69,15 +70,10 @@ inline void InterProcedural::mergeCopyPredOutFlowToInFlow(Instruction &predInst,
 
 void InterProcedural::doAnalysis()
 {
-	//CTaintContextInterProcedural::doAnalysis();
-
 	errs() << "## Starting context-insensitive interprocedural analysis\n";
-	//_analysis->setInterRunning(true);
 	_intraAnalysis->getTaintAnalysis().setInterRunning(true);
 	analyze();
-	//_analysis->printSummaryTable();
-	//_analysis->setInterRunning(false);
 	_intraAnalysis->getTaintAnalysis().setInterRunning(false);
 }
 
-#endif /* INT_CTAINT_H_ */
+#endif /* CINSENSITIVE_H_ */

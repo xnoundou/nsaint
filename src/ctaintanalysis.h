@@ -1,5 +1,7 @@
 /*
- * CTaintAnalysis.h
+ * ctaintanalysis.h
+ *
+ *  Taint Analysis Header File
  *
  *  Created on: 2013-11-10
  *  Author: Xavier N. Noumbissi

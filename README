@@ -1,0 +1,15 @@
+A. Required Tools
+   --------------
+
+   1. LLVM 3.3
+      http://llvm.org/releases
+
+   2. Pointer Analysis (poolalloc)
+      https://github.com/llvm-mirror/poolalloc
+      Use git tag 181c62f1d29ae9de660bad0a6593130d15803abc
+
+B. Usefull Environment Variables to Set
+   ------------------------------------
+
+   1. LLVM_HOME: The root folder of your LLVM files
+

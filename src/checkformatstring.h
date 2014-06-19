@@ -1,15 +1,15 @@
 /*
- * CheckFormatStringPass.h
+ * checkformatstring.h
  *
  *  Created on: 2014-05-29
- *      Author: noundou
+ *      Author: Xavier N. Noumbissi
  */
 
 #ifndef CHECKFORMATSTRINGPASS_H_
 #define CHECKFORMATSTRINGPASS_H_
 
-#include "CForwardFlowAnalysis.h"
-#include "CTaintAnalysis.h"
+#include "forwardanalysis.h"
+#include "ctaintanalysis.h"
 
 namespace {
 class CheckFormatStringPass : public CForwardFlowAnalysis {

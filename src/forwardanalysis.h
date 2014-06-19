@@ -1,8 +1,10 @@
 /*
- * CForwardFlowAnalysis.h
+ * forwardanalysis.h
+ *
+ * Generic Forward Flow Analysis
  *
  *  Created on: 2013-11-09
- *      Author: noundou
+ *      Author: Xavier N. Noumbissi
  */
 
 #ifndef CFORWARDFLOWANALYSIS_H_

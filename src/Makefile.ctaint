@@ -1,8 +1,10 @@
 
-LLVM_BUILD=/home/noundou/tools/llvm-3.3.src/build
+POOL_ALLOC=${TOOLS}/poolalloc
+
+LLVM_BUILD=${LLVM_HOME}/build
 
 LLVM_INC=-I. -I${LLVM_HOME}/include \
-	 -I/home/noundou/tools/poolalloc/include
+	 -I${POOLALLOC}/include
 
 MACROS=-D __STDC_LIMIT_MACROS \
        -D__STDC_CONSTANT_MACROS

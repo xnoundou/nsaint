@@ -1,27 +1,25 @@
 /*
- * CTaintInterProcedural.h
+ * csensitive.h
+ *
+ * Context Sensitive Analysis
  *
  *  Created on: 2013-11-10
- *      Author: noundou
+ *      Author: Xavier N. Noumbissi
  */
 
-#ifndef CTAINTINTERPROCEDURAL_H_
-#define CTAINTINTERPROCEDURAL_H_
+#ifndef CSENSITIVE_H_
+#define CSENSITIVE_H_
 
-#include "CForwardFlowAnalysis.h"
-#include "CTaintAnalysis.h"
-#include "intra-ctaint.h"
-
-//#include <llvm/ADT/SCCIterator.h>
+#include "forwardanalysis.h"
+#include "ctaintanalysis.h"
+#include "intraprocedural.h"
 
 using namespace llvm;
 
 namespace {
-//class CTaintContextInterProcedural : public CTaintIntraProcedural {
 class CTaintContextInterProcedural : public CForwardFlowAnalysis {
 
 public:
-	//CTaintContextInterProcedural(CTaintAnalysis *analysis);
 	CTaintContextInterProcedural(CTaintIntraProcedural *intraAnalysis);
 	void doAnalysis();
 
@@ -73,28 +71,17 @@ inline void CTaintContextInterProcedural::mergeCopyPredOutFlowToInFlow(Instructi
 	_intraAnalysis->mergeCopyPredOutFlowToInFlow(predInst, curInst);
 }
 
-//CTaintContextInterProcedural::CTaintContextInterProcedural(CTaintAnalysis *analysis)
-//	:CTaintIntraProcedural(analysis)
-//{
-//}
-
 void CTaintContextInterProcedural::doAnalysis()
 {
-	//CTaintIntraProcedural::doAnalysis();
-	//_intraAnalysis->doAnalysis();
-
 	errs() << "## Starting interprocedural analysis\n";
-	//_analysis->setCtxInterRunning(true);
 	_intraAnalysis->getTaintAnalysis().setCtxInterRunning(true);
 	analyze();
-	//_analysis->setCtxInterRunning(false);
 	_intraAnalysis->getTaintAnalysis().setCtxInterRunning(false);
 }
 
 void CTaintContextInterProcedural::initWorkList() {
 	_workList.clear();
 
-	//Function *pointerMain = _analysis->getMainFunction();
 	Function *pointerMain = _intraAnalysis->getTaintAnalysis().getMainFunction();
 
 	if (pointerMain) {
@@ -110,7 +97,6 @@ void CTaintContextInterProcedural::initWorkList() {
 	else {
 		errs() << "No main function exists\n";
 		//Let us analyze methods using the topological order of the callgraph
-		//_allProcs = _analysis->getAllProcsRTPOrder();
 		_allProcs = _intraAnalysis->getTaintAnalysis().getAllProcsRTPOrder();
 		Function *F = 0;
 		BasicBlock *BB = 0;
@@ -125,4 +111,4 @@ void CTaintContextInterProcedural::initWorkList() {
 	}
 }
 
-#endif /* CTAINTINTERPROCEDURAL_H_ */
+#endif /* CSENSITIVE_H_ */

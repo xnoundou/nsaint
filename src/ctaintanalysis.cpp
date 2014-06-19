@@ -7,9 +7,9 @@
 
 #define DEBUG_TYPE "waint"
 
-#include "CTaintAnalysis.h"
-#include "context-insensitive-ctaint.h"
-#include "CheckFormatStringPass.h"
+#include "ctaintanalysis.h"
+#include "cinsensitive.h"
+#include "checkformatstring.h"
 
 #include <llvm/Support/InstIterator.h>
 #include <llvm/Target/Mangler.h>
