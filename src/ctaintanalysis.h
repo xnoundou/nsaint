@@ -143,7 +143,6 @@ public:
 	void visitCallInstSink(CallInst & I);
 	void visitReturnInst(ReturnInst &I);
 
-	void handleContextCall(CallInst &I, Function &callee);
 	void checkTaintedValueUse(CallInst &I, Function &callee, unsigned formatPos = _FUNCTION_NOT_FORMAT);
 	StringRef getFormatStr(Value *curArg, DSGraph *dsg);
 	bool checkFormatStr(Function &caller, Value *curArg, vector<string::size_type> &result, unsigned line = -1);

@@ -718,31 +718,69 @@ void CTaintAnalysis::visitCallInst(CallInst & I)
 			DEBUG(errs() << "\tWe do not analyze function '" << callee->getName() << "'\n");
 		}
 		else {
+			++NumContextCalls;
 			depth += 1;
 			DSGraph *callerDSG = _functionToDSGraph[caller];
 			Instruction &calleeFirstI = callee->front().front();
 			Function::arg_iterator pFormal = callee->arg_begin(), Epf = callee->arg_end();
 
-			vector<Value *> fmlAliases;
-			Value *curArg = 0;
+			{ /* Before context-sensitive call */
+				vector<Value *> fmlAliases;
+				Value *curArg = 0;
 
-			for(unsigned k = 0; k < I.getNumArgOperands() && pFormal != Epf; ++pFormal, ++k ) {
-				Argument *aFormal = pFormal;
-				curArg = I.getArgOperand(k);
-				if ( !(*calleeFormals)[k] ) {
-					if ( isValueTainted(&I, curArg) )	_IN[&calleeFirstI].insert(curArg);
+				for(unsigned k = 0; k < I.getNumArgOperands() && pFormal != Epf; ++pFormal, ++k ) {
+					Argument *aFormal = pFormal;
+					curArg = I.getArgOperand(k);
+					if ( !(*calleeFormals)[k] ) {
+						if ( isValueTainted(&I, curArg) )	_IN[&calleeFirstI].insert(curArg);
 
-					if (aFormal) {
-						getAliases(aFormal, callerDSG, fmlAliases);
-						for (unsigned j = 0; j < fmlAliases.size(); ++j) {
-							if ( fmlAliases[j] && isValueTainted(&I, fmlAliases[j]) )
-								_IN[&calleeFirstI].insert(fmlAliases[j]);
+						if (aFormal) {
+							getAliases(aFormal, callerDSG, fmlAliases);
+							fmlAliases.insert(fmlAliases.begin(), aFormal);
+							for (unsigned j = 0; j < fmlAliases.size(); ++j) {
+								if ( fmlAliases[j] && isValueTainted(&I, fmlAliases[j]) )
+									_IN[&calleeFirstI].insert(fmlAliases[j]);
+							}
 						}
 					}
 				}
 			}
 
-			handleContextCall(I, *callee);
+			//Now analyze the callee
+			//We set the predecessor instruction before analysis of the callee
+			_predInst = &I;
+			_super->visit(callee);
+
+			set<Value *> outDiff;
+			Instruction &calleeLastI = callee->back().back();
+			set_diff(_OUT[&calleeLastI], _IN[&calleeFirstI], outDiff);
+
+			{ /* After context-sensitive call */
+				DSGraph * calleeDSG = _functionToDSGraph[callee];
+				vector<Value *> afterFmlAliases;
+				Value *curArg = 0;
+				for(unsigned k = 0; k < I.getNumArgOperands() && pFormal != Epf; ++pFormal, ++k ) {
+					Argument *aFormal = pFormal;
+					curArg = I.getArgOperand(k);
+					getAliases(aFormal, calleeDSG, afterFmlAliases);
+					afterFmlAliases.insert(afterFmlAliases.begin(), aFormal);
+
+					if ( !(*calleeFormals)[k] ) {
+						for(unsigned j = 0; j < afterFmlAliases.size(); ++j) {
+							if  (outDiff.count(afterFmlAliases[j]) > 0 || outDiff.count(curArg) > 0) {
+								insertToOutFlow(&I, curArg);
+								DEBUG(errs() << callee->getName() << ": Setting formal arg ";
+								curArg->print(errs()); errs()<< "(" << k << ") as tainted \n");
+
+								setProcArgTaint(callee, k, true);
+								break;
+							}
+						}
+					}
+				}
+			}
+
+			//handleContextCall(I, *callee);
 
 			depth -= 1;
 		}
@@ -1040,63 +1078,6 @@ void CTaintAnalysis::checkTaintedValueUse(CallInst &I, Function &callee, unsigne
 				}
 			}
 
-		}
-	}
-
-}
-
-//**************************************************************************************
-
-/**
- * This method is responsible for the analysis of a callee during
- * the context-sensitive analysis.
- */
-void CTaintAnalysis::handleContextCall(CallInst &I, Function &callee)
-{
-	DEBUG(errs() << "CONTEXT CALL [call func]: ";I.print(errs());errs()<<"\n");
-
-	//Now copy call arguments taint information into
-	//the callee formal parameter taint information
-
-	++NumContextCalls;
-
-	Instruction &calleeFirstI = callee.front().front();
-	Function::arg_iterator pFormal = callee.arg_begin(), Epf = callee.arg_end();
-
-	vector<bool> *calleeFormals = _summaryTable[&callee];
-
-	Instruction &calleeLastI = callee.back().back();
-
-	//Now analyze the callee
-	//We set the predecessor instruction before analysis of the callee
-	_predInst = &I;
-	_super->visit(callee);
-
-	set<Value *> outDiff;
-	set_diff(_OUT[&calleeLastI], _IN[&calleeFirstI], outDiff);
-
-	DSGraph * calleeDSG = _functionToDSGraph[&callee];
-	vector<Value *> fmlAliases;
-
-	pFormal = callee.arg_begin();
-	Value *curArg = 0;
-	for(unsigned k = 0; pFormal != Epf && k < I.getNumArgOperands() && k < calleeFormals->size(); ++k )
-	{
-		Argument &fml = (*pFormal);
-		curArg = I.getArgOperand(k);
-		getAliases(&fml, calleeDSG, fmlAliases);
-		fmlAliases.insert(fmlAliases.begin(), &fml);
-
-		for(unsigned j = 0; j < fmlAliases.size(); ++j) {
-			if ( !(*calleeFormals)[k] && outDiff.count(fmlAliases[j]) > 0 ) {
-				if ( !isValueTainted(&I, curArg) ) {
-					insertToOutFlow(&I, curArg);
-					DEBUG(errs() << callee.getName() << ": Setting formal arg ";
-					curArg->print(errs()); errs()<< "(" << k << ") as tainted \n");
-					setProcArgTaint(&callee, k, true);
-				}
-				break;
-			}
 		}
 	}
 
