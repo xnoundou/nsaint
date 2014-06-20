@@ -1,12 +1,30 @@
 A. Required Tools
    --------------
-
-   1. LLVM 3.3
-      http://llvm.org/releases
-
-   2. Pointer Analysis (poolalloc)
+   1. Poolalloc (Pointer analysis)
       https://github.com/llvm-mirror/poolalloc
-      Use git tag 181c62f1d29ae9de660bad0a6593130d15803abc
+      # Use the git tag '181c62f1d29ae9de660bad0a6593130d15803abc'
+ 
+      Configuration
+      -------------     
+      You may use the script 'configure-llvm.sh' located
+      in the folder 'scripts' to configure poolalloc before
+      building it.
+
+
+   2. LLVM (Version 3.3)
+      http://llvm.org/releases
+      
+      Configuration
+      ------------- 
+      You may use the script 'configure-poolalloc.sh' located
+      in the folder 'scripts' to configure the package.
+
+      Pointer Analysis:
+      You need to use 'poolalloc' describe in (1). One way to have
+      access to the 'include' folder of poolalloc from within LLVM
+      is to create a symbolic link to the 'include/dsa' folder in
+      poolalloc: 
+      $LLVM_HOME/build/include/dsa --> $POOL_ALLOC/include/dsa
 
 B. Usefull Environment Variables to Set
    ------------------------------------

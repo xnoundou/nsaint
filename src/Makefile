@@ -1,6 +1,6 @@
 
 LEVEL = ../../..
-LIBRARYNAME = CTaint
+LIBRARYNAME = waint
 SHARED_LIBRARY = 1
 LOADABLE_MODULE = 1
 USEDLIBS =
@@ -9,7 +9,7 @@ USEDLIBS =
 # from the hello plugin.
 ifneq ($(REQUIRES_RTTI), 1)
 ifneq ($(REQUIRES_EH), 1)
-EXPORTED_SYMBOL_FILE = $(PROJ_SRC_DIR)/CTaint.exports
+EXPORTED_SYMBOL_FILE = $(PROJ_SRC_DIR)/waint.exports
 endif
 endif
 

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 OPT=/home/noundou/tools/llvm-3.3.src/build/Release+Asserts/bin/opt
-TESTS="/home/noundou/tools/llvm-3.3.src/lib/Analysis/CTaint/tests"
+TESTS="/home/noundou/tools/llvm-3.3.src/lib/Analysis/waint/tests"
 RESULT="results"
 IRTYPE="b"
 

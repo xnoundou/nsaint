@@ -1133,7 +1133,7 @@ void CTaintAnalysis::visitReturnInst(ReturnInst &I) {
 //**************************************************************************************
 
 static RegisterPass<CTaintAnalysis>
-X("waint", "CTaint Module Pass",
+X("waint", "Waterloo Taint Analysis Module Pass",
   false /* Only looks at CFG */,
   true /* Analysis Pass */);
 
