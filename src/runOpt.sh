@@ -84,7 +84,7 @@ fi
 
 set -x
 
-make -f Makefile.ctaint compile > /dev/null
+make -f Makefile.waint compile > /dev/null
 
 BOOST_LIB=/home/noundou/tools/boost/stage/lib
 

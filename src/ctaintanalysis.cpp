@@ -229,8 +229,7 @@ CTaintAnalysis::~CTaintAnalysis()
 		Function *F = 0;
 		for(unsigned k = 0; k < _allProcsTPOrder.size(); ++k) {
 			F = _allProcsTPOrder[k];
-			vector<bool> * argVec = _summaryTable[F];
-			delete argVec;
+			if (_summaryTable.count(F) > 0)	delete _summaryTable[F];
 		}
 	}
 
@@ -238,8 +237,8 @@ CTaintAnalysis::~CTaintAnalysis()
 		Function *F = 0;
 		for(unsigned k = 0; k < _allProcsTPOrder.size(); ++k) {
 			F = _allProcsTPOrder[k];
-			AnalysisWarnings * warnings = _allWarnings[F];
-			deleteAnalysisWarning(warnings);
+			if (_allWarnings.count(F) > 0)	
+			  deleteAnalysisWarning(_allWarnings[F]);
 		}
 	}
 
@@ -247,20 +246,13 @@ CTaintAnalysis::~CTaintAnalysis()
 		typedef map<Value *, vector<Instruction *> * >::iterator it_type;
 		for(it_type it = _valueToTaintInst.begin(), itEnd = _valueToTaintInst.end();
 				it != itEnd; ++it) {
-			vector<Instruction *> *insts = it->second;
-			if (insts)
-			delete insts;
+		    vector<Instruction *> *insts = it->second;
+		    if (insts) {
+		    	insts->clear();	delete insts;
+		    }
 		}
 	}*/
 
-	/*{
-		typedef map<vector<Value *> *, Instruction * >::iterator it_type;
-		for(it_type it = _instToVal.begin(), itEnd = _instToVal.end();
-				it != itEnd; ++it) {
-			vector<Instruction *> *insts = it->second;
-			delete insts;
-		}
-	}*/
 }
 
 //**************************************************************************************
@@ -272,19 +264,16 @@ void CTaintAnalysis::printSummaryTable()
 			it != itEnd; ++it) {
 		Function *f = it->first;
 		vector<bool> *taintInfo = it->second;
-
 		if (!taintInfo) continue;
 
 		DEBUG_WITH_TYPE("waint-warnings", errs() << "Function " << f->getName() << "\n");
 
 		unsigned s = taintInfo->size();
-
+		unsigned ri = s-1;
 		for(unsigned k = 0; k < s; ++k) {
 			if ( !taintInfo->at(k) ) continue;
-			if (s+1 == k)
-				DEBUG_WITH_TYPE("waint-warnings", errs().indent(INDENT_LENGTH) << "Return value is tainted\n");
-			else
-				DEBUG_WITH_TYPE("waint-warnings", errs().indent(INDENT_LENGTH) << "Parameter " << k+1 << " is tainted\n");
+			if (k == ri)	DEBUG_WITH_TYPE("waint-warnings", errs().indent(INDENT_LENGTH) << "Return value is tainted\n");
+			else	DEBUG_WITH_TYPE("waint-warnings", errs().indent(INDENT_LENGTH) << "Parameter " << k+1 << " is tainted\n");
 		}
 	}
 }
@@ -561,7 +550,7 @@ void CTaintAnalysis::insertToOutFlow(Instruction *I, Value *v, DSGraph *dsg)
 	DEBUG_WITH_TYPE("waint-tainted", v->print(errs()); errs() << " gets tainted\n");
 
 	{
-		if ( !_valueToTaintInst[v] )
+		if ( 0 == _valueToTaintInst.count(v) )
 			_valueToTaintInst[v] = new vector<Instruction *>;
 		vectorUniqueInsert(I, *_valueToTaintInst[v]);
 	}
@@ -577,7 +566,7 @@ void CTaintAnalysis::insertToOutFlow(Instruction *I, Value *v, DSGraph *dsg)
 			_OUT[I].insert(vAliases[k]);
 			DEBUG_WITH_TYPE("waint-tainted", vAliases[k]->print(errs());errs() << " \t also gets tainted\n");
 
-			if ( !_valueToTaintInst[vAliases[k]] )
+			if ( 0 == _valueToTaintInst.count(vAliases[k]) )
 				_valueToTaintInst[vAliases[k]] = _valueToTaintInst[v];
 		}
 	}
@@ -723,10 +712,40 @@ void CTaintAnalysis::visitCallInst(CallInst & I)
 		      		<< " does not call "<< callee->getName() << " in our callgraph \n");
 		  return ;
 		}
+		vector<bool> *calleeFormals = _summaryTable[callee];
 
-		depth += 1;
-		handleContextCall(I, *callee);
-		depth -= 1;
+		if (!calleeFormals) {
+			DEBUG(errs() << "\tWe do not analyze function '" << callee->getName() << "'\n");
+		}
+		else {
+			depth += 1;
+			DSGraph *callerDSG = _functionToDSGraph[caller];
+			Instruction &calleeFirstI = callee->front().front();
+			Function::arg_iterator pFormal = callee->arg_begin(), Epf = callee->arg_end();
+
+			vector<Value *> fmlAliases;
+			Value *curArg = 0;
+
+			for(unsigned k = 0; k < I.getNumArgOperands() && pFormal != Epf; ++pFormal, ++k ) {
+				Argument *aFormal = pFormal;
+				curArg = I.getArgOperand(k);
+				if ( !(*calleeFormals)[k] ) {
+					if ( isValueTainted(&I, curArg) )	_IN[&calleeFirstI].insert(curArg);
+
+					if (aFormal) {
+						getAliases(aFormal, callerDSG, fmlAliases);
+						for (unsigned j = 0; j < fmlAliases.size(); ++j) {
+							if ( fmlAliases[j] && isValueTainted(&I, fmlAliases[j]) )
+								_IN[&calleeFirstI].insert(fmlAliases[j]);
+						}
+					}
+				}
+			}
+
+			handleContextCall(I, *callee);
+
+			depth -= 1;
+		}
 	}
 	else if (_interRunning) {
 		//Context-insensitive analysis
@@ -920,10 +939,11 @@ void CTaintAnalysis::handleFormatSink(CallInst &I, Function &callee, unsigned fo
 		bool isOnNewLine = warnings->addIssue(line, FORMAT_STRING_VUL);
 		if (isOnNewLine) {
 			++NumWarnings;
-			DEBUG_WITH_TYPE("waint-warnings", errs() << "[waint][fmtvul] ");
-			DEBUG_WITH_TYPE("waint-warnings", errs() << " Argument at position " << formatPos
-													 << " of function '" <<  callee.getName()
-													 << "' shall be a format string [line " << line << "] \n");
+			DEBUG_WITH_TYPE("waint-warnings", errs() << "[waint][fmtvul-3] ");
+			DEBUG_WITH_TYPE("waint-warnings", errs() << " Argument at position "
+			    << formatPos << " of function '" <<  callee.getName()
+			    << "' shall be a format string [line " << line << "] \n");
+
 			DEBUG_WITH_TYPE("waint-warnings", errs().indent(INDENT_LENGTH) << "# Not => ");
 			if (curArg)	DEBUG_WITH_TYPE("waint-warnings", curArg->print(errs()));
 			DEBUG_WITH_TYPE("waint-warnings", errs() << "\n");
@@ -939,12 +959,12 @@ void CTaintAnalysis::handleFormatSink(CallInst &I, Function &callee, unsigned fo
 void CTaintAnalysis::checkTaintedValueUse(CallInst &I, Function &callee, unsigned formatPos /* = _FUNCTION_NOT_FORMAT */)
 {
 	Function *caller = I.getParent()->getParent();
-    AnalysisWarnings *warnings = _allWarnings[caller];
+	AnalysisWarnings *warnings = _allWarnings[caller];
 
-    assert ( warnings && "No AnalysisWarning data structure was instantiated for this callee!");
+	assert ( warnings && "No AnalysisWarning data structure was instantiated for this callee!");
 
 	StringRef calleeName = callee.getName();
-	StringRef callerName = caller->getName();
+	//StringRef callerName = caller->getName();
 
 	unsigned targetPos = _FUNCTION_NOT_FORMAT;
 	if (_formatSinks.count(calleeName) > 0)
@@ -952,67 +972,75 @@ void CTaintAnalysis::checkTaintedValueUse(CallInst &I, Function &callee, unsigne
 
 	Value *curArg = 0;
 	unsigned line = getLineNumber(I);
-	unsigned argNr = I.getNumArgOperands();
 	bool isFormatSink = (_FUNCTION_NOT_FORMAT != formatPos);
 
 	bool isOnNewLine = false;
 	bool isOutputVar = false;
 
-	for(unsigned k = 0; k < argNr; ++k) {
-	    curArg = I.getArgOperand(k);
+	for(unsigned k = 0, display = 1; k < I.getNumArgOperands(); ++k, ++display) {
+		curArg = I.getArgOperand(k);
+		// Check for tainted value usage
+		if ( isValueTainted(&I, curArg) ) {
+			isOnNewLine = warnings->addIssue(line, TAINTED_VALUE_USE, curArg);
+			isOutputVar = (targetPos-1 == k && isFormatSink);
 
-	    // Check for tainted value usage
-	    if ( isValueTainted(&I, curArg) ) {
+			//We don't report the sink parameter of a format string function as tainted value usage
+			if (!isOnNewLine || isOutputVar)	continue;
 
-	    	isOnNewLine = warnings->addIssue(line, TAINTED_VALUE_USE, curArg);
-	    	isOutputVar = (targetPos-1 == k && isFormatSink);
+			++NumIssues;
+			//TODO: refine this number by checking the reported function and tainted value
+			++NumTaintedValUse;
+			++NumWarnings;
 
-	    	//We don't report the sink parameter of a format string function as tainted value usage
-	    	if (!isOnNewLine || isOutputVar)	continue;
+			if (display == formatPos) {
+				DEBUG_WITH_TYPE("waint-warnings", errs() << "[waint][fmtvul-1] Use of tainted format string (argument #"
+						<< display << ") in sink function '" << calleeName << ". [line " << line << "]\n");
+				DEBUG_WITH_TYPE("waint-warnings", if (curArg->hasName()) errs().indent(CTaintAnalysis::INDENT_LENGTH)
+						<< curArg->getName(); else curArg->print(errs().indent(CTaintAnalysis::INDENT_LENGTH)));
+			}
+			else if (display > formatPos) {
+				DEBUG_WITH_TYPE("waint-warnings", errs() << "[waint][fmtvul-2] Parameter #"
+						<< display << " of sink format string function '" << calleeName
+						<< "' is tainted. [line " << line << "]\n");
+				DEBUG_WITH_TYPE("waint-warnings", if (curArg->hasName()) errs().indent(CTaintAnalysis::INDENT_LENGTH)
+						<< curArg->getName(); else curArg->print(errs().indent(CTaintAnalysis::INDENT_LENGTH)));
+			}
+			else {
+				assert(_formatSinks.count(calleeName) > 0);
+				DEBUG_WITH_TYPE("waint-warnings", errs() << "[waint][tval] Use of tainted value as parameter #" << display
+						<< " in sink function '" << calleeName << "'. [line " << line << "]\n");
+				DEBUG_WITH_TYPE("waint-warnings", if (curArg->hasName()) errs().indent(CTaintAnalysis::INDENT_LENGTH)
+						<< curArg->getName(); else curArg->print(errs().indent(CTaintAnalysis::INDENT_LENGTH)));
 
-	    	++NumIssues;
-	    	//TODO: refine this number by checking the reported function and tainted value
-	    	++NumTaintedValUse;
-	    	++NumWarnings;
-	    	//Emit a new warning
-	    	if (isFormatSink) {
-	    		DEBUG_WITH_TYPE("waint-warnings", errs() << "[waint][tval] In '" << callerName << "', tainted value used in sink function '"
-	    				<< calleeName << "' [line " << line << "]\n");
-	    		DEBUG_WITH_TYPE("waint-warnings", if (curArg->hasName()) errs().indent(CTaintAnalysis::INDENT_LENGTH)
-	    				<< curArg->getName(); else curArg->print(errs().indent(CTaintAnalysis::INDENT_LENGTH)));
-	    	}
-	    	else {
-	    		assert(_formatSinks.count(calleeName) > 0);
-	    		DEBUG_WITH_TYPE("waint-warnings", errs() << "[waint][tval] In '" << callerName << "', tainted value used in sink function '"
-	    				<< calleeName << "' [line " << line << "]\n");
-	    		DEBUG_WITH_TYPE("waint-warnings", if (curArg->hasName()) errs().indent(CTaintAnalysis::INDENT_LENGTH)
-	    				<< curArg->getName(); else curArg->print(errs().indent(CTaintAnalysis::INDENT_LENGTH)));
+				DEBUG_WITH_TYPE("waint-warnings", errs().indent(CTaintAnalysis::INDENT_LENGTH)
+						<< " [Parameter #" << targetPos << "] of '" << calleeName << "' gets tainted\n");
+			}
 
-	    		DEBUG_WITH_TYPE("waint-warnings", errs().indent(CTaintAnalysis::INDENT_LENGTH)
-	    				<< " [Parameter #" << targetPos << "] of '" << calleeName << "' gets tainted\n");
-	    	}
+			Instruction *curI = 0;
+			Function *curf = 0;
+			unsigned hNum = line+1;
+			vector<Instruction *> *taintingHist = _valueToTaintInst[curArg];
 
-	    	Instruction *curI = 0;
-	    	Function *curf = 0;
-	    	vector<Instruction *> *taintingHist = _valueToTaintInst[curArg];
+			if (taintingHist) {
+				errs().indent(INDENT_LENGTH) << "Taint History (" << taintingHist->size() << ")\n";
+				for (vector<Instruction *>::iterator it = taintingHist->begin(), itE = taintingHist->end();
+						it != itE; ++it) {
+					curI = (*it);
+					hNum = getLineNumber(*curI);
+					errs().indent(INDENT_LENGTH); curI->print(errs());
+					errs() << " [" << hNum << "] \n";
 
-	    	if (taintingHist) {
-	    		errs().indent(INDENT_LENGTH) << "Taint History (" << taintingHist->size() << ")\n";
-	    		for (vector<Instruction *>::reverse_iterator it = taintingHist->rbegin(), itE = taintingHist->rend();
-	    				it != itE; ++it) {
-	    			curI = (*it);
-	    			errs().indent(INDENT_LENGTH); curI->print(errs());
-	    			errs() << " [" << getLineNumber(*curI) << "] \n";
+					if ( CallInst *CI = dyn_cast<CallInst>(curI)) {
+						curf = CI->getCalledFunction();
+						//DEBUG_WITH_TYPE("waint-warnings", errs() << " ## function " << curf->getName() << " param: " << k);
+						if (curf && _summaryTable.count(curf) > 0) printSummaryTableInfo(curf, k);
+					}
 
-	    			if (CallInst *CI = dyn_cast<CallInst>(curI)) {
-	    				curf = CI->getCalledFunction();
-	    				//DEBUG_WITH_TYPE("waint-warnings", errs() << " ## function " << curf->getName() << " param: " << k);
-	    				if (curf && _summaryTable.count(curf) > 0) printSummaryTableInfo(curf, k);
-	    			}
-	    		}
-	    	}
+					hNum = line + 1;
+				}
+			}
 
-	    }
+		}
 	}
 
 }
@@ -1026,83 +1054,52 @@ void CTaintAnalysis::checkTaintedValueUse(CallInst &I, Function &callee, unsigne
 void CTaintAnalysis::handleContextCall(CallInst &I, Function &callee)
 {
 	DEBUG(errs() << "CONTEXT CALL [call func]: ";I.print(errs());errs()<<"\n");
-	
+
 	//Now copy call arguments taint information into
 	//the callee formal parameter taint information
 
+	++NumContextCalls;
+
+	Instruction &calleeFirstI = callee.front().front();
+	Function::arg_iterator pFormal = callee.arg_begin(), Epf = callee.arg_end();
+
 	vector<bool> *calleeFormals = _summaryTable[&callee];
 
-	if (!calleeFormals) {
-		DEBUG(errs() << "\tWe do not analyze function '" << callee.getName() << "'\n");
+	Instruction &calleeLastI = callee.back().back();
+
+	//Now analyze the callee
+	//We set the predecessor instruction before analysis of the callee
+	_predInst = &I;
+	_super->visit(callee);
+
+	set<Value *> outDiff;
+	set_diff(_OUT[&calleeLastI], _IN[&calleeFirstI], outDiff);
+
+	DSGraph * calleeDSG = _functionToDSGraph[&callee];
+	vector<Value *> fmlAliases;
+
+	pFormal = callee.arg_begin();
+	Value *curArg = 0;
+	for(unsigned k = 0; pFormal != Epf && k < I.getNumArgOperands() && k < calleeFormals->size(); ++k )
+	{
+		Argument &fml = (*pFormal);
+		curArg = I.getArgOperand(k);
+		getAliases(&fml, calleeDSG, fmlAliases);
+		fmlAliases.insert(fmlAliases.begin(), &fml);
+
+		for(unsigned j = 0; j < fmlAliases.size(); ++j) {
+			if ( !(*calleeFormals)[k] && outDiff.count(fmlAliases[j]) > 0 ) {
+				if ( !isValueTainted(&I, curArg) ) {
+					insertToOutFlow(&I, curArg);
+					DEBUG(errs() << callee.getName() << ": Setting formal arg ";
+					curArg->print(errs()); errs()<< "(" << k << ") as tainted \n");
+					setProcArgTaint(&callee, k, true);
+				}
+				break;
+			}
+		}
 	}
-	else {
-	  ++NumContextCalls;
 
-	  unsigned formalCount = calleeFormals->size();
-	  unsigned argCount = I.getNumArgOperands();
-
-	  Instruction &calleeFirstI = callee.front().front();
-	  Function::arg_iterator pFormal = callee.arg_begin(), Epf = callee.arg_end();
-
-	  Value *curArg = 0;
-	  for(unsigned k = 0;
-			  pFormal != Epf && k < argCount && k < formalCount;
-			  ++k )
-	  {
-		  Argument &aFormal = (*pFormal);
-		  curArg = I.getArgOperand(k);
-
-		  //assert(k == aFormal.getArgNo() &&
-				  //"Mismatch between the formal and actual argument");
-
-		  //If the call argument is tainted and the callee's corresponding formal
-		  //parameter has not already been marked as tainted by previous
-		  //analyzes (e.g. intraprocedural), then copy call arguments taint
-		  //information into the callee.
-
-		  if ( !(*calleeFormals)[k] && isValueTainted(&I, curArg) )
-			  _IN[&calleeFirstI].insert(&aFormal);
-		  ++pFormal;
-	  }
-
-	  Instruction &calleeLastI = callee.back().back();
-
-	  //Now analyze the callee
-	  //We set the predecessor instruction before analysis of the callee
-	  _predInst = &I;
-	  _super->visit(callee);
-	  
-	  set<Value *> outDiff;
-	  set_diff(_OUT[&calleeLastI], _IN[&calleeFirstI], outDiff);
-
-	  DSGraph * calleeDSG = _functionToDSGraph[&callee];
-	  vector<Value *> fmlAliases; 
-
-	  pFormal = callee.arg_begin();
-	  curArg = 0;
-	  for(unsigned k = 0;
-			  pFormal != Epf && k < argCount && k < formalCount;
-			  ++k )
-	  {
-		  Argument &fml = (*pFormal);
-		  curArg = I.getArgOperand(k);
-		  getAliases(&fml, calleeDSG, fmlAliases);
-		  fmlAliases.insert(fmlAliases.begin(), &fml);
-
-		  for(unsigned j = 0; j < fmlAliases.size(); ++j) {
-			  if ( !(*calleeFormals)[k] && outDiff.count(fmlAliases[j]) > 0 ) {
-				  if ( !isValueTainted(&I, curArg) ) {
-					  insertToOutFlow(&I, curArg);
-					  DEBUG(errs() << callee.getName() << ": Setting formal arg ";
-					  curArg->print(errs()); errs()<< "(" << k << ") as tainted \n");
-					  setProcArgTaint(&callee, k, true);
-				  }
-				  break;
-			  }
-		  }
-	  }
-
-	}
 }
 
 //**************************************************************************************

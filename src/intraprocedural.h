@@ -55,6 +55,7 @@ void CTaintIntraProcedural::doAnalysis() {
 	errs() << "## Starting intraprocedural analysis\n";
 	analyze();
 	handleFormals();
+	//_analysis->printSummaryTable();
 	_analysis->setIntraWasRun(true);
 }
 
