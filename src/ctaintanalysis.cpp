@@ -341,6 +341,8 @@ bool CTaintAnalysis::runOnModule(Module &m)
 	assert(_aliasInfo && "An instance of DSA could not be created!");
 	assert(_cg && "An instance of the callgraph could not be created!");
 
+	_globalsGraph = _aliasInfo->getGlobalsGraph();
+
 	Function *f = 0;
 	for(CallGraph::iterator pc = _cg->begin(), Epc = _cg->end();
 			pc != Epc;
@@ -478,6 +480,7 @@ void CTaintAnalysis::getAliases(Value *v,
 								DSGraph *dsg,
 								vector<Value *> &aliases)
 {
+	aliases.clear();
 	if (dsg && dsg->hasNodeForValue(v)) {
 		//If value v is sharing the same DSNode
 		//as another value w, then mayAlias(v,w)
@@ -486,6 +489,8 @@ void CTaintAnalysis::getAliases(Value *v,
 
 		DSGraph::ScalarMapTy::iterator sIt = scalarMap.begin();
 		DSGraph::ScalarMapTy::iterator EsIt = scalarMap.end();
+
+		aliases.push_back(v);
 
 		const Value *vAlias = 0;
 		while(sIt != EsIt) {
@@ -505,9 +510,7 @@ void CTaintAnalysis::getAliases(Value *v,
 inline void CTaintAnalysis::vectorUniqueInsert(Instruction *I, vector<Instruction *> &v)
 {
 	vector<Instruction *>::iterator it = find(v.begin(), v.end(), I);
-	if (v.end() == it) {
-		v.push_back(I);
-	}
+	if (v.end() == it)	v.push_back(I);
 }
 
 //**************************************************************************************
@@ -600,7 +603,7 @@ bool CTaintAnalysis::calls(Function *caller, Function *callee)
  * Returns 'true' if value 'v' is tainted at the program point before
  * instruction 'I'.
  */
-bool CTaintAnalysis::isValueTainted(Instruction *I, Value *v)
+inline bool CTaintAnalysis::isValueTainted(Instruction *I, Value *v)
 {
 	return ( 0 < _IN[I].count(v) );
 }
@@ -640,9 +643,7 @@ void CTaintAnalysis::visit(Instruction &I)
 void CTaintAnalysis::visitLoadInst(LoadInst &I) {
 	DEBUG(errs() << "LOAD [p=*q]: "; I.print(errs()); errs()<<"\n");
 	Value *q = I.getPointerOperand();
-	if ( isValueTainted(&I, q)) {
-		insertToOutFlow(&I, &I);
-	}
+	if ( isValueTainted(&I, q))	insertToOutFlow(&I, &I);
 }
 
 //**************************************************************************************
@@ -652,9 +653,7 @@ void CTaintAnalysis::visitStoreInst(StoreInst &I)
 	DEBUG(errs() << "STORE [*p=q]: ";I.print(errs());errs()<<"\n");
 	Value *q = I.getValueOperand();
 	Value *p = I.getPointerOperand();
-	if ( isValueTainted(&I, q)) {
-		insertToOutFlow(&I, p);
-	}
+	if ( isValueTainted(&I, q))	insertToOutFlow(&I, p);
 }
 
 //**************************************************************************************
@@ -698,7 +697,7 @@ void CTaintAnalysis::visitCallInst(CallInst & I)
 		//The context-sensitive analysis is running
 		static unsigned depth = 0;
 
-		if (depth > 2)
+		if (depth > 1)
 			return;
 
 		Function *callee = I.getCalledFunction();
@@ -780,8 +779,6 @@ void CTaintAnalysis::visitCallInst(CallInst & I)
 				}
 			}
 
-			//handleContextCall(I, *callee);
-
 			depth -= 1;
 		}
 	}
@@ -826,15 +823,13 @@ void CTaintAnalysis::visitCallInstSink(CallInst & I)
 
 	string calleeName = callee->getName().str();
 
-	bool foundSink = _formatSinks.count(calleeName) > 0;
 	unsigned formatPos = isFormatSink(calleeName);
-	bool formatSink = (_FUNCTION_NOT_FORMAT != formatPos);
 
-	if (formatSink) {
+	if (_FUNCTION_NOT_FORMAT != formatPos) {
 		DEBUG_WITH_TYPE("waint-sinks", errs() << "[WAINT]Handling sink format string function '" << calleeName << "'\n");
 		handleFormatSink(I, *callee, formatPos);
 	}
-	else if (foundSink) {
+	else if (_formatSinks.count(calleeName) > 0) {
 		DEBUG_WITH_TYPE("waint-sinks", errs() << "[WAINT]Handling sink function '" << calleeName << "'\n");
 		checkTaintedValueUse(I, *callee);
 	}
@@ -844,102 +839,147 @@ void CTaintAnalysis::visitCallInstSink(CallInst & I)
 
 unsigned CTaintAnalysis::getLineNumber(Instruction &I)
 {
-	int line = -1;
 	if (MDNode *N = I.getMetadata("dbg")) {
 	    DILocation Loc(N);
-	    line = Loc.getLineNumber();
+	    return Loc.getLineNumber();
 	}
-	return line;
+	return -1;
 }
 
 //**************************************************************************************
 
-StringRef CTaintAnalysis::getFormatStr(Value *curArg, DSGraph *dsg)
+const char *CTaintAnalysis::getConstantCString(ConstantExpr *C)
 {
-	StringRef ret;
-
-	ConstantExpr *C = 0;
 	ArrayRef<Constant *> idxList;
-	Constant *elemPtr = 0;
-
-	vector<Value *> aliases;
-	getAliases(curArg, dsg, aliases);
-
-	for(unsigned i = 0; i < aliases.size(); ++i) {
-		C = dyn_cast<ConstantExpr>(aliases[i]);
-		if (C) {
-			elemPtr = ConstantExpr::getGetElementPtr(C, idxList);
-			if (elemPtr) {
-				if (GlobalVariable *d = dyn_cast<GlobalVariable>(elemPtr->getOperand(0))) {
-					if (d->hasInitializer()) {
-						ret = cast<ConstantDataArray>(d->getInitializer())->getAsCString();
-						//errs() << "## pointer. stopped at " << ret << "\n";
-						break;
-					}
-				}
+	Constant *elemPtr = ConstantExpr::getGetElementPtr(C, idxList);
+	if (elemPtr) {
+		if (GlobalVariable *d = dyn_cast<GlobalVariable>(elemPtr->getOperand(0))) {
+			if (d->hasInitializer()) {
+				StringRef res = cast<ConstantDataArray>(d->getInitializer())->getAsCString();
+				return res.str().c_str();
 			}
 		}
 	}
-
-	return ret;
+	return 0;
 }
 
-bool CTaintAnalysis::checkFormatStr(Function &caller,
-									  Value *curArg,
-									  vector<string::size_type> &result, unsigned line)
+//**************************************************************************************
+
+const char *CTaintAnalysis::getCStringInitializer(Value *w, DSGraph *dsg)
 {
-	bool hasFmtStr = false;
-	string fmtStr;
+	vector<Value *> aliases;
+	getAliases(w, dsg, aliases);
 
-	result.clear();
-
-	if (ConstantExpr *C = dyn_cast<ConstantExpr>(curArg)) {
-		ArrayRef<Constant *> idxList;
-		Constant *elemPtr = ConstantExpr::getGetElementPtr(C, idxList);
-		if (elemPtr) {
-			//check this is a string constant. If not, then this is a format string vulnerability
-			if (GlobalVariable *d = dyn_cast<GlobalVariable>(elemPtr->getOperand(0))) {
-				//errs() << "\t found global variable";
-				if (d->hasInitializer()) {
-					if (line == 1642 || line == 2922 || line == 748)
-						errs() << "\t has initializer at line " << line << " : " << (cast<ConstantDataArray>(d->getInitializer()))->getAsCString() << "\n";
-					fmtStr.assign(cast<ConstantDataArray>(d->getInitializer())->getAsCString());
-					hasFmtStr = true;
+	if (aliases.size() > 1) {
+		Value *v = 0;
+		const char *fmt = 0;
+		for(unsigned i = 0; i < aliases.size(); ++i) {
+			v = aliases[i];
+			if (ConstantExpr *C = dyn_cast<ConstantExpr>(v)) {
+				fmt = getConstantCString(C);
+				if (fmt){
+				    //errs() << "## OUF-1 found it " << fmt << "\n";
+				    return fmt;
 				}
 			}
 		}
 	}
+
+	else if (w->getType()->isPointerTy()) {
+		//errs() << "## w "; w->dump(); errs() << " is used in instruction:\n";
+		//errs() << *I << "\n";
+
+		//This could be a load for instance. Let's look at all its 'def'.
+		for (Value::use_iterator u = w->use_begin(), ue = w->use_end(); u != ue; ++u) {
+			if (Instruction *I = dyn_cast<Instruction>(*u)) {
+				Function *wCaller = I->getParent()->getParent();
+
+				getAliases(w, _functionToDSGraph[wCaller], aliases);
+				for(unsigned i = 0; i < aliases.size(); ++i) {
+					if (ConstantExpr *C = dyn_cast<ConstantExpr>(aliases[i])) {
+						const char *ouf = getConstantCString(C);
+						errs() << "## OUF-2 found it " << ouf << "\n";
+						return ouf;
+					}
+				}
+
+				if (CallInst *CI = dyn_cast<CallInst>(w)) {
+					Function *callee = CI->getCalledFunction();
+					getAliases(w, _functionToDSGraph[callee], aliases);
+					for(unsigned i = 0; i < aliases.size(); ++i) {
+						if (ConstantExpr *C = dyn_cast<ConstantExpr>(aliases[i])) {
+							const char *ouf = getConstantCString(C);
+							errs() << "## OUF-3 found it " << ouf << "\n";
+							return ouf;
+						}
+					}
+				}
+
+			}
+		}
+	}
+
 	else {
-		if (curArg->getType()->isPointerTy()) {
-			DSGraph *dsg = _functionToDSGraph[&caller];
-			if (dsg) {
-				StringRef pFmtStr = getFormatStr(curArg, dsg);
-				//if (line == 1642)
-					//errs() << "## pointer. got: " << pFmtStr << " at line " << line << "\n";
-				if (!pFmtStr.empty()) {
-					fmtStr.assign(pFmtStr);
-					hasFmtStr = true;
+        getAliases(w, _globalsGraph, aliases);
+
+	if (aliases.size() > 1) {
+		Value *v = 0;
+		const char *fmt = 0;
+		for(unsigned i = 0; i < aliases.size(); ++i) {
+			v = aliases[i];
+			if (ConstantExpr *C = dyn_cast<ConstantExpr>(v)) {
+				fmt = getConstantCString(C);
+				if (fmt){
+				    errs() << "## OUF-F found it " << fmt << "\n";
+				    return fmt;
 				}
 			}
 		}
 	}
-
-	//All index of percent characters within the format string
-	string::size_type found = fmtStr.find(PERCENT);
-	string::size_type last = found;
-
-	//In a format string, two consecutive percents (%%) have to be treated as a single %
-	bool isDoublePercent = true;
-
-	while(found != string::npos) {
-		isDoublePercent = ( last+1 == found );
-		if (isDoublePercent) result.pop_back();
-		result.push_back(found);
-		last = found;
-		found = fmtStr.find(PERCENT, found+1);
 	}
 
-	return hasFmtStr;
+
+    return 0;
+}
+
+//**************************************************************************************
+
+bool CTaintAnalysis::checkFormatStr(Function &caller,
+				    				Value *curArg,
+				    				vector<string::size_type> &result, unsigned line)
+{
+	//const char *fmt = getCStringInitializer(curArg, _globalsGraph);
+	//if (line == 1642 || line == 1650 || line == 748)
+	  //errs() << "## DEBUGGING\n";
+	const char *fmt = getCStringInitializer(curArg, _functionToDSGraph[&caller]);
+	if (fmt) {
+		string fmtStr(fmt);
+
+		//All index of percent characters within the format string
+		string::size_type found = fmtStr.find(PERCENT);
+		string::size_type last = found;
+
+		//In a format string, two consecutive percents (%%) have to be treated as a single %
+		bool isDoublePercent = true;
+
+		while(found != string::npos) {
+			isDoublePercent = ( last+1 == found );
+			if (isDoublePercent) result.pop_back();
+			result.push_back(found);
+			last = found;
+			found = fmtStr.find(PERCENT, found+1);
+		}
+	}
+
+	//if (line == 1642 || line == 1650 || line == 748) {
+	  //  if (fmt)
+	    //    errs() << "## fmt: " << fmt << "\n";
+	    //else
+	      //  errs() << "## fmt: NULL\n";
+	  //errs() << "## DEBUGGING END\n";
+	//}
+
+	return 0 != fmt;
 }
 
 //**************************************************************************************
@@ -951,14 +991,12 @@ void CTaintAnalysis::handleFormatSink(CallInst &I, Function &callee, unsigned fo
 
 	assert ( warnings && "No AnalysisWarning data structure was instantiated for this callee!");
 
-	unsigned fmtPos = formatPos - 1;
+	unsigned realPos = formatPos - 1;
 	unsigned argNr = I.getNumArgOperands();
-	assert(fmtPos < argNr && "The format string parameter is invalid");
+	assert(realPos < argNr && "The format string parameter is invalid");
 
 	vector<string::size_type> formatString;
-	Value *curArg = I.getArgOperand(fmtPos);
-
-	//errs() << "## Before format str => "; curArg->print(errs()); errs() << "\n";
+	Value *curArg = I.getArgOperand(realPos);
 
 	unsigned line = getLineNumber(I);
 
@@ -1087,9 +1125,6 @@ void CTaintAnalysis::checkTaintedValueUse(CallInst &I, Function &callee, unsigne
 
 void CTaintAnalysis::visitReturnInst(ReturnInst &I) {
 
-	if (_ctxInterRunning)
-		return;
-
 	Function *F = I.getParent()->getParent();
 	DEBUG_WITH_TYPE("waint-summary", errs() << "Analyzing return instruction for " << F->getName() << "\n");
 	Value *retVal = I.getReturnValue();
@@ -1106,6 +1141,35 @@ void CTaintAnalysis::visitReturnInst(ReturnInst &I) {
 		unsigned retPos = _summaryTable[F]->size() - 1;
 		setProcArgTaint(F, retPos, true);
 	}
+}
+
+//**************************************************************************************
+
+void CTaintAnalysis::visitCastInst(CastInst &I)
+{
+	DEBUG(errs() << "CAST []: ";I.print(errs());errs()<<"\n");
+	Value *v = I.getOperand(0);
+	if (isValueTainted(&I, v))	insertToOutFlow(&I, &I);
+}
+
+//**************************************************************************************
+
+void CTaintAnalysis::visitBinaryOperator(BinaryOperator &I)
+{
+	DEBUG(errs() << "BINARYOPERATOR [r = a+b]: ";I.print(errs());errs()<<"\n");
+	Value *left = I.getOperand(0);
+	Value *right = I.getOperand(1);
+	if (isValueTainted(&I, left) || isValueTainted(&I, right))
+	    insertToOutFlow(&I, &I);
+}
+
+//**************************************************************************************
+
+void CTaintAnalysis::visitVACopyInst(VACopyInst &I) {
+	DEBUG(errs() << "VACOPY: ";I.print(errs());errs()<<"\n");
+	Value *src = I.getSrc();
+	Value *dest = I.getDest();
+	if (isValueTainted(&I, src))	insertToOutFlow(&I, dest);
 }
 
 //**************************************************************************************

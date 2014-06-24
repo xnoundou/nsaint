@@ -31,6 +31,9 @@ public:
 	virtual void visitStoreInst(StoreInst &I);
 	virtual void visitCallInst(CallInst &I);
 	virtual void visitReturnInst(ReturnInst &I);
+	virtual void visitCastInst(CastInst &I);
+	virtual void visitBinaryOperator(BinaryOperator &I);
+	virtual void visitVACopyInst(VACopyInst &I);
 
 protected:
 	CTaintIntraProcedural *_intraAnalysis;
@@ -62,6 +65,18 @@ inline void InterProcedural::visitCallInst(CallInst &I) {
 
 inline void InterProcedural::visitReturnInst(ReturnInst &I) {
 	_intraAnalysis->visitReturnInst(I);
+}
+
+inline void InterProcedural::visitCastInst(CastInst &I) {
+	_intraAnalysis->visitCastInst(I);
+}
+
+inline void InterProcedural::visitBinaryOperator(BinaryOperator &I) {
+	_intraAnalysis->visitBinaryOperator(I);
+}
+
+inline void InterProcedural::visitVACopyInst(VACopyInst &I) {
+	_intraAnalysis->visitVACopyInst(I);
 }
 
 inline void InterProcedural::mergeCopyPredOutFlowToInFlow(Instruction &predInst, Instruction &curInst) {

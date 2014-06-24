@@ -142,9 +142,14 @@ public:
 	void visitCallInst(CallInst &I);
 	void visitCallInstSink(CallInst & I);
 	void visitReturnInst(ReturnInst &I);
+	void visitCastInst(CastInst &I);
+   	void visitBinaryOperator(BinaryOperator &I);
+	void visitVACopyInst(VACopyInst &I);
 
 	void checkTaintedValueUse(CallInst &I, Function &callee, unsigned formatPos = _FUNCTION_NOT_FORMAT);
-	StringRef getFormatStr(Value *curArg, DSGraph *dsg);
+
+	const char *getConstantCString(ConstantExpr *C);
+	const char *getCStringInitializer(Value *v, DSGraph *dsg);
 	bool checkFormatStr(Function &caller, Value *curArg, vector<string::size_type> &result, unsigned line = -1);
 	void handleFormatSink(CallInst &I, Function &callee, unsigned formatPos);
 
@@ -253,6 +258,7 @@ private:
 	map<Function *, vector<bool> *> _summaryTable;
 
 	EQTDDataStructures *_aliasInfo;
+	DSGraph *_globalsGraph;
 
 	map<Function *, DSGraph *> _functionToDSGraph;
 

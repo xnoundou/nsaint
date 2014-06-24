@@ -47,6 +47,9 @@ public:
 	virtual void visitStoreInst(StoreInst &I){}
 	virtual void visitCallInst(CallInst &I){}
 	virtual void visitReturnInst(ReturnInst &I){}
+	virtual void visitCastInst(CastInst &I){}
+	virtual void visitBinaryOperator(BinaryOperator &I){}
+	virtual void visitVACopyInst(VACopyInst &I){}
 
 	virtual void analyze();
 
