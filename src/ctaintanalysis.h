@@ -37,6 +37,8 @@ using std::map;
 
 using std::pair;
 
+#include "analysis_warning.h"
+
 using namespace llvm;
 
 namespace {
@@ -44,55 +46,6 @@ namespace {
 #define ENTRY_POINT "main"
 #define SOURCE_ARG_DELIM ","
 #define SINK_ARG_DELIM ","
-
-typedef enum {
-  TAINTED_VALUE_USE,
-  FORMAT_STRING_VUL
-} WarningType;
-
-typedef struct {
-	WarningType warnType;
-	Value *_taintedVal;
-} AnalysisIssue;
-
-typedef struct {
-	map<unsigned, vector<AnalysisIssue *> *> *_lineToIssues;
-
-	bool addIssue(unsigned line, WarningType aWarnType, Value *taintedVal = 0) {
-		bool ret = false;
-
-		if (!(*_lineToIssues)[line]) {
-			(*_lineToIssues)[line] = new vector<AnalysisIssue *>();
-			ret = true;
-		}
-
-		AnalysisIssue *issue = new AnalysisIssue;
-		issue->warnType = aWarnType;
-		if (taintedVal)	issue->_taintedVal = taintedVal;
-
-		(*_lineToIssues)[line]->push_back(issue);
-		return ret;
-	}
-
-} AnalysisWarnings;
-
-typedef map<unsigned, vector<AnalysisIssue *> *>::iterator MLineToIssueIterator;
-
-typedef enum {
-  EMPTY_FORMAT_STRING,
-  WRONG_FORMAT_SPEC,
-  MISSING_FORMAT_SPEC,
-  CORRECT_FORMAT_SPEC
-} FormatStringType;
-
-typedef struct {
-	FormatStringType fmtStrType;
-} FormatStringSpec;
-
-/**
- * (taintInfo, argNo)
- */
-//typedef pair<bool, unsigned> FunctionParam;
 
 /**
  * This class inherits from InstVisitor only because of the context-sensitive
@@ -110,11 +63,6 @@ public:
 	static const unsigned INDENT_LENGTH;
 
 	static const char PERCENT;
-	/*static const boost::regex FS_FLAGS;
-	static const boost::regex FS_WIDTH;
-	static const boost::regex FS_PRECISION;
-	static const boost::regex FS_LENGTH;
-	static const boost::regex FS_SPECIFIER;*/
 
 	void getAnalysisUsage(AnalysisUsage & AU) const;
 	virtual bool runOnModule(Module & F);
@@ -129,6 +77,8 @@ public:
 	void printSummaryTable();
 	void printSummaryTableInfo(Function *f);
 	void printSummaryTableInfo(Function *f, unsigned param);
+
+	void printTaintHistoryList(set<AnalysisIssue *> values);
 
 	inline vector<Function *> *getAllProcsTPOrder() { return &_allProcsTPOrder; }
 	inline vector<Function *> *getAllProcsRTPOrder() { return &_allProcsRTPOrder; }
@@ -193,8 +143,11 @@ private:
 	static map<string, unsigned> _formatStrPos;
 
 	map<Value *, vector<Instruction *> * > _valueToTaintInst;
+	map<Function *, set<AnalysisIssue *> *> _allWarnings;
+	map<unsigned, set<AnalysisIssue *> *> _lineToWarning;
+	set<AnalysisIssue *> _displayOutput;
 
-	map<Function *, AnalysisWarnings * > _allWarnings;
+	bool addIssue(AnalysisIssue *issue);
 
 	/**
 	 * Adds the function with name 'source' as a taint source and
@@ -246,9 +199,7 @@ private:
 	 * Function pointers
 	 */
 	map<string, Function*> _signatureToFunc;
-
 	vector<Function *> _allProcsTPOrder;
-
 	vector<Function *> _allProcsRTPOrder;
 
 	/**
@@ -279,9 +230,6 @@ private:
 	bool vectorContains(vector<T> &v, T &aValue);
 
 	static void log(const string &msg);
-	static AnalysisWarnings *createAnalysisWarning();
-	static void deleteAnalysisWarning(AnalysisWarnings *a);
-
 };
 
 typedef map<Function *, vector<bool> *>::iterator MFuncSumIterator;
@@ -292,6 +240,29 @@ bool CTaintAnalysis::vectorContains(vector<T> &v, T &aValue)
 {
 	vector<Instruction *>::iterator it = std::find(v.begin(), v.end(), aValue);
 	return (v.end() != it);
+}
+
+bool CTaintAnalysis::addIssue(AnalysisIssue *issue) {
+	assert(issue && "A NULL analysis issue (warning) cannot be added!");
+	assert(issue->getFunction() && "An analysis issue (warning) must have a valid function specified!");
+	assert(0 != issue->getLine() && "An analysis issue (warning) must have a valid line number!");
+
+	bool ret = false;
+
+	if (0 == _lineToWarning.count(issue->getLine())) {
+		_lineToWarning[issue->getLine()] = new set<AnalysisIssue *>();
+		ret = true;
+	}
+
+	_lineToWarning[issue->getLine()]->insert(issue);
+
+	if (0 == _allWarnings.count(issue->getFunction())) {
+		_allWarnings[issue->getFunction()] = new set<AnalysisIssue *>();
+	}
+
+	_allWarnings[issue->getFunction()]->insert(issue);
+
+	return ret;
 }
 
 }
