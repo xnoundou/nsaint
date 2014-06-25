@@ -285,7 +285,7 @@ void CTaintAnalysis::printSummaryTableInfo(Function *f, unsigned param)
 	if (!taintInfo) return;
 
 	unsigned s = taintInfo->size();
-	if (param < s) {
+	if (param < s && taintInfo->at(param)) {
 		DEBUG_WITH_TYPE("waint-warnings", errs().indent(INDENT_LENGTH) << "From function " << f->getName());
 		if (param == s-1)	DEBUG_WITH_TYPE("waint-warnings", errs().indent(INDENT_LENGTH) << ": return value is tainted\n");
 		else	DEBUG_WITH_TYPE("waint-warnings", errs().indent(INDENT_LENGTH) << ": parameter " << param << " is tainted\n");
@@ -410,6 +410,8 @@ bool CTaintAnalysis::runOnModule(Module &m)
 	intraFlow.doAnalysis();
 	interFlow.doAnalysis();
 	contextInterFlow.doAnalysis();
+
+	this->printSummaryTable();
 
 	CheckFormatStringPass checkFmtStrPass(this);
 	checkFmtStrPass.doAnalysis();
@@ -930,6 +932,19 @@ void CTaintAnalysis::visitCallInst(CallInst & I)
 
 		if ( arg_pos != _FUNCTION_NOT_SOURCE && arg_pos < paramSize ) {
 			Value *taintedArg = 0;
+			//We don't consider as source fopen calls that do not read files.
+			//So if a file is opened for appending, it is not a taint source
+			if (0 == calleeName.compare("fopen") ||
+				0 == calleeName.compare("freopen"))
+			{
+				if (I.getNumOperands() >= 1) {
+					Value *fmode = I.getOperand(1);
+					Function *caller = I.getParent()->getParent();
+					const char *val = getCStringInitializer(fmode, _functionToDSGraph[caller]);
+					//errs() << "INTRA val: " << *fmode << " line. " << getLineNumber(I) << "\n";
+					if (val && 0 == strchr(val, 'r')) return;
+				}
+			}
 
 			if (_SOURCE_ARG_RET == arg_pos)
 				taintedArg = &I;

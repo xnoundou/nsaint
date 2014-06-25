@@ -150,7 +150,7 @@ void AnalysisIssue::print()
 	else if (_warnType == FORMAT_STRING_MISSING_VUL) {
 		DEBUG_WITH_TYPE("waint-warnings", errs() << "[waint][fmtvul-3] ");
 		DEBUG_WITH_TYPE("waint-warnings", errs() << " Argument at position "
-				<< _funcParam << " of function '" <<  _sink->getName()
+				<< _formatStrPos << " of function '" <<  _sink->getName()
 				<< "' shall be a format string [line " << _line << "] \n");
 
 		DEBUG_WITH_TYPE("waint-warnings", errs().indent(INDENT_LENGTH) << "# Not => ");
