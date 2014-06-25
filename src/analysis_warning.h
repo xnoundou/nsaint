@@ -121,14 +121,17 @@ void AnalysisIssue::print()
 {
 	if (_warnType == FORMAT_STRING_VUL) {
 		DEBUG_WITH_TYPE("waint-warnings", errs() << "[waint][fmtvul-1] Use of tainted format string (argument #"
-				<< _line << ") in sink function '" << _sink->getName() << ". [line " << _line << "]\n");
+				<< _funcParam << ") in sink function '"
+				<< _sink->getName()
+				<< ". [line " << _line << "]\n");
 		DEBUG_WITH_TYPE("waint-warnings", if (_val->hasName()) errs().indent(INDENT_LENGTH)
 				<< _val->getName(); else _val->print(errs().indent(INDENT_LENGTH)));
 	}
 	else if (_warnType == FORMAT_TAINTED_VALUE_USE) {
 
 		DEBUG_WITH_TYPE("waint-warnings", errs() << "[waint][fmtvul-2] Parameter #"
-				<< _line << " of sink format string function '" << _sink->getName()
+				<< _funcParam
+				<< " of sink format string function '" << _sink->getName()
 				<< "' is tainted. [line " << _line << "]\n");
 		DEBUG_WITH_TYPE("waint-warnings", if (_val->hasName()) errs().indent(INDENT_LENGTH)
 				<< _val->getName(); else _val->print(errs().indent(INDENT_LENGTH)));
@@ -136,7 +139,8 @@ void AnalysisIssue::print()
 	else if (_warnType == TAINTED_VALUE_USE) {
 
 		DEBUG_WITH_TYPE("waint-warnings", errs() << "[waint][tval] Use of tainted value as parameter #"
-				<< _line << " in sink function '" << _sink->getName() << "'. [line " << _line << "]\n");
+				<< _funcParam << " in sink function '" << _sink->getName()
+				<< "'. [line " << _line << "]\n");
 		DEBUG_WITH_TYPE("waint-warnings", if (_val->hasName()) errs().indent(INDENT_LENGTH)
 				<< _val->getName(); else _val->print(errs().indent(INDENT_LENGTH)));
 
@@ -146,7 +150,7 @@ void AnalysisIssue::print()
 	else if (_warnType == FORMAT_STRING_MISSING_VUL) {
 		DEBUG_WITH_TYPE("waint-warnings", errs() << "[waint][fmtvul-3] ");
 		DEBUG_WITH_TYPE("waint-warnings", errs() << " Argument at position "
-				<< _formatStrPos << " of function '" <<  _sink->getName()
+				<< _funcParam << " of function '" <<  _sink->getName()
 				<< "' shall be a format string [line " << _line << "] \n");
 
 		DEBUG_WITH_TYPE("waint-warnings", errs().indent(INDENT_LENGTH) << "# Not => ");
