@@ -35,6 +35,7 @@ public:
 	virtual void visitCastInst(CastInst &I);
    	virtual void visitBinaryOperator(BinaryOperator &I);
 	virtual void visitVACopyInst(VACopyInst &I);
+	virtual void visitBranchInst(BranchInst &I);
 
 protected:
 	virtual void initWorkList();
@@ -80,6 +81,11 @@ inline void CTaintContextInterProcedural::visitBinaryOperator(BinaryOperator &I)
 
 inline void CTaintContextInterProcedural::visitVACopyInst(VACopyInst &I) {
 	_intraAnalysis->visitVACopyInst(I);
+}
+
+inline void CTaintContextInterProcedural::visitBranchInst(BranchInst &I)
+{
+	_intraAnalysis->visitBranchInst(I);
 }
 
 inline void CTaintContextInterProcedural::mergeCopyPredOutFlowToInFlow(Instruction &predInst, Instruction &curInst) {

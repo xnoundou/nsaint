@@ -17,6 +17,12 @@ int compute(int *x)
     sum = 0;
   for(i = 0; i < sum; ++ i)
     *x += sum;
+
+  if (sum==2){
+    i=9;
+    printf("%d", i);
+  }
+
   return sum;
 }
 

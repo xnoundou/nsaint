@@ -95,7 +95,9 @@ public:
 	void visitCastInst(CastInst &I);
    	void visitBinaryOperator(BinaryOperator &I);
 	void visitVACopyInst(VACopyInst &I);
+	void visitBranchInst(BranchInst &I);
 
+	void taintBBInstructions(CmpInst *C, BasicBlock *bb, Value *taintSrc);
 	void checkTaintedValueUse(CallInst &I, Function &callee, unsigned formatPos = _FUNCTION_NOT_FORMAT);
 
 	const char *getConstantCString(ConstantExpr *C);
@@ -212,6 +214,7 @@ private:
 	DSGraph *_globalsGraph;
 
 	map<Function *, DSGraph *> _functionToDSGraph;
+	map<Function *, Value *> _functionToRetValue;
 
 	CallGraph *_cg;
 
@@ -221,9 +224,10 @@ private:
 	//TODO: use StringMap from llvm
 	map<Instruction *, set<Value *> > _IN;
 	map<Instruction *, set<Value *> > _OUT;
+	map<Value *, unsigned> _valueToLine;
 
-	void insertToOutFlow(Instruction *I, Value *v);
-	void insertToOutFlow(Instruction *I, Value *v, DSGraph *dsg);
+	void insertToOutFlow(Instruction *I, Value *v, Value *taintSrc);
+	//void insertToOutFlow(Instruction *I, Value *v, DSGraph *dsg);
 	inline void vectorUniqueInsert(Instruction *I, vector<Instruction *> &v);
 	inline void vectorUniqueInsert2(Value *v, vector<Value *> &instV);
 	template<typename T>

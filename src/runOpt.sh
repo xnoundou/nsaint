@@ -90,5 +90,5 @@ BOOST_LIB=/home/noundou/tools/boost/stage/lib
 
 time $($OPT $STATS -load $LLVM_LIB/LLVMDataStructure.so \
   		   -load $BOOST_LIB/libboost_regex.so \
-  	    	   -load $LLVM_LIB/waint.so $DEBUGFLAG -calltarget-eqtd "$PASSARG" $TIMING < "$INPUTFILE" > /dev/null)
+  	    	   -load $LLVM_LIB/waint.so $DEBUGFLAG -calltarget-eqtd -memdep "$PASSARG" $TIMING < "$INPUTFILE" > /dev/null)
 

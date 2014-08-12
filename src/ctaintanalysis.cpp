@@ -310,6 +310,7 @@ void CTaintAnalysis::printTaintHistoryList(set<AnalysisIssue *> values)
 		taintingHist = _valueToTaintInst[issue->getValue()];
 
 		if (taintingHist) {
+			errs() << "\n";
 			errs().indent(INDENT_LENGTH) << "Taint History (size: " << taintingHist->size() << ")\n";
 
 			for (vector<Instruction *>::iterator it = taintingHist->begin(), itE = taintingHist->end();
@@ -411,7 +412,9 @@ bool CTaintAnalysis::runOnModule(Module &m)
 	interFlow.doAnalysis();
 	contextInterFlow.doAnalysis();
 
-	this->printSummaryTable();
+	//this->printSummaryTable();
+
+	AnalysisIssue::setValueTaintLineMap(&_valueToLine);
 
 	CheckFormatStringPass checkFmtStrPass(this);
 	checkFmtStrPass.doAnalysis();
@@ -546,16 +549,35 @@ inline void CTaintAnalysis::vectorUniqueInsert2(Value *v, vector<Value *> &instV
  * Adds value 'v' to the set OUT[I], denoting that instruction
  * I taints value 'v'.
  */
-void CTaintAnalysis::insertToOutFlow(Instruction *I, Value *v)
+void CTaintAnalysis::insertToOutFlow(Instruction *I, Value *v, Value *taintSrc)
 {
 	assert(I && "The instruction to which an outflow is to be added must be non null!");
 	assert(v && "The value to insert in the outflow of an instruction must be non null!");
 
 	int n = _OUT[I].count(v);
 	if (0 == n) {
-		Function *f = I->getParent()->getParent();
-		DSGraph *dsg = _functionToDSGraph[f];
-		insertToOutFlow(I, v, dsg);
+		//Function *f = I->getParent()->getParent();
+		//DSGraph *dsg = _functionToDSGraph[f];
+
+		//insertToOutFlow(I, v, dsg);
+
+		_valueToLine[v] = getLineNumber(*I);
+		_OUT[I].insert(v);
+
+		DEBUG_WITH_TYPE("waint-tainted", v->print(errs()); errs() << " gets tainted\n");
+
+		if ( 0 == _valueToTaintInst.count(v) )
+			_valueToTaintInst[v] = new vector<Instruction *>;
+
+		vector<Instruction *> *previousTaint = 0;
+
+		if (taintSrc)
+			previousTaint = _valueToTaintInst[taintSrc];
+
+		if (previousTaint)
+			_valueToTaintInst[v]->insert(_valueToTaintInst[v]->begin(), previousTaint->begin(), previousTaint->end());
+
+		_valueToTaintInst[v]->insert(_valueToTaintInst[v]->begin(), I);
 	}
 }
 
@@ -564,33 +586,20 @@ void CTaintAnalysis::insertToOutFlow(Instruction *I, Value *v)
 /**
  * Adds value 'v' as tainted by instruction 'I'
  */
-void CTaintAnalysis::insertToOutFlow(Instruction *I, Value *v, DSGraph *dsg)
+/*void CTaintAnalysis::insertToOutFlow(Instruction *I, Value *v, DSGraph *dsg)
 {
+	_valueToLine[v] = getLineNumber(*I);
 	_OUT[I].insert(v);
 	DEBUG_WITH_TYPE("waint-tainted", v->print(errs()); errs() << " gets tainted\n");
 
 	{
 		if ( 0 == _valueToTaintInst.count(v) )
 			_valueToTaintInst[v] = new vector<Instruction *>;
-		vectorUniqueInsert(I, *_valueToTaintInst[v]);
-	}
 
-	/**
-	 * Mark all aliases of v as tainted.
-	 */
-	if (dsg) {
-		vector<Value *> vAliases;
-		getAliases(v, dsg, vAliases);
-		unsigned s = vAliases.size();
-		for(unsigned k = 0; k < s; ++k) {
-			_OUT[I].insert(vAliases[k]);
-			DEBUG_WITH_TYPE("waint-tainted", vAliases[k]->print(errs());errs() << " \t also gets tainted\n");
-
-			if ( 0 == _valueToTaintInst.count(vAliases[k]) )
-				_valueToTaintInst[vAliases[k]] = _valueToTaintInst[v];
-		}
+		_valueToTaintInst[v]->push_back(I);
+		//vectorUniqueInsert(I, *_valueToTaintInst[v]);
 	}
-}
+}*/
 
 //**************************************************************************************
 
@@ -651,7 +660,7 @@ unsigned CTaintAnalysis::getLineNumber(Instruction &I)
 {
 	if (MDNode *N = I.getMetadata("dbg")) {
 	    DILocation Loc(N);
-	    return Loc.getLineNumber();
+	    return Loc.getLineNumber();;
 	}
 	return -1;
 }
@@ -845,7 +854,6 @@ void CTaintAnalysis::checkTaintedValueUse(CallInst &I, Function &callee, unsigne
 	unsigned targetPos = _FUNCTION_NOT_FORMAT;
 	if (_formatSinks.count(calleeName) > 0)	targetPos = _formatSinks.at(calleeName);
 
-	unsigned line = getLineNumber(I);
 	bool isFormatSink = (_FUNCTION_NOT_FORMAT != formatPos);
 
 	bool isOutputVar = false;
@@ -862,7 +870,7 @@ void CTaintAnalysis::checkTaintedValueUse(CallInst &I, Function &callee, unsigne
 			if (isOutputVar)	continue;
 
 			AnalysisIssue *issue = new AnalysisIssue(caller, &callee, curArg);
-			issue->setLine(line);
+			issue->setLine(getLineNumber(I));
 			if (isFormatSink) issue->setFormatStrPos(formatPos);
 			issue->setFuncParam(display);
 
@@ -899,7 +907,7 @@ void CTaintAnalysis::visit(Instruction &I)
 void CTaintAnalysis::visitLoadInst(LoadInst &I) {
 	DEBUG(errs() << "LOAD [p=*q]: "; I.print(errs()); errs()<<"\n");
 	Value *q = I.getPointerOperand();
-	if ( isValueTainted(&I, q))	insertToOutFlow(&I, &I);
+	if ( isValueTainted(&I, q))	insertToOutFlow(&I, &I, q);
 }
 
 //**************************************************************************************
@@ -909,7 +917,7 @@ void CTaintAnalysis::visitStoreInst(StoreInst &I)
 	DEBUG(errs() << "STORE [*p=q]: ";I.print(errs());errs()<<"\n");
 	Value *q = I.getValueOperand();
 	Value *p = I.getPointerOperand();
-	if ( isValueTainted(&I, q))	insertToOutFlow(&I, p);
+	if ( isValueTainted(&I, q))	insertToOutFlow(&I, p, q);
 }
 
 //**************************************************************************************
@@ -941,7 +949,6 @@ void CTaintAnalysis::visitCallInst(CallInst & I)
 					Value *fmode = I.getOperand(1);
 					Function *caller = I.getParent()->getParent();
 					const char *val = getCStringInitializer(fmode, _functionToDSGraph[caller]);
-					//errs() << "INTRA val: " << *fmode << " line. " << getLineNumber(I) << "\n";
 					if (val && 0 == strchr(val, 'r')) return;
 				}
 			}
@@ -951,7 +958,7 @@ void CTaintAnalysis::visitCallInst(CallInst & I)
 			else
 				taintedArg = I.getArgOperand(arg_pos);
 
-			insertToOutFlow(&I, taintedArg);
+			insertToOutFlow(&I, taintedArg, 0);
 			DEBUG_WITH_TYPE("waint-sources", errs() << "Found a source "
 					<< calleeName << " with arg_pos " << arg_pos << "\n");
 		}
@@ -1036,7 +1043,7 @@ void CTaintAnalysis::visitCallInst(CallInst & I)
 					if ( !(*calleeFormals)[k] ) {
 						for(unsigned j = 0; j < afterFmlAliases.size(); ++j) {
 							if  (outDiff.count(afterFmlAliases[j]) > 0 || outDiff.count(curArg) > 0) {
-								insertToOutFlow(&I, curArg);
+								insertToOutFlow(&I, curArg, afterFmlAliases[j]);
 								DEBUG(errs() << callee->getName() << ": Setting formal arg ";
 								curArg->print(errs()); errs()<< "(" << k << ") as tainted \n");
 
@@ -1064,11 +1071,13 @@ void CTaintAnalysis::visitCallInst(CallInst & I)
 			//the last element of the vector is the return value taint information
 			bool retIsTaint = calleeFormals->back();
 
-			if (retIsTaint) insertToOutFlow(&I, &I);
+			if (retIsTaint) insertToOutFlow(&I, &I, _functionToRetValue[callee]);
 
 			for(unsigned j = 0; j < calleeFormals->size(); ++j)
-				if (calleeFormals->at(j) && j < I.getNumArgOperands())
-					insertToOutFlow(&I, I.getArgOperand(j));
+				if (calleeFormals->at(j) && j < I.getNumArgOperands()) {
+					//LLVMValueRef argRef = LLVMGetParam(callee, j);
+					insertToOutFlow(&I, I.getArgOperand(j), 0);
+				}
 		}
 	}
 }
@@ -1110,6 +1119,8 @@ void CTaintAnalysis::visitReturnInst(ReturnInst &I) {
 
 	DEBUG_WITH_TYPE("waint-summary", errs() << "\t";retVal->print(errs());errs()<< "\n");
 
+	_functionToRetValue[F] = retVal;
+
 	if (isValueTainted(&I, retVal)) {
 		DEBUG_WITH_TYPE("waint-summary", errs() << "\tis tainted\n");
 		unsigned retPos = _summaryTable[F]->size() - 1;
@@ -1135,8 +1146,11 @@ void CTaintAnalysis::visitBinaryOperator(BinaryOperator &I)
 	DEBUG(errs() << "BINARYOPERATOR [r = a+b]: ";I.print(errs());errs()<<"\n");
 	Value *left = I.getOperand(0);
 	Value *right = I.getOperand(1);
-	if (isValueTainted(&I, left) || isValueTainted(&I, right))
-	    insertToOutFlow(&I, &I);
+
+	if (isValueTainted(&I, right))
+		insertToOutFlow(&I, &I, right);
+	else if (isValueTainted(&I, left))
+	    insertToOutFlow(&I, &I, left);
 }
 
 //**************************************************************************************
@@ -1145,7 +1159,50 @@ void CTaintAnalysis::visitVACopyInst(VACopyInst &I) {
 	DEBUG(errs() << "VACOPY: ";I.print(errs());errs()<<"\n");
 	Value *src = I.getSrc();
 	Value *dest = I.getDest();
-	if (isValueTainted(&I, src))	insertToOutFlow(&I, dest);
+	if (isValueTainted(&I, src))	insertToOutFlow(&I, dest, src);
+}
+
+//**************************************************************************************
+
+inline void CTaintAnalysis::taintBBInstructions(CmpInst *C, BasicBlock *bb, Value *taintSrc)
+{
+	for(BasicBlock::iterator it = bb->begin(), itE = bb->end(); it != itE; ++it) {
+		if (LoadInst *L = dyn_cast<LoadInst>(it)) {
+			insertToOutFlow(C, L, taintSrc);
+		}
+		else if (StoreInst *S = dyn_cast<StoreInst>(it)) {
+			insertToOutFlow(C, S->getPointerOperand(), taintSrc);
+		}
+		else if (BinaryOperator *B = dyn_cast<BinaryOperator>(it)) {
+			insertToOutFlow(C, B, taintSrc);
+		}
+	}
+}
+
+void CTaintAnalysis::visitBranchInst(BranchInst &I)
+{
+	DEBUG_WITH_TYPE("waint-summary", errs() << "BRANCH: ";I.print(errs());errs()<<"\n");
+
+	if (I.isConditional()) {
+		Value *cond = I.getCondition();
+		//errs() << "The condition is: "; cond->print(errs()); errs() << "\n";
+
+		if (CmpInst *C = dyn_cast<CmpInst>(cond)) {
+			Value *anOp = 0;
+			for (unsigned i = 0; i < C->getNumOperands(); ++i) {
+				anOp = C->getOperand(i);
+				if (isValueTainted(&I, anOp)) {
+					//errs() << "Implicit taint happens because of: ";
+					//anOp->dump();errs()<<"\n";
+					BasicBlock *succBB = 0;
+					for(unsigned j = 0; j < I.getNumSuccessors(); ++j) {
+						succBB = I.getSuccessor(j);
+						taintBBInstructions(C, succBB, anOp);
+					}
+				}
+			}
+		}
+	}
 }
 
 //**************************************************************************************

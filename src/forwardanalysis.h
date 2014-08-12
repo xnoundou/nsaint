@@ -50,6 +50,9 @@ public:
 	virtual void visitCastInst(CastInst &I){}
 	virtual void visitBinaryOperator(BinaryOperator &I){}
 	virtual void visitVACopyInst(VACopyInst &I){}
+	virtual void visitBranchInst(BranchInst &I){}
+	//virtual void visitICmpInst(ICmpInst &I){}
+	//virtual void visitFCmpInst(FCmpInst &I){}
 
 	virtual void analyze();
 

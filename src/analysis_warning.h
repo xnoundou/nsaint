@@ -12,9 +12,11 @@
 #include <llvm/IR/Function.h>
 #include <string>
 #include <vector>
+#include <map>
 
 using std::string;
 using std::vector;
+using std::map;
 
 using namespace llvm;
 
@@ -35,6 +37,9 @@ public:
 	~AnalysisIssue();
 
 	static const unsigned INDENT_LENGTH;
+	static void setValueTaintLineMap(map<Value *, unsigned> *valueToLine) {
+		_valueToLine = valueToLine;
+	}
 
 	inline Function *getFunction(){ return _f; }
 	inline Function *getSink(){ return _sink; }
@@ -68,9 +73,12 @@ private:
 	int _formatStrPos;
 	int _funcParam;
 	string _message;
+
+	static map<Value *, unsigned> *_valueToLine;
 };
 
 const unsigned AnalysisIssue::INDENT_LENGTH = 20;
+map<Value *, unsigned> *AnalysisIssue::_valueToLine = 0;
 
 inline AnalysisIssue::AnalysisIssue(Function *f, Function *sink, Value *val)
 	:_f(f),
@@ -131,10 +139,13 @@ void AnalysisIssue::print()
 
 		DEBUG_WITH_TYPE("waint-warnings", errs() << "[waint][fmtvul-2] Parameter #"
 				<< _funcParam
-				<< " of sink format string function '" << _sink->getName()
+				<< " of sink call to '" << _sink->getName()
 				<< "' is tainted. [line " << _line << "]\n");
 		DEBUG_WITH_TYPE("waint-warnings", if (_val->hasName()) errs().indent(INDENT_LENGTH)
 				<< _val->getName(); else _val->print(errs().indent(INDENT_LENGTH)));
+		if (_valueToLine) {
+			DEBUG_WITH_TYPE("waint-warnings", errs().indent(INDENT_LENGTH) << "tainted at line " << _valueToLine->at(_val));
+		}
 	}
 	else if (_warnType == TAINTED_VALUE_USE) {
 
