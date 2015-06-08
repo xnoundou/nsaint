@@ -1,0 +1,163 @@
+\documentclass[12pt,onecolumn,a4paper]{article}
+\usepackage{amsmath,amssymb,graphicx,algorithmic,xspace,url,latexsym}
+
+\usepackage[parfill]{parskip}
+\usepackage{paralist}
+\usepackage{times}
+\usepackage{textcomp}
+\usepackage{verbatim}
+\usepackage{hyperref}
+\usepackage[usenames,dvipsnames]{color}
+
+\setlength{\evensidemargin}{-0.1in} \setlength{\oddsidemargin}{-0.1in}
+\setlength{\textwidth}{6.5in} \setlength{\textheight}{9.0in}
+\setlength{\topmargin}{-0.5in}
+%\setlength{\headheight}{0in}
+
+\definecolor{forestgreen}{RGB}{34,139,34}    
+\definecolor{mediumblue}{RGB}{0,0,205}    
+\definecolor{firebrickred}{RGB}{178,34,34}
+
+\newcommand{\waint}{\textcolor{forestgreen}{\textsc{waint}}\xspace}
+\newcommand{\llvm}{\textsc{\textbf{LLVM}}\xspace}
+\newcommand{\software}[2]{\texttt{\textbf{#1}, version #2}\xspace}
+\newcommand{\softwarenov}[1]{\texttt{\textbf{#1}}\xspace}
+\newcommand{\tool}[1]{\texttt{#1}\xspace}
+\newcommand{\command}[1]{\textcolor{mediumblue}{\texttt{\textbf{"#1"}}}\xspace}
+\newcommand{\script}[1]{\texttt{#1}\xspace}
+
+\newcommand{\env}[1]{\textcolor{firebrickred}{\text{#1}}\xspace}
+\newcommand{\envout}[1]{\textcolor{firebrickred}{\$\text{#1}}\xspace}
+
+\sloppypar
+\begin{document}
+\pagestyle{empty}
+
+\author{Xavier NOUMBISSI NOUNDOU}
+
+\begin{center}
+\begin{LARGE}
+\textsc{\bf Waterloo Taint Analysis Tool (\textsc{waint})}\\
+\textsc{\bf User's manual}\\
+\end{LARGE}
+\begin{large}
+by\\
+\vspace{0.3cm}
+\texttt{ \bf \textit{Dipl.-Inf. Xavier Noumbissi Noundou\\
+xavier.noumbis@gmail.com}}\\
+\vspace{1.3cm}
+\end{large}
+\end{center}
+
+\tableofcontents
+
+\section{Abstract}
+Businesses increasingly use software. This is even more
+relevant for companies relying on e-commerce. However,
+software is error-prone and contain several bugs. Security
+bugs are one of the major problems faced by companies today.
+In the worst case, security bugs enable unauthorized users
+to gain full control of an application.
+
+My PhD thesis introduces the concept of tainted path and
+describes techniques and algorithms to compute them in
+any imperative programming language that uses
+pointers (C, C++, Java, etc.). I implemented these
+algorithms in \waint.
+
+\waint computes \textcolor{firebrickred}{\textit{tainted paths}}
+in a C program without running it. \waint does not require
+the developer to annotate the program under analysis.
+\waint implements a flow-sensitive, interprocedural and
+context-sensitive analysis that computes tainted paths in
+C programs at compile-time.
+
+\section{Installation Instructions}
+This section of the manual explains how to install \waint
+on a Linux machine. We have not tested \waint on a Windows
+machine, but the installation should follow similar steps. 
+
+\subsection{Required Software}
+This section enumerates all software that you need to run \waint.
+\begin{enumerate}[a)]
+	\item The compiler infrastructure \software{LLVM}{3.3} (\url{http://llvm.org})
+	
+	\item The precompiled \tool{LLVM}'s tool chain \software{clang+llvm}{3.3}
+	which include binaries like \tool{clang}, \tool{llvm-link}, etc.
+	
+	\item The DSA pointer analysis \softwarenov{poolalloc}
+	(\url{https://github.com/llvm-mirror/poolalloc.git}).
+\end{enumerate}
+
+\subsection{Environment Variables}
+Table~\ref{table_env} that shows all environment variables
+that you have to define and export in order to successfully
+run \waint.
+
+\begin{table*}[!htbp]
+\centering
+\begin{tabular}{|r|l|} \hline
+	{\bf Environment variables}	&	{\bf Description}	\\ \hline \hline
+	\env{WAINT\_HOME}	&	\tool{waint} home folder (e.g.: /home/user/waint) 	\\ \hline
+	\env{LLVM\_HOME}	&	\tool{llvm} home folder (e.g.: /home/user/llvm)		\\ \hline
+	\env{LLVM\_LIB}		&	\tool{llvm} compiled library folder 					\\
+						&    (e.g.: \envout{LLVM\_HOME}/build/Release+Asserts/lib)	\\ \hline
+	\env{LLVM\_BIN}		&	\tool{llvm} compiled binaries					\\
+						&    (e.g.: \envout{LLVM\_HOME}/build/Release+Asserts/bin)	\\ \hline	
+	\env{POOLALLOC}		&	\tool{poolalloc} home folder (e.g.: /home/user/poolalloc) \\ \hline		
+\end{tabular}
+\caption{Table with all environment variables required to install and use \waint}\label{table_env}
+\end{table*}
+
+You declare and export an environment variable \env{ENV\_VAR} by
+writing the following commands in your ''\texttt{.bashrc}'' file:
+\begin{verbatim}
+	ENV_VAR = path_to_folder
+	export ENV_VAR
+\end{verbatim}
+
+\subsection{How to Configure ''\tool{clang+llvm}'' for use with \textsc{waint}}
+
+
+\subsection{How to Configure ''\tool{LLVM}'' for use with \textsc{waint}}
+\begin{enumerate}[a)]
+	\item Create a folder 'build' in \envout{LLVM\_HOME}.
+	\item Copy and customized the script \script{configure-llvm.sh}
+	from \tool{waint}'s 'script' folder into the newly created 'build' folder.
+	\tool{llvm}'s 'build' folder.
+	\item Create a symbolic link in the folder ''\$LLVM\_HOME/lib/Analysis''.
+	You can achieve this by running: 
+	\command{ln -s \$WAINT\_HOME \$LLVM\_HOME/lib/Analysis/waint}.
+	\item Run the script \script{configure-llvm.sh}.
+\end{enumerate}
+
+
+\subsection{How to Configure ''\tool{poolalloc}'' for use with \textsc{waint}}
+\begin{enumerate}[a)]
+	\item The sources of the DSA pointer analysis \softwarenov{poolalloc}
+	can be gathered using the command 
+	\command{git clone https://github.com/llvm-mirror/poolalloc.git}.
+
+	\item After getting the sources of \tool{poolalloc}, the user
+	has to checkout the \tool{git} version under commit
+	'181c62f1d29ae9de660bad0a6593130d15803abc' using the command
+	\command{git checkout 181c62f1d29ae9de660bad0a6593130d15803abc}.
+
+	\item Copy and customized the script \script{configure-poolalloc.sh}
+	from \tool{waint} 'script' folder into \envout{POOLALLOC}, and
+	run it.
+	
+	\item Then run \command{make}, and \command{make install}. Make sure
+	to run \command{make install} as \texttt{root} (or \texttt{administrator}
+	on a \texttt{Windows} system).
+\end{enumerate}
+
+\section{Usage}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\bibliographystyle{plain}
+\bibliography{manual}
+
+\end{document}
