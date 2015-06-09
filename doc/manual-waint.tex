@@ -18,8 +18,7 @@
 \definecolor{mediumblue}{RGB}{0,0,205}    
 \definecolor{firebrickred}{RGB}{178,34,34}
 
-\newcommand{\waint}{\textcolor{forestgreen}{\textsc{waint}}\xspace}
-\newcommand{\llvm}{\textsc{\textbf{LLVM}}\xspace}
+\newcommand{\waint}{\textsc{\textbf{waint}}\xspace}
 \newcommand{\software}[2]{\texttt{\textbf{#1}, version #2}\xspace}
 \newcommand{\softwarenov}[1]{\texttt{\textbf{#1}}\xspace}
 \newcommand{\tool}[1]{\texttt{#1}\xspace}
@@ -37,14 +36,17 @@
 
 \begin{center}
 \begin{LARGE}
-\textsc{\bf Waterloo Taint Analysis Tool (\textsc{waint})}\\
-\textsc{\bf User's manual}\\
+\textbf{ \textsc{Waint: Waterloo Taint Analysis Tool\\
+				User's manual}}\\
 \end{LARGE}
 \begin{large}
+\vspace{0.3cm}
 by\\
 \vspace{0.3cm}
 \texttt{ \bf \textit{Dipl.-Inf. Xavier Noumbissi Noundou\\
 xavier.noumbis@gmail.com}}\\
+\vspace{0.3cm}
+June 9, 2015\\
 \vspace{1.3cm}
 \end{large}
 \end{center}
@@ -80,6 +82,8 @@ machine, but the installation should follow similar steps.
 \subsection{Required Software}
 This section enumerates all software that you need to run \waint.
 \begin{enumerate}[a)]
+	\item \waint: \url{https://github.com/xnoumbis/waint.git}
+	
 	\item The compiler infrastructure \software{LLVM}{3.3} (\url{http://llvm.org})
 	
 	\item The precompiled \tool{LLVM}'s tool chain \software{clang+llvm}{3.3}
@@ -95,39 +99,50 @@ that you have to define and export in order to successfully
 run \waint.
 
 \begin{table*}[!htbp]
-\centering
+\begin{center}
 \begin{tabular}{|r|l|} \hline
-	{\bf Environment variables}	&	{\bf Description}	\\ \hline \hline
-	\env{WAINT\_HOME}	&	\tool{waint} home folder (e.g.: /home/user/waint) 	\\ \hline
-	\env{LLVM\_HOME}	&	\tool{llvm} home folder (e.g.: /home/user/llvm)		\\ \hline
-	\env{LLVM\_LIB}		&	\tool{llvm} compiled library folder 					\\
-						&    (e.g.: \envout{LLVM\_HOME}/build/Release+Asserts/lib)	\\ \hline
-	\env{LLVM\_BIN}		&	\tool{llvm} compiled binaries					\\
-						&    (e.g.: \envout{LLVM\_HOME}/build/Release+Asserts/bin)	\\ \hline	
-	\env{POOLALLOC}		&	\tool{poolalloc} home folder (e.g.: /home/user/poolalloc) \\ \hline		
+{\bf Environment variables}	&	{\bf Description}	\\ \hline \hline
+\env{WAINT\_HOME}	&	\waint home folder (e.g.: /home/user/waint) 	\\ \hline
+\env{LLVM\_HOME}	&	\tool{llvm} home folder (e.g.: /home/user/llvm)		\\ \hline
+\env{LLVM\_LIB}		&	\tool{llvm} compiled libraries folder 					\\
+					&    (e.g.: \envout{LLVM\_HOME}/build/Release+Asserts/lib)	\\ \hline
+\env{LLVM\_BIN}		&	\tool{llvm} compiled binaries					\\
+					&    (e.g.: \envout{LLVM\_HOME}/build/Release+Asserts/bin)	\\ \hline	
+\env{POOLALLOC}		&	\tool{poolalloc} home folder (e.g.: /home/user/poolalloc) \\ \hline		
+\env{CLANGLLVM\_BIN}&	\tool{clang+llvm} binaries' folder	\\
+					& 	(e.g.: /home/user/clang+llvm/bin) \\ \hline	
 \end{tabular}
+\end{center}
 \caption{Table with all environment variables required to install and use \waint}\label{table_env}
 \end{table*}
 
-You declare and export an environment variable \env{ENV\_VAR} by
+You define and export an environment variable \env{ENV\_VAR} by
 writing the following commands in your ''\texttt{.bashrc}'' file:
 \begin{verbatim}
-	ENV_VAR = path_to_folder
+	ENV_VAR=path_to_folder
 	export ENV_VAR
 \end{verbatim}
 
 \subsection{How to Configure ''\tool{clang+llvm}'' for use with \textsc{waint}}
-
+\begin{enumerate}[a)]
+	\item Download and unpack \software{clang+llvm}{3.3}.
+	\item Add the \texttt{bin} folder to your environment variable \env{PATH}.
+	For instance by adding the following line in your file ''\texttt{.bashrc}''
+	\begin{verbatim}
+		PATH=$PATH:$CLANGLLVM_BIN
+		export PATH
+	\end{verbatim}
+\end{enumerate}
 
 \subsection{How to Configure ''\tool{LLVM}'' for use with \textsc{waint}}
 \begin{enumerate}[a)]
-	\item Create a folder 'build' in \envout{LLVM\_HOME}.
+	\item Create a folder ''build'' in \envout{LLVM\_HOME}.
 	\item Copy and customized the script \script{configure-llvm.sh}
-	from \tool{waint}'s 'script' folder into the newly created 'build' folder.
-	\tool{llvm}'s 'build' folder.
-	\item Create a symbolic link in the folder ''\$LLVM\_HOME/lib/Analysis''.
+	from \waint's ''script'' folder into the newly created ''build'' folder.
+	\tool{llvm}'s ''build'' folder.
+	\item Create a symbolic link in the folder ''\envout{LLVM\_HOME}/lib/Analysis''.
 	You can achieve this by running: 
-	\command{ln -s \$WAINT\_HOME \$LLVM\_HOME/lib/Analysis/waint}.
+	\command{ln -s \$WAINT\_HOME/src \$LLVM\_HOME/lib/Analysis/waint}.
 	\item Run the script \script{configure-llvm.sh}.
 \end{enumerate}
 
@@ -144,7 +159,7 @@ writing the following commands in your ''\texttt{.bashrc}'' file:
 	\command{git checkout 181c62f1d29ae9de660bad0a6593130d15803abc}.
 
 	\item Copy and customized the script \script{configure-poolalloc.sh}
-	from \tool{waint} 'script' folder into \envout{POOLALLOC}, and
+	from \waint's ''script'' folder into \envout{POOLALLOC}, and
 	run it.
 	
 	\item Then run \command{make}, and \command{make install}. Make sure
@@ -152,8 +167,37 @@ writing the following commands in your ''\texttt{.bashrc}'' file:
 	on a \texttt{Windows} system).
 \end{enumerate}
 
-\section{Usage}
+\section{Compiling and Running \textsc{waint}}
 
+\subsection{Folder Structure}
+The following folders constitute \waint directory structure:
+\begin{itemize}
+	\item ''\texttt{benchmarks}'': folder with sample
+	scripts to run \waint.
+
+	\item ''\texttt{doc}'': folder with the manual.
+
+	\item ''\texttt{scripts}'': folder with installation
+	configuration files for \tool{poolalloc} and \tool{LLVM}.
+	
+	\item ''\texttt{src}'': folder with all \texttt{C++} source files,
+	and \tool{Bash} scripts to compile and run \waint.
+
+	\item ''\texttt{src/cfg}'': folder with all configuration files			
+\end{itemize}
+
+\subsection{Important Bash Scripts}
+Among others, \waint source folder contains the following two important
+\texttt{Bash} scripts:
+\begin{enumerate}[a)]
+	\item \texttt{ctainthelp.sh}: this script is used to generate and
+		merge \tool{llvm} intermediate representation (IR) files. 
+	
+	\item \texttt{runOpt.sh}: this script is used to run the analysis of
+		\waint on the program under analysis. We encourage users to look
+		at the sample scripts in the folder ''\texttt{benchmarks}'' to
+		learn how to use \texttt{runOpt.sh}.
+\end{enumerate}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
