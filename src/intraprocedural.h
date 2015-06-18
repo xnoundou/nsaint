@@ -35,6 +35,7 @@ public:
 	virtual void visitBinaryOperator(BinaryOperator &I);
 	virtual void visitVACopyInst(VACopyInst &I);
 	virtual void visitBranchInst(BranchInst &I);
+	virtual void visitGetElementPtrInst(GetElementPtrInst &I);
 
 protected:
 	CTaintAnalysis *_analysis;
@@ -98,6 +99,11 @@ inline void CTaintIntraProcedural::visitVACopyInst(VACopyInst &I) {
 inline void CTaintIntraProcedural::visitBranchInst(BranchInst &I)
 {
 	_analysis->visitBranchInst(I);
+}
+
+inline void CTaintIntraProcedural::visitGetElementPtrInst(GetElementPtrInst &I)
+{
+	_analysis->visitGetElementPtrInst(I);
 }
 
 /*inline void CTaintIntraProcedural::visitICmpInst(ICmpInst &I)

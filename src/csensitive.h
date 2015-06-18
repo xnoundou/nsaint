@@ -36,6 +36,7 @@ public:
    	virtual void visitBinaryOperator(BinaryOperator &I);
 	virtual void visitVACopyInst(VACopyInst &I);
 	virtual void visitBranchInst(BranchInst &I);
+	virtual void visitGetElementPtrInst(GetElementPtrInst &I);
 
 protected:
 	virtual void initWorkList();
@@ -88,13 +89,18 @@ inline void CTaintContextInterProcedural::visitBranchInst(BranchInst &I)
 	_intraAnalysis->visitBranchInst(I);
 }
 
+inline void CTaintContextInterProcedural::visitGetElementPtrInst(GetElementPtrInst &I)
+{
+	_intraAnalysis->visitGetElementPtrInst(I);
+}
+
 inline void CTaintContextInterProcedural::mergeCopyPredOutFlowToInFlow(Instruction &predInst, Instruction &curInst) {
 	_intraAnalysis->mergeCopyPredOutFlowToInFlow(predInst, curInst);
 }
 
 void CTaintContextInterProcedural::doAnalysis()
 {
-	errs() << "## Starting interprocedural analysis\n";
+	errs() << "## Starting context-sensitive interprocedural analysis\n";
 	_intraAnalysis->getTaintAnalysis().setCtxInterRunning(true);
 	analyze();
 	_intraAnalysis->getTaintAnalysis().setCtxInterRunning(false);

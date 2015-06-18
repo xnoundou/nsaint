@@ -24,6 +24,7 @@ class CForwardFlowAnalysis : public InstVisitor<CForwardFlowAnalysis> {
 
 public:
 	CForwardFlowAnalysis(vector<Function *> *allProcs);
+
 	virtual ~CForwardFlowAnalysis(){}
 
 	virtual void mergeCopyPredOutFlowToInFlow(Instruction &predInst, Instruction &curInst) {
@@ -44,14 +45,26 @@ public:
 	}
 
 	virtual void visitLoadInst(LoadInst &I){}
+
 	virtual void visitStoreInst(StoreInst &I){}
+
 	virtual void visitCallInst(CallInst &I){}
+
 	virtual void visitReturnInst(ReturnInst &I){}
+
 	virtual void visitCastInst(CastInst &I){}
+
 	virtual void visitBinaryOperator(BinaryOperator &I){}
+
 	virtual void visitVACopyInst(VACopyInst &I){}
+
 	virtual void visitBranchInst(BranchInst &I){}
+
+	virtual void visitGetElementPtrInst(GetElementPtrInst &I){}
+
+
 	//virtual void visitICmpInst(ICmpInst &I){}
+
 	//virtual void visitFCmpInst(FCmpInst &I){}
 
 	virtual void analyze();
@@ -60,14 +73,18 @@ public:
 
 protected:
 	vector<Function *> *_allProcs;
+
 	vector<BasicBlock *> _workList;
+
 	Instruction *_predInst;
+
 	Function *_curAnalyzedFunction;
 
 	virtual void insert(BasicBlock *BB);
-	BasicBlock * next();
-	virtual void initWorkList();
 
+	BasicBlock * next();
+
+	virtual void initWorkList();
 
 private:
 	InstVisitor *_super;
@@ -81,7 +98,6 @@ CForwardFlowAnalysis::CForwardFlowAnalysis(vector<Function *> *allProcs)
 	 _curAnalyzedFunction(0)
 {
 	_super = static_cast<InstVisitor *>(this);
-	assert(_super && "The super class InstVisitor must be non null!");
 }
 
 void CForwardFlowAnalysis::initWorkList(){

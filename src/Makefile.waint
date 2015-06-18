@@ -19,12 +19,6 @@ OBJ=${CTAINT_BUILD}/ctaintanalysis.o
 
 all: compile
 
-
-#echo "MYFILE: ${MYFILE}"
-#echo "AFILE: ${AFILE}"
-
-#${OBJ}: ${SRC}
-
 compile: ${OBJ} 
 	make -C ${LLVM_BUILD} ${LLVM_INC} > /dev/null
 

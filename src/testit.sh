@@ -1,9 +1,9 @@
 #!/bin/bash
 
-OPT=/home/noundou/tools/llvm-3.3.src/build/Release+Asserts/bin/opt
-TESTS="/home/noundou/tools/llvm-3.3.src/lib/Analysis/waint/tests"
+OPT="$LLVM_TOOLS/opt"
+TESTS="$LLVM_HOME/lib/Analysis/waint/tests"
 RESULT="results"
-IRTYPE="i"
+IRTYPE="s"
 
 set -x
 

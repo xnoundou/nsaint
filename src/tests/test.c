@@ -1,10 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-//int compute(int *);
-//int odd(int);
-//int even(int);
-//int main();
+int compute(int *);
+int odd(int);
+int even(int);
+int main();
 
 int compute(int *x)
 {
@@ -23,7 +23,7 @@ int compute(int *x)
     printf("%d", i);
   }
 
-  return sum;
+  return *x;
 }
 
 int odd(int x)
@@ -42,20 +42,28 @@ int even(int x)
     return odd(x - 1);
 }
 
+void mysql(int *query) {
+    printf("%s", query);
+  return ;
+}
+
 int main()
 {
-  int x, b1, b2, y;
-  char str[10];
-  char *d = malloc(sizeof(char)*25);
-  atof(str);
-  free(d);
+  int x, b1, y;
+  //char str[10];
+  //char *d = (char *) malloc(sizeof(char)*25);
+  //atof(str);
+  //free(d);
   //printf("Enter an integer now: ");
-  printf("Wow: %d%%f", 4, 4.5);
-  scanf("%%d", &x);
+  printf("Wow: %d%f", 4, 4.5);
+  scanf("%d", &x);
   b1 = even(x);
-  b2 = odd(3);
+  //b2 = odd(3);
+  int ar[2];
   y = compute(&x);
-  sprintf(str, "%d", y);
+  ar[1] = y;
+  //sprintf(str, "%d", y);
+  mysql(&ar[0]);
   return 0;
 }
 

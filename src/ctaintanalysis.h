@@ -11,6 +11,7 @@
 #define CTAINTANALYSIS_H_
 
 #include <llvm/ADT/Statistic.h>
+#include <llvm/ADT/SCCIterator.h>
 #include <llvm/Support/Debug.h>
 #include <llvm/Pass.h>
 #include <llvm/Analysis/CallGraph.h>
@@ -96,6 +97,7 @@ public:
    	void visitBinaryOperator(BinaryOperator &I);
 	void visitVACopyInst(VACopyInst &I);
 	void visitBranchInst(BranchInst &I);
+	void visitGetElementPtrInst(GetElementPtrInst &I);
 
 	void taintBBInstructions(CmpInst *C, BasicBlock *bb, Value *taintSrc);
 	void checkTaintedValueUse(CallInst &I, Function &callee, unsigned formatPos = _FUNCTION_NOT_FORMAT);
@@ -145,6 +147,9 @@ private:
 	static map<string, unsigned> _formatStrPos;
 
 	map<Value *, vector<Instruction *> * > _valueToTaintInst;
+	//set<StringRef> _untaintedGEP;
+	//set<StringRef> _taintedArrays;
+
 	map<Function *, set<AnalysisIssue *> *> _allWarnings;
 	map<unsigned, set<AnalysisIssue *> *> _lineToWarning;
 	set<AnalysisIssue *> _displayOutput;
@@ -216,6 +221,8 @@ private:
 	map<Function *, DSGraph *> _functionToDSGraph;
 	map<Function *, Value *> _functionToRetValue;
 
+	vector<Function *> _sccs;
+
 	CallGraph *_cg;
 
 	void getAliases(Value *v, DSGraph *dsg, vector<Value *> &aliases);
@@ -227,9 +234,9 @@ private:
 	map<Value *, unsigned> _valueToLine;
 
 	void insertToOutFlow(Instruction *I, Value *v, Value *taintSrc);
-	//void insertToOutFlow(Instruction *I, Value *v, DSGraph *dsg);
-	inline void vectorUniqueInsert(Instruction *I, vector<Instruction *> &v);
-	inline void vectorUniqueInsert2(Value *v, vector<Value *> &instV);
+	void insertToOutFlow(Instruction &I, Value &v, DSGraph &dsg);
+	//inline void vectorUniqueInsert(Instruction *I, vector<Instruction *> &v);
+	//inline void vectorUniqueInsert2(Value *v, vector<Value *> &instV);
 	template<typename T>
 	bool vectorContains(vector<T> &v, T &aValue);
 

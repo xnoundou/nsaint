@@ -1,6 +1,19 @@
 #!/bin/bash
 
-USAGE="Usage: $(basename $0) <-e llvm-opt> <-i bc files> [-s|-d|-t|-p project]"
+
+USAGE=$(cat <<EOF
+______________________________________________________________________________
+Usage: $(basename $0) -o <llvm-opt> -i <bc files> [-s|-d|-t] -p <project_name>
+
+<llvm-opt>: LLVM 'opt' program path									       
+<bc file> : LLVM byte code file to analyse									       
+[-s]	  : generates analysis statistics
+[-d]	  : generates WAINT debugging information while running
+[-t]      : generates WAINT analysis timing information
+[-p]      : specifies a name for the project
+______________________________________________________________________________
+EOF
+)
 
 if [ $# -lt 1 ]; then
   echo "$USAGE"
@@ -72,6 +85,7 @@ PASSARG="-waint"
 
 if [ "$debugflag" ]; then
   #DEBUGFLAG="-debug"
+  #DEBUGFLAG="-debug -debug-only=waint-tainted"
   DEBUGFLAG="-debug -debug-only=waint-warnings"
   #DEBUGFLAG="-debug -debug-only=waint-summary-table"
   #DEBUGFLAG="-debug -debug-only=waint-summary"
@@ -86,9 +100,6 @@ set -x
 
 make -f Makefile.waint compile > /dev/null
 
-BOOST_LIB=/home/noundou/tools/boost/stage/lib
-
 time $($OPT $STATS -load $LLVM_LIB/LLVMDataStructure.so \
-  		   -load $BOOST_LIB/libboost_regex.so \
   	    	   -load $LLVM_LIB/waint.so $DEBUGFLAG -calltarget-eqtd -memdep "$PASSARG" $TIMING < "$INPUTFILE" > /dev/null)
 

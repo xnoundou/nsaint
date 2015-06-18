@@ -6,17 +6,20 @@
 #USAGE="Usage: $(basename $0) <-s SRC_FOLDER> [-o OUT_FOLDER] [-m MACROS] [-i INC_FOLDER] <-c i|b|p|m> [files]"
 
 USAGE=$(cat <<EOF
-Usage: $(basename $0) -s source_folder -c actions -t file_type [options] [files]
-actions:
-	g  | Generates LLVM IR files(.s)
-	m  | Merges input files
-file_type:
-	b  | Generates LLVM bytecode files (.bc)
-	i  | Generates LLVM IR text files (.s)
-	l  | Generates LLVM IR text files (.ll)
-options:
-	-i | Specifies an include folder
-	-o | Specifies an output folder.
+______________________________________________________________________________________
+Usage: $(basename $0) -s <source_folder> -c <actions> -t [file_type] [options] [files]
+										       
+<actions>:									       
+	    g | Generates LLVM IR files(.s)					       
+	    m | Merges input files							       
+<file_type>:									       
+	    b | Generates LLVM IR bytecode files (.bc)				       
+	    i | Generates LLVM IR text files (.s)					       
+	    l | Generates LLVM IR text files (.ll)					       
+[options]:									       
+	   -i | Specifies an include folder					       
+	   -o | Specifies an output folder.					       
+_____________________________________________________________________________________
 EOF
 )
 
@@ -68,17 +71,17 @@ fi
 
 if [ "$cmdflag" ]; then
   if [[ "$action" -ne "m" || "$action" -ne "g" ]]; then
-    echo "You must specify a valid action"
+    echo "You have to specify a valid action"
     exit 5 
   fi
 else
-  echo "You must specify a valid operation"
+  echo "You have to specify a valid operation"
   printf "$USAGE\n" >&2
   exit 3
 fi
 
 if [ ! "$sflag" ]; then 
-  echo "You must specify a source folder"
+  echo "You have to specify a source folder"
   exit 4
 fi
 
