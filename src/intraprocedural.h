@@ -131,14 +131,14 @@ void CTaintIntraProcedural::handleFormals() {
 		for(Function::arg_iterator pa = F->arg_begin(), Epa = F->arg_end(); pa != Epa; ++pa) {
 			Argument &aFormal = *pa;
 
-			DEBUG_WITH_TYPE("waint-summary", errs() << "Analyzing formal parameter "
+			DEBUG_WITH_TYPE("saint-summary", errs() << "Analyzing formal parameter "
 								<< aFormal.getName() << " of function " << F->getName() << "\n");
 
 			//Check if any use of the formal parameter is tainted
 			for(Value::use_iterator pu = aFormal.use_begin(), Epu = aFormal.use_end(); pu!=Epu; ++pu) {
 				aUse = *pu;
 				if (_analysis->isValueTainted(&I, aUse)) {
-					DEBUG_WITH_TYPE("waint-summary", errs() << "\tis tainted from: ";
+					DEBUG_WITH_TYPE("saint-summary", errs() << "\tis tainted from: ";
 									aUse->print(errs()); errs() << "\n");
 					_analysis->setProcArgTaint(F, aFormal.getArgNo(), true);
 				}

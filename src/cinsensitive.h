@@ -35,7 +35,6 @@ public:
 	virtual void visitBinaryOperator(BinaryOperator &I);
 	virtual void visitVACopyInst(VACopyInst &I);
 	virtual void visitBranchInst(BranchInst &I);
-	virtual void visitGetElementPtrInst(GetElementPtrInst &I);
 
 protected:
 	CTaintIntraProcedural *_intraAnalysis;
@@ -83,11 +82,6 @@ inline void InterProcedural::visitVACopyInst(VACopyInst &I) {
 
 inline void InterProcedural::visitBranchInst(BranchInst &I) {
 	_intraAnalysis->visitBranchInst(I);
-}
-
-inline void InterProcedural::visitGetElementPtrInst(GetElementPtrInst &I)
-{
-	_intraAnalysis->visitGetElementPtrInst(I);
 }
 
 inline void InterProcedural::mergeCopyPredOutFlowToInFlow(Instruction &predInst, Instruction &curInst) {

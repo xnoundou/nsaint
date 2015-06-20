@@ -43,6 +43,8 @@ int even(int x)
 }
 
 void mysql(int *query) {
+    //printf(query);
+    //printf("%s");
     printf("%s", query);
   return ;
 }

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 OPT="$LLVM_TOOLS/opt"
-TESTS="$LLVM_HOME/lib/Analysis/waint/tests"
+TESTS="$LLVM_HOME/lib/Analysis/saint/tests"
 RESULT="results"
 IRTYPE="s"
 

@@ -18,7 +18,7 @@ public:
 	CheckFormatStringPass(CTaintAnalysis *taintAnalysis);
 	void doAnalysis();
 
-	//******* Implementation of methods inherited from CDataFlow *******//
+	//******* Implementation of methods inherited from CForwardFlowAnalysis *******//
 	virtual bool merge(BasicBlock *curBB, BasicBlock *succBB){ return false;}
 	virtual void mergeCopyPredOutFlowToInFlow(Instruction &predInst, Instruction &curInst){}
 
@@ -52,6 +52,8 @@ void CheckFormatStringPass::doAnalysis()
 
 inline void CheckFormatStringPass::visitCallInst(CallInst &I) {
 	_taintAnalysis->visitCallInstSink(I);
+	Function *callee = I.getCalledFunction();
+	//_taintAnalysis->checkTaintedValueUse(I, *callee);
 }
 
 #endif /* CHECKFORMATSTRINGPASS_H_ */

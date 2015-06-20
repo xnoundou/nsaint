@@ -97,7 +97,6 @@ public:
    	void visitBinaryOperator(BinaryOperator &I);
 	void visitVACopyInst(VACopyInst &I);
 	void visitBranchInst(BranchInst &I);
-	void visitGetElementPtrInst(GetElementPtrInst &I);
 
 	void taintBBInstructions(CmpInst *C, BasicBlock *bb, Value *taintSrc);
 	void checkTaintedValueUse(CallInst &I, Function &callee, unsigned formatPos = _FUNCTION_NOT_FORMAT);

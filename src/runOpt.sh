@@ -8,8 +8,8 @@ Usage: $(basename $0) -o <llvm-opt> -i <bc files> [-s|-d|-t] -p <project_name>
 <llvm-opt>: LLVM 'opt' program path									       
 <bc file> : LLVM byte code file to analyse									       
 [-s]	  : generates analysis statistics
-[-d]	  : generates WAINT debugging information while running
-[-t]      : generates WAINT analysis timing information
+[-d]	  : generates SAINT debugging information while running
+[-t]      : generates SAINT analysis timing information
 [-p]      : specifies a name for the project
 ______________________________________________________________________________
 EOF
@@ -81,15 +81,15 @@ if [ "$statsflag" ]; then
   STATS="-stats"
 fi
 
-PASSARG="-waint"
+PASSARG="-saint"
 
 if [ "$debugflag" ]; then
   #DEBUGFLAG="-debug"
-  #DEBUGFLAG="-debug -debug-only=waint-tainted"
-  DEBUGFLAG="-debug -debug-only=waint-warnings"
-  #DEBUGFLAG="-debug -debug-only=waint-summary-table"
-  #DEBUGFLAG="-debug -debug-only=waint-summary"
-  #DEBUGFLAG="-debug -debug-only=waint-sinks"
+  #DEBUGFLAG="-debug -debug-only=saint-tainted"
+  DEBUGFLAG="-debug -debug-only=saint-warnings"
+  #DEBUGFLAG="-debug -debug-only=saint-summary-table"
+  #DEBUGFLAG="-debug -debug-only=saint-summary"
+  #DEBUGFLAG="-debug -debug-only=saint-sinks"
 fi
 
 if [ "$timingflag" ]; then
@@ -98,8 +98,8 @@ fi
 
 set -x
 
-make -f Makefile.waint compile > /dev/null
+make -f Makefile.saint compile > /dev/null
 
 time $($OPT $STATS -load $LLVM_LIB/LLVMDataStructure.so \
-  	    	   -load $LLVM_LIB/waint.so $DEBUGFLAG -calltarget-eqtd -memdep "$PASSARG" $TIMING < "$INPUTFILE" > /dev/null)
+  	    	   -load $LLVM_LIB/saint.so $DEBUGFLAG -calltarget-eqtd -memdep "$PASSARG" $TIMING < "$INPUTFILE" > /dev/null)
 

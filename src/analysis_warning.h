@@ -128,45 +128,45 @@ bool AnalysisIssue::operator== (const AnalysisIssue* rhs)
 void AnalysisIssue::print()
 {
 	if (_warnType == FORMAT_STRING_VUL) {
-		DEBUG_WITH_TYPE("waint-warnings", errs() << "[waint][fmtvul-1] Use of tainted format string (argument #"
+		DEBUG_WITH_TYPE("saint-warnings", errs() << "[saint][fmtvul-1] Use of tainted format string (argument #"
 				<< _funcParam << ") in sink function '"
 				<< _sink->getName()
 				<< ". [line " << _line << "]\n");
-		DEBUG_WITH_TYPE("waint-warnings", if (_val->hasName()) errs().indent(INDENT_LENGTH)
+		DEBUG_WITH_TYPE("saint-warnings", if (_val->hasName()) errs().indent(INDENT_LENGTH)
 				<< _val->getName(); else _val->print(errs().indent(INDENT_LENGTH)));
 	}
 	else if (_warnType == FORMAT_TAINTED_VALUE_USE) {
 
-		DEBUG_WITH_TYPE("waint-warnings", errs() << "[waint][fmtvul-2] Parameter #"
+		DEBUG_WITH_TYPE("saint-warnings", errs() << "[saint][fmtvul-2] Parameter #"
 				<< _funcParam
 				<< " of sink call to '" << _sink->getName()
 				<< "' is tainted. [line " << _line << "]\n");
-		DEBUG_WITH_TYPE("waint-warnings", if (_val->hasName()) errs().indent(INDENT_LENGTH)
+		DEBUG_WITH_TYPE("saint-warnings", if (_val->hasName()) errs().indent(INDENT_LENGTH)
 				<< _val->getName(); else _val->print(errs().indent(INDENT_LENGTH)));
 		if (_valueToLine) {
-			DEBUG_WITH_TYPE("waint-warnings", errs().indent(INDENT_LENGTH) << "tainted at line " << _valueToLine->at(_val));
+			DEBUG_WITH_TYPE("saint-warnings", errs().indent(INDENT_LENGTH) << "tainted at line " << _valueToLine->at(_val));
 		}
 	}
 	else if (_warnType == TAINTED_VALUE_USE) {
 
-		DEBUG_WITH_TYPE("waint-warnings", errs() << "[waint][tval] Use of tainted value as parameter #"
+		DEBUG_WITH_TYPE("saint-warnings", errs() << "[saint][tval] Use of tainted value as parameter #"
 				<< _funcParam << " in sink function '" << _sink->getName()
 				<< "'. [line " << _line << "]\n");
-		DEBUG_WITH_TYPE("waint-warnings", if (_val->hasName()) errs().indent(INDENT_LENGTH)
+		DEBUG_WITH_TYPE("saint-warnings", if (_val->hasName()) errs().indent(INDENT_LENGTH)
 				<< _val->getName(); else _val->print(errs().indent(INDENT_LENGTH)));
 
-		DEBUG_WITH_TYPE("waint-warnings", errs().indent(INDENT_LENGTH)
+		DEBUG_WITH_TYPE("saint-warnings", errs().indent(INDENT_LENGTH)
 				<< " [Parameter #" << _funcParam << "] of '" << _sink->getName() << "' gets tainted\n");
 	}
 	else if (_warnType == FORMAT_STRING_MISSING_VUL) {
-		DEBUG_WITH_TYPE("waint-warnings", errs() << "[waint][fmtvul-3] ");
-		DEBUG_WITH_TYPE("waint-warnings", errs() << " Argument at position "
+		DEBUG_WITH_TYPE("saint-warnings", errs() << "[saint][fmtvul-3] ");
+		DEBUG_WITH_TYPE("saint-warnings", errs() << " Argument at position "
 				<< _formatStrPos << " of function '" <<  _sink->getName()
 				<< "' shall be a format string [line " << _line << "] \n");
 
-		DEBUG_WITH_TYPE("waint-warnings", errs().indent(INDENT_LENGTH) << "# Not => ");
-		if (_val)	DEBUG_WITH_TYPE("waint-warnings", _val->print(errs()));
-		DEBUG_WITH_TYPE("waint-warnings", errs() << "\n");
+		DEBUG_WITH_TYPE("saint-warnings", errs().indent(INDENT_LENGTH) << "# Not => ");
+		if (_val)	DEBUG_WITH_TYPE("saint-warnings", _val->print(errs()));
+		DEBUG_WITH_TYPE("saint-warnings", errs() << "\n");
 	}
 }
 

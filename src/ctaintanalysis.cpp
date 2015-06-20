@@ -5,7 +5,7 @@
  *  Author: Xavier N. Noumbissi
  */
 
-#define DEBUG_TYPE "waint"
+#define DEBUG_TYPE "saint"
 
 #include "ctaintanalysis.h"
 #include "cinsensitive.h"
@@ -35,7 +35,7 @@ STATISTIC(NumIssues, 	   "Number of found issues");
 STATISTIC(NumFunctions,	   "Number of functions found in the module");
 STATISTIC(NumContextCalls, "Number of context-sensitive analysis calls");
 
-const string CTaintAnalysis::_taintId("[WAINT]");
+const string CTaintAnalysis::_taintId("[SAINT]");
 const string CTaintAnalysis::_taintSourceFile("cfg/sources.cfg");
 const string CTaintAnalysis::_taintSinkFile("cfg/sinks.cfg");
 const string CTaintAnalysis::_formatStrFile("cfg/formatspec.cfg");
@@ -119,12 +119,12 @@ void CTaintAnalysis::readTaintSinkConfig()
 				if (!arg.empty() && is_number(arg)){
 					pos = atoi(arg.c_str());
 					addTaintInfo(&_formatSinks, sink, pos);
-					DEBUG_WITH_TYPE("waint-sinks", errs() << "[WAINT] sink format string function '" << sink << "'\n");
+					DEBUG_WITH_TYPE("saint-sinks", errs() << "[SAINT] sink format string function '" << sink << "'\n");
 				}
 			}
 			else{
 				addTaintInfo(&_formatSinks, sink, 1);
-				DEBUG_WITH_TYPE("waint-sinks", errs() << "[WAINT] sink function '" << sink << "'\n");
+				DEBUG_WITH_TYPE("saint-sinks", errs() << "[SAINT] sink function '" << sink << "'\n");
 			}
 		}
 	}
@@ -152,13 +152,13 @@ void CTaintAnalysis::readFormatStrConfig()
 				if (!arg.empty() && is_number(arg)){
 					pos = atoi(arg.c_str());
 					addTaintInfo(&_formatStrPos, sink, pos);
-					DEBUG_WITH_TYPE("waint-sinks", errs() << "[WAINT] sink function " << sink
+					DEBUG_WITH_TYPE("saint-sinks", errs() << "[SAINT] sink function " << sink
 														  << " has its format string at parameter '" << pos << "'\n");
 				}
 			}
 			else{
 				addTaintInfo(&_formatStrPos, sink, 1);
-				DEBUG_WITH_TYPE("waint-sinks", errs() << "[WAINT] sink function " << sink
+				DEBUG_WITH_TYPE("saint-sinks", errs() << "[SAINT] sink function " << sink
 						  	  	  	  	  	  	  	  << " has its format string at parameter 1'\n");
 			}
 		}
@@ -240,21 +240,21 @@ CTaintAnalysis::~CTaintAnalysis()
 
 void CTaintAnalysis::printSummaryTable()
 {
-	DEBUG_WITH_TYPE("waint-warnings", errs() << "Summary Table Information ++++++++++++++\n");
+	DEBUG_WITH_TYPE("saint-warnings", errs() << "Summary Table Information ++++++++++++++\n");
 	for(MFuncSumIterator it = _summaryTable.begin(), itEnd = _summaryTable.end();
 			it != itEnd; ++it) {
 		Function *f = it->first;
 		vector<bool> *taintInfo = it->second;
 		if (!taintInfo) continue;
 
-		DEBUG_WITH_TYPE("waint-warnings", errs() << "Function " << f->getName() << "\n");
+		DEBUG_WITH_TYPE("saint-warnings", errs() << "Function " << f->getName() << "\n");
 
 		unsigned s = taintInfo->size();
 		unsigned ri = s-1;
 		for(unsigned k = 0; k < s; ++k) {
 			if ( !taintInfo->at(k) ) continue;
-			if (k == ri)	DEBUG_WITH_TYPE("waint-warnings", errs().indent(INDENT_LENGTH) << "Return value is tainted\n");
-			else	DEBUG_WITH_TYPE("waint-warnings", errs().indent(INDENT_LENGTH) << "Parameter " << k+1 << " is tainted\n");
+			if (k == ri)	DEBUG_WITH_TYPE("saint-warnings", errs().indent(INDENT_LENGTH) << "Return value is tainted\n");
+			else	DEBUG_WITH_TYPE("saint-warnings", errs().indent(INDENT_LENGTH) << "Parameter " << k+1 << " is tainted\n");
 		}
 	}
 }
@@ -268,12 +268,12 @@ void CTaintAnalysis::printSummaryTableInfo(Function *f)
 
 	unsigned s = taintInfo->size();
 	unsigned ri = s-1;
-	DEBUG_WITH_TYPE("waint-warnings", errs() << "Function " << f->getName() << "\n");
+	DEBUG_WITH_TYPE("saint-warnings", errs() << "Function " << f->getName() << "\n");
 	for(unsigned k = 0; k < s; ++k) {
 		if ( !taintInfo->at(k) ) continue;
-		if (k == ri)	DEBUG_WITH_TYPE("waint-warnings", errs().indent(INDENT_LENGTH) << "Return value is tainted\n");
-		else	DEBUG_WITH_TYPE("waint-warnings", errs().indent(INDENT_LENGTH) << "Parameter " << k+1 << " is tainted\n"); //We add +1 since function parameters start
-		//with 1 in Waint. 0 is reserved for the return value
+		if (k == ri)	DEBUG_WITH_TYPE("saint-warnings", errs().indent(INDENT_LENGTH) << "Return value is tainted\n");
+		else	DEBUG_WITH_TYPE("saint-warnings", errs().indent(INDENT_LENGTH) << "Parameter " << k+1 << " is tainted\n"); //We add +1 since function parameters start
+		//with 1 in saint. 0 is reserved for the return value
 	}
 }
 
@@ -286,9 +286,9 @@ void CTaintAnalysis::printSummaryTableInfo(Function *f, unsigned param)
 
 	unsigned s = taintInfo->size();
 	if (param < s && taintInfo->at(param)) {
-		DEBUG_WITH_TYPE("waint-warnings", errs().indent(INDENT_LENGTH) << "From function " << f->getName());
-		if (param == s-1)	DEBUG_WITH_TYPE("waint-warnings", errs().indent(INDENT_LENGTH) << ": return value is tainted\n");
-		else	DEBUG_WITH_TYPE("waint-warnings", errs().indent(INDENT_LENGTH) << ": parameter " << param << " is tainted\n");
+		DEBUG_WITH_TYPE("saint-warnings", errs().indent(INDENT_LENGTH) << "From function " << f->getName());
+		if (param == s-1)	DEBUG_WITH_TYPE("saint-warnings", errs().indent(INDENT_LENGTH) << ": return value is tainted\n");
+		else	DEBUG_WITH_TYPE("saint-warnings", errs().indent(INDENT_LENGTH) << ": parameter " << param << " is tainted\n");
 	}
 
 }
@@ -370,7 +370,7 @@ bool CTaintAnalysis::runOnModule(Module &m)
 
 		++NumFunctions;
 		string fName(f->getName().str());
-		DEBUG_WITH_TYPE("waint-functions", errs() << "discovered function '" << fName << "'\n");
+		DEBUG_WITH_TYPE("saint-functions", errs() << "discovered function '" << fName << "'\n");
 
 		//TODO: use function signature as key instead
 		_signatureToFunc[fName] = f;
@@ -574,7 +574,7 @@ void CTaintAnalysis::insertToOutFlow(Instruction *I, Value *v, Value *taintSrc)
 		_valueToLine[v] = getLineNumber(*I);
 		_OUT[I].insert(v);
 
-		DEBUG_WITH_TYPE("waint-tainted", v->print(errs()); errs() << " gets tainted\n");
+		DEBUG_WITH_TYPE("saint-tainted", v->print(errs()); errs() << " gets tainted\n");
 
 		if ( 0 == _valueToTaintInst.count(v) )
 			_valueToTaintInst[v] = new vector<Instruction *>;
@@ -613,7 +613,7 @@ void CTaintAnalysis::insertToOutFlow(Instruction &I, Value &v, DSGraph &dsg)
 {
 	_valueToLine[&v] = getLineNumber(I);
 	_OUT[&I].insert(&v);
-	DEBUG_WITH_TYPE("waint-tainted", v.print(errs()); errs() << " gets tainted\n");
+	DEBUG_WITH_TYPE("saint-tainted", v.print(errs()); errs() << " gets tainted\n");
 
 	{
 		if ( 0 == _valueToTaintInst.count(&v) )
@@ -927,21 +927,6 @@ void CTaintAnalysis::visit(Instruction &I)
 
 //**************************************************************************************
 
-void CTaintAnalysis::visitGetElementPtrInst(GetElementPtrInst &I) {
-	DEBUG(errs() << "GetElementPtrInst []: "; I.print(errs()); errs()<<"\n");
-	/*Value *g = I.getPointerOperand();
-
-	//DEBUG(errs() << "\t## Added "; I.getPointerOperandType()->dump(); errs() << "\n");
-	if (g && isValueTainted(&I, g)) {
-		insertToOutFlow(&I, &I, g);
-		_taintedArrays.insert(g->getName());
-		DEBUG(errs() << "Added " <<  g->getName()
-					 << " as tainted array. size: " << _taintedArrays.size() << "\n");
-	}*/
-}
-
-//**************************************************************************************
-
 void CTaintAnalysis::visitLoadInst(LoadInst &I) {
 	DEBUG(errs() << "LOAD [p=*q]: "; I.print(errs()); errs()<<"\n");
 	Value *q = I.getPointerOperand();
@@ -1002,7 +987,7 @@ void CTaintAnalysis::visitCallInst(CallInst & I)
 				taintedArg = I.getArgOperand(arg_pos);
 
 			insertToOutFlow(&I, taintedArg, 0);
-			DEBUG_WITH_TYPE("waint-sources", errs() << "Found a source "
+			DEBUG_WITH_TYPE("saint-sources", errs() << "Found a source "
 					<< calleeName << " with arg_pos " << arg_pos << "\n");
 		}
 		else {
@@ -1138,11 +1123,11 @@ void CTaintAnalysis::visitCallInstSink(CallInst & I)
 	unsigned formatPos = isFormatSink(calleeName);
 
 	if (_FUNCTION_NOT_FORMAT != formatPos) {
-		DEBUG_WITH_TYPE("waint-sinks", errs() << "[WAINT]Handling sink format string function '" << calleeName << "'\n");
+		DEBUG_WITH_TYPE("saint-sinks", errs() << "[SAINT]Handling sink format string function '" << calleeName << "'\n");
 		handleFormatSink(I, *callee, formatPos);
 	}
 	else if (_formatSinks.count(calleeName) > 0) {
-		DEBUG_WITH_TYPE("waint-sinks", errs() << "[WAINT]Handling sink function '" << calleeName << "'\n");
+		DEBUG_WITH_TYPE("saint-sinks", errs() << "[SAINT]Handling sink function '" << calleeName << "'\n");
 		checkTaintedValueUse(I, *callee);
 	}
 }
@@ -1152,20 +1137,20 @@ void CTaintAnalysis::visitCallInstSink(CallInst & I)
 void CTaintAnalysis::visitReturnInst(ReturnInst &I) {
 
 	Function *F = I.getParent()->getParent();
-	DEBUG_WITH_TYPE("waint-summary", errs() << "Analyzing return instruction for " << F->getName() << "\n");
+	DEBUG_WITH_TYPE("saint-summary", errs() << "Analyzing return instruction for " << F->getName() << "\n");
 	Value *retVal = I.getReturnValue();
 
 	if (!retVal || retVal->getType()->isVoidTy()){
-		DEBUG_WITH_TYPE("waint-summary", errs() << "No return value for: " << F->getName() << "\n");
+		DEBUG_WITH_TYPE("saint-summary", errs() << "No return value for: " << F->getName() << "\n");
 		return;
 	}
 
-	DEBUG_WITH_TYPE("waint-summary", errs() << "\t";retVal->print(errs());errs()<< "\n");
+	DEBUG_WITH_TYPE("saint-summary", errs() << "\t";retVal->print(errs());errs()<< "\n");
 
 	_functionToRetValue[F] = retVal;
 
 	if (isValueTainted(&I, retVal)) {
-		DEBUG_WITH_TYPE("waint-summary", errs() << "\tis tainted\n");
+		DEBUG_WITH_TYPE("saint-summary", errs() << "\tis tainted\n");
 		unsigned retPos = _summaryTable[F]->size() - 1;
 		setProcArgTaint(F, retPos, true);
 	}
@@ -1224,7 +1209,7 @@ inline void CTaintAnalysis::taintBBInstructions(CmpInst *C, BasicBlock *bb, Valu
 
 void CTaintAnalysis::visitBranchInst(BranchInst &I)
 {
-	DEBUG_WITH_TYPE("waint-summary", errs() << "BRANCH: ";I.print(errs());errs()<<"\n");
+	DEBUG_WITH_TYPE("saint-summary", errs() << "BRANCH: ";I.print(errs());errs()<<"\n");
 
 	if (I.isConditional()) {
 		Value *cond = I.getCondition();
@@ -1251,7 +1236,7 @@ void CTaintAnalysis::visitBranchInst(BranchInst &I)
 //**************************************************************************************
 
 static RegisterPass<CTaintAnalysis>
-X("waint", "Waterloo Taint Analysis Module Pass",
+X("saint", "Simple Taint Analysis Module Pass",
   false /* Only looks at CFG */,
   true /* Analysis Pass */);
 

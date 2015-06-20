@@ -1,6 +1,6 @@
 
 LEVEL = ../../..
-LIBRARYNAME = waint
+LIBRARYNAME = saint
 SHARED_LIBRARY = 1
 LOADABLE_MODULE = 1
 USEDLIBS =
@@ -9,7 +9,7 @@ USEDLIBS =
 # from the hello plugin.
 ifneq ($(REQUIRES_RTTI), 1)
 ifneq ($(REQUIRES_EH), 1)
-EXPORTED_SYMBOL_FILE = $(PROJ_SRC_DIR)/waint.exports
+EXPORTED_SYMBOL_FILE = $(PROJ_SRC_DIR)/saint.exports
 endif
 endif
 

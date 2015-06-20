@@ -7,7 +7,13 @@
 \usepackage{textcomp}
 \usepackage{verbatim}
 \usepackage{hyperref}
-\usepackage[usenames,dvipsnames]{color}
+\usepackage{xcolor}
+
+\begin{comment}
+\hypersetup{
+   	linkbordercolor=purple
+}
+\end{comment}
 
 \setlength{\evensidemargin}{-0.1in} \setlength{\oddsidemargin}{-0.1in}
 \setlength{\textwidth}{6.5in} \setlength{\textheight}{9.0in}
@@ -18,7 +24,7 @@
 \definecolor{mediumblue}{RGB}{0,0,205}    
 \definecolor{firebrickred}{RGB}{178,34,34}
 
-\newcommand{\waint}{\textsc{\textbf{waint}}\xspace}
+\newcommand{\saint}{\texttt{\textsc{saint}}\xspace}
 \newcommand{\software}[2]{\texttt{\textbf{#1}, version #2}\xspace}
 \newcommand{\softwarenov}[1]{\texttt{\textbf{#1}}\xspace}
 \newcommand{\tool}[1]{\texttt{#1}\xspace}
@@ -28,6 +34,13 @@
 \newcommand{\env}[1]{\textcolor{firebrickred}{\text{#1}}\xspace}
 \newcommand{\envout}[1]{\textcolor{firebrickred}{\$\text{#1}}\xspace}
 
+\newcommand{\mycheckmark}[1]{\textcolor{#1}{$\checkmark$}}
+
+%Remove widows and orphants
+\clubpenalty = 10000
+\widowpenalty = 10000
+\displaywidowpenalty = 10000 
+
 \sloppypar
 \begin{document}
 \pagestyle{empty}
@@ -36,7 +49,7 @@
 
 \begin{center}
 \begin{LARGE}
-\textbf{ \textsc{Waint: Waterloo Taint Analysis Tool\\
+\textbf{ \textsc{Saint: Simple Taint Analysis Tool\\
 				User's manual}}\\
 \end{LARGE}
 \begin{large}
@@ -65,24 +78,24 @@ My PhD thesis introduces the concept of tainted path and
 describes techniques and algorithms to compute them in
 any imperative programming language that uses
 pointers (C, C++, Java, etc.). I implemented these
-algorithms in \waint.
+algorithms in \saint.
 
-\waint computes \textcolor{firebrickred}{\textit{tainted paths}}
-in a C program without running it. \waint does not require
+\saint computes \textcolor{firebrickred}{\textit{tainted paths}}
+in a C program without running it. \saint does not require
 the developer to annotate the program under analysis.
-\waint implements a flow-sensitive, interprocedural and
+\saint implements a flow-sensitive, interprocedural and
 context-sensitive analysis that computes tainted paths in
 C programs at compile-time.
 
 \section{Installation Instructions}
-This section of the manual explains how to install \waint
-on a Linux machine. We have not tested \waint on a Windows
+This section of the manual explains how to install \saint
+on a Linux machine. We have not tested \saint on a Windows
 machine, but the installation should follow similar steps. 
 
 \subsection{Required Software}
-This section enumerates all software that you need to run \waint.
+This section enumerates all software that you need to run \saint.
 \begin{enumerate}[a)]
-	\item \waint: \url{https://github.com/xnoumbis/waint.git}
+	\item \saint: \url{https://github.com/xnoumbis/saint.git}
 	
 	\item The compiler infrastructure \software{LLVM}{3.3} (\url{http://llvm.org})
 	
@@ -96,13 +109,13 @@ This section enumerates all software that you need to run \waint.
 \subsection{Environment Variables}
 Table~\ref{table_env} that shows all environment variables
 that you have to define and export in order to successfully
-run \waint.
+run \saint.
 
 \begin{table*}[!htbp]
 \begin{center}
 \begin{tabular}{|r|l|} \hline
 {\bf Environment variables}	&	{\bf Description}	\\ \hline \hline
-\env{WAINT\_HOME}	&	\waint home folder (e.g.: /home/user/waint) 	\\ \hline
+\env{SAINT\_HOME}	&	\saint home folder (e.g.: /home/user/saint) 	\\ \hline
 \env{LLVM\_HOME}	&	\tool{llvm} home folder (e.g.: /home/user/llvm)		\\ \hline
 \env{LLVM\_LIB}		&	\tool{llvm} compiled libraries folder 					\\
 					&    (e.g.: \envout{LLVM\_HOME}/build/Release+Asserts/lib)	\\ \hline
@@ -113,41 +126,46 @@ run \waint.
 					& 	(e.g.: /home/user/clang+llvm/bin) \\ \hline	
 \end{tabular}
 \end{center}
-\caption{Table with all environment variables required to install and use \waint}\label{table_env}
+\caption{Table with all environment variables required to install and use \saint}\label{table_env}
 \end{table*}
 
-You define and export an environment variable \env{ENV\_VAR} by
+\mycheckmark{mediumblue} You define and export an environment variable \env{ENV\_VAR} by
 writing the following commands in your ''\texttt{.bashrc}'' file:
 \begin{verbatim}
 	ENV_VAR=path_to_folder
 	export ENV_VAR
 \end{verbatim}
 
-\subsection{How to Configure ''\tool{clang+llvm}'' for use with \textsc{waint}}
+\subsection{How to Configure ''\tool{clang+llvm}'' for use with \textsc{saint}}
 \begin{enumerate}[a)]
 	\item Download and unpack \software{clang+llvm}{3.3}.
-	\item Add the \texttt{bin} folder to your environment variable \env{PATH}.
-	For instance by adding the following line in your file ''\texttt{.bashrc}''
+	
+	\item Add the \texttt{bin} folder to your environment variable \env{PATH}.\\
+	\mycheckmark{mediumblue} For instance by adding the following line
+	in your file ''\texttt{.bashrc}''
 	\begin{verbatim}
 		PATH=$PATH:$CLANGLLVM_BIN
 		export PATH
 	\end{verbatim}
 \end{enumerate}
 
-\subsection{How to Configure ''\tool{LLVM}'' for use with \textsc{waint}}
+\subsection{How to Configure ''\tool{LLVM}'' for use with \textsc{saint}}
 \begin{enumerate}[a)]
 	\item Create a folder ''build'' in \envout{LLVM\_HOME}.
+
 	\item Copy and customized the script \script{configure-llvm.sh}
-	from \waint's ''script'' folder into the newly created ''build'' folder.
-	\tool{llvm}'s ''build'' folder.
-	\item Create a symbolic link in the folder ''\envout{LLVM\_HOME}/lib/Analysis''.
+	from \saint's ''script'' folder into the newly created ''build'' folder.
+
+	\item Create a symbolic link to \saint sources in the folder
+	''\envout{LLVM\_HOME}/lib/Analysis''.
 	You can achieve this by running: 
-	\command{ln -s \$WAINT\_HOME/src \$LLVM\_HOME/lib/Analysis/waint}.
+	\command{ln -s \$SAINT\_HOME/src \$LLVM\_HOME/lib/Analysis/saint}.
+	
 	\item Run the script \script{configure-llvm.sh}.
 \end{enumerate}
 
 
-\subsection{How to Configure ''\tool{poolalloc}'' for use with \textsc{waint}}
+\subsection{How to Configure ''\tool{poolalloc}'' for use with \textsc{saint}}
 \begin{enumerate}[a)]
 	\item The sources of the DSA pointer analysis \softwarenov{poolalloc}
 	can be gathered using the command 
@@ -159,21 +177,34 @@ writing the following commands in your ''\texttt{.bashrc}'' file:
 	\command{git checkout 181c62f1d29ae9de660bad0a6593130d15803abc}.
 
 	\item Copy and customized the script \script{configure-poolalloc.sh}
-	from \waint's ''script'' folder into \envout{POOLALLOC}, and
+	from \saint's ''script'' folder into \envout{POOLALLOC}, and
 	run it.
 	
 	\item Then run \command{make}, and \command{make install}. Make sure
 	to run \command{make install} as \texttt{root} (or \texttt{administrator}
 	on a \texttt{Windows} system).
+	
+	\item Create a symbolic link to \tool{poolalloc}'s \texttt{dsa include folder}
+	in the folder ''\envout{LLVM\_HOME}/include''.
+	You can achieve this by running: 
+	\command{ln -s \$POOLALLOC/include/dsa \$LLVM\_HOME/include/dsa}.
 \end{enumerate}
 
-\section{Compiling and Running \textsc{waint}}
+\section{Compiling and Running \textsc{saint}}
+
+\mycheckmark{mediumblue} You need to execute the command
+\command{make -f Makefile.saint} within the
+folder ''\envout{LLVM\_HOME/lib/Analysis/saint}'' to compile
+\saint.
+
+Also, the \saint gets compiled when you run it using
+the Bash script \texttt{runOpt.sh}.
 
 \subsection{Folder Structure}
-The following folders constitute \waint directory structure:
+The following folders constitute \saint directory structure:
 \begin{itemize}
 	\item ''\texttt{benchmarks}'': folder with sample
-	scripts to run \waint.
+	scripts to run \saint.
 
 	\item ''\texttt{doc}'': folder with the manual.
 
@@ -181,20 +212,22 @@ The following folders constitute \waint directory structure:
 	configuration files for \tool{poolalloc} and \tool{LLVM}.
 	
 	\item ''\texttt{src}'': folder with all \texttt{C++} source files,
-	and \tool{Bash} scripts to compile and run \waint.
+	and \tool{Bash} scripts to compile and run \saint.
 
 	\item ''\texttt{src/cfg}'': folder with all configuration files			
 \end{itemize}
 
-\subsection{Important Bash Scripts}
-Among others, \waint source folder contains the following two important
+\subsection{Configuration Files}
+
+\subsection{Running \textsc{saint}}
+Among others, \saint source folder contains the following two important
 \texttt{Bash} scripts:
 \begin{enumerate}[a)]
 	\item \texttt{ctainthelp.sh}: this script is used to generate and
 		merge \tool{llvm} intermediate representation (IR) files. 
 	
 	\item \texttt{runOpt.sh}: this script is used to run the analysis of
-		\waint on the program under analysis. We encourage users to look
+		\saint on the program under analysis. We encourage users to look
 		at the sample scripts in the folder ''\texttt{benchmarks}'' to
 		learn how to use \texttt{runOpt.sh}.
 \end{enumerate}
@@ -202,6 +235,6 @@ Among others, \waint source folder contains the following two important
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \bibliographystyle{plain}
-\bibliography{manual}
+\bibliography{manual-saint}
 
 \end{document}

@@ -1,7 +1,7 @@
 #!/bin/bash
 #Run this script from LLVM_SRC/build
 
-../configure --prefix="$HOME/tools/llvm-3.3.src" \
+../configure --prefix="$LLVM_HOME" \
 		CC=/usr/bin/gcc \
 		CXX=/usr/bin/g++ \
 		--enable-assertions \

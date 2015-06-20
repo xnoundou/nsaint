@@ -9,9 +9,9 @@ LLVM_INC=-I. -I${LLVM_HOME}/include \
 MACROS=-D __STDC_LIMIT_MACROS \
        -D__STDC_CONSTANT_MACROS
 
-CTAINT=${LLVM_HOME}/lib/Analysis/waint
+CTAINT=${LLVM_HOME}/lib/Analysis/saint
 
-CTAINT_BUILD=${LLVM_BUILD}/lib/Analysis/waint/Release+Asserts
+CTAINT_BUILD=${LLVM_BUILD}/lib/Analysis/saint/Release+Asserts
 
 SRC=${CTAINT}/ctaintanalysis.cpp
 
@@ -29,7 +29,7 @@ bc:
 	clang -emit-llvm ${MYFILE}.c -c -o ${MYFILE}.bc
 
 opt: compile
-	opt -load $(LLVM_LIB)/waint.so $(PASSARG) < tests/test.bc > /dev/null
+	opt -load $(LLVM_LIB)/saint.so $(PASSARG) < tests/test.bc > /dev/null
 
 ir:
 	clang ${MACROS} ${LLVM_INC} -S -emit-llvm ${MYFILE}
