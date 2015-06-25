@@ -52,8 +52,6 @@ void CheckFormatStringPass::doAnalysis()
 
 inline void CheckFormatStringPass::visitCallInst(CallInst &I) {
 	_taintAnalysis->visitCallInstSink(I);
-	Function *callee = I.getCalledFunction();
-	//_taintAnalysis->checkTaintedValueUse(I, *callee);
 }
 
 #endif /* CHECKFORMATSTRINGPASS_H_ */

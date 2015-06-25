@@ -1,11 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int compute(int *);
-int odd(int);
-int even(int);
-int main();
-
 int compute(int *x)
 {
   int sum, i;
@@ -34,7 +29,7 @@ int odd(int x)
     return even(x - 1);
   }
 
-int even(int x)
+int even(int *x)
 {
   if (x == 0)
     return 1;
@@ -42,14 +37,13 @@ int even(int x)
     return odd(x - 1);
 }
 
-void mysql(int *query) {
-    //printf(query);
-    //printf("%s");
-    printf("%s", query);
+void mysql(int *query, int *x) {
+    printf("%d", x);
+    printf("%d", query);
   return ;
 }
 
-int main()
+int main(int argc, char *argv[])
 {
   int x, b1, y;
   //char str[10];
@@ -59,13 +53,14 @@ int main()
   //printf("Enter an integer now: ");
   printf("Wow: %d%f", 4, 4.5);
   scanf("%d", &x);
-  b1 = even(x);
+  b1 = even(&x);
   //b2 = odd(3);
   int ar[2];
   y = compute(&x);
   ar[1] = y;
   //sprintf(str, "%d", y);
-  mysql(&ar[0]);
+  mysql(&y, &ar[1]);
+  //mysql(&ar[1]);
   return 0;
 }
 

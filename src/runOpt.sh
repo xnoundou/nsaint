@@ -2,8 +2,8 @@
 
 
 USAGE=$(cat <<EOF
-______________________________________________________________________________
-Usage: $(basename $0) -o <llvm-opt> -i <bc files> [-s|-d|-t] -p <project_name>
+______________________________________________________________________________________________
+Usage: $(basename $0) -o <llvm-opt> -i <bc files> [-s|-d|-t] [-e debug_type] -p <project_name>
 
 <llvm-opt>: LLVM 'opt' program path									       
 <bc file> : LLVM byte code file to analyse									       
@@ -11,7 +11,7 @@ Usage: $(basename $0) -o <llvm-opt> -i <bc files> [-s|-d|-t] -p <project_name>
 [-d]	  : generates SAINT debugging information while running
 [-t]      : generates SAINT analysis timing information
 [-p]      : specifies a name for the project
-______________________________________________________________________________
+______________________________________________________________________________________________
 EOF
 )
 
@@ -26,9 +26,11 @@ projectflag=
 optflag=
 statsflag=
 debugflag=
+debugtypeflag=
+debugtypeflag=
 timingflag=
 
-while getopts 'mfdto:i:p:s' OPTION
+while getopts 'mfd:to:i:p:se:' OPTION
 do
   case $OPTION in
     m)	moduleflag=1
@@ -49,6 +51,9 @@ do
       	INPUTFILE="$OPTARG"
 	echo "Input file: $INPUTFILE"
 	;;
+    e)	debugtypeflag=1
+      	DEBUGTYPE="$OPTARG"
+        ;;
     ?)	echo "$USAGE" >&2
         exit 2
 	;;
@@ -81,15 +86,12 @@ if [ "$statsflag" ]; then
   STATS="-stats"
 fi
 
-PASSARG="-saint"
+PASSARG="-saintw"
 
 if [ "$debugflag" ]; then
-  #DEBUGFLAG="-debug"
-  #DEBUGFLAG="-debug -debug-only=saint-tainted"
-  DEBUGFLAG="-debug -debug-only=saint-warnings"
-  #DEBUGFLAG="-debug -debug-only=saint-summary-table"
-  #DEBUGFLAG="-debug -debug-only=saint-summary"
-  #DEBUGFLAG="-debug -debug-only=saint-sinks"
+  DEBUGOPT="-debug"
+elif [ "$debugtypeflag" ]; then
+  DEBUGOPT="-debug -debug-only=$DEBUGTYPE"
 fi
 
 if [ "$timingflag" ]; then
@@ -101,5 +103,5 @@ set -x
 make -f Makefile.saint compile > /dev/null
 
 time $($OPT $STATS -load $LLVM_LIB/LLVMDataStructure.so \
-  	    	   -load $LLVM_LIB/saint.so $DEBUGFLAG -calltarget-eqtd -memdep "$PASSARG" $TIMING < "$INPUTFILE" > /dev/null)
+  	    	   -load $LLVM_LIB/saint.so $DEBUGOPT -calltarget-eqtd -memdep "$PASSARG" $TIMING < "$INPUTFILE" > /dev/null)
 

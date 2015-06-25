@@ -30,37 +30,53 @@ typedef enum {
   FORMAT_STRING_MISSING_VUL
 } WarnType;
 
-class AnalysisIssue {
+class AnalysisWarning {
 
 public:
-	AnalysisIssue(Function *f, Function *sink, Value *val);
-	~AnalysisIssue();
+	AnalysisWarning(Function *f, Function *sink, Value *val);
+	~AnalysisWarning();
 
 	static const unsigned INDENT_LENGTH;
+
 	static void setValueTaintLineMap(map<Value *, unsigned> *valueToLine) {
 		_valueToLine = valueToLine;
 	}
 
 	inline Function *getFunction(){ return _f; }
+
 	inline Function *getSink(){ return _sink; }
+
 	inline Value *getValue(){ return _val; }
+
 	inline WarnType getWarnType(){ return _warnType; }
+
 	inline unsigned getLine(){ return  _line; }
+
 	inline int getFormatStrPos(){ return  _formatStrPos; }
+
 	inline int getFuncParam(){ return _funcParam; }
+
 	inline string getMessage(){ return _message; }
 
 	inline void setFunction(Function *f){ _f = f; }
+
 	inline void setSink(Function *sink){ _sink = sink; }
+
 	inline void setValue(Value *v){ _val = v; }
+
 	inline void setWarnType(WarnType wType){ _warnType = wType; }
+
 	inline void setLine(unsigned line){ _line = line; }
+
 	inline void setFormatStrPos(int formatStrPos){ _formatStrPos = formatStrPos; }
+
 	inline void setFuncParam(unsigned funcParam){ _funcParam = funcParam; }
+
 	inline void setMessage(string msg){ _message.assign(msg); }
 
-	bool operator== (const AnalysisIssue* rhs);
-	bool operator== (const AnalysisIssue& rhs);
+	bool operator== (const AnalysisWarning* rhs);
+
+	bool operator== (const AnalysisWarning& rhs);
 
 	void print();
 
@@ -77,10 +93,10 @@ private:
 	static map<Value *, unsigned> *_valueToLine;
 };
 
-const unsigned AnalysisIssue::INDENT_LENGTH = 20;
-map<Value *, unsigned> *AnalysisIssue::_valueToLine = 0;
+const unsigned AnalysisWarning::INDENT_LENGTH = 20;
+map<Value *, unsigned> *AnalysisWarning::_valueToLine = 0;
 
-inline AnalysisIssue::AnalysisIssue(Function *f, Function *sink, Value *val)
+inline AnalysisWarning::AnalysisWarning(Function *f, Function *sink, Value *val)
 	:_f(f),
 	 _sink(sink),
 	 _val(val),
@@ -92,7 +108,7 @@ inline AnalysisIssue::AnalysisIssue(Function *f, Function *sink, Value *val)
 	assert(_f && "Each created analysis issue (warning) must specify a function where it occurs!");
 }
 
-inline AnalysisIssue::~AnalysisIssue()
+inline AnalysisWarning::~AnalysisWarning()
 {
 	_f = 0;
 	_sink = 0;
@@ -103,7 +119,7 @@ inline AnalysisIssue::~AnalysisIssue()
 	_message.clear();
 }
 
-bool AnalysisIssue::operator== (const AnalysisIssue& rhs)
+bool AnalysisWarning::operator== (const AnalysisWarning& rhs)
 {
 	return this->_f == rhs._f &&
 		   this->_sink == rhs._sink &&
@@ -114,7 +130,7 @@ bool AnalysisIssue::operator== (const AnalysisIssue& rhs)
 		   this->_funcParam == rhs._funcParam;
 }
 
-bool AnalysisIssue::operator== (const AnalysisIssue* rhs)
+bool AnalysisWarning::operator== (const AnalysisWarning* rhs)
 {
 	return this->_f == rhs->_f &&
 		   this->_sink == rhs->_sink &&
@@ -125,51 +141,69 @@ bool AnalysisIssue::operator== (const AnalysisIssue* rhs)
 		   this->_funcParam == rhs->_funcParam;
 }
 
-void AnalysisIssue::print()
+void AnalysisWarning::print()
 {
-	if (_warnType == FORMAT_STRING_VUL) {
+	switch (_warnType) {
+	case FORMAT_STRING_VUL:
 		DEBUG_WITH_TYPE("saint-warnings", errs() << "[saint][fmtvul-1] Use of tainted format string (argument #"
 				<< _funcParam << ") in sink function '"
 				<< _sink->getName()
 				<< ". [line " << _line << "]\n");
-		DEBUG_WITH_TYPE("saint-warnings", if (_val->hasName()) errs().indent(INDENT_LENGTH)
-				<< _val->getName(); else _val->print(errs().indent(INDENT_LENGTH)));
-	}
-	else if (_warnType == FORMAT_TAINTED_VALUE_USE) {
+		if (_val->hasName()) {
+			DEBUG_WITH_TYPE("saint-warnings", errs().indent(INDENT_LENGTH) << _val->getName());
+		}
+		else {
+			DEBUG_WITH_TYPE("saint-warnings", _val->print(errs().indent(INDENT_LENGTH)));
+		}
+		break;
 
+	case FORMAT_TAINTED_VALUE_USE:
 		DEBUG_WITH_TYPE("saint-warnings", errs() << "[saint][fmtvul-2] Parameter #"
 				<< _funcParam
 				<< " of sink call to '" << _sink->getName()
 				<< "' is tainted. [line " << _line << "]\n");
-		DEBUG_WITH_TYPE("saint-warnings", if (_val->hasName()) errs().indent(INDENT_LENGTH)
-				<< _val->getName(); else _val->print(errs().indent(INDENT_LENGTH)));
-		if (_valueToLine) {
-			DEBUG_WITH_TYPE("saint-warnings", errs().indent(INDENT_LENGTH) << "tainted at line " << _valueToLine->at(_val));
-		}
-	}
-	else if (_warnType == TAINTED_VALUE_USE) {
+		if (_val->hasName())
+			DEBUG_WITH_TYPE("saint-warnings", errs().indent(INDENT_LENGTH) << _val->getName());
+		else
+			DEBUG_WITH_TYPE("saint-warnings", _val->print(errs().indent(INDENT_LENGTH)));
 
+		if (_valueToLine) {
+			DEBUG_WITH_TYPE("saint-warnings", errs().indent(INDENT_LENGTH)
+					<< "tainted at line " << _valueToLine->at(_val));
+		}
+		break;
+
+	case TAINTED_VALUE_USE:
 		DEBUG_WITH_TYPE("saint-warnings", errs() << "[saint][tval] Use of tainted value as parameter #"
 				<< _funcParam << " in sink function '" << _sink->getName()
 				<< "'. [line " << _line << "]\n");
-		DEBUG_WITH_TYPE("saint-warnings", if (_val->hasName()) errs().indent(INDENT_LENGTH)
-				<< _val->getName(); else _val->print(errs().indent(INDENT_LENGTH)));
+		if (_val->hasName())
+			DEBUG_WITH_TYPE("saint-warnings", errs().indent(INDENT_LENGTH) << _val->getName());
+		else
+			DEBUG_WITH_TYPE("saint-warnings",_val->print(errs().indent(INDENT_LENGTH)));
 
 		DEBUG_WITH_TYPE("saint-warnings", errs().indent(INDENT_LENGTH)
 				<< " [Parameter #" << _funcParam << "] of '" << _sink->getName() << "' gets tainted\n");
-	}
-	else if (_warnType == FORMAT_STRING_MISSING_VUL) {
+		break;
+
+	case FORMAT_STRING_MISSING_VUL:
 		DEBUG_WITH_TYPE("saint-warnings", errs() << "[saint][fmtvul-3] ");
 		DEBUG_WITH_TYPE("saint-warnings", errs() << " Argument at position "
 				<< _formatStrPos << " of function '" <<  _sink->getName()
 				<< "' shall be a format string [line " << _line << "] \n");
 
 		DEBUG_WITH_TYPE("saint-warnings", errs().indent(INDENT_LENGTH) << "# Not => ");
+
 		if (_val)	DEBUG_WITH_TYPE("saint-warnings", _val->print(errs()));
+
 		DEBUG_WITH_TYPE("saint-warnings", errs() << "\n");
+		break;
+
+	default:
+		break;
 	}
 }
 
-}
+} //namespace
 
 #endif /* ANALYSIS_WARNING_H_ */

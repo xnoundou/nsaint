@@ -20,21 +20,31 @@ public:
 	CTaintIntraProcedural(CTaintAnalysis *analysis);
 
 	void doAnalysis();
+
 	CTaintAnalysis &getTaintAnalysis();
 
 	//******* Implementation of methods inherited from CDataFlow *******//
 	virtual bool merge(BasicBlock *curBB, BasicBlock *succBB);
+
 	virtual void mergeCopyPredOutFlowToInFlow(Instruction &predInst, Instruction &curInst);
 
 	//******* Implementation of visit methods *******//
 	virtual void visitLoadInst(LoadInst &I);
+
 	virtual void visitStoreInst(StoreInst &I);
+
 	virtual void visitCallInst(CallInst &I);
+
 	virtual void visitReturnInst(ReturnInst &I);
+
 	virtual void visitCastInst(CastInst &I);
+
 	virtual void visitBinaryOperator(BinaryOperator &I);
+
 	virtual void visitVACopyInst(VACopyInst &I);
+
 	virtual void visitBranchInst(BranchInst &I);
+
 	virtual void visitGetElementPtrInst(GetElementPtrInst &I);
 
 protected:

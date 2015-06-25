@@ -60,6 +60,7 @@ public:
 
 	virtual void visitBranchInst(BranchInst &I){}
 
+	virtual void visitGetElementPtrInst(GetElementPtrInst &I){}
 
 	//virtual void visitICmpInst(ICmpInst &I){}
 

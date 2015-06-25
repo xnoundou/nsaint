@@ -1,11 +1,13 @@
 #!/bin/bash
 
-OPT="$LLVM_TOOLS/opt"
+OPT="$LLVM_BIN/opt"
 TESTS="$LLVM_HOME/lib/Analysis/saint/tests"
 RESULT="results"
 IRTYPE="s"
 
 set -x
+
+rm -rf $RESULT
 
 ./ctainthelp.sh -s $TESTS \
   -i $TESTS \

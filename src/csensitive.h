@@ -21,21 +21,32 @@ class CTaintContextInterProcedural : public CForwardFlowAnalysis {
 
 public:
 	CTaintContextInterProcedural(CTaintIntraProcedural *intraAnalysis);
+
 	void doAnalysis();
 
 	//******* Implementation of methods inherited from CDataFlow *******//
 	virtual bool merge(BasicBlock *curBB, BasicBlock *succBB);
+
 	virtual void mergeCopyPredOutFlowToInFlow(Instruction &predInst, Instruction &curInst);
 
 	//******* Implementation of visit methods *******//
 	virtual void visitLoadInst(LoadInst &I);
+
 	virtual void visitStoreInst(StoreInst &I);
+
 	virtual void visitCallInst(CallInst &I);
+
 	virtual void visitReturnInst(ReturnInst &I);
+
 	virtual void visitCastInst(CastInst &I);
-   	virtual void visitBinaryOperator(BinaryOperator &I);
+
+	virtual void visitBinaryOperator(BinaryOperator &I);
+
 	virtual void visitVACopyInst(VACopyInst &I);
+
 	virtual void visitBranchInst(BranchInst &I);
+
+	virtual void visitGetElementPtrInst(GetElementPtrInst &I);
 
 protected:
 	virtual void initWorkList();
@@ -86,6 +97,11 @@ inline void CTaintContextInterProcedural::visitVACopyInst(VACopyInst &I) {
 inline void CTaintContextInterProcedural::visitBranchInst(BranchInst &I)
 {
 	_intraAnalysis->visitBranchInst(I);
+}
+
+inline void CTaintContextInterProcedural::visitGetElementPtrInst(GetElementPtrInst &I)
+{
+	_intraAnalysis->visitGetElementPtrInst(I);
 }
 
 inline void CTaintContextInterProcedural::mergeCopyPredOutFlowToInFlow(Instruction &predInst, Instruction &curInst) {

@@ -66,9 +66,11 @@ public:
 	static const char PERCENT;
 
 	void getAnalysisUsage(AnalysisUsage & AU) const;
+
 	virtual bool runOnModule(Module & F);
 
 	CTaintAnalysis();
+
 	~CTaintAnalysis();
 
 	inline map<Function *, vector<bool> *> &getSummaryTable() {
@@ -76,56 +78,83 @@ public:
 	}
 
 	void printSummaryTable();
+
 	void printSummaryTableInfo(Function *f);
+
 	void printSummaryTableInfo(Function *f, unsigned param);
 
-	void printTaintHistoryList(set<AnalysisIssue *> values);
+	void printTaintHistoryList(set<AnalysisWarning *> values);
 
 	inline vector<Function *> *getAllProcsTPOrder() { return &_allProcsTPOrder; }
+
 	inline vector<Function *> *getAllProcsRTPOrder() { return &_allProcsRTPOrder; }
 
 	virtual void visit(Instruction &I);
+
 	virtual void visit(BasicBlock &BB){
 	  _super->visit(BB.begin(), BB.end());
 	}
+
 	void visitLoadInst(LoadInst &I);
+
 	void visitStoreInst(StoreInst &I);
+
 	void visitCallInst(CallInst &I);
+
 	void visitCallInstSink(CallInst & I);
+
 	void visitReturnInst(ReturnInst &I);
+
 	void visitCastInst(CastInst &I);
-   	void visitBinaryOperator(BinaryOperator &I);
+
+	void visitBinaryOperator(BinaryOperator &I);
+
 	void visitVACopyInst(VACopyInst &I);
+
 	void visitBranchInst(BranchInst &I);
 
+	void visitGetElementPtrInst(GetElementPtrInst &I);
+
 	void taintBBInstructions(CmpInst *C, BasicBlock *bb, Value *taintSrc);
+
 	void checkTaintedValueUse(CallInst &I, Function &callee, unsigned formatPos = _FUNCTION_NOT_FORMAT);
 
 	const char *getConstantCString(ConstantExpr *C);
+
 	const char *getCStringInitializer(Value *v, DSGraph *dsg);
+
 	bool checkFormatStr(Function &caller, Value *curArg, vector<string::size_type> &result, unsigned line = -1);
+
 	void handleFormatSink(CallInst &I, Function &callee, unsigned formatPos);
 
 	void set_diff(set<Value *> &A, set<Value *> &B, set<Value *> &AMinusB);
+
 	virtual bool merge(BasicBlock *curBB, BasicBlock *succBB);
+
 	void mergeCopyPredOutFlowToInFlow(Instruction &predInst, Instruction &curInst);
 
-	bool isProcArgTaint(Function *F, unsigned argNo);
-	void setProcArgTaint(Function *F, unsigned argNo, bool isTainted);
+	inline bool isProcArgTaint(Function *F, unsigned argNo);
+
+	inline void setProcArgTaint(Function *F, unsigned argNo, bool isTainted);
 
 	/**
 	 * Returns 'true' if value 'v' is tainted at the program
 	 * point before instruction 'I'.
 	 */
 	bool isValueTainted(Instruction *I, Value *v);
+
 	bool calls(Function *caller, Function *callee);
 
 	inline DSGraph* getDSGraph(Function *F) { return _functionToDSGraph[F]; }
+
 	inline CallGraph &getCallGraph() { return *_cg; }
+
 	inline Function *getMainFunction() { return _pointerMain; }
 
 	inline void setIntraWasRun(bool flag) { _intraWasRun = flag; }
+
 	inline void setInterRunning(bool flag) { _interRunning = flag; }
+
 	inline void setCtxInterRunning(bool flag) { _ctxInterRunning = flag; }
 
 	inline Module * getModule() { return _module; }
@@ -137,7 +166,6 @@ private:
 	const static string _formatStrFile;
 
 	const static unsigned _INVALID_FORMAT_POS;
-	const static unsigned _SOURCE_ARG_RET;
 	const static unsigned _FUNCTION_NOT_SOURCE;
 	const static unsigned _FUNCTION_NOT_FORMAT;
 
@@ -149,11 +177,11 @@ private:
 	//set<StringRef> _untaintedGEP;
 	//set<StringRef> _taintedArrays;
 
-	map<Function *, set<AnalysisIssue *> *> _allWarnings;
-	map<unsigned, set<AnalysisIssue *> *> _lineToWarning;
-	set<AnalysisIssue *> _displayOutput;
+	map<Function *, set<AnalysisWarning *> *> _allWarnings;
+	map<unsigned, set<AnalysisWarning *> *> _lineToWarning;
+	set<AnalysisWarning *> _displayOutput;
 
-	bool addIssue(AnalysisIssue *issue);
+	bool addIssue(AnalysisWarning *issue);
 
 	/**
 	 * Adds the function with name 'source' as a taint source and
@@ -167,7 +195,9 @@ private:
 	 * as taint source are registered.
 	 */
 	static void readTaintSourceConfig();
+
 	static void readTaintSinkConfig();
+
 	static void readFormatStrConfig();
 
 	/**
@@ -179,7 +209,9 @@ private:
 	 * taint source.
 	 */
 	unsigned isTaintSource(string &F);
+
 	unsigned isFormatSink(string &F);
+
 	unsigned getLineNumber(Instruction &I);
 
 	/** Has the intraprocedural analysis been run */
@@ -233,6 +265,7 @@ private:
 	map<Value *, unsigned> _valueToLine;
 
 	void insertToOutFlow(Instruction *I, Value *v, Value *taintSrc);
+
 	void insertToOutFlow(Instruction &I, Value &v, DSGraph &dsg);
 	//inline void vectorUniqueInsert(Instruction *I, vector<Instruction *> &v);
 	//inline void vectorUniqueInsert2(Value *v, vector<Value *> &instV);
@@ -252,7 +285,7 @@ bool CTaintAnalysis::vectorContains(vector<T> &v, T &aValue)
 	return (v.end() != it);
 }
 
-bool CTaintAnalysis::addIssue(AnalysisIssue *issue) {
+bool CTaintAnalysis::addIssue(AnalysisWarning *issue) {
 	assert(issue && "A NULL analysis issue (warning) cannot be added!");
 	assert(issue->getFunction() && "An analysis issue (warning) must have a valid function specified!");
 	assert(0 != issue->getLine() && "An analysis issue (warning) must have a valid line number!");
@@ -260,14 +293,14 @@ bool CTaintAnalysis::addIssue(AnalysisIssue *issue) {
 	bool ret = false;
 
 	if (0 == _lineToWarning.count(issue->getLine())) {
-		_lineToWarning[issue->getLine()] = new set<AnalysisIssue *>();
+		_lineToWarning[issue->getLine()] = new set<AnalysisWarning *>();
 		ret = true;
 	}
 
 	_lineToWarning[issue->getLine()]->insert(issue);
 
 	if (0 == _allWarnings.count(issue->getFunction())) {
-		_allWarnings[issue->getFunction()] = new set<AnalysisIssue *>();
+		_allWarnings[issue->getFunction()] = new set<AnalysisWarning *>();
 	}
 
 	_allWarnings[issue->getFunction()]->insert(issue);
