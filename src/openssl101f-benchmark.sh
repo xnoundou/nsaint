@@ -18,5 +18,5 @@ rm -rf $RESULT
 
 ./ctainthelp.sh -s $RESULT -o $RESULT -c m -t "$IRTYPE"
 
-./runOpt.sh -o "$OPT" -s -d -t -p "OPENSSL101F" -i $RESULT/one.bc 2> $RESULT/analysis-result
+./runOpt.sh -o "$OPT" -s -e saint-table -t -p "OPENSSL101F" -i $RESULT/one.bc 2> $RESULT/analysis-result
 

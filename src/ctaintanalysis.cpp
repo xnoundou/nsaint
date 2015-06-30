@@ -25,7 +25,7 @@ using std::stringstream;
 
 char CTaintAnalysis::ID = 0;
 
-const unsigned CTaintAnalysis::INDENT_LENGTH = 20;
+const unsigned CTaintAnalysis::INDENT_LENGTH = 3;
 
 using namespace llvm; 
 STATISTIC(NumWarnings, 	   "Number of emited warnings");
@@ -239,7 +239,8 @@ CTaintAnalysis::~CTaintAnalysis()
 
 void CTaintAnalysis::printSummaryTable()
 {
-	DEBUG_WITH_TYPE("saint-table", errs() << "++++++++++++++ Summary Table Information ++++++++++++++\n");
+	DEBUG_WITH_TYPE("saint-table",
+			errs() << "\n\n              ... Summary Table Information ...               \n\n");
 	for(MFuncSumIterator it = _summaryTable.begin(), itEnd = _summaryTable.end();
 			it != itEnd; ++it) {
 		Function *f = it->first;
@@ -261,6 +262,7 @@ void CTaintAnalysis::printSummaryTable()
 			}
 		}
 	}
+	DEBUG_WITH_TYPE("saint-table", errs() << "###-----------------------------------------------------------###\n\n");
 }
 
 //**************************************************************************************
@@ -306,7 +308,6 @@ void CTaintAnalysis::printTaintHistoryList(set<AnalysisWarning *> values)
 	AnalysisWarning *issue = 0;
 	vector<Instruction *> *taintHistory;
 
-	//for (set<AnalysisWarning *>::iterator it = values.begin(), itE = values.end(); it != itE; ++it) {
 	for (set<AnalysisWarning *>::iterator it = values.begin(), itE = values.end(); it != itE; ++it) {
 		issue = (*it);
 
@@ -389,8 +390,8 @@ bool CTaintAnalysis::runOnModule(Module &m)
 
 			_summaryTable[f] = argumentsVector;
 			_allWarnings[f] = new set<AnalysisWarning *>;
-			DEBUG_WITH_TYPE("saint-table", errs() << "Initialized summary table for function '"
-					<< fName << "' with " << argumentsVector->size() << " elements." << "\n");
+			//DEBUG_WITH_TYPE("saint-table", errs() << "Initialized summary table for function '"
+				//	<< fName << "' with " << argumentsVector->size() << " elements." << "\n");
 		}
 
 		{//Initialize alias info from DSA
@@ -487,8 +488,8 @@ void CTaintAnalysis::set_diff(set<Value *> &A,
 
 bool CTaintAnalysis::merge(BasicBlock *curBB, BasicBlock *succBB)
 {
-	set<Value *> &curBBOut = _IN[&curBB->back()];
-	set<Value *> &succBBIn = _OUT[&succBB->front()];
+	set<Value *> &curBBOut = _OUT[&curBB->back()];
+	set<Value *> &succBBIn = _IN[&succBB->front()];
 
 	set<Value *> inDiff;
 	set_diff(curBBOut, succBBIn, inDiff);
@@ -548,24 +549,6 @@ void CTaintAnalysis::getAliases(Value *v,
 
 //**************************************************************************************
 
-/*inline void CTaintAnalysis::vectorUniqueInsert(Instruction *I, vector<Instruction *> &v)
-{
-	vector<Instruction *>::iterator it = find(v.begin(), v.end(), I);
-	if (v.end() == it)	v.push_back(I);
-}*/
-
-//**************************************************************************************
-
-/*inline void CTaintAnalysis::vectorUniqueInsert2(Value *v, vector<Value *> &instV)
-{
-	vector<Value *>::iterator it = find(instV.begin(), instV.end(), v);
-	if (instV.end() == it) {
-		instV.push_back(v);
-	}
-}*/
-
-//**************************************************************************************
-
 /**
  * Adds value 'v' to the set OUT[I], denoting that instruction
  * I taints value 'v'.
@@ -590,7 +573,7 @@ void CTaintAnalysis::insertToOutFlow(Instruction *I, Value *v, Value *taintSrc)
 		if (taintSrc)
 			previousTaint = _valueToTaintInst[taintSrc];
 
-		if (_valueToTaintInst[v]) {
+		if (_valueToTaintInst.count(v) > 0) {
 			if (previousTaint)
 				_valueToTaintInst[v]->insert(_valueToTaintInst[v]->begin(), previousTaint->begin(), previousTaint->end());
 
@@ -852,6 +835,7 @@ void CTaintAnalysis::handleFormatSink(CallInst &I, Function &callee, unsigned fo
 		unsigned s = formatString.size();
 		if (s < restArg) {
 			//less arguments than required
+			DEBUG_WITH_TYPE("saint-warnings", errs() << "less arguments than required\n";);
 		}
 	}
 	else { /* Missing format string specification */
@@ -964,8 +948,7 @@ void CTaintAnalysis::visitCallInst(CallInst & I)
 	if (!_intraWasRun) {
 		//The intraprocedural analysis has not been run yet
 		Function *callee = I.getCalledFunction();
-		if (!callee)
-			return ;
+		if (!callee) return ;
 
 		string calleeName = callee->getName().str();
 		unsigned arg_pos = isTaintSource(calleeName);
@@ -974,7 +957,7 @@ void CTaintAnalysis::visitCallInst(CallInst & I)
 
 		unsigned paramSize = I.getNumArgOperands();
 
-		if ( arg_pos < paramSize ) {
+		if ( arg_pos <= paramSize ) {
 			Value *taintedArg = 0;
 			//If a file is opened for appending, it is not a taint source
 			if (0 == calleeName.compare("fopen") ||
@@ -995,9 +978,10 @@ void CTaintAnalysis::visitCallInst(CallInst & I)
 			else
 				taintedArg = I.getArgOperand(arg_pos);
 
-			insertToOutFlow(&I, taintedArg, 0);
-			DEBUG_WITH_TYPE("saint-sources", errs() << "Found a source "
-					<< calleeName << " with arg_pos " << arg_pos << "\n");
+			insertToOutFlow(&I, taintedArg, &I);
+			_predInst = &I;
+			//DEBUG_WITH_TYPE("saint-sources", errs() << "Found a source "
+				//	<< calleeName << " with arg_pos " << arg_pos << "\n");
 		}
 		else {
 			std::ostringstream msg;
@@ -1031,6 +1015,7 @@ void CTaintAnalysis::visitCallInst(CallInst & I)
 		Function::arg_iterator callee_formal_arg = callee->arg_begin(); //callee first formal parameter
 		Function::arg_iterator callee_formal_arg_end = callee->arg_end();
 
+
 		{ /* For a context-sensitive call, we pass taint information from
 			     the caller (actual arguments) to the callee formal parameters - BEGIN*/
 			vector<Value *> actual_arg_aliases;
@@ -1041,23 +1026,25 @@ void CTaintAnalysis::visitCallInst(CallInst & I)
 				actual_arg = I.getArgOperand(k);
 
 				if ( ! (*callee_summary_table)[k] ) {
+					//DEBUG_WITH_TYPE("saint-table", errs()
+						//			<< "k : "; actual_arg->print(errs()); errs()
+							//		<< " not tainted at "; _predInst->print(errs()); errs() << "\n");
 					if ( isValueTainted(&I, actual_arg) ) {
+						//DEBUG_WITH_TYPE("saint-table", errs() << "k "
+							//	<< actual_arg->getName() << " tainted at "; I.print(errs()); errs() << "\n");
+
+						//The value 'actual_arg' is also a member of its alias-set
 						getAliases(actual_arg, callerDSG, actual_arg_aliases);
-					 	actual_arg_aliases.insert(actual_arg_aliases.begin(), callee_formal_arg);
-						for (unsigned j = 0; j < actual_arg_aliases.size(); ++j) {
-							if ( 0 != actual_arg_aliases[j] && isValueTainted(&I, actual_arg_aliases[j]) ) {
-								_IN[&callee_first_inst].insert(actual_arg_aliases[j]);
-								//DEBUG_WITH_TYPE("saint-table", callee_first_inst.print(errs()); errs()
-									//	<< " context-in "; actual_arg_aliases[j]->print(errs()); errs() << "\n");
-								setProcArgTaint(callee, k, true);
-							}
-						}
+
+						for (unsigned j = 0; j < actual_arg_aliases.size(); ++j)
+							_IN[&callee_first_inst].insert(actual_arg_aliases[j]);
+
+						setProcArgTaint(callee, k, true);
 					}
 				}
 				++callee_formal_arg;
 			}
-		}/* For a context-sensitive call, we pass taint information from
-			     the caller (actual arguments) to the callee formal parameters - END */
+		}
 
 		//Now analyze the callee
 		//We set the predecessor instruction before analysis of the callee
@@ -1065,8 +1052,8 @@ void CTaintAnalysis::visitCallInst(CallInst & I)
 		_super->visit(callee);
 
 		set<Value *> outDiff;
-		Instruction &calleeLastI = callee->back().back();
-		set_diff(_OUT[&calleeLastI], _IN[&callee_first_inst], outDiff);
+		Instruction &callee_last_inst = callee->back().back();
+		set_diff(_OUT[&callee_last_inst], _IN[&callee_first_inst], outDiff);
 
 		{ /* After context-sensitive call */
 			DSGraph * calleeDSG = _functionToDSGraph[callee];
@@ -1081,7 +1068,7 @@ void CTaintAnalysis::visitCallInst(CallInst & I)
 				if ( !(*callee_summary_table)[k] ) {
 					for(unsigned j = 0; j < after_formal_aliases.size(); ++j) {
 						if (outDiff.count(after_formal_aliases[j]) > 0 || outDiff.count(actual_arg) > 0) {
-							insertToOutFlow(&I, after_formal_aliases[j], after_formal_aliases[j]);
+							insertToOutFlow(&I, after_formal_aliases[j], _predInst);
 
 							DEBUG_WITH_TYPE("saint-table", errs() << callee->getName() << ": Setting formal arg ";
 							actual_arg->print(errs()); errs()<< "(" << k << ") as tainted \n");
@@ -1257,7 +1244,7 @@ void CTaintAnalysis::visitGetElementPtrInst(GetElementPtrInst &I)
 //**************************************************************************************
 
 static RegisterPass<CTaintAnalysis>
-X("saintw", "Simple Taint Analysis Module Pass",
+X("saint", "Simple Taint Analysis Module Pass",
   false /* Only looks at CFG */,
   true /* Analysis Pass */);
 

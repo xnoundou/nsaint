@@ -104,7 +104,8 @@ inline void InterProcedural::mergeCopyPredOutFlowToInFlow(Instruction &predInst,
 
 void InterProcedural::doAnalysis()
 {
-	errs() << "## Starting context-insensitive interprocedural analysis\n";
+	errs() << "\n\n###-----------------------------------------------------------###\n"
+		   << "             Context-insensitive Interprocedural Analysis            \n\n";
 	_intraAnalysis->getTaintAnalysis().setInterRunning(true);
 	analyze();
 	_intraAnalysis->getTaintAnalysis().setInterRunning(false);

@@ -12,14 +12,17 @@ int compute(int x) {
 }
 
 int even(int *x) {
-  if (x == 0) return x;
+  if (x == 0) return 1;
+  else return *x;
 }
 
 int main(int argc, char *argv[]) {
   int x, y, b1;
   scanf("%d", &x);
+  //scanf(&x);
   b1 = even(&x);
-  y = compute(0);
+  y = compute(x);
+  printf("%d", x);
   return 0;
 }
 

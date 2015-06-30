@@ -67,10 +67,11 @@ inline CTaintAnalysis &CTaintIntraProcedural::getTaintAnalysis()
 }
 
 void CTaintIntraProcedural::doAnalysis() {
-	errs() << "## Starting intraprocedural analysis\n";
+	errs() << "\n\n###-----------------------------------------------------------###\n"
+		   << "                     Intraprocedural analysis                    \n";
 	analyze();
 	handleFormals();
-	//_analysis->printSummaryTable();
+	_analysis->printSummaryTable();
 	_analysis->setIntraWasRun(true);
 }
 

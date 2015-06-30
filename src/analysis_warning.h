@@ -93,7 +93,7 @@ private:
 	static map<Value *, unsigned> *_valueToLine;
 };
 
-const unsigned AnalysisWarning::INDENT_LENGTH = 20;
+const unsigned AnalysisWarning::INDENT_LENGTH = 3;
 map<Value *, unsigned> *AnalysisWarning::_valueToLine = 0;
 
 inline AnalysisWarning::AnalysisWarning(Function *f, Function *sink, Value *val)
@@ -145,58 +145,58 @@ void AnalysisWarning::print()
 {
 	switch (_warnType) {
 	case FORMAT_STRING_VUL:
-		DEBUG_WITH_TYPE("saint-warnings", errs() << "[saint][fmtvul-1] Use of tainted format string (argument #"
+		DEBUG_WITH_TYPE("saint-table", errs() << "[saint][fmtvul-1] Use of tainted format string (argument #"
 				<< _funcParam << ") in sink function '"
 				<< _sink->getName()
 				<< ". [line " << _line << "]\n");
 		if (_val->hasName()) {
-			DEBUG_WITH_TYPE("saint-warnings", errs().indent(INDENT_LENGTH) << _val->getName());
+			DEBUG_WITH_TYPE("saint-table", errs().indent(INDENT_LENGTH) << _val->getName());
 		}
 		else {
-			DEBUG_WITH_TYPE("saint-warnings", _val->print(errs().indent(INDENT_LENGTH)));
+			DEBUG_WITH_TYPE("saint-table", _val->print(errs().indent(INDENT_LENGTH)));
 		}
 		break;
 
 	case FORMAT_TAINTED_VALUE_USE:
-		DEBUG_WITH_TYPE("saint-warnings", errs() << "[saint][fmtvul-2] Parameter #"
+		DEBUG_WITH_TYPE("saint-table", errs() << "[saint][fmtvul-2] Parameter #"
 				<< _funcParam
 				<< " of sink call to '" << _sink->getName()
 				<< "' is tainted. [line " << _line << "]\n");
 		if (_val->hasName())
-			DEBUG_WITH_TYPE("saint-warnings", errs().indent(INDENT_LENGTH) << _val->getName());
+			DEBUG_WITH_TYPE("saint-table", errs().indent(INDENT_LENGTH) << _val->getName());
 		else
-			DEBUG_WITH_TYPE("saint-warnings", _val->print(errs().indent(INDENT_LENGTH)));
+			DEBUG_WITH_TYPE("saint-table", _val->print(errs().indent(INDENT_LENGTH)));
 
 		if (_valueToLine) {
-			DEBUG_WITH_TYPE("saint-warnings", errs().indent(INDENT_LENGTH)
+			DEBUG_WITH_TYPE("saint-table", errs().indent(INDENT_LENGTH)
 					<< "tainted at line " << _valueToLine->at(_val));
 		}
 		break;
 
 	case TAINTED_VALUE_USE:
-		DEBUG_WITH_TYPE("saint-warnings", errs() << "[saint][tval] Use of tainted value as parameter #"
+		DEBUG_WITH_TYPE("saint-table", errs() << "[saint][tainted-value-use] Use of tainted value as parameter #"
 				<< _funcParam << " in sink function '" << _sink->getName()
 				<< "'. [line " << _line << "]\n");
 		if (_val->hasName())
-			DEBUG_WITH_TYPE("saint-warnings", errs().indent(INDENT_LENGTH) << _val->getName());
+			DEBUG_WITH_TYPE("saint-table", errs().indent(INDENT_LENGTH) << "(" << _val->getName() << ")");
 		else
-			DEBUG_WITH_TYPE("saint-warnings",_val->print(errs().indent(INDENT_LENGTH)));
+			DEBUG_WITH_TYPE("saint-table",_val->print(errs().indent(INDENT_LENGTH)));
 
-		DEBUG_WITH_TYPE("saint-warnings", errs().indent(INDENT_LENGTH)
-				<< " [Parameter #" << _funcParam << "] of '" << _sink->getName() << "' gets tainted\n");
+		DEBUG_WITH_TYPE("saint-table", errs().indent(INDENT_LENGTH)
+				<< " [Parameter #" << _funcParam << "] of '" << _sink->getName() << "' is tainted\n");
 		break;
 
 	case FORMAT_STRING_MISSING_VUL:
-		DEBUG_WITH_TYPE("saint-warnings", errs() << "[saint][fmtvul-3] ");
-		DEBUG_WITH_TYPE("saint-warnings", errs() << " Argument at position "
+		DEBUG_WITH_TYPE("saint-table", errs() << "[saint][fmtvul-3] ");
+		DEBUG_WITH_TYPE("saint-table", errs() << " Argument at position "
 				<< _formatStrPos << " of function '" <<  _sink->getName()
 				<< "' shall be a format string [line " << _line << "] \n");
 
-		DEBUG_WITH_TYPE("saint-warnings", errs().indent(INDENT_LENGTH) << "# Not => ");
+		DEBUG_WITH_TYPE("saint-table", errs().indent(INDENT_LENGTH) << "# Not => ");
 
-		if (_val)	DEBUG_WITH_TYPE("saint-warnings", _val->print(errs()));
+		if (_val)	DEBUG_WITH_TYPE("saint-table", _val->print(errs()));
 
-		DEBUG_WITH_TYPE("saint-warnings", errs() << "\n");
+		DEBUG_WITH_TYPE("saint-table", errs() << "\n");
 		break;
 
 	default:

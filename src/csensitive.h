@@ -110,7 +110,8 @@ inline void CTaintContextInterProcedural::mergeCopyPredOutFlowToInFlow(Instructi
 
 void CTaintContextInterProcedural::doAnalysis()
 {
-	errs() << "## Starting context-sensitive interprocedural analysis\n";
+	errs() << "\n\n###-----------------------------------------------------------###\n"
+		   << "              Context-sensitive Interprocedural Analysis             \n";
 	_intraAnalysis->getTaintAnalysis().setCtxInterRunning(true);
 	analyze();
 	_intraAnalysis->getTaintAnalysis().setCtxInterRunning(false);

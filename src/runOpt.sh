@@ -86,7 +86,7 @@ if [ "$statsflag" ]; then
   STATS="-stats"
 fi
 
-PASSARG="-saintw"
+PASSARG="-saint"
 
 if [ "$debugflag" ]; then
   DEBUGOPT="-debug"
