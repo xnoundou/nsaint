@@ -8,6 +8,14 @@
 \usepackage{verbatim}
 \usepackage{hyperref}
 \usepackage{xcolor}
+\usepackage{adjustbox} %To color the backround of the verbatim environment
+\usepackage{verbatim} 
+\definecolor{shadecolor}{rgb}{.9, .9, .9} %To color the backround of the verbatim environment
+
+%To color the backround of the verbatim environment
+\newenvironment{verbatim_color}%
+   {\par\noindent\adjustbox{margin=1ex,bgcolor=shadecolor,margin=0ex \medskipamount}\bgroup\minipage\linewidth\verbatim}%
+   {\endverbatim\endminipage\egroup}
 
 \begin{comment}
 \hypersetup{
@@ -74,18 +82,19 @@ bugs are one of the major problems faced by companies today.
 In the worst case, security bugs enable unauthorized users
 to gain full control of an application.
 
-My PhD thesis introduces the concept of tainted path and
+My PhD thesis introduces the concept of 
+\textcolor{firebrickred}{\textit{tainted paths}} and
 describes techniques and algorithms to compute them in
 any imperative programming language that uses
 pointers (C, C++, Java, etc.). I implemented these
 algorithms in \saint.
 
-\saint computes \textcolor{firebrickred}{\textit{tainted paths}}
-in a C program without running it. \saint does not require
-the developer to annotate the program under analysis.
-\saint implements a flow-sensitive, interprocedural and
-context-sensitive analysis that computes tainted paths in
-C programs at compile-time.
+\saint computes tainted paths in a C program without running it.
+\saint does not require the developer to annotate
+the program under analysis. \saint implements a
+flow-sensitive, interprocedural and context-sensitive
+analysis that computes tainted paths in C programs
+at compile-time.
 
 \section{Installation Instructions}
 This section of the manual explains how to install \saint
@@ -161,7 +170,35 @@ writing the following commands in your ''\texttt{.bashrc}'' file:
 	You can achieve this by running: 
 	\command{ln -s \$SAINT\_HOME/src \$LLVM\_HOME/lib/Analysis/saint}.
 	
+	\item Open the file ''\envout{LLVM\_HOME}/lib/Analysis/Makefile'' and
+	append the string "saint" to the 'DIRS' variable. Following is an excerpt
+	of the file.\\
+	
+	\begin{verbatim}
+##===- lib/Analysis/Makefile -------------------------------*- Makefile -*-===##
+#
+#                     The LLVM Compiler Infrastructure
+#
+# This file is distributed under the University of Illinois Open Source
+# License. See LICENSE.TXT for details.
+#
+##===----------------------------------------------------------------------===##
+
+LEVEL = ../..
+LIBRARYNAME = LLVMAnalysis
+DIRS = IPA saint
+BUILD_ARCHIVE = 1
+
+include $(LEVEL)/Makefile.common
+	\end{verbatim}		
+	
 	\item Run the script \script{configure-llvm.sh}.
+	
+	\item Run the command make within the 'build' folder: 
+	\command{cd \$LLVM\_HOME/build; make}.
+	
+	\item After the previous step, you can run make from the \saint
+	folder during the development:	\command{cd \$SAINT\_HOME; make -f Makefile.saint}.
 \end{enumerate}
 
 
