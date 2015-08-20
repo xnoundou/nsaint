@@ -148,7 +148,7 @@ void AnalysisWarning::print()
 		DEBUG_WITH_TYPE("saint-table", errs() << "[saint][fmtvul-1] Use of tainted format string (argument #"
 				<< _funcParam << ") in sink function '"
 				<< _sink->getName()
-				<< ". [line " << _line << "]\n");
+				<< ". [Line " << _line << "]\n");
 		if (_val->hasName()) {
 			DEBUG_WITH_TYPE("saint-table", errs().indent(INDENT_LENGTH) << _val->getName());
 		}
@@ -161,7 +161,7 @@ void AnalysisWarning::print()
 		DEBUG_WITH_TYPE("saint-table", errs() << "[saint][fmtvul-2] Parameter #"
 				<< _funcParam
 				<< " of sink call to '" << _sink->getName()
-				<< "' is tainted. [line " << _line << "]\n");
+				<< "' is tainted. [Line " << _line << "]\n");
 		if (_val->hasName())
 			DEBUG_WITH_TYPE("saint-table", errs().indent(INDENT_LENGTH) << _val->getName());
 		else
@@ -169,14 +169,14 @@ void AnalysisWarning::print()
 
 		if (_valueToLine) {
 			DEBUG_WITH_TYPE("saint-table", errs().indent(INDENT_LENGTH)
-					<< "tainted at line " << _valueToLine->at(_val));
+					<< "tainted at Line " << _valueToLine->at(_val));
 		}
 		break;
 
 	case TAINTED_VALUE_USE:
 		DEBUG_WITH_TYPE("saint-table", errs() << "[saint][tainted-value-use] Use of tainted value as parameter #"
 				<< _funcParam << " in sink function '" << _sink->getName()
-				<< "'. [line " << _line << "]\n");
+				<< "'. [Line " << _line << "]\n");
 		if (_val->hasName())
 			DEBUG_WITH_TYPE("saint-table", errs().indent(INDENT_LENGTH) << "(" << _val->getName() << ")");
 		else
@@ -190,7 +190,7 @@ void AnalysisWarning::print()
 		DEBUG_WITH_TYPE("saint-table", errs() << "[saint][fmtvul-3] ");
 		DEBUG_WITH_TYPE("saint-table", errs() << " Argument at position "
 				<< _formatStrPos << " of function '" <<  _sink->getName()
-				<< "' shall be a format string [line " << _line << "] \n");
+				<< "' shall be a format string [Line " << _line << "] \n");
 
 		DEBUG_WITH_TYPE("saint-table", errs().indent(INDENT_LENGTH) << "# Not => ");
 

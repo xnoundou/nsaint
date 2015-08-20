@@ -1,36 +1,16 @@
 
-POOL_ALLOC=${TOOLS}/poolalloc
-
 LLVM_BUILD=${LLVM_HOME}/build
 
-LLVM_INC=-I. -I${LLVM_HOME}/include \
-	 -I${POOLALLOC}/include
+LLVM_INC=-I. -I${LLVM_HOME}/include
 
 MACROS=-D __STDC_LIMIT_MACROS \
        -D__STDC_CONSTANT_MACROS
 
-CTAINT=${LLVM_HOME}/lib/Analysis/saint
-
-CTAINT_BUILD=${LLVM_BUILD}/lib/Analysis/saint/Release+Asserts
-
-SRC=${CTAINT}/ctaintanalysis.cpp
-
-OBJ=${CTAINT_BUILD}/ctaintanalysis.o
-
 all: compile
 
-compile: ${OBJ} 
+compile: 
 	make -C ${LLVM_BUILD} ${LLVM_INC} > /dev/null
 
 clean:
 	make -C ${LLVM_BUILD} clean
-
-bc:
-	clang -emit-llvm ${MYFILE}.c -c -o ${MYFILE}.bc
-
-opt: compile
-	opt -load $(LLVM_LIB)/saint.so $(PASSARG) < tests/test.bc > /dev/null
-
-ir:
-	clang ${MACROS} ${LLVM_INC} -S -emit-llvm ${MYFILE}
 

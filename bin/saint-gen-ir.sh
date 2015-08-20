@@ -7,6 +7,9 @@
 
 USAGE=$(cat <<EOF
 ______________________________________________________________________________________
+saint-gen-ir.sh is part of SAINT (Simple Taint Analysis Tool)
+Copyright (c) 2013-2015 by Xavier NOUMBISSI NOUNDOU (xavier.noumbis@gmail.com)
+
 Usage: $(basename $0) -s <source_folder> -c <actions> -t [file_type] [options] [files]
 										       
 <actions>:									       
@@ -95,7 +98,6 @@ if [ ! "$oflag" ]; then
 fi
 
 srcfolder=$(echo "$srcfolder"| awk '{gsub(/^ +| +$/,"")}1')
-#srcfolder=$(echo "$srcfolder"| awk '{gsub(/ //$/,"")}1')
 incfolder=$(echo "$incfolder"| awk '{gsub(/^ +| +$/,"")}1')
 MACROS="-D__STDC_LIMIT_MACROS -D__STDC_CONSTANT_MACROS"
 
@@ -108,7 +110,7 @@ if [ ! -d "$outfolder" ]; then
   echo "Created output folder "$outfolder""
 fi
 
-appendlogfile="ctainthelp.log"
+appendlogfile="saint-gen-ir.log"
 logfile="$outfolder/$appendlogfile"
 
 if [ -f "$logfile" ]; then

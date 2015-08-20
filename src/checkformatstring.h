@@ -16,19 +16,27 @@ class CheckFormatStringPass : public CForwardFlowAnalysis {
 
 public:
 	CheckFormatStringPass(CTaintAnalysis *taintAnalysis);
+
 	void doAnalysis();
 
 	//******* Implementation of methods inherited from CForwardFlowAnalysis *******//
 	virtual bool merge(BasicBlock *curBB, BasicBlock *succBB){ return false;}
+
 	virtual void mergeCopyPredOutFlowToInFlow(Instruction &predInst, Instruction &curInst){}
 
 	//******* Implementation of visit methods *******//
 	virtual void visitLoadInst(LoadInst &I){}
+
 	virtual void visitStoreInst(StoreInst &I){}
+
 	virtual void visitCallInst(CallInst &I);
+
 	virtual void visitReturnInst(ReturnInst &I){}
+
 	virtual void visitCastInst(CastInst &I){}
+
 	virtual void visitBinaryOperator(BinaryOperator &I){}
+
 	virtual void visitVACopyInst(VACopyInst &I){}
 
 protected:
@@ -42,7 +50,6 @@ CheckFormatStringPass::CheckFormatStringPass(CTaintAnalysis *taintAnalysis)
 {
 
 }
-
 
 void CheckFormatStringPass::doAnalysis()
 {

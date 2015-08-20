@@ -35,10 +35,7 @@ STATISTIC(NumIssues, 	   "Number of found issues");
 STATISTIC(NumFunctions,	   "Number of functions found in the module");
 STATISTIC(NumContextCalls, "Number of context-sensitive analysis calls");
 
-const string CTaintAnalysis::_taintId("[SAINT]");
-const string CTaintAnalysis::_taintSourceFile("cfg/sources.cfg");
-const string CTaintAnalysis::_taintSinkFile("cfg/sinks.cfg");
-const string CTaintAnalysis::_formatStrFile("cfg/formatspec.cfg");
+const string CTaintAnalysis::_saintId("[SAINT]");
 
 const char CTaintAnalysis::PERCENT('%');
 
@@ -69,10 +66,10 @@ void CTaintAnalysis::addTaintInfo(map<string, unsigned> *target,
 	else	target->insert( sourceType(source, taintedPos) );
 }
 
-void CTaintAnalysis::readTaintSourceConfig()
+void CTaintAnalysis::readTaintSourceConfig(char *taintSourceFile)
 {
 	//Open the file with taint source functions listed
-	std::ifstream srcFile(_taintSourceFile.c_str());
+	std::ifstream srcFile(taintSourceFile);
 	string line;
 	string source;
 	string arg;
@@ -98,10 +95,10 @@ void CTaintAnalysis::readTaintSourceConfig()
 	srcFile.close();
 }
 
-void CTaintAnalysis::readTaintSinkConfig()
+void CTaintAnalysis::readTaintSinkConfig(char *taintSinkFile)
 {
 	//Open the file with taint source functions listed
-	std::ifstream srcFile(_taintSinkFile.c_str());
+	std::ifstream srcFile(taintSinkFile);
 	string line;
 	string sink;
 	string arg;
@@ -131,10 +128,10 @@ void CTaintAnalysis::readTaintSinkConfig()
 	srcFile.close();
 }
 
-void CTaintAnalysis::readFormatStrConfig()
+void CTaintAnalysis::readFormatStrConfig(char *formatStrFile)
 {
 	//Open the file with taint source functions listed
-	std::ifstream srcFile(_formatStrFile.c_str());
+	std::ifstream srcFile(formatStrFile);
 	string line;
 	string sink;
 	string arg;
@@ -178,9 +175,33 @@ CTaintAnalysis::CTaintAnalysis() : ModulePass(ID),
 									_module(0)
 {
 	_super = static_cast<InstVisitor<CTaintAnalysis> *>(this);
-	readTaintSourceConfig();
-	readTaintSinkConfig();
-	readFormatStrConfig();
+
+	char * saintHome = getenv("SAINT_HOME");
+
+	char sourceCfg[17] = "/cfg/sources.cfg";
+	char sinkCfg[15] = "/cfg/sinks.cfg";
+	char sanitizerCfg[20] = "/cfg/sanitizers.cfg";
+	char formatStrCfg[20] = "/cfg/formatspec.cfg";
+
+	_taintSourceFile = (char *) calloc( strlen(saintHome) + strlen(sourceCfg), sizeof(char) );
+	sprintf(_taintSourceFile, "%s", saintHome);
+	strcat(_taintSourceFile, sourceCfg);
+
+	_taintSinkFile = (char *) calloc( strlen(saintHome) + strlen(sinkCfg), sizeof(char) );
+	sprintf(_taintSinkFile, "%s", saintHome);
+	strcat(_taintSinkFile, sinkCfg);
+
+	_sanitizerFile = (char *) calloc( strlen(saintHome) + strlen(sanitizerCfg), sizeof(char) );
+	sprintf(_sanitizerFile, "%s", saintHome);
+	strcat(_sanitizerFile, sanitizerCfg);
+
+	_formatStrFile = (char *) calloc( strlen(saintHome) + strlen(formatStrCfg), sizeof(char) );
+	sprintf(_formatStrFile, "%s", saintHome);
+	strcat(_formatStrFile, formatStrCfg);
+
+	readTaintSourceConfig(_taintSourceFile);
+	readTaintSinkConfig(_taintSinkFile);
+	readFormatStrConfig(_formatStrFile);
 }
 
 //**************************************************************************************
@@ -323,7 +344,7 @@ void CTaintAnalysis::printTaintHistoryList(set<AnalysisWarning *> values)
 					it != itE; ++it) {
 				curI = (*it);
 
-				errs().indent(INDENT_LENGTH); curI->print(errs()); errs() << " line [" << getLineNumber(*curI) << "] \n";
+				errs().indent(INDENT_LENGTH); curI->print(errs()); errs() << " [Line " << getLineNumber(*curI) << "] \n";
 
 				f = issue->getFunction();
 				if (f) {
@@ -1026,13 +1047,7 @@ void CTaintAnalysis::visitCallInst(CallInst & I)
 				actual_arg = I.getArgOperand(k);
 
 				if ( ! (*callee_summary_table)[k] ) {
-					//DEBUG_WITH_TYPE("saint-table", errs()
-						//			<< "k : "; actual_arg->print(errs()); errs()
-							//		<< " not tainted at "; _predInst->print(errs()); errs() << "\n");
 					if ( isValueTainted(&I, actual_arg) ) {
-						//DEBUG_WITH_TYPE("saint-table", errs() << "k "
-							//	<< actual_arg->getName() << " tainted at "; I.print(errs()); errs() << "\n");
-
 						//The value 'actual_arg' is also a member of its alias-set
 						getAliases(actual_arg, callerDSG, actual_arg_aliases);
 
@@ -1232,6 +1247,9 @@ void CTaintAnalysis::visitBranchInst(BranchInst &I)
 	}
 }
 
+/**
+ * For handling arrays and structs
+ */
 void CTaintAnalysis::visitGetElementPtrInst(GetElementPtrInst &I)
 {
 	DEBUG(errs() << "GetElementPtrInst: ";I.print(errs());errs()<<"\n");

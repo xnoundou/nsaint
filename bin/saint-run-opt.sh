@@ -1,8 +1,10 @@
 #!/bin/bash
 
-
 USAGE=$(cat <<EOF
 ______________________________________________________________________________________________
+saint-run-opt.sh is part of SAINT (Simple Taint Analysis Tool)
+Copyright (c) 2013-2015 by Xavier NOUMBISSI NOUNDOU (xavier.noumbis@gmail.com)
+
 Usage: $(basename $0) -o <llvm-opt> -i <bc files> [-s|-d|-t] [-e debug_type] -p <project_name>
 
 <llvm-opt>: LLVM 'opt' program path									       
@@ -100,7 +102,7 @@ fi
 
 set -x
 
-make -f Makefile.saint compile > /dev/null
+make -f $SAINT_HOME/src/Makefile.saint compile > /dev/null
 
 time $($OPT $STATS -load $LLVM_LIB/LLVMDataStructure.so \
   	    	   -load $LLVM_LIB/saint.so $DEBUGOPT -calltarget-eqtd -memdep "$PASSARG" $TIMING < "$INPUTFILE" > /dev/null)

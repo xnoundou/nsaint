@@ -67,7 +67,7 @@ by\\
 \texttt{ \bf \textit{Dipl.-Inf. Xavier Noumbissi Noundou\\
 xavier.noumbis@gmail.com}}\\
 \vspace{0.3cm}
-June 9, 2015\\
+August 6, 2015\\
 \vspace{1.3cm}
 \end{large}
 \end{center}
@@ -89,7 +89,6 @@ any imperative programming language that uses
 pointers (C, C++, Java, etc.). I implemented these
 algorithms in \saint.
 
-\saint computes tainted paths in a C program without running it.
 \saint does not require the developer to annotate
 the program under analysis. \saint implements a
 flow-sensitive, interprocedural and context-sensitive
@@ -160,19 +159,20 @@ writing the following commands in your ''\texttt{.bashrc}'' file:
 
 \subsection{How to Configure ''\tool{LLVM}'' for use with \textsc{saint}}
 \begin{enumerate}[a)]
-	\item Create a folder ''build'' in \envout{LLVM\_HOME}.
+	\item Create a folder \texttt{build} in \envout{LLVM\_HOME}.
 
 	\item Copy and customized the script \script{configure-llvm.sh}
-	from \saint's ''script'' folder into the newly created ''build'' folder.
+	from \saint's \texttt{script} folder into the newly created 
+	\texttt{build} folder.
 
 	\item Create a symbolic link to \saint sources in the folder
-	''\envout{LLVM\_HOME}/lib/Analysis''.
+	''\texttt{\$LLVM\_HOME/lib/Analysis}''.
 	You can achieve this by running: 
 	\command{ln -s \$SAINT\_HOME/src \$LLVM\_HOME/lib/Analysis/saint}.
 	
-	\item Open the file ''\envout{LLVM\_HOME}/lib/Analysis/Makefile'' and
-	append the string "saint" to the 'DIRS' variable. Following is an excerpt
-	of the file.\\
+	\item Open the file ''\texttt{\$LLVM\_HOME/lib/Analysis/Makefile}'' and
+	append the string "saint" to the ''DIRS'' variable.
+	Following is an excerpt of the file.\\
 	
 	\begin{verbatim}
 ##===- lib/Analysis/Makefile -------------------------------*- Makefile -*-===##
@@ -192,13 +192,15 @@ BUILD_ARCHIVE = 1
 include $(LEVEL)/Makefile.common
 	\end{verbatim}		
 	
-	\item Run the script \script{configure-llvm.sh}.
+	\item Run the script \script{configure-llvm.sh} within the \texttt{build}
+	folder: \command{cd \$LLVM\_HOME/build; ./configure-llvm.sh}.
 	
-	\item Run the command make within the 'build' folder: 
+	\item Run the command \texttt{make} within the \texttt{build} folder: 
 	\command{cd \$LLVM\_HOME/build; make}.
 	
-	\item After the previous step, you can run make from the \saint
-	folder during the development:	\command{cd \$SAINT\_HOME; make -f Makefile.saint}.
+	\item After the previous step, you can run \texttt{make} from the \saint
+	source folder during the development:	
+	\command{cd \$LLVM\_HOME/lib/Analysis/saint; make -f Makefile.saint}.
 \end{enumerate}
 
 
@@ -214,15 +216,15 @@ include $(LEVEL)/Makefile.common
 	\command{git checkout 181c62f1d29ae9de660bad0a6593130d15803abc}.
 
 	\item Copy and customized the script \script{configure-poolalloc.sh}
-	from \saint's ''script'' folder into \envout{POOLALLOC}, and
+	from \saint's \texttt{script} folder into \envout{POOLALLOC}, and
 	run it.
 	
 	\item Then run \command{make}, and \command{make install}. Make sure
 	to run \command{make install} as \texttt{root} (or \texttt{administrator}
 	on a \texttt{Windows} system).
 	
-	\item Create a symbolic link to \tool{poolalloc}'s \texttt{dsa include folder}
-	in the folder ''\envout{LLVM\_HOME}/include''.
+	\item Create a symbolic link to \tool{poolalloc}'s dsa include folder
+	in the folder \texttt{\$LLVM\_HOME/include}.
 	You can achieve this by running: 
 	\command{ln -s \$POOLALLOC/include/dsa \$LLVM\_HOME/include/dsa}.
 \end{enumerate}
@@ -231,30 +233,38 @@ include $(LEVEL)/Makefile.common
 
 \mycheckmark{mediumblue} You need to execute the command
 \command{make -f Makefile.saint} within the
-folder ''\envout{LLVM\_HOME/lib/Analysis/saint}'' to compile
+folder ''\texttt{\$LLVM\_HOME/lib/Analysis/saint}'' to compile
 \saint.
 
-Also, the \saint gets compiled when you run it using
+Also, \saint gets compiled when you run it using
 the Bash script \texttt{runOpt.sh}.
 
 \subsection{Folder Structure}
-The following folders constitute \saint directory structure:
+The following folders constitute \saint's directory structure:
 \begin{itemize}
-	\item ''\texttt{benchmarks}'': folder with sample
+	\item \texttt{benchmarks}: folder with sample
 	scripts to run \saint.
 
-	\item ''\texttt{doc}'': folder with the manual.
+	\item \texttt{doc}: folder with the manual.
 
-	\item ''\texttt{scripts}'': folder with installation
+	\item \texttt{scripts}: folder with installation
 	configuration files for \tool{poolalloc} and \tool{LLVM}.
 	
-	\item ''\texttt{src}'': folder with all \texttt{C++} source files,
+	\item \texttt{src}: folder with all \texttt{C++} source files,
 	and \tool{Bash} scripts to compile and run \saint.
 
-	\item ''\texttt{src/cfg}'': folder with all configuration files			
+	\item \texttt{src/cfg}: folder with all configuration files			
 \end{itemize}
 
 \subsection{Configuration Files}
+
+Configuration files are found in the folder ''\texttt{\$SAINT\_HOME/src/cfg}''.
+There are three configuration files:
+\begin{itemize}
+	\item \texttt{sources.cfg}:
+	\item \texttt{sinks.cfg}:
+	\item \texttt{sanitizers.cfg}:
+\end{itemize}
 
 \subsection{Running \textsc{saint}}
 Among others, \saint source folder contains the following two important

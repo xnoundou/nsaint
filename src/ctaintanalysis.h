@@ -20,6 +20,8 @@
 #include <dsa/DSGraph.h>
 #include <dsa/DataStructure.h>
 
+#include <cstdlib>
+
 //#include <boost/regex.hpp>
 
 #include <list>
@@ -160,10 +162,12 @@ public:
 	inline Module * getModule() { return _module; }
 
 private:
-	const static string _taintId;
-	const static string _taintSourceFile;
-	const static string _taintSinkFile;
-	const static string _formatStrFile;
+	const static string _saintId;
+
+	char * _taintSourceFile;
+	char * _taintSinkFile;
+	char * _sanitizerFile;
+	char * _formatStrFile;
 
 	const static unsigned _INVALID_FORMAT_POS;
 	const static unsigned _FUNCTION_NOT_SOURCE;
@@ -194,11 +198,11 @@ private:
 	 * Reads the configuration file where functions considered
 	 * as taint source are registered.
 	 */
-	static void readTaintSourceConfig();
+	static void readTaintSourceConfig(char *taintSourceFile);
 
-	static void readTaintSinkConfig();
+	static void readTaintSinkConfig(char *taintSinkFile);
 
-	static void readFormatStrConfig();
+	static void readFormatStrConfig(char *formatStrCfg);
 
 	/**
 	 * Returns an integer p (p > 0) whenever function with

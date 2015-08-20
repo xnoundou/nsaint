@@ -37,6 +37,7 @@ int main(int argc, char *argv[]) {
   b1 = even(&x);
   b2 = odd(x);
   y = compute(x);
-  testCond(&y);
+  //testCond(&y);
+  testCond(&b1);
   return 0;
 }
