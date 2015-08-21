@@ -67,7 +67,7 @@ by\\
 \texttt{ \bf \textit{Dipl.-Inf. Xavier Noumbissi Noundou\\
 xavier.noumbis@gmail.com}}\\
 \vspace{0.3cm}
-August 6, 2015\\
+\today{}\\
 \vspace{1.3cm}
 \end{large}
 \end{center}
@@ -97,8 +97,8 @@ at compile-time.
 
 \section{Installation Instructions}
 This section of the manual explains how to install \saint
-on a Linux machine. We have not tested \saint on a Windows
-machine, but the installation should follow similar steps. 
+on a ''Linux'' machine. We have not tested \saint on a ''Windows''
+or ''Mac OS'' machine, but the installation should follow similar steps. 
 
 \subsection{Required Software}
 This section enumerates all software that you need to run \saint.
@@ -124,6 +124,7 @@ run \saint.
 \begin{tabular}{|r|l|} \hline
 {\bf Environment variables}	&	{\bf Description}	\\ \hline \hline
 \env{SAINT\_HOME}	&	\saint home folder (e.g.: /home/user/saint) 	\\ \hline
+\env{SAINT\_BIN}	&	\saint binaries folder (e.g.: /home/user/saint/bin) 	\\ \hline
 \env{LLVM\_HOME}	&	\tool{llvm} home folder (e.g.: /home/user/llvm)		\\ \hline
 \env{LLVM\_LIB}		&	\tool{llvm} compiled libraries folder 					\\
 					&    (e.g.: \envout{LLVM\_HOME}/build/Release+Asserts/lib)	\\ \hline
@@ -241,44 +242,78 @@ the Bash script \texttt{runOpt.sh}.
 
 \subsection{Folder Structure}
 The following folders constitute \saint's directory structure:
-\begin{itemize}
+\begin{enumerate}[1)]
+	\item \texttt{bin}: folder with the scripts:
+	\begin{enumerate}[a)]
+		\item \texttt{saint-gen-ir.sh}: generates the LLVM IR for code analyzed by \saint.
+		\item \texttt{saint-run-opt.sh}: runs LLVM (\texttt{opt} binary) with \saint as plugin.
+	\end{enumerate}
+	
 	\item \texttt{benchmarks}: folder with sample
 	scripts to run \saint.
 
+	\item \texttt{cfg}: folder with source, sink, and sanitizer configuration files
+		
+	\item \texttt{projects}: folder with sample projects.	
+
 	\item \texttt{doc}: folder with the manual.
 
-	\item \texttt{scripts}: folder with installation
-	configuration files for \tool{poolalloc} and \tool{LLVM}.
+	\item \texttt{scripts}: folder with the scripts:
+	\begin{itemize}[a)]
+		\item \texttt{configure-llvm.sh}: can be used to configure \softwarenov{LLVM} for \saint.	
+		\item \texttt{configure-poolalloc.sh} can be used to configure \softwarenov{poolalloc} for \saint.	
+	\end{itemize}
 	
 	\item \texttt{src}: folder with all \texttt{C++} source files,
-	and \tool{Bash} scripts to compile and run \saint.
-
-	\item \texttt{src/cfg}: folder with all configuration files			
-\end{itemize}
+	and \tool{Bash} scripts to compile and run \saint.			
+\end{enumerate}
 
 \subsection{Configuration Files}
 
-Configuration files are found in the folder ''\texttt{\$SAINT\_HOME/src/cfg}''.
+Configuration files are found in the folder ''\texttt{\$SAINT\_HOME/cfg}''.
 There are three configuration files:
-\begin{itemize}
-	\item \texttt{sources.cfg}:
-	\item \texttt{sinks.cfg}:
-	\item \texttt{sanitizers.cfg}:
-\end{itemize}
+\begin{enumerate}[1)]
+	\item \texttt{sources.cfg}: taint sources configuration file\\
+		  Each line of the file specifies a function name and an integer ''\texttt{x}''.
+		  ''\texttt{x}'' is the argument of the function that is tainted.\\
+		  If ''\texttt{x}'' is zero (0), then it is the return value of the function that is tainted.
+		  \begin{verbatim}
+		  fopen,0
+		  fgets,1		  
+		  \end{verbatim}
+		  The previous lines specify that \texttt{fopen} returns a tainted value, and
+		  that \texttt{fgets} taints its first argument. 
+	\item \texttt{sinks.cfg}: taint sinks configuration file\\
+		  Each line of the file specifies a function name and an integer ''\texttt{y}''.
+		  ''\texttt{y}'' is the argument of the function that must not received a tainted value.\\
+		  ''\texttt{y}'' is never equal to zero (0), then it is the return
+		  value of the function that is tainted.
+		  \begin{verbatim}
+		  sprintf,1	  
+		  \end{verbatim}
+		  The previous line denotes that \texttt{sprintf} must not received
+		  a tainted value as its first argument (i.e. \texttt{sprintf} is 
+		  sensible function.
+	\item \texttt{sanitizers.cfg}: sanitizers configuration file\\
+		  \saint doesn't yet implement this functionality.
+\end{enumerate}
 
 \subsection{Running \textsc{saint}}
 Among others, \saint source folder contains the following two important
 \texttt{Bash} scripts:
-\begin{enumerate}[a)]
-	\item \texttt{ctainthelp.sh}: this script is used to generate and
+\begin{enumerate}[1)]
+	\item \texttt{saint-gen-ir.sh}: this script is used to generate and
 		merge \tool{llvm} intermediate representation (IR) files. 
 	
-	\item \texttt{runOpt.sh}: this script is used to run the analysis of
-		\saint on the program under analysis. We encourage users to look
-		at the sample scripts in the folder ''\texttt{benchmarks}'' to
-		learn how to use \texttt{runOpt.sh}.
+	\item \texttt{saint-run-opt.sh}: this script is used to run the analysis of
+		\saint on the program under analysis.
 \end{enumerate}
 
+We encourage users to look at the sample scripts in the
+folders ''\texttt{projects}'' and ''\texttt{benchmarks}''
+to learn how to use \texttt{saint-gen-ir.sh} and
+\texttt{saint-run-opt.sh}.
+		
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \bibliographystyle{plain}
