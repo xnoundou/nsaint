@@ -7,21 +7,50 @@
 
 USAGE=$(cat <<EOF
 ______________________________________________________________________________________
-saint-gen-ir.sh is part of SAINT (Simple Taint Analysis Tool)
+
+Usage: $(basename $0) <-s source_folder> <-c actions> <-t file_type> [-i include_folder] [-o output_folder]
+										       
+-s source_folder
+	specifies the root path of the project to analyze
+
+-c g 	
+	generates LLVM IR files(.s)					       
+
+-c m 	
+	merges input files		
+					       
+-t b	
+	specifies the generation of LLVM IR bytecode files (.bc)
+				      
+-t i	
+	specifies the generation of LLVM IR text files (.s)					       
+
+-t l	
+	generates LLVM IR text files (.ll)		
+			       
+-i include_folder
+	specifies an include folder					       
+
+-o output_folder 
+	specifies the output folder
+
+EXAMPLES:
+---------
+	   1) saint-gen-ir.sh -s main-sample -i main-sample -o "results" -c "g" -t "s"
+
+	   2) saint-gen-ir.sh -s "/home/user/openssl-1.0.1f"       
+	   		      -i "/home/user/openssl-1.0.1f" 	
+  			      -i "/home/user/openssl-1.0.1f/ssl"     
+  			      -i "/home/user/openssl-1.0.1f/include" 
+  			      -i "/home/user/openssl-1.0.1f/crypto"  
+			      -c "g" 			        
+			      -t "b"
+  			      -o "results" 		        
+
+saint-gen-ir.sh is part of SAINT (Simple Static Taint Analysis Tool)
 Copyright (c) 2013-2015 by Xavier NOUMBISSI NOUNDOU (xavier.noumbis@gmail.com)
 
-Usage: $(basename $0) -s <source_folder> -c <actions> -t [file_type] [options] [files]
-										       
-<actions>:									       
-	    g | Generates LLVM IR files(.s)					       
-	    m | Merges input files							       
-<file_type>:									       
-	    b | Generates LLVM IR bytecode files (.bc)				       
-	    i | Generates LLVM IR text files (.s)					       
-	    l | Generates LLVM IR text files (.ll)					       
-[options]:									       
-	   -i | Specifies an include folder					       
-	   -o | Specifies an output folder.					       
+https://sites.google.com/site/xaviernoumbis
 _____________________________________________________________________________________
 EOF
 )
