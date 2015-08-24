@@ -46,6 +46,25 @@
 
 \newcommand{\mycheckmark}[1]{\textcolor{#1}{$\checkmark$}}
 
+%---------------------------------------------------------------
+%%% HEADERS & FOOTERS
+\usepackage{fancyhdr} % This should be set AFTER setting up the page geometry
+\pagestyle{fancy} % options: empty , plain , fancy
+\renewcommand{\headrulewidth}{0pt} % customise the layout...
+\lhead{}\chead{}\rhead{}
+\lfoot{}\cfoot{\thepage}\rfoot{}
+
+%---------------------------------------------------------------
+%%% SECTION TITLE APPEARANCE
+\usepackage{sectsty}
+\allsectionsfont{\sffamily\mdseries\upshape} % (See the fntguide.pdf for font help)
+%\renewcommand \thesection{\Alph{section}}
+% (This matches ConTeXt defaults)
+%---------------------------------------------------------------
+
+\pagestyle{myheadings}
+\markright{Junit 4 Tutorial}
+
 %Remove widows and orphants
 \clubpenalty = 10000
 \widowpenalty = 10000
@@ -55,11 +74,13 @@
 \begin{document}
 \pagestyle{empty}
 
+\title{\textsc{Saint: Simple Static Taint Analysis Tool\\
+				User's manual}}
 \author{Xavier NOUMBISSI NOUNDOU}
 
 \begin{center}
 \begin{LARGE}
-\textbf{ \textsc{Saint: Simple Taint Analysis Tool\\
+\textbf{ \textsc{Saint: Simple Static Taint Analysis Tool\\
 				User's manual}}\\
 \end{LARGE}
 \begin{large}
@@ -67,7 +88,8 @@
 by\\
 \vspace{0.3cm}
 \texttt{ \bf \textit{Dipl.-Inf. Xavier Noumbissi Noundou\\
-xavier.noumbis@gmail.com}}\\
+xavier.noumbis@gmail.com}\\
+\url{https://sites.google.com/site/xaviernoumbis}}\\
 \vspace{0.3cm}
 \today{}\\
 \vspace{1.3cm}
@@ -105,12 +127,9 @@ or ''Mac OS'' machine, but the installation should follow similar steps.
 \subsection{Required Software}
 This section enumerates all software that you need to run \saint.
 \begin{enumerate}[a)]
-	\item \saint: \url{https://github.com/xnoumbis/saint.git}
+	\item \saint: \url{https://github.com/xaviernoumbis/saint.git}
 	
 	\item The compiler infrastructure \software{LLVM}{3.3} (\url{http://llvm.org})
-	
-	\item The precompiled \tool{LLVM}'s tool chain \software{clang+llvm}{3.3}
-	which include binaries like \tool{clang}, \tool{llvm-link}, etc.
 	
 	\item The DSA pointer analysis \softwarenov{poolalloc}
 	(\url{https://github.com/llvm-mirror/poolalloc.git}).
@@ -147,32 +166,8 @@ writing the following commands in your ''\texttt{.bashrc}'' file:
 	export ENV_VAR
 \end{verbatim}
 
-\subsection{How to Configure ''\tool{clang+llvm}'' for use with \textsc{saint}}
-\begin{enumerate}[a)]
-	\item Download and unpack \software{clang+llvm}{3.3}.
-	
-	\item Add the \texttt{bin} folder to your environment variable \env{PATH}.\\
-	\mycheckmark{mediumblue} For instance by adding the following line
-	in your file ''\texttt{.bashrc}''
-	\begin{verbatim}
-		PATH=$PATH:$CLANGLLVM_BIN
-		export PATH
-	\end{verbatim}
-\end{enumerate}
-
 \subsection{How to Configure ''\tool{LLVM}'' for use with \textsc{saint}}
-\begin{enumerate}[a)]
-	\item Create a folder \texttt{build} in \envout{LLVM\_HOME}.
-
-	\item Copy and customized the script \script{configure-llvm.sh}
-	from \saint's \texttt{script} folder into the newly created 
-	\texttt{build} folder.
-
-	\item Create a symbolic link to \saint sources in the folder
-	''\texttt{\$LLVM\_HOME/lib/Analysis}''.
-	You can achieve this by running: 
-	\command{ln -s \$SAINT\_HOME/src \$LLVM\_HOME/lib/Analysis/saint}.
-	
+\begin{enumerate}[a)]	
 	\item Open the file ''\texttt{\$LLVM\_HOME/lib/Analysis/Makefile}'' and
 	append the string "saint" to the ''DIRS'' variable.
 	Following is an excerpt of the file.\\
@@ -195,60 +190,18 @@ BUILD_ARCHIVE = 1
 include $(LEVEL)/Makefile.common
 	\end{verbatim}		
 	
-	\item Run the script \script{configure-llvm.sh} within the \texttt{build}
-	folder: \command{cd \$LLVM\_HOME/build; ./configure-llvm.sh}.
-	
-	\item Run the command \texttt{make} within the \texttt{build} folder: 
-	\command{cd \$LLVM\_HOME/build; make}.
-	
-	\item After the previous step, you can run \texttt{make} from the \saint
-	source folder during the development:	
-	\command{cd \$LLVM\_HOME/lib/Analysis/saint; make -f Makefile.saint}.
+	\item Run the script \script{saint-configure.sh}.
 \end{enumerate}
 
-
-\subsection{How to Configure ''\tool{poolalloc}'' for use with \textsc{saint}}
-\begin{enumerate}[a)]
-	\item The sources of the DSA pointer analysis \softwarenov{poolalloc}
-	can be gathered using the command 
-	\command{git clone https://github.com/llvm-mirror/poolalloc.git}.
-
-	\item After getting the sources of \tool{poolalloc}, the user
-	has to checkout the \tool{git} version under commit
-	'181c62f1d29ae9de660bad0a6593130d15803abc' using the command
-	\command{git checkout 181c62f1d29ae9de660bad0a6593130d15803abc}.
-
-	\item Copy and customized the script \script{configure-poolalloc.sh}
-	from \saint's \texttt{script} folder into \envout{POOLALLOC}, and
-	run it.
-	
-	\item Then run \command{make}, and \command{make install}. Make sure
-	to run \command{make install} as \texttt{root} (or \texttt{administrator}
-	on a \texttt{Windows} system).
-	
-	\item Create a symbolic link to \tool{poolalloc}'s dsa include folder
-	in the folder \texttt{\$LLVM\_HOME/include}.
-	You can achieve this by running: 
-	\command{ln -s \$POOLALLOC/include/dsa \$LLVM\_HOME/include/dsa}.
-\end{enumerate}
-
-\section{Compiling and Running \textsc{saint}}
-
-\mycheckmark{mediumblue} You need to execute the command
-\command{make -f Makefile.saint} within the
-folder ''\texttt{\$LLVM\_HOME/lib/Analysis/saint}'' to compile
-\saint.
-
-Also, \saint gets compiled when you run it using
-the Bash script \texttt{runOpt.sh}.
-
-\subsection{Folder Structure}
+\section{Folder Structure}
 The following folders constitute \saint's directory structure:
 \begin{enumerate}[1)]
 	\item \texttt{bin}: folder with the scripts:
 	\begin{enumerate}[a)]
-		\item \texttt{saint-gen-ir.sh}: generates the LLVM IR for code analyzed by \saint.
-		\item \texttt{saint-run-opt.sh}: runs LLVM (\texttt{opt} binary) with \saint as plugin.
+		\item \script{saint-gen-ir.sh}: generates the LLVM IR for code analyzed by \saint.
+		\item \script{saint-run-llvm-opt.sh}: runs LLVM (\texttt{opt} binary) with \saint as plugin.
+		\item \script{saint-configure.sh}: configures and compiles \tool{poolalloc}
+		      and \tool{LLVM} for \saint.
 	\end{enumerate}
 	
 	\item \texttt{benchmarks}: folder with sample
@@ -259,16 +212,20 @@ The following folders constitute \saint's directory structure:
 	\item \texttt{projects}: folder with sample projects.	
 
 	\item \texttt{doc}: folder with the manual.
-
-	\item \texttt{scripts}: folder with the scripts:
-	\begin{itemize}[a)]
-		\item \texttt{configure-llvm.sh}: can be used to configure \softwarenov{LLVM} for \saint.	
-		\item \texttt{configure-poolalloc.sh} can be used to configure \softwarenov{poolalloc} for \saint.	
-	\end{itemize}
 	
 	\item \texttt{src}: folder with all \texttt{C++} source files,
 	and \tool{Bash} scripts to compile and run \saint.			
 \end{enumerate}
+
+\section{Compiling and Running \textsc{saint}}
+
+\mycheckmark{mediumblue} You need to execute the command
+\command{make -f Makefile.saint} within the
+folder ''\texttt{\$LLVM\_HOME/lib/Analysis/saint}'' to compile
+\saint.
+
+Also, \saint gets compiled when you run it using
+the Bash script \script{saint-run-llvm-opt.sh}.
 
 \subsection{Configuration Files}
 
