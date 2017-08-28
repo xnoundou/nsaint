@@ -4,26 +4,27 @@
 #This script configure the build system to generate an executable
 #that can be run on different architectures.
 
-USAGE=$(cat <<EOF
-______________________________________________________________________________________________
-
-Usage: $(basename $0) [-j number_of_jobs]
-
--j number_of_jobs
-	specifies the number of jobs for running make
-
-EXAMPLES:
----------
+USAGE="
+       ------------------------------------------------------------------------------
+       saint-configure.sh
+        @auteur: Dipl.-Inf. Xavier NOUMBISSI NOUNDOU, PhD Candidate
+	@email:  xnoundou@gmail.com
+       ------------------------------------------------------------------------------
+       Usage: $(basename $0)
+	[-h] : help
+	[-j <number_of_jobs>] : specifies the number of jobs for
+	                        running 'make'
+	
+	EXAMPLES:
+	---------
 	 1. saint-configure.sh -j 2
 	 2. saint-configure.sh
 
-saint-configure.sh is part of SAINT (Simple Static Taint Analysis Tool)
-Copyright (c) 2013-2015 by Xavier NOUMBISSI NOUNDOU (xavier.noumbis@gmail.com)
+	saint-configure.sh is part of SAINT (Simple Static Taint Analysis Tool)
+	Copyright (c) 2013-2015 by Xavier NOUMBISSI NOUNDOU (xavier.noumbis@gmail.com)
 
-https://sites.google.com/site/xaviernoumbis
-______________________________________________________________________________________________
-EOF
-)
+	https://sites.google.com/site/xaviernoumbis
+       -------------------------------------------------------------------------------"
 
 number_of_jobs=1
 
