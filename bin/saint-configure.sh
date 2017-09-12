@@ -7,7 +7,7 @@
 USAGE="
        ------------------------------------------------------------------------------
        saint-configure.sh
-        @auteur: Dipl.-Inf. Xavier NOUMBISSI NOUNDOU, PhD Candidate
+        @auteur: Dipl.-Inf. Xavier NOUNDOU, PhD Candidate
 	@email:  xnoundou@gmail.com
        ------------------------------------------------------------------------------
        Usage: $(basename $0)
@@ -21,7 +21,7 @@ USAGE="
 	 2. saint-configure.sh
 
 	saint-configure.sh is part of SAINT (Simple Static Taint Analysis Tool)
-	Copyright (c) 2013-2015 by Xavier NOUMBISSI NOUNDOU (xavier.noumbis@gmail.com)
+	Copyright (c) 2013-2015 by Xavier NOUNDOU (xnoundou@gmail.com)
 
 	https://sites.google.com/site/xaviernoumbis
        -------------------------------------------------------------------------------"

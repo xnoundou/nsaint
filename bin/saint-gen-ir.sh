@@ -48,7 +48,7 @@ EXAMPLES:
   			      -o "results" 		        
 
 saint-gen-ir.sh is part of SAINT (Simple Static Taint Analysis Tool)
-Copyright (c) 2013-2015 by Xavier NOUMBISSI NOUNDOU (xavier.noumbis@gmail.com)
+Copyright (c) 2013-2015 by Xavier NOUNDOU (xnoundou@gmail.com)
 
 https://sites.google.com/site/xaviernoumbis
 _____________________________________________________________________________________
